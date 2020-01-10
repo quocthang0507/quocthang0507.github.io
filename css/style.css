@@ -3,6 +3,7 @@
 @Author: Rocky Ahmed
 @URL: http://wethemez.com
 Author E-mail: rockybd1995@gmail.com
+Edited by: La Quốc Thắng
 
 This file contains the styling for the actual theme, this
 is the file you need to edit to change the look of the
@@ -62,13 +63,13 @@ a {
 body {
   line-height: 26px;
   font-size: 16px;
-  font-family: "Roboto", sans-serif;
+  font-family: 'Public Sans', sans-serif;
   font-weight: normal;
   color: #777777; }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: "Heebo", sans-serif;
-  font-weight: bold; }
+	font-family: 'Merriweather', serif;
+	font-weight: bold; }
 
 button:focus {
   outline: none;
@@ -324,7 +325,7 @@ button:focus {
       align-self: center;
       text-align: left; }
       .home_banner_area .banner_inner .banner_content .media .d-flex {
-        padding-right: 125px; }
+        padding: 30px; }
       .home_banner_area .banner_inner .banner_content .media .media-body {
         vertical-align: middle;
         align-self: center; }
