@@ -83,11 +83,9 @@ a:focus {
 
 body {
     line-height: 26px;
-    font-size: 16px;
     font-weight: normal;
     color: white;
     background-color: #1fc8db;
-    background-image: linear-gradient(45deg, #007991 0%, #2F80ED 25%, #5B86E5 50%, #36D1DC 75%, #56CCF2 100%)
 }
 
 h1,
@@ -111,8 +109,8 @@ button:focus {
 }
 
 .p_120 {
-    padding-top: 120px;
-    padding-bottom: 120px;
+    padding-top: 60px;
+    padding-bottom: 60px;
 }
 
 .p_100 {
@@ -194,7 +192,7 @@ button:focus {
 }
 
 .header_area .navbar {
-    background: transparent;
+    background: #1fc8db !important;
     padding: 0px;
     border: 0px;
     border-radius: 0px;
@@ -347,7 +345,6 @@ button:focus {
 }
 
 .top_menu .header_social li a {
-    font-size: 14px;
     color: #777777;
     display: inline-block;
     line-height: 42px;
@@ -550,7 +547,6 @@ button:focus {
 }
 
 .banner_area .banner_inner .banner_content .page_link a {
-    font-size: 14px;
     color: #222222;
     font-family: "Roboto", sans-serif;
     margin-right: 32px;
@@ -662,7 +658,6 @@ button:focus {
 }
 
 .single-recent-blog-post .date {
-    font-size: 14px;
     line-height: 24px;
     font-weight: 400;
 }
@@ -731,7 +726,6 @@ button:focus {
 
 .categories_post .categories_details p {
     font-weight: 300;
-    font-size: 14px;
     line-height: 26px;
     margin-bottom: 0px;
 }
@@ -821,7 +815,6 @@ button:focus {
 }
 
 .view_btn {
-    font-size: 14px;
     line-height: 36px;
     display: inline-block;
     color: #222222;
@@ -846,7 +839,6 @@ button:focus {
 }
 
 .blog_right_sidebar .search_widget .input-group .form-control {
-    font-size: 14px;
     line-height: 29px;
     border: 0px;
     width: 100%;
@@ -875,7 +867,6 @@ button:focus {
     background: transparent;
     border: 0px;
     box-shadow: none;
-    font-size: 14px;
     padding: 0px;
     top: 50%;
     transform: translateY(-50%);
@@ -903,7 +894,6 @@ button:focus {
 }
 
 .blog_right_sidebar .author_widget .social_icon a {
-    font-size: 14px;
     color: #222222;
     transition: all 0.2s linear;
 }
@@ -923,7 +913,6 @@ button:focus {
 }
 
 .blog_right_sidebar .popular_post_widget .post_item .media-body h3 {
-    font-size: 14px;
     line-height: 20px;
     color: #222222;
     margin-bottom: 4px;
@@ -951,7 +940,6 @@ button:focus {
 }
 
 .blog_right_sidebar .post_category_widget .cat-list li a {
-    font-size: 14px;
     line-height: 20px;
     color: #777;
 }
@@ -1126,7 +1114,6 @@ button:focus {
 .single-post-area .social-links li a {
     color: #cccccc;
     padding: 7px;
-    font-size: 14px;
     transition: all 0.2s linear;
 }
 
@@ -1148,7 +1135,6 @@ button:focus {
     padding: 24px 35px 24px 30px;
     background-color: white;
     box-shadow: -20.84px 21.58px 30px 0px rgba(176, 176, 176, 0.1);
-    font-size: 14px;
     line-height: 24px;
     color: #777;
     font-style: italic;
@@ -1375,7 +1361,6 @@ button:focus {
     border: none;
     border-radius: 0px;
     width: 100%;
-    font-size: 14px;
     color: #777777;
     border: 1px solid transparent;
 }
@@ -1570,7 +1555,6 @@ button:focus {
 }
 
 .contact_info .info_item p {
-    font-size: 14px;
     line-height: 24px;
     padding: 2px 0px;
 }
@@ -2054,14 +2038,10 @@ h3 {
 }
 
 h4 {
-    font-size: 18px;
+    font-size: 14px;
 }
 
 h5 {
-    font-size: 16px;
-}
-
-h6 {
     font-size: 14px;
 }
 
@@ -3366,7 +3346,6 @@ h6 {
 
 .tools_expert .skill_main .skill_item h4 {
     text-align: none;
-    font-size: 14px;
     font-family: "Roboto", sans-serif;
     font-weight: 500;
     color: #222222;
@@ -3426,6 +3405,7 @@ h6 {
     font-family: "Roboto", sans-serif;
     border: 1px solid #9ab5f5;
     background: rgba(255, 255, 255, 0.1);
+    color: white;
 }
 
 .tabs_inner .nav.nav-tabs li a.active {
@@ -3545,13 +3525,14 @@ h6 {
 }
 
 .feature_item {
-    padding: 50px;
+    padding: 30px;
     border-radius: 10px;
     transition: all 300ms linear 0s;
     background: #fff;
     margin-bottom: 30px;
     text-align: center;
     color: black;
+    height: 300px;
 }
 
 .feature_item i {
@@ -3617,7 +3598,6 @@ h6 {
 }
 
 .personal_text h6 {
-    font-size: 14px;
     font-family: "Roboto", sans-serif;
     text-transform: uppercase;
     letter-spacing: 2.1px;
@@ -3657,7 +3637,7 @@ h6 {
     position: relative;
     padding-left: 40px;
     font-size: 16px;
-    color: #777777;
+    color: white;
     font-weight: 500;
 }
 
@@ -3927,7 +3907,6 @@ h6 {
 }
 
 .ab_widget p {
-    font-size: 14px;
     line-height: 24px;
     font-family: "Roboto", sans-serif;
     color: #777777;
@@ -3947,7 +3926,6 @@ h6 {
 }
 
 .news_widget p {
-    font-size: 14px;
     line-height: 24px;
     font-family: "Roboto", sans-serif;
     color: #777777;
@@ -3962,7 +3940,6 @@ h6 {
     border: none;
     padding: 0px 15px;
     border: 1px solid #1e233b;
-    font-size: 14px;
     font-family: "Roboto", sans-serif;
     color: #cccccc;
     outline: none;
@@ -3970,28 +3947,24 @@ h6 {
 }
 
 .news_widget .input-group input.placeholder {
-    font-size: 14px;
     font-family: "Roboto", sans-serif;
     font-weight: normal;
     color: #cccccc;
 }
 
 .news_widget .input-group input:-moz-placeholder {
-    font-size: 14px;
     font-family: "Roboto", sans-serif;
     font-weight: normal;
     color: #cccccc;
 }
 
 .news_widget .input-group input::-moz-placeholder {
-    font-size: 14px;
     font-family: "Roboto", sans-serif;
     font-weight: normal;
     color: #cccccc;
 }
 
 .news_widget .input-group input::-webkit-input-placeholder {
-    font-size: 14px;
     font-family: "Roboto", sans-serif;
     font-weight: normal;
     color: #cccccc;
@@ -4008,7 +3981,6 @@ h6 {
 }
 
 .social_widget p {
-    font-size: 14px;
     line-height: 24px;
     font-family: "Roboto", sans-serif;
     color: #777777;
@@ -4022,7 +3994,6 @@ h6 {
 
 .social_widget .list li a {
     color: #cccccc;
-    font-size: 14px;
     transition: all 300ms linear 0s;
 }
 
@@ -4043,11 +4014,8 @@ h6 {
     color: #766dff;
 }
 
-li a {
-    color: white !important;
-}
-
 .fa {
     font-size: 30px;
     margin-right: 15px;
+    color: white;
 }
