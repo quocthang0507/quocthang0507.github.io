@@ -671,6 +671,7 @@ button:focus {
 }
 
 .feature_inner {
+    margin-top: 10px;
     margin-bottom: -30px;
 }
 
@@ -682,7 +683,7 @@ button:focus {
     margin-bottom: 30px;
     text-align: center;
     color: black;
-    height: 300px;
+    height: 250px;
 }
 
 .feature_item i {
