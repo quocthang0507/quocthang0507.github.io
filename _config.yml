@@ -3,7 +3,7 @@
 # Website settings
 title: La Quốc Thắng
 description: Thang's blog, use Jekyll and github pages.
-keywords: La Quoc Thang, thanglq,blog,Jekyll,github,gh-pages
+keywords: La Quoc Thang, thanglq, quocthang0507, blog, Jekyll, github, gh-pages
 baseurl:  # if you have suburl as homepage like '/homepage', please change it to '/homepage' and your repo's name should be 'homepage'
 url: https://quocthang0507.github.io/  # url should be 'http://<github_username>.github.io/homepage' as before
 # url: http://127.0.0.1:4000
@@ -12,12 +12,12 @@ img_path: /static/assets/img/blog  # url should be '/homepage/static/assets/img/
 # author -- index page "about me" section
 author:  # change following line to your infomation.
   name: GitHub  # Be used at blog posts' author.
-  first_name: Hub  # Be used at index page about me section.
-  last_name: Git  # Be used at index page about me section.
-  avatar: /static/assets/img/landing/avatar.jpg  # upload your avatar at directory and edit it.
-  github_username: jarrekk  # Leave blank if you don't have now
+  first_name: Thang  # Be used at index page about me section.
+  last_name: La Quoc  # Be used at index page about me section.
+  avatar: https://avatars.githubusercontent.com/u/37357028?s=96&v=4  # upload your avatar at directory and edit it.
+  github_username: quocthang0507  # Leave blank if you don't have now
   linkedin_id: quocthang0507 # Leave blank if you don't have now
-  facebook_username:   # Leave blank if you don't have now
+  facebook_username: quocthang0507  # Leave blank if you don't have now
   twitter_username:   # Leave blank if you don't have now
   email:   # Leave blank if you don't have now
   cv:   # An online CV can be printed as PDF, leave blank if you don't have now
@@ -32,7 +32,7 @@ author:  # change following line to your infomation.
 
 # comment
 #disqus:  # if you wanna comment feature, go to https://disqus.com/ to get your configuration; if not, comment following two lines.
-#  name: jalpc
+#  name: quocthang0507
 
 # analytics
 ## google analytics
@@ -67,4 +67,3 @@ markdown: kramdown
 kramdown:
   input: GFM
   syntax_highlighter: rouge
-
