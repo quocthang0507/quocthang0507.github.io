@@ -2954,7 +2954,9 @@ body {
   .features-text {
     margin-top: 40px;
     padding-bottom: 40px;
+  }
 
+  .features-block {
     ul {
       li {
         display: inline-block;
@@ -3002,9 +3004,9 @@ body {
   .social-icon a {
     background: #3385FF;
     color: #fff;
-    padding: 4px 8px;
-    height: 28px;
-    width: 28px;
+    padding: 7px;
+    height: 35px;
+    width: 35px;
     display: block;
     border-radius: 50px;
 
