@@ -1,6 +1,21 @@
 # careers section data
 # if you don't have language feature(language.yml is empty), ignore "i18n" items
 - name:
+    detail: VNU-HCM University of Science
+    i18n: place_3
+  desc:
+    detail: At faculty of Information Technology
+    i18n: place_3_desc
+  date:
+    detail: December 2024 - December 2026
+    i18n: place_3_date
+  job:
+    detail: Graduate student
+    i18n: place_3_job
+  icon: fa-graduation-cap
+  present: true
+
+- name:
     detail: Da Lat University
     i18n: place_2
   desc:
