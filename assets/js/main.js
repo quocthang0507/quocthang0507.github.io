@@ -1,5 +1,8 @@
 // Main JavaScript file for global functionality
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize dark mode
+    initializeDarkMode();
+    
     // Initialize tooltips
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
     var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
@@ -79,5 +82,54 @@ function loadFromLocalStorage(key) {
     } catch (e) {
         console.error('Cannot load from localStorage:', e);
         return null;
+    }
+}
+
+// Dark Mode Functionality
+function initializeDarkMode() {
+    const darkModeToggle = document.getElementById('dark-mode-toggle');
+    const darkModeIcon = document.getElementById('dark-mode-icon');
+    
+    if (!darkModeToggle) return;
+    
+    // Check for saved theme preference or default to light mode
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const currentTheme = savedTheme || (prefersDark ? 'dark' : 'light');
+    
+    // Apply the theme
+    document.documentElement.setAttribute('data-theme', currentTheme);
+    updateDarkModeIcon(currentTheme);
+    
+    // Add click event listener
+    darkModeToggle.addEventListener('click', function() {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        updateDarkModeIcon(newTheme);
+    });
+    
+    // Listen for system theme changes
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+        if (!localStorage.getItem('theme')) {
+            const theme = e.matches ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+            updateDarkModeIcon(theme);
+        }
+    });
+}
+
+function updateDarkModeIcon(theme) {
+    const darkModeIcon = document.getElementById('dark-mode-icon');
+    if (!darkModeIcon) return;
+    
+    if (theme === 'dark') {
+        darkModeIcon.className = 'fas fa-sun';
+        darkModeIcon.parentElement.title = 'Switch to Light Mode';
+    } else {
+        darkModeIcon.className = 'fas fa-moon';
+        darkModeIcon.parentElement.title = 'Switch to Dark Mode';
     }
 }

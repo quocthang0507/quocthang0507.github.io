@@ -12,6 +12,71 @@ document.addEventListener('DOMContentLoaded', function() {
         numbers: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
     };
     
+    // Audio context for generating spinning sound
+    let audioContext;
+    let gainNode;
+    let oscillator;
+    
+    // Initialize audio context
+    function initAudio() {
+        try {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            gainNode = audioContext.createGain();
+            gainNode.connect(audioContext.destination);
+        } catch (e) {
+            console.log('Web Audio API not supported');
+        }
+    }
+    
+    // Play spinning sound
+    function playSpinSound() {
+        if (!audioContext) {
+            initAudio();
+        }
+        
+        if (audioContext) {
+            // Try to play HTML audio first
+            const audioElement = document.getElementById('wheel-spin-audio');
+            if (audioElement && audioElement.canPlayType && audioElement.canPlayType('audio/mpeg') !== '') {
+                audioElement.currentTime = 0;
+                audioElement.play().catch(() => {
+                    // Fallback to Web Audio API
+                    generateSpinSound();
+                });
+            } else {
+                generateSpinSound();
+            }
+        }
+    }
+    
+    // Generate spinning sound using Web Audio API
+    function generateSpinSound() {
+        if (!audioContext) return;
+        
+        // Stop any existing sound
+        if (oscillator) {
+            oscillator.stop();
+        }
+        
+        // Create oscillator for spinning sound
+        oscillator = audioContext.createOscillator();
+        const envelope = audioContext.createGain();
+        
+        oscillator.connect(envelope);
+        envelope.connect(gainNode);
+        
+        // Configure sound
+        oscillator.frequency.setValueAtTime(200, audioContext.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(100, audioContext.currentTime + 3);
+        
+        envelope.gain.setValueAtTime(0.1, audioContext.currentTime);
+        envelope.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 3);
+        
+        oscillator.type = 'sawtooth';
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 3);
+    }
+    
     const wheelColors = [
         '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', 
         '#ffeaa7', '#dda0dd', '#ff9ff3', '#54a0ff',
@@ -126,9 +191,9 @@ document.addEventListener('DOMContentLoaded', function() {
             const endRad = (endAngle - 90) * Math.PI / 180;
             
             // Calculate path coordinates for the slice
-            const radius = 140; // Half of wheel size (300px / 2 - some margin)
-            const centerX = 150;
-            const centerY = 150;
+            const radius = 225; // Half of wheel size (450px / 2)
+            const centerX = 225;
+            const centerY = 225;
             
             const x1 = centerX + radius * Math.cos(startRad);
             const y1 = centerY + radius * Math.sin(startRad);
@@ -175,7 +240,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }).join('');
         
         wheelNames.innerHTML = `
-            <svg width="100%" height="100%" viewBox="0 0 300 300" style="position: absolute; top: 0; left: 0;">
+            <svg width="100%" height="100%" viewBox="0 0 450 450" style="position: absolute; top: 0; left: 0;">
                 ${svgSegments}
             </svg>
         `;
@@ -188,6 +253,9 @@ document.addEventListener('DOMContentLoaded', function() {
         isSpinning = true;
         document.getElementById('spin-btn').disabled = true;
         document.getElementById('spin-btn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang quay...';
+        
+        // Play spinning sound
+        playSpinSound();
         
         // Random rotation (multiple full rotations + random angle)
         const minSpins = 3;
