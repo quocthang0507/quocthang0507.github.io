@@ -100,7 +100,24 @@ document.addEventListener('DOMContentLoaded', function() {
                                    currentMonth === today.getMonth() && 
                                    date === today.getDate();
                     const className = isToday ? 'today' : '';
-                    calendarHTML += `<td class="${className}">${date}</td>`;
+                    
+                    // Get lunar date for this day
+                    let lunarInfo = '';
+                    if (window.LunarCalendar) {
+                        try {
+                            const lunar = window.LunarCalendar.solarToLunar(date, currentMonth + 1, currentYear);
+                            if (lunar) {
+                                lunarInfo = `<small class="lunar-date">${lunar.day}/${lunar.month}${lunar.isLeap ? '*' : ''}</small>`;
+                            }
+                        } catch (e) {
+                            // Fallback if lunar calculation fails
+                        }
+                    }
+                    
+                    calendarHTML += `<td class="${className} calendar-day" data-date="${date}" data-month="${currentMonth + 1}" data-year="${currentYear}">
+                        <div class="solar-date">${date}</div>
+                        ${lunarInfo}
+                    </td>`;
                     date++;
                 }
             }
@@ -110,6 +127,16 @@ document.addEventListener('DOMContentLoaded', function() {
         calendarHTML += '</table>';
         
         document.getElementById('calendar-display').innerHTML = calendarHTML;
+        
+        // Add click handlers for calendar days
+        document.querySelectorAll('.calendar-day').forEach(cell => {
+            cell.addEventListener('click', function() {
+                const day = parseInt(this.dataset.date);
+                const month = parseInt(this.dataset.month);
+                const year = parseInt(this.dataset.year);
+                showDateDetails(day, month, year);
+            });
+        });
     }
     
     function updateSystemInfo() {
@@ -278,4 +305,85 @@ document.addEventListener('DOMContentLoaded', function() {
     const initialSeconds = parseInt(document.getElementById('timer-seconds').value) || 0;
     timerRemaining = initialMinutes * 60 + initialSeconds;
     updateTimer();
+    
+    // Show date details modal
+    function showDateDetails(day, month, year) {
+        if (!window.LunarCalendar) {
+            showAlert('Lunar calendar not loaded', 'warning');
+            return;
+        }
+        
+        try {
+            const lunar = window.LunarCalendar.solarToLunar(day, month, year);
+            if (!lunar) {
+                showAlert('Unable to calculate lunar date', 'error');
+                return;
+            }
+            
+            const zodiac = window.LunarCalendar.getZodiacAnimal(lunar.year);
+            const canChi = window.LunarCalendar.getCanChi(lunar.year);
+            const lunarMonthName = window.LunarCalendar.getLunarMonthName(lunar.month, lunar.isLeap);
+            
+            const solarDate = new Date(year, month - 1, day);
+            const dayOfWeek = ['Chủ nhật', 'Thứ hai', 'Thứ ba', 'Thứ tư', 'Thứ năm', 'Thứ sáu', 'Thứ bảy'][solarDate.getDay()];
+            
+            const modalHTML = `
+                <div class="modal fade show" id="dateDetailsModal" style="display: block; background: rgba(0,0,0,0.5);">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header bg-primary text-white">
+                                <h5 class="modal-title">Chi tiết ngày ${day}/${month}/${year}</h5>
+                                <button type="button" class="btn-close btn-close-white" onclick="closeDateModal()">×</button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h6><i class="fas fa-calendar"></i> Dương lịch:</h6>
+                                        <p><strong>${dayOfWeek}</strong><br>Ngày ${day} tháng ${month} năm ${year}</p>
+                                        
+                                        <h6><i class="fas fa-moon"></i> Âm lịch:</h6>
+                                        <p>Ngày ${lunar.day} ${lunarMonthName}<br>Năm ${lunar.year} (${canChi})</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6><i class="fas fa-dragon"></i> Con giáp:</h6>
+                                        <p class="text-primary">${zodiac}</p>
+                                        
+                                        <h6><i class="fas fa-info-circle"></i> Thông tin:</h6>
+                                        <ul class="list-unstyled">
+                                            <li><small>Năm âm lịch ${lunar.isLeap ? 'nhuận' : 'thường'}</small></li>
+                                            <li><small>Tháng ${lunar.isLeap ? 'nhuận' : 'thường'}</small></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" onclick="closeDateModal()">Đóng</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Remove existing modal if any
+            const existingModal = document.getElementById('dateDetailsModal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+            
+            // Add modal to body
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+            
+        } catch (error) {
+            console.error('Error showing date details:', error);
+            showAlert('Lỗi khi hiển thị thông tin ngày', 'error');
+        }
+    }
+    
+    // Function to close date modal
+    window.closeDateModal = function() {
+        const modal = document.getElementById('dateDetailsModal');
+        if (modal) {
+            modal.remove();
+        }
+    }
 });
