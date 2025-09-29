@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Number Generator - My Portfolio Website</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        /* Custom Styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        main {
+            flex: 1;
+        }
+
+        .result-display {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #28a745;
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 10px;
+            border: 2px solid #28a745;
+            margin: 20px 0;
+        }
+
+        .history-item {
+            background: #f8f9fa;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            border-left: 4px solid #007bff;
+        }
+
+        @media (max-width: 768px) {
+            .result-display {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="index-static.html">
+                <i class="fas fa-home"></i> My Portfolio Website
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index-static.html">
+                            <i class="fas fa-clock"></i> Trang chủ
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="random-number-static.html">
+                            <i class="fas fa-dice"></i> Random Number
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="random-wheel-static.html">
+                            <i class="fas fa-sync-alt"></i> Random Wheel
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <main class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <div id="alert-container"></div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8 mb-4">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fas fa-dice"></i> Random Number Generator</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="min-number" class="form-label">Số nhỏ nhất:</label>
+                                <input type="number" id="min-number" class="form-control" value="1">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="max-number" class="form-label">Số lớn nhất:</label>
+                                <input type="number" id="max-number" class="form-control" value="100">
+                            </div>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <label for="count-numbers" class="form-label">Số lượng số cần tạo:</label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <input type="number" id="count-numbers" class="form-control" value="1" min="1" max="100">
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check mt-2">
+                                        <input class="form-check-input" type="checkbox" id="unique-numbers">
+                                        <label class="form-check-label" for="unique-numbers">
+                                            Không trùng lặp
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <div class="btn-group">
+                                <button id="generate-btn" class="btn btn-success btn-lg">
+                                    <i class="fas fa-play"></i> Tạo số ngẫu nhiên
+                                </button>
+                                <button id="generate-multiple-btn" class="btn btn-info">
+                                    <i class="fas fa-layer-group"></i> Tạo nhiều số
+                                </button>
+                                <button id="quick-pick-btn" class="btn btn-warning">
+                                    <i class="fas fa-magic"></i> Chọn nhanh
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <h6>Kết quả:</h6>
+                            <div id="result-display" class="result-display">
+                                Nhấn nút để tạo số ngẫu nhiên
+                            </div>
+                            <div class="mt-2">
+                                <button id="copy-result-btn" class="btn btn-outline-primary btn-sm" disabled>
+                                    <i class="fas fa-copy"></i> Sao chép
+                                </button>
+                                <button id="save-result-btn" class="btn btn-outline-success btn-sm" disabled>
+                                    <i class="fas fa-save"></i> Lưu kết quả
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <h6>Presets:</h6>
+                            <div class="btn-group-vertical d-grid gap-2">
+                                <button class="btn btn-outline-secondary preset-btn" data-min="1" data-max="6">
+                                    <i class="fas fa-dice"></i> Xúc xắc (1-6)
+                                </button>
+                                <button class="btn btn-outline-secondary preset-btn" data-min="1" data-max="100">
+                                    <i class="fas fa-percentage"></i> Phần trăm (1-100)
+                                </button>
+                                <button class="btn btn-outline-secondary preset-btn" data-min="1" data-max="45">
+                                    <i class="fas fa-ticket-alt"></i> Lotto (1-45)
+                                </button>
+                                <button class="btn btn-outline-secondary preset-btn" data-min="0" data-max="1">
+                                    <i class="fas fa-coins"></i> Tung đồng xu (0-1)
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 mb-4">
+                <div class="card">
+                    <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                        <h6 class="mb-0"><i class="fas fa-history"></i> Lịch sử</h6>
+                        <button id="clear-history-btn" class="btn btn-sm btn-outline-light">
+                            <i class="fas fa-trash"></i> Xóa
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div id="history-list" class="history-list" style="max-height: 400px; overflow-y: auto;">
+                            <p class="text-muted text-center">Chưa có lịch sử</p>
+                        </div>
+                        <div class="mt-3">
+                            <button id="export-history-btn" class="btn btn-outline-primary btn-sm w-100" disabled>
+                                <i class="fas fa-download"></i> Xuất lịch sử
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <h6 class="mb-0"><i class="fas fa-chart-bar"></i> Thống kê</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="text-center">
+                                    <h5 id="total-generated" class="text-primary">0</h5>
+                                    <small class="text-muted">Tổng số đã tạo</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="text-center">
+                                    <h5 id="last-range" class="text-success">-</h5>
+                                    <small class="text-muted">Phạm vi gần nhất</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="text-center">
+                                    <h5 id="most-common" class="text-warning">-</h5>
+                                    <small class="text-muted">Số xuất hiện nhiều nhất</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="text-center">
+                                    <h5 id="session-count" class="text-danger">0</h5>
+                                    <small class="text-muted">Số lần trong phiên</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <button id="reset-stats-btn" class="btn btn-outline-danger btn-sm">
+                                <i class="fas fa-redo"></i> Reset thống kê
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer class="bg-light mt-5 py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="text-muted mb-0">&copy; 2024 My Portfolio Website. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="text-muted mb-0">Built with <i class="fas fa-heart text-danger"></i> using Jekyll & Bootstrap</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/random-number.js"></script>
+</body>
+</html>
