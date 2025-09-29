@@ -115,51 +115,70 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const anglePerSection = 360 / names.length;
         
-        wheelNames.innerHTML = names.map((name, index) => {
-            const rotation = index * anglePerSection;
+        // Create SVG-based wheel segments for better control
+        const svgSegments = names.map((name, index) => {
+            const startAngle = index * anglePerSection;
+            const endAngle = (index + 1) * anglePerSection;
             const color = wheelColors[index % wheelColors.length];
             
-            // Calculate text rotation to make it readable
-            const textRotation = anglePerSection / 2;
-            // Adjust font size based on name length and number of sections
-            let fontSize = names.length > 12 ? '0.6rem' : names.length > 8 ? '0.7rem' : '0.9rem';
-            if (name.length > 10) fontSize = names.length > 8 ? '0.5rem' : '0.7rem';
+            // Convert angles to radians
+            const startRad = (startAngle - 90) * Math.PI / 180; // -90 to start from top
+            const endRad = (endAngle - 90) * Math.PI / 180;
+            
+            // Calculate path coordinates for the slice
+            const radius = 140; // Half of wheel size (300px / 2 - some margin)
+            const centerX = 150;
+            const centerY = 150;
+            
+            const x1 = centerX + radius * Math.cos(startRad);
+            const y1 = centerY + radius * Math.sin(startRad);
+            const x2 = centerX + radius * Math.cos(endRad);
+            const y2 = centerY + radius * Math.sin(endRad);
+            
+            // Large arc flag
+            const largeArcFlag = anglePerSection > 180 ? 1 : 0;
+            
+            // Create path for the slice
+            const pathData = [
+                `M ${centerX} ${centerY}`,
+                `L ${x1} ${y1}`,
+                `A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2}`,
+                'Z'
+            ].join(' ');
+            
+            // Calculate text position
+            const textAngle = (startAngle + endAngle) / 2;
+            const textRad = (textAngle - 90) * Math.PI / 180;
+            const textRadius = radius * 0.7; // 70% of radius
+            const textX = centerX + textRadius * Math.cos(textRad);
+            const textY = centerY + textRadius * Math.sin(textRad);
+            
+            // Adjust font size
+            let fontSize = names.length > 12 ? '10px' : names.length > 8 ? '12px' : '14px';
+            if (name.length > 10) fontSize = names.length > 8 ? '8px' : '10px';
             
             return `
-                <div class="wheel-name" style="
-                    transform: rotate(${rotation}deg);
-                    background: ${color};
-                    clip-path: polygon(50% 50%, 100% 0%, 100% ${100 / names.length * 2}%);
-                    border: 1px solid rgba(255,255,255,0.2);
-                ">
-                    <span style="
-                        transform: rotate(${textRotation}deg);
-                        position: absolute;
-                        left: 65%;
-                        top: 20%;
-                        font-size: ${fontSize};
-                        font-weight: bold;
-                        color: white;
-                        text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
-                        white-space: nowrap;
-                        max-width: 80px;
-                        overflow: hidden;
-                        text-overflow: ellipsis;
-                    ">${name}</span>
-                </div>
+                <g>
+                    <path d="${pathData}" fill="${color}" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+                    <text x="${textX}" y="${textY}" 
+                          text-anchor="middle" 
+                          dominant-baseline="central"
+                          transform="rotate(${textAngle > 90 && textAngle < 270 ? textAngle + 180 : textAngle}, ${textX}, ${textY})"
+                          fill="white" 
+                          font-weight="bold" 
+                          font-size="${fontSize}"
+                          style="text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">
+                        ${name}
+                    </text>
+                </g>
             `;
         }).join('');
         
-        // Update wheel background
-        const wheel = document.getElementById('wheel');
-        const gradientStops = names.map((_, index) => {
-            const color = wheelColors[index % wheelColors.length];
-            const startAngle = (index * anglePerSection);
-            const endAngle = ((index + 1) * anglePerSection);
-            return `${color} ${startAngle}deg ${endAngle}deg`;
-        }).join(', ');
-        
-        wheel.style.background = `conic-gradient(${gradientStops})`;
+        wheelNames.innerHTML = `
+            <svg width="100%" height="100%" viewBox="0 0 300 300" style="position: absolute; top: 0; left: 0;">
+                ${svgSegments}
+            </svg>
+        `;
     }
     
     // Spin wheel
