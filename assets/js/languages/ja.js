@@ -131,5 +131,11 @@ const japaneseTranslations = {
     "consent.manage": "クッキー管理",
     
     // Footer
-    "footer.privacy": "プライバシーポリシー"
+    "footer.privacy": "プライバシーポリシー",
+    
+    // Error pages
+    "error.title": "ページが見つかりません",
+    "error.message": "申し訳ございません。お探しのページは存在しないか、移動されました。",
+    "error.home": "ホームへ",
+    "error.back": "戻る"
 };

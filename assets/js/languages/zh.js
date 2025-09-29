@@ -131,5 +131,11 @@ const chineseTranslations = {
     "consent.manage": "管理 Cookie",
     
     // Footer
-    "footer.privacy": "隐私政策"
+    "footer.privacy": "隐私政策",
+    
+    // Error pages
+    "error.title": "找不到页面",
+    "error.message": "抱歉，您要找的页面不存在或已被移动。",
+    "error.home": "返回主页",
+    "error.back": "返回"
 };

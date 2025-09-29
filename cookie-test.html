@@ -1,0 +1,108 @@
+---
+layout: default
+title: Cookie Consent Test
+description: Test page for cookie consent functionality
+---
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="mb-0">
+                        <i class="fas fa-cookie-bite text-primary me-2"></i>
+                        Cookie Consent Test
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <p class="mb-4">Use the buttons below to test the cookie consent functionality:</p>
+                    
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <button type="button" class="btn btn-primary w-100" onclick="testCookieConsent.showBanner()">
+                                <i class="fas fa-eye me-2"></i>Show Cookie Banner
+                            </button>
+                        </div>
+                        <div class="col-md-6">
+                            <button type="button" class="btn btn-info w-100" onclick="showConsentStatus()">
+                                <i class="fas fa-info-circle me-2"></i>Check Consent Status
+                            </button>
+                        </div>
+                        <div class="col-md-6">
+                            <button type="button" class="btn btn-warning w-100" onclick="testCookieConsent.clearConsent()">
+                                <i class="fas fa-trash me-2"></i>Clear Consent
+                            </button>
+                        </div>
+                        <div class="col-md-6">
+                            <button type="button" class="btn btn-secondary w-100" onclick="window.cookieConsent.showManageCookiesModal()">
+                                <i class="fas fa-cog me-2"></i>Manage Cookies
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <h5>Console Output:</h5>
+                        <div id="console-output" class="bg-light p-3 rounded" style="height: 200px; overflow-y: auto; font-family: monospace; font-size: 0.9rem;">
+                            <div class="text-muted">Console output will appear here...</div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <h5>Current Status:</h5>
+                        <div id="status-display" class="bg-info text-white p-3 rounded">
+                            <div id="consent-status">Loading...</div>
+                            <div id="analytics-status">Loading...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Redirect console.log to our display
+const originalLog = console.log;
+const consoleOutput = document.getElementById('console-output');
+
+console.log = function(...args) {
+    originalLog.apply(console, args);
+    if (consoleOutput) {
+        const div = document.createElement('div');
+        div.textContent = args.join(' ');
+        div.style.marginBottom = '4px';
+        consoleOutput.appendChild(div);
+        consoleOutput.scrollTop = consoleOutput.scrollHeight;
+    }
+};
+
+function showConsentStatus() {
+    if (window.cookieConsent) {
+        const status = window.cookieConsent.getConsentStatus();
+        console.log('Consent Status:', status);
+        
+        document.getElementById('consent-status').innerHTML = 
+            `<strong>Has Consent:</strong> ${status.hasConsent ? 'Yes' : 'No'}`;
+        document.getElementById('analytics-status').innerHTML = 
+            `<strong>Analytics Enabled:</strong> ${status.analyticsEnabled ? 'Yes' : 'No'}`;
+    } else {
+        console.log('Cookie consent not initialized');
+    }
+}
+
+// Auto-update status every 2 seconds
+setInterval(() => {
+    if (window.cookieConsent) {
+        const status = window.cookieConsent.getConsentStatus();
+        document.getElementById('consent-status').innerHTML = 
+            `<strong>Has Consent:</strong> ${status.hasConsent ? 'Yes' : 'No'}`;
+        document.getElementById('analytics-status').innerHTML = 
+            `<strong>Analytics Enabled:</strong> ${status.analyticsEnabled ? 'Yes' : 'No'}`;
+    }
+}, 2000);
+
+// Show initial status when page loads
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(showConsentStatus, 1000);
+});
+</script>

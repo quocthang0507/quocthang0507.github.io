@@ -1,0 +1,64 @@
+---
+layout: default
+title: Navigation Test
+description: Test page for checking navigation and links
+---
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="mb-0">
+                        <i class="fas fa-link text-primary me-2"></i>
+                        Navigation Test
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <p>Test the following links to ensure they work properly:</p>
+                    
+                    <div class="list-group">
+                        <a href="{{ '/' | relative_url }}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-home me-2"></i>Home Page
+                        </a>
+                        <a href="{{ '/privacy/' | relative_url }}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-shield-alt me-2"></i>Privacy Policy (with permalink)
+                        </a>
+                        <a href="{{ '/privacy.html' | relative_url }}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-file me-2"></i>Privacy Policy (direct file)
+                        </a>
+                        <a href="{{ '/cookie-test.html' | relative_url }}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-cookie-bite me-2"></i>Cookie Consent Test
+                        </a>
+                        <a href="{{ '/random-number.html' | relative_url }}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-dice me-2"></i>Random Number Generator
+                        </a>
+                        <a href="{{ '/random-wheel.html' | relative_url }}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-sync-alt me-2"></i>Random Wheel
+                        </a>
+                        <a href="/nonexistent-page" class="list-group-item list-group-item-action">
+                            <i class="fas fa-exclamation-triangle me-2"></i>Test 404 Page (broken link)
+                        </a>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <h5>Current Page URL:</h5>
+                        <code id="current-url"></code>
+                    </div>
+                    
+                    <div class="mt-3">
+                        <h5>Base URL:</h5>
+                        <code id="base-url"></code>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('current-url').textContent = window.location.href;
+    document.getElementById('base-url').textContent = window.location.origin;
+});
+</script>

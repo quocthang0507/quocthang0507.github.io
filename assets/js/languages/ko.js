@@ -140,5 +140,11 @@ const koreanTranslations = {
     "consent.manage": "쿠키 관리",
     
     // Footer
-    "footer.privacy": "개인정보 보호정책"
+    "footer.privacy": "개인정보 보호정책",
+    
+    // Error pages
+    "error.title": "페이지를 찾을 수 없습니다",
+    "error.message": "죄송합니다. 찾고 계신 페이지가 존재하지 않거나 이동되었습니다.",
+    "error.home": "홈으로",
+    "error.back": "뒤로"
 };

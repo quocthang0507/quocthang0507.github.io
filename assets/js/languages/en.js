@@ -131,5 +131,11 @@ const englishTranslations = {
     "consent.manage": "Manage cookies",
     
     // Footer
-    "footer.privacy": "Privacy Policy"
+    "footer.privacy": "Privacy Policy",
+    
+    // Error pages
+    "error.title": "Page Not Found",
+    "error.message": "Sorry, the page you are looking for does not exist or has been moved.",
+    "error.home": "Go Home",
+    "error.back": "Go Back"
 };

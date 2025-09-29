@@ -26,10 +26,12 @@ class CookieConsent {
         // Wait for i18n to be ready
         const showBanner = () => {
             if (typeof i18n === 'undefined' || !i18n.isReady) {
+                console.log('Waiting for i18n to be ready...');
                 setTimeout(showBanner, 100);
                 return;
             }
 
+            console.log('Showing cookie consent banner');
             const banner = this.createConsentBanner();
             document.body.appendChild(banner);
             
@@ -39,7 +41,12 @@ class CookieConsent {
             }, 100);
         };
         
-        showBanner();
+        // Also try to show immediately if DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', showBanner);
+        } else {
+            showBanner();
+        }
     }
 
     createConsentBanner() {
@@ -79,8 +86,8 @@ class CookieConsent {
         });
 
         banner.querySelector('#consent-learn-more').addEventListener('click', () => {
-            // Open privacy policy in new tab
-            window.open('/privacy.html', '_blank');
+            // Show privacy info modal instead of opening new tab
+            this.showPrivacyInfo();
         });
 
         return banner;
@@ -388,5 +395,32 @@ class CookieConsent {
 
 // Initialize cookie consent when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('Initializing cookie consent system...');
     window.cookieConsent = new CookieConsent();
 });
+
+// Also initialize if document is already loaded
+if (document.readyState !== 'loading') {
+    console.log('Document already loaded, initializing cookie consent...');
+    window.cookieConsent = new CookieConsent();
+}
+
+// Add global test functions for debugging
+window.testCookieConsent = {
+    showBanner: () => {
+        if (window.cookieConsent) {
+            // Clear any existing consent to force banner to show
+            document.cookie = 'analytics_consent=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
+            window.cookieConsent.showConsentBanner();
+        }
+    },
+    checkConsent: () => {
+        if (window.cookieConsent) {
+            return window.cookieConsent.getConsentStatus();
+        }
+    },
+    clearConsent: () => {
+        document.cookie = 'analytics_consent=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
+        console.log('Cookie consent cleared');
+    }
+};

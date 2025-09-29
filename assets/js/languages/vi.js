@@ -131,5 +131,11 @@ const vietnameseTranslations = {
     "consent.manage": "Quản lý cookie",
     
     // Footer
-    "footer.privacy": "Chính sách bảo mật"
+    "footer.privacy": "Chính sách bảo mật",
+    
+    // Error pages
+    "error.title": "Trang không tìm thấy",
+    "error.message": "Xin lỗi, trang bạn đang tìm kiếm không tồn tại hoặc đã bị di chuyển.",
+    "error.home": "Về trang chủ",
+    "error.back": "Quay lại"
 };
