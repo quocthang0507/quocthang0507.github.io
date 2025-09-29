@@ -26,6 +26,12 @@ custom_js: ['random-wheel.js']
                         </div>
                         <div class="wheel-center">SPIN</div>
                     </div>
+                    <!-- Audio element for wheel spinning sound -->
+                    <audio id="wheel-spin-audio" preload="auto">
+                        <source src="{{ '/assets/audio/wheel-spin.mp3' | relative_url }}" type="audio/mpeg">
+                        <source src="{{ '/assets/audio/wheel-spin.ogg' | relative_url }}" type="audio/ogg">
+                        <!-- Fallback: Generate audio using Web Audio API -->
+                    </audio>
                 </div>
                 
                 <div class="text-center mt-4">
