@@ -176,21 +176,13 @@ main {
     width: 100%;
     height: 100%;
     border-radius: 50%;
+    overflow: hidden;
 }
 
-.wheel-name {
-    position: absolute;
-    width: 50%;
-    height: 50%;
-    transform-origin: 50% 100%;
-    display: flex;
-    align-items: flex-start;
-    justify-content: flex-start;
-    font-weight: bold;
-    color: white;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
-    font-size: 0.9rem;
-    overflow: hidden;
+/* SVG text styling is handled inline for better control */
+.wheel-names svg {
+    width: 100%;
+    height: 100%;
 }
 
 .btn-group .btn {
