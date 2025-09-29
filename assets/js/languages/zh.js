@@ -59,16 +59,25 @@ const chineseTranslations = {
     "wheel.no_history": "暂无历史记录",
     "wheel.no_data": "暂无数据",
     "wheel.no_names": "暂无名称",
+    "wheel.winner": "获胜者",
+    "wheel.spinning": "转动中...",
     
     // Random Number
     "number.title": "随机数生成器",
-    "number.min": "最小值",
-    "number.max": "最大值",
+    "number.min": "最小数值：",
+    "number.max": "最大数值：",
+    "number.count": "生成数字数量：",
+    "number.unique": "不重复",
     "number.generate": "生成随机数",
+    "number.copy": "复制",
     "number.result": "结果：",
     "number.history": "历史",
     "number.clear_history": "清除历史",
     "number.export": "导出数据",
+    "number.statistics": "统计",
+    "number.total_generated": "总生成数",
+    "number.average": "平均值",
+    "number.most_common": "最常见",
     
     // Lunar Calendar
     "lunar.details_title": "日期详情",

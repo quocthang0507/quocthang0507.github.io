@@ -211,14 +211,32 @@ document.addEventListener('DOMContentLoaded', function() {
                 'Z'
             ].join(' ');
             
-            // Calculate text position
+            // Calculate text position and rotation for pointing toward center
             const textAngle = (startAngle + endAngle) / 2;
             const textRad = (textAngle - 90) * Math.PI / 180;
             const textRadius = radius * 0.7; // 70% of radius
             const textX = centerX + textRadius * Math.cos(textRad);
             const textY = centerY + textRadius * Math.sin(textRad);
             
-            // Adjust font size
+            // Calculate rotation angle so text points toward center
+            // Text should be perpendicular to the radius line
+            let textRotation = textAngle;
+            
+            // If text would be upside down, rotate it 180 degrees
+            if (textAngle > 90 && textAngle < 270) {
+                textRotation = textAngle + 180;
+            }
+            
+            // For better readability, adjust text to point radially inward
+            const radialAngle = textAngle + 90; // Perpendicular to radius
+            let finalRotation = radialAngle;
+            
+            // Keep text right-side up
+            if (radialAngle > 90 && radialAngle < 270) {
+                finalRotation = radialAngle + 180;
+            }
+            
+            // Adjust font size based on segment count and name length
             let fontSize = names.length > 12 ? '10px' : names.length > 8 ? '12px' : '14px';
             if (name.length > 10) fontSize = names.length > 8 ? '8px' : '10px';
             
@@ -228,7 +246,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <text x="${textX}" y="${textY}" 
                           text-anchor="middle" 
                           dominant-baseline="central"
-                          transform="rotate(${textAngle > 90 && textAngle < 270 ? textAngle + 180 : textAngle}, ${textX}, ${textY})"
+                          transform="rotate(${finalRotation}, ${textX}, ${textY})"
                           fill="white" 
                           font-weight="bold" 
                           font-size="${fontSize}"
@@ -254,6 +272,15 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('spin-btn').disabled = true;
         document.getElementById('spin-btn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang quay...';
         
+        // Track wheel spin start
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'wheel_spin_start', {
+                event_category: 'random_wheel_tools',
+                event_label: 'wheel_interaction',
+                total_options: names.length
+            });
+        }
+        
         // Play spinning sound
         playSpinSound();
         
@@ -275,6 +302,16 @@ document.addEventListener('DOMContentLoaded', function() {
             const anglePerSection = 360 / names.length;
             const winnerIndex = Math.floor(normalizedAngle / anglePerSection);
             const winner = names[winnerIndex];
+            
+            // Track wheel spin result
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'wheel_spin_complete', {
+                    event_category: 'random_wheel_tools',
+                    event_label: 'wheel_result',
+                    winner_index: winnerIndex,
+                    total_options: names.length
+                });
+            }
             
             showWinner(winner, winnerIndex);
             
@@ -536,6 +573,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 updateWheelDisplay();
                 updateStatistics();
                 showAlert(`Đã tải preset: ${presetName}!`, 'success');
+                
+                // Track preset usage
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'wheel_preset_load', {
+                        event_category: 'random_wheel_tools',
+                        event_label: presetName,
+                        preset_type: presetName,
+                        preset_size: presets[presetName].length
+                    });
+                }
             }
         });
     });

@@ -60,8 +60,22 @@ function showAlert(message, type = 'info') {
 function copyToClipboard(text) {
     navigator.clipboard.writeText(text).then(() => {
         showAlert('Đã sao chép vào clipboard!', 'success');
+        // Track copy to clipboard action
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'copy_to_clipboard', {
+                event_category: 'user_interaction',
+                event_label: 'clipboard_copy'
+            });
+        }
     }).catch(() => {
         showAlert('Không thể sao chép. Vui lòng thử lại.', 'danger');
+        // Track copy failure
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'copy_failed', {
+                event_category: 'user_interaction',
+                event_label: 'clipboard_copy_failed'
+            });
+        }
     });
 }
 
@@ -109,6 +123,15 @@ function initializeDarkMode() {
         document.documentElement.setAttribute('data-theme', newTheme);
         localStorage.setItem('theme', newTheme);
         updateDarkModeIcon(newTheme);
+        
+        // Track dark mode toggle
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'theme_change', {
+                event_category: 'user_interface',
+                event_label: newTheme,
+                theme_switched_to: newTheme
+            });
+        }
     });
     
     // Listen for system theme changes

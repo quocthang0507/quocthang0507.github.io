@@ -1,0 +1,5 @@
+Contact: https://github.com/quocthang0507
+Expires: 2025-12-31T23:59:59.000Z
+Preferred-Languages: vi, en
+Canonical: https://quocthang0507.github.io/.well-known/security.txt
+Policy: https://github.com/quocthang0507/quocthang0507.github.io/security/policy

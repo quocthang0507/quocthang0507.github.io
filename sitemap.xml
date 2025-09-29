@@ -1,0 +1,38 @@
+---
+layout: null
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  {% for page in site.pages %}
+    {% unless page.url contains 'assets' or page.url contains '404' %}
+    <url>
+      <loc>{{ site.url }}{{ page.url }}</loc>
+      {% if page.sitemap.lastmod %}
+        <lastmod>{{ page.sitemap.lastmod | date: "%Y-%m-%d" }}</lastmod>
+      {% elsif page.date %}
+        <lastmod>{{ page.date | date: "%Y-%m-%d" }}</lastmod>
+      {% else %}
+        <lastmod>{{ site.time | date: "%Y-%m-%d" }}</lastmod>
+      {% endif %}
+      {% if page.sitemap.changefreq %}
+        <changefreq>{{ page.sitemap.changefreq }}</changefreq>
+      {% else %}
+        <changefreq>monthly</changefreq>
+      {% endif %}
+      {% if page.sitemap.priority %}
+        <priority>{{ page.sitemap.priority }}</priority>
+      {% else %}
+        <priority>0.5</priority>
+      {% endif %}
+      <!-- Alternate language versions -->
+      <xhtml:link rel="alternate" hreflang="vi" href="{{ site.url }}{{ page.url }}" />
+      <xhtml:link rel="alternate" hreflang="en" href="{{ site.url }}{{ page.url }}" />
+      <xhtml:link rel="alternate" hreflang="zh" href="{{ site.url }}{{ page.url }}" />
+      <xhtml:link rel="alternate" hreflang="ko" href="{{ site.url }}{{ page.url }}" />
+      <xhtml:link rel="alternate" hreflang="ja" href="{{ site.url }}{{ page.url }}" />
+      <xhtml:link rel="alternate" hreflang="x-default" href="{{ site.url }}{{ page.url }}" />
+    </url>
+    {% endunless %}
+  {% endfor %}
+</urlset>

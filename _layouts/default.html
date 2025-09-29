@@ -3,8 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Basic SEO Meta Tags -->
     <title>{% if page.title %}{{ page.title }} - {% endif %}{{ site.title }}</title>
     <meta name="description" content="{{ page.description | default: site.description }}">
+    <meta name="keywords" content="{{ page.keywords | default: 'clock, calendar, random number generator, random wheel, tools, utilities, Vietnamese, time, date' }}">
+    <meta name="author" content="{{ site.author | default: 'quocthang0507' }}">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="Vietnamese">
+    <meta name="revisit-after" content="7 days">
+    <meta name="rating" content="general">
+    
+    <!-- Open Graph Meta Tags for Social Media -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="{% if page.title %}{{ page.title }} - {% endif %}{{ site.title }}">
+    <meta property="og:description" content="{{ page.description | default: site.description }}">
+    <meta property="og:url" content="{{ site.url }}{{ page.url }}">
+    <meta property="og:site_name" content="{{ site.title }}">
+    <meta property="og:locale" content="vi_VN">
+    <meta property="og:locale:alternate" content="en_US">
+    <meta property="og:locale:alternate" content="zh_CN">
+    <meta property="og:locale:alternate" content="ko_KR">
+    <meta property="og:locale:alternate" content="ja_JP">
+    <meta property="og:image" content="{{ site.url }}/assets/images/og-image.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="{{ page.title | default: site.title }} - Useful online tools">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{% if page.title %}{{ page.title }} - {% endif %}{{ site.title }}">
+    <meta name="twitter:description" content="{{ page.description | default: site.description }}">
+    <meta name="twitter:image" content="{{ site.url }}/assets/images/twitter-card.jpg">
+    <meta name="twitter:image:alt" content="{{ page.title | default: site.title }} - Useful online tools">
+    <meta name="twitter:site" content="@quocthang0507">
+    <meta name="twitter:creator" content="@quocthang0507">
+    
+    <!-- Additional SEO Meta Tags -->
+    <meta name="theme-color" content="#667eea">
+    <meta name="msapplication-TileColor" content="#667eea">
+    <meta name="msapplication-navbutton-color" content="#667eea">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ site.url }}{{ page.url }}">
+    
+    <!-- Alternate Language Links -->
+    <link rel="alternate" hreflang="vi" href="{{ site.url }}{{ page.url }}">
+    <link rel="alternate" hreflang="en" href="{{ site.url }}{{ page.url }}">
+    <link rel="alternate" hreflang="zh" href="{{ site.url }}{{ page.url }}">
+    <link rel="alternate" hreflang="ko" href="{{ site.url }}{{ page.url }}">
+    <link rel="alternate" hreflang="ja" href="{{ site.url }}{{ page.url }}">
+    <link rel="alternate" hreflang="x-default" href="{{ site.url }}{{ page.url }}">
+    
+    <!-- Favicon and Icons -->
+    <link rel="icon" type="image/x-icon" href="{{ '/favicon.ico' | relative_url }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ '/assets/images/apple-touch-icon.png' | relative_url }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ '/assets/images/favicon-32x32.png' | relative_url }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ '/assets/images/favicon-16x16.png' | relative_url }}">
+    <link rel="manifest" href="{{ '/site.webmanifest' | relative_url }}">
+    
+    <!-- Preconnect to External Domains -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    
+    <!-- Schema.org Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "{{ site.title }}",
+        "description": "{{ site.description }}",
+        "url": "{{ site.url }}",
+        "author": {
+            "@type": "Person",
+            "name": "{{ site.author | default: 'quocthang0507' }}",
+            "url": "{{ site.url }}"
+        },
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": "{{ site.url }}/search?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+        },
+        "sameAs": [
+            "https://github.com/quocthang0507"
+        ],
+        "mainEntity": {
+            "@type": "WebApplication",
+            "name": "{{ page.title | default: site.title }}",
+            "applicationCategory": "UtilitiesApplication",
+            "operatingSystem": "Any",
+            "description": "{{ page.description | default: site.description }}",
+            "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "USD"
+            }
+        }
+    }
+    </script>
+    
+    <!-- Additional Performance Hints -->
+    <link rel="prefetch" href="{{ '/assets/js/main.js' | relative_url }}">
+    <link rel="prefetch" href="{{ '/assets/js/i18n.js' | relative_url }}">
+    
+    <!-- Feed Links -->
+    <link rel="alternate" type="application/rss+xml" title="{{ site.title }} RSS Feed" href="{{ '/feed.xml' | relative_url }}">
+    <link rel="alternate" type="application/atom+xml" title="{{ site.title }} Atom Feed" href="{{ '/atom.xml' | relative_url }}">
+    
+    <!-- Security Headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RN1G3R206V"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        
+        // Google Analytics 4 (GA4)
+        gtag('config', 'G-RN1G3R206V', {
+            page_title: '{% if page.title %}{{ page.title }} - {% endif %}{{ site.title }}',
+            page_location: '{{ site.url }}{{ page.url }}',
+            content_group1: '{{ page.layout | default: "default" }}',
+            custom_map: {
+                'dimension1': 'page_category',
+                'dimension2': 'user_language'
+            }
+        });
+        
+        // Google Tag Manager / Universal Analytics
+        gtag('config', 'GT-NFDPGZZX', {
+            page_title: '{% if page.title %}{{ page.title }} - {% endif %}{{ site.title }}',
+            page_path: '{{ page.url }}'
+        });
+        
+        // Enhanced ecommerce and events tracking
+        gtag('event', 'page_view', {
+            page_title: '{% if page.title %}{{ page.title }} - {% endif %}{{ site.title }}',
+            page_location: '{{ site.url }}{{ page.url }}',
+            content_group1: '{{ page.layout | default: "default" }}'
+        });
+        
+        // Custom event tracking function
+        function trackEvent(action, category, label, value) {
+            gtag('event', action, {
+                event_category: category,
+                event_label: label,
+                value: value
+            });
+        }
+        
+        // Track language changes
+        function trackLanguageChange(language) {
+            gtag('event', 'language_change', {
+                event_category: 'user_interaction',
+                event_label: language,
+                custom_parameter: language
+            });
+        }
+        
+        // Track tool usage
+        function trackToolUsage(tool_name, action) {
+            gtag('event', 'tool_interaction', {
+                event_category: 'tools',
+                event_label: tool_name,
+                tool_action: action
+            });
+        }
+    </script>
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">

@@ -1,0 +1,49 @@
+---
+layout: null
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>{{ site.title | xml_escape }}</title>
+    <description>{{ site.description | xml_escape }}</description>
+    <link>{{ site.url }}{{ site.baseurl }}/</link>
+    <atom:link href="{{ "/feed.xml" | prepend: site.baseurl | prepend: site.url }}" rel="self" type="application/rss+xml"/>
+    <pubDate>{{ site.time | date_to_rfc822 }}</pubDate>
+    <lastBuildDate>{{ site.time | date_to_rfc822 }}</lastBuildDate>
+    <generator>Jekyll v{{ jekyll.version }}</generator>
+    <language>vi-VN</language>
+    <managingEditor>{{ site.author }}@gmail.com ({{ site.author }})</managingEditor>
+    <webMaster>{{ site.author }}@gmail.com ({{ site.author }})</webMaster>
+    <copyright>Copyright {{ site.time | date: "%Y" }} {{ site.author }}</copyright>
+    
+    <item>
+      <title>{{ site.title | xml_escape }} - Online Tools</title>
+      <description>{{ site.description | xml_escape }}</description>
+      <pubDate>{{ site.time | date_to_rfc822 }}</pubDate>
+      <link>{{ site.url }}{{ site.baseurl }}/</link>
+      <guid isPermaLink="true">{{ site.url }}{{ site.baseurl }}/</guid>
+      <category>Tools</category>
+      <category>Utilities</category>
+      <category>Clock</category>
+      <category>Calendar</category>
+    </item>
+    
+    {% for page in site.pages limit:10 %}
+      {% unless page.url contains 'assets' or page.url contains '404' or page.url == '/' %}
+      <item>
+        <title>{{ page.title | xml_escape }}</title>
+        <description>{{ page.description | xml_escape }}</description>
+        <pubDate>{{ page.date | default: site.time | date_to_rfc822 }}</pubDate>
+        <link>{{ page.url | prepend: site.baseurl | prepend: site.url }}</link>
+        <guid isPermaLink="true">{{ page.url | prepend: site.baseurl | prepend: site.url }}</guid>
+        {% if page.keywords %}
+          {% assign keywords = page.keywords | split: ", " %}
+          {% for keyword in keywords %}
+            <category>{{ keyword | xml_escape }}</category>
+          {% endfor %}
+        {% endif %}
+      </item>
+      {% endunless %}
+    {% endfor %}
+  </channel>
+</rss>

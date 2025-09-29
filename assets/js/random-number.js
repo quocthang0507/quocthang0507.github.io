@@ -28,6 +28,16 @@ document.addEventListener('DOMContentLoaded', function() {
         saveToHistory([randomNum], min, max);
         sessionCount++;
         updateStatistics();
+        
+        // Track number generation
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'generate_single_number', {
+                event_category: 'random_number_tools',
+                event_label: 'single_generation',
+                number_range: `${min}-${max}`,
+                generated_number: randomNum
+            });
+        }
     }
     
     // Generate multiple random numbers
@@ -307,6 +317,16 @@ document.addEventListener('DOMContentLoaded', function() {
             const max = this.dataset.max;
             document.getElementById('min-number').value = min;
             document.getElementById('max-number').value = max;
+            
+            // Track preset usage
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'preset_button_click', {
+                    event_category: 'random_number_tools',
+                    event_label: `preset_${min}_${max}`,
+                    preset_range: `${min}-${max}`
+                });
+            }
+            
             generateRandomNumber();
         });
     });

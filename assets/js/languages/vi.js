@@ -3,8 +3,8 @@ const vietnameseTranslations = {
     // Navigation
     "site.title": "Website Portfolio Của Tôi",
     "nav.home": "Trang chủ", 
-    "nav.random_number": "Random Number",
-    "nav.random_wheel": "Random Wheel",
+    "nav.random_number": "Tạo Số Ngẫu Nhiên",
+    "nav.random_wheel": "Vòng Quay May Mắn",
     
     // Homepage
     "home.title": "Trang chủ",
@@ -32,7 +32,7 @@ const vietnameseTranslations = {
     "system_info.week_of_year": "Tuần trong năm:",
     
     // Random Wheel
-    "wheel.title": "Random Wheel",
+    "wheel.title": "Vòng Quay May Mắn",
     "wheel.spin": "Quay bánh xe",
     "wheel.reset": "Reset",
     "wheel.result": "Kết quả:",
@@ -44,7 +44,7 @@ const vietnameseTranslations = {
     "wheel.bulk_names": "Hoặc nhập nhiều tên (mỗi tên một dòng):",
     "wheel.add_all": "Thêm tất cả",
     "wheel.clear_all": "Xóa tất cả",
-    "wheel.presets": "Presets:",
+    "wheel.presets": "Mẫu có sẵn:",
     "wheel.colors": "Màu sắc",
     "wheel.animals": "Động vật", 
     "wheel.fruits": "Trái cây",
@@ -54,21 +54,30 @@ const vietnameseTranslations = {
     "wheel.statistics": "Thống kê",
     "wheel.total_spins": "Tổng lần quay",
     "wheel.current_names": "Số tên hiện tại",
-    "wheel.top_winners": "Top winners:",
+    "wheel.top_winners": "Người thắng nhiều nhất:",
     "wheel.export_data": "Xuất dữ liệu",
     "wheel.no_history": "Chưa có lịch sử",
     "wheel.no_data": "Chưa có dữ liệu",
     "wheel.no_names": "Chưa có tên nào",
+    "wheel.winner": "Người thắng",
+    "wheel.spinning": "Đang quay...",
     
     // Random Number
-    "number.title": "Random Number Generator",
-    "number.min": "Số nhỏ nhất",
-    "number.max": "Số lớn nhất", 
+    "number.title": "Tạo Số Ngẫu Nhiên",
+    "number.min": "Số nhỏ nhất:",
+    "number.max": "Số lớn nhất:", 
+    "number.count": "Số lượng số cần tạo:",
+    "number.unique": "Không trùng lặp",
     "number.generate": "Tạo số ngẫu nhiên",
+    "number.copy": "Sao chép",
     "number.result": "Kết quả:",
     "number.history": "Lịch sử",
     "number.clear_history": "Xóa lịch sử",
     "number.export": "Xuất dữ liệu",
+    "number.statistics": "Thống kê",
+    "number.total_generated": "Tổng số đã tạo",
+    "number.average": "Trung bình",
+    "number.most_common": "Số xuất hiện nhiều nhất",
     
     // Lunar Calendar
     "lunar.details_title": "Chi tiết ngày",

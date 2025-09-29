@@ -50,7 +50,10 @@ class TranslationSystem {
     loadLanguageFile(lang) {
         return new Promise((resolve, reject) => {
             const script = document.createElement('script');
-            script.src = `assets/js/languages/${lang}.js`;
+            // Get the base path from the current i18n.js script tag
+            const currentScript = document.querySelector('script[src*="i18n.js"]');
+            const basePath = currentScript ? currentScript.src.replace(/\/i18n\.js.*$/, '') : '/assets/js';
+            script.src = `${basePath}/languages/${lang}.js`;
             script.onload = resolve;
             script.onerror = reject;
             document.head.appendChild(script);
@@ -95,8 +98,19 @@ class TranslationSystem {
     changeLanguage(newLanguage) {
         if (!this.supportedLanguages[newLanguage]) return;
         
+        const oldLanguage = this.currentLanguage;
         this.currentLanguage = newLanguage;
         localStorage.setItem('preferredLanguage', newLanguage);
+        
+        // Track language change
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'language_change', {
+                event_category: 'user_interaction',
+                event_label: `${oldLanguage}_to_${newLanguage}`,
+                previous_language: oldLanguage,
+                new_language: newLanguage
+            });
+        }
         
         // Update dropdown display
         const dropdownToggle = document.getElementById('languageDropdown');

@@ -1,8 +1,26 @@
 # Jekyll Configuration
-title: "My Portfolio Website"
-description: "A Jekyll website with clock, calendar, random number generator, and random wheel"
+title: "My Website - Useful Online Tools"
+description: "A comprehensive Jekyll website featuring digital clock, lunar calendar, random number generator, and random wheel tools. Multi-language support for Vietnamese, English, Chinese, Korean, and Japanese users."
 url: "https://quocthang0507.github.io"
 baseurl: ""
+author: "quocthang0507"
+
+# SEO Configuration
+logo: "/assets/images/logo.png"
+social:
+  name: "quocthang0507"
+  links:
+    - "https://github.com/quocthang0507"
+    - "https://quocthang0507.github.io"
+
+# Site Settings
+lang: "vi"
+timezone: "Asia/Ho_Chi_Minh"
+encoding: "utf-8"
+
+# Additional SEO
+tagline: "Useful Online Tools and Utilities"
+keywords: "clock, calendar, random number generator, random wheel, tools, utilities, Vietnamese, time, date, lunar calendar, stopwatch, timer"
 
 # Build settings
 markdown: kramdown

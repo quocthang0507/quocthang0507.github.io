@@ -1,8 +1,14 @@
 ---
 layout: default
 title: "Trang chủ"
-description: "Trang chủ với đồng hồ và lịch hiện tại"
+description: "Trang chủ với đồng hồ số, lịch âm dương, đồng hồ bấm giờ và hẹn giờ. Hỗ trợ đa ngôn ngữ và giao diện tối."
+keywords: "đồng hồ số, lịch âm, lịch dương, đồng hồ bấm giờ, hẹn giờ, timer, stopwatch, lunar calendar, multi-language"
 custom_js: ['i18n.js', 'lunar-calendar.js', 'clock.js']
+permalink: /
+sitemap:
+  priority: 1.0
+  changefreq: daily
+  lastmod: 2024-09-29
 ---
 
 <meta name="i18n-title" content="home.title">
@@ -79,7 +85,7 @@ custom_js: ['i18n.js', 'lunar-calendar.js', 'clock.js']
                 <div class="row">
                     <div class="col-md-6">
                         <h6><i class="fas fa-play"></i> <span data-i18n="stopwatch.title">Stopwatch</span></h6>
-                        <div id="stopwatch-display" class="h4 text-primary">00:00:00</div>
+                        <div id="stopwatch-display" class="h4 text-primary">00:00:00.000</div>
                         <div class="btn-group">
                             <button id="start-stopwatch" class="btn btn-success">
                                 <i class="fas fa-play"></i> <span data-i18n="stopwatch.start">Bắt đầu</span>
@@ -94,10 +100,15 @@ custom_js: ['i18n.js', 'lunar-calendar.js', 'clock.js']
                     </div>
                     <div class="col-md-6">
                         <h6><i class="fas fa-hourglass-half"></i> Timer</h6>
-                        <div class="input-group mb-2">
-                            <input type="number" id="timer-minutes" class="form-control" data-i18n="timer.minutes" placeholder="Phút" min="0" max="59" value="5">
-                            <span class="input-group-text">:</span>
-                            <input type="number" id="timer-seconds" class="form-control" data-i18n="timer.seconds" placeholder="Giây" min="0" max="59" value="0">
+                        <div class="row mb-2">
+                            <div class="col">
+                                <label class="form-label small" data-i18n="timer.minutes">Phút</label>
+                                <input type="number" id="timer-minutes" class="form-control" min="0" max="59" value="5">
+                            </div>
+                            <div class="col">
+                                <label class="form-label small" data-i18n="timer.seconds">Giây</label>
+                                <input type="number" id="timer-seconds" class="form-control" min="0" max="59" value="0">
+                            </div>
                         </div>
                         <div id="timer-display" class="h4 text-warning">05:00</div>
                         <div class="btn-group">

@@ -1,7 +1,25 @@
 // Korean Language File
 const koreanTranslations = {
-    // Navigation
-    "site.title": "나의 포트폴리오 웹사이트",
+    //     "wheel.no_names": "아직 이름이 없습니다",
+    "wheel.winner": "당첨자",
+    "wheel.spinning": "돌리는 중...",
+    
+    // Random Number
+    "number.title": "랜덤 숫자 생성기",
+    "number.min": "최솟값:",
+    "number.max": "최댑값:",
+    "number.count": "생성할 숫자 개수:",
+    "number.unique": "중복 없음",
+    "number.generate": "랜덤 숫자 생성",
+    "number.copy": "복사",
+    "number.result": "결과:",
+    "number.history": "기록",
+    "number.clear_history": "기록 지우기",
+    "number.export": "데이터 내보내기",
+    "number.statistics": "통계",
+    "number.total_generated": "총 생성 개수",
+    "number.average": "평균",
+    "number.most_common": "가장 빈번한",    "site.title": "나의 포트폴리오 웹사이트",
     "nav.home": "홈",
     "nav.random_number": "랜덤 숫자",
     "nav.random_wheel": "랜덤 휠",

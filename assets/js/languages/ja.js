@@ -59,16 +59,25 @@ const japaneseTranslations = {
     "wheel.no_history": "まだ履歴がありません",
     "wheel.no_data": "まだデータがありません",
     "wheel.no_names": "まだ名前がありません",
+    "wheel.winner": "勝者",
+    "wheel.spinning": "回転中...",
     
     // Random Number
     "number.title": "ランダム数値ジェネレーター",
-    "number.min": "最小値",
-    "number.max": "最大値",
+    "number.min": "最小値：",
+    "number.max": "最大値：",
+    "number.count": "生成する数値の数：",
+    "number.unique": "重複なし",
     "number.generate": "ランダム数値を生成",
+    "number.copy": "コピー",
     "number.result": "結果：",
     "number.history": "履歴",
     "number.clear_history": "履歴をクリア",
     "number.export": "データをエクスポート",
+    "number.statistics": "統計",
+    "number.total_generated": "総生成数",
+    "number.average": "平均",
+    "number.most_common": "最频出",
     
     // Lunar Calendar
     "lunar.details_title": "日付の詳細",

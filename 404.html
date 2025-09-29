@@ -1,0 +1,68 @@
+---
+layout: default
+title: "Trang không tìm thấy"
+description: "Trang bạn đang tìm kiếm không tồn tại. Quay lại trang chủ để sử dụng các công cụ tiện ích."
+keywords: "404, page not found, trang không tìm thấy"
+permalink: /404.html
+sitemap: false
+---
+
+<div class="container text-center py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-lg">
+                <div class="card-body p-5">
+                    <div class="error-404 mb-4">
+                        <h1 class="display-1 text-primary fw-bold">404</h1>
+                        <h2 class="h4 mb-3" data-i18n="error.title">Trang không tìm thấy</h2>
+                        <p class="text-muted mb-4" data-i18n="error.message">
+                            Xin lỗi, trang bạn đang tìm kiếm không tồn tại hoặc đã bị di chuyển.
+                        </p>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                        <a href="{{ '/' | relative_url }}" class="btn btn-primary btn-lg px-4" data-i18n="error.home">
+                            <i class="fas fa-home me-2"></i>Về trang chủ
+                        </a>
+                        <button onclick="history.back()" class="btn btn-outline-secondary btn-lg px-4" data-i18n="error.back">
+                            <i class="fas fa-arrow-left me-2"></i>Quay lại
+                        </button>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <div class="row text-center g-3">
+                        <div class="col-md-4">
+                            <a href="{{ '/random-number.html' | relative_url }}" class="text-decoration-none">
+                                <i class="fas fa-dice display-6 text-primary mb-2 d-block"></i>
+                                <small data-i18n="nav.random_number">Số ngẫu nhiên</small>
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="{{ '/random-wheel.html' | relative_url }}" class="text-decoration-none">
+                                <i class="fas fa-dharmachakra display-6 text-success mb-2 d-block"></i>
+                                <small data-i18n="nav.random_wheel">Bánh xe may mắn</small>
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="{{ '/' | relative_url }}" class="text-decoration-none">
+                                <i class="fas fa-clock display-6 text-info mb-2 d-block"></i>
+                                <small data-i18n="nav.home">Đồng hồ & Lịch</small>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Track 404 errors for analytics
+if (typeof gtag !== 'undefined') {
+    gtag('event', 'page_not_found', {
+        'page_location': window.location.href,
+        'page_referrer': document.referrer
+    });
+}
+</script>

@@ -59,16 +59,25 @@ const englishTranslations = {
     "wheel.no_history": "No history yet",
     "wheel.no_data": "No data yet",
     "wheel.no_names": "No names yet",
+    "wheel.winner": "Winner",
+    "wheel.spinning": "Spinning...",
     
     // Random Number
     "number.title": "Random Number Generator",
-    "number.min": "Minimum",
-    "number.max": "Maximum",
+    "number.min": "Minimum number:",
+    "number.max": "Maximum number:",
+    "number.count": "Number of numbers to generate:",
+    "number.unique": "No duplicates",
     "number.generate": "Generate Random Number",
+    "number.copy": "Copy",
     "number.result": "Result:",
     "number.history": "History",
     "number.clear_history": "Clear History",
     "number.export": "Export Data",
+    "number.statistics": "Statistics",
+    "number.total_generated": "Total generated",
+    "number.average": "Average",
+    "number.most_common": "Most common",
     
     // Lunar Calendar
     "lunar.details_title": "Date Details",

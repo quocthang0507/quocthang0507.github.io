@@ -35,14 +35,17 @@ document.addEventListener('DOMContentLoaded', function() {
         let timeString;
         if (is24HourFormat) {
             timeString = `${padZero(hours)}:${padZero(minutes)}`;
+            if (showSeconds) {
+                timeString += `:${padZero(seconds)}`;
+            }
         } else {
             const displayHours = hours === 0 ? 12 : hours > 12 ? hours - 12 : hours;
             const ampm = hours >= 12 ? 'PM' : 'AM';
-            timeString = `${padZero(displayHours)}:${padZero(minutes)} ${ampm}`;
-        }
-        
-        if (showSeconds) {
-            timeString += is24HourFormat ? `:${padZero(seconds)}` : `:${padZero(seconds)}`;
+            timeString = `${padZero(displayHours)}:${padZero(minutes)}`;
+            if (showSeconds) {
+                timeString += `:${padZero(seconds)}`;
+            }
+            timeString += ` ${ampm}`;
         }
         
         document.getElementById('digital-clock').textContent = timeString;
@@ -167,9 +170,14 @@ document.addEventListener('DOMContentLoaded', function() {
         const hours = Math.floor(elapsed / 3600000);
         const minutes = Math.floor((elapsed % 3600000) / 60000);
         const seconds = Math.floor((elapsed % 60000) / 1000);
+        const milliseconds = elapsed % 1000;
         
         document.getElementById('stopwatch-display').textContent = 
-            `${padZero(hours)}:${padZero(minutes)}:${padZero(seconds)}`;
+            `${padZero(hours)}:${padZero(minutes)}:${padZero(seconds)}.${padThree(milliseconds)}`;
+    }
+    
+    function padThree(num) {
+        return num.toString().padStart(3, '0');
     }
     
     // Timer functionality
@@ -200,11 +208,27 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('toggle-format').addEventListener('click', function() {
         is24HourFormat = !is24HourFormat;
         updateClock();
+        
+        // Track format change
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'clock_format_change', {
+                event_category: 'clock_tools',
+                event_label: is24HourFormat ? '24_hour' : '12_hour'
+            });
+        }
     });
     
     document.getElementById('toggle-seconds').addEventListener('click', function() {
         showSeconds = !showSeconds;
         updateClock();
+        
+        // Track seconds toggle
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'clock_seconds_toggle', {
+                event_category: 'clock_tools',
+                event_label: showSeconds ? 'show_seconds' : 'hide_seconds'
+            });
+        }
     });
     
     document.getElementById('prev-month').addEventListener('click', function() {
@@ -237,9 +261,17 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!stopwatchRunning) {
             stopwatchStartTime = Date.now();
             stopwatchRunning = true;
-            stopwatchInterval = setInterval(updateStopwatch, 100);
+            stopwatchInterval = setInterval(updateStopwatch, 10); // Update every 10ms for millisecond precision
             this.disabled = true;
             document.getElementById('pause-stopwatch').disabled = false;
+            
+            // Track stopwatch start
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'stopwatch_start', {
+                    event_category: 'clock_tools',
+                    event_label: 'stopwatch_interaction'
+                });
+            }
         }
     });
     
@@ -250,16 +282,35 @@ document.addEventListener('DOMContentLoaded', function() {
             clearInterval(stopwatchInterval);
             document.getElementById('start-stopwatch').disabled = false;
             this.disabled = true;
+            
+            // Track stopwatch pause
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'stopwatch_pause', {
+                    event_category: 'clock_tools',
+                    event_label: 'stopwatch_interaction',
+                    elapsed_time: Math.round(stopwatchElapsed / 1000)
+                });
+            }
         }
     });
     
     document.getElementById('reset-stopwatch').addEventListener('click', function() {
+        const previousElapsed = stopwatchElapsed;
         stopwatchElapsed = 0;
         stopwatchRunning = false;
         clearInterval(stopwatchInterval);
         document.getElementById('start-stopwatch').disabled = false;
         document.getElementById('pause-stopwatch').disabled = true;
         updateStopwatch();
+        
+        // Track stopwatch reset
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'stopwatch_reset', {
+                event_category: 'clock_tools',
+                event_label: 'stopwatch_interaction',
+                final_time: Math.round(previousElapsed / 1000)
+            });
+        }
     });
     
     // Timer event listeners
@@ -275,6 +326,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 timerInterval = setInterval(updateTimer, 1000);
                 this.disabled = true;
                 document.getElementById('pause-timer').disabled = false;
+                
+                // Track timer start
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'timer_start', {
+                        event_category: 'clock_tools',
+                        event_label: 'timer_interaction',
+                        timer_duration: timerDuration
+                    });
+                }
             } else {
                 showAlert('Vui lòng nhập thời gian hợp lệ!', 'danger');
             }
