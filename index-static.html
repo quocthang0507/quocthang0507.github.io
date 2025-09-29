@@ -11,82 +11,17 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
     <!-- Custom CSS -->
+    <link href="assets/css/main.css" rel="stylesheet">
     <style>
-        /* Custom Styles */
+        /* Additional inline styles for immediate testing */
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+            background: var(--bg-color, #ffffff);
+            color: var(--text-color, #1e293b);
         }
-
-        main {
-            flex: 1;
-        }
-
-        .navbar-brand {
-            font-weight: bold;
-        }
-
-        .nav-link.active {
-            font-weight: bold;
-        }
-
-        /* Clock and Calendar Styles */
-        .clock-display {
-            font-size: 3rem;
-            font-weight: bold;
-            color: #007bff;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .date-display {
-            font-size: 1.5rem;
-            color: #6c757d;
-        }
-
-        .calendar-container {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        .calendar-table {
-            width: 100%;
-        }
-
-        .calendar-table th,
-        .calendar-table td {
-            text-align: center;
-            padding: 8px;
-            border: 1px solid #dee2e6;
-        }
-
-        .calendar-table th {
-            background-color: #007bff;
-            color: white;
-        }
-
-        .calendar-table .today {
-            background-color: #007bff;
-            color: white;
-            border-radius: 50%;
-            font-weight: bold;
-        }
-
-        .calendar-table .other-month {
-            color: #ccc;
-        }
-
-        @media (max-width: 768px) {
-            .clock-display {
-                font-size: 2rem;
-            }
-            
-            .date-display {
-                font-size: 1.2rem;
-            }
+        
+        /* Ensure dropdown appears above other elements */
+        .dropdown-menu {
+            z-index: 1070 !important;
         }
     </style>
 </head>
@@ -117,6 +52,25 @@
                         <a class="nav-link" href="random-wheel-static.html">
                             <i class="fas fa-sync-alt"></i> Random Wheel
                         </a>
+                    </li>
+                    <!-- Dark mode toggle -->
+                    <li class="nav-item">
+                        <button class="dark-mode-toggle" id="dark-mode-toggle" title="Toggle Dark Mode">
+                            <i class="fas fa-moon" id="dark-mode-icon"></i>
+                        </button>
+                    </li>
+                    <!-- Language dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-language"></i> 🇻🇳 Tiếng Việt
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="languageDropdown">
+                            <li><a class="dropdown-item active" href="#" data-lang="vi">🇻🇳 Tiếng Việt</a></li>
+                            <li><a class="dropdown-item" href="#" data-lang="en">🇺🇸 English</a></li>
+                            <li><a class="dropdown-item" href="#" data-lang="zh">🇨🇳 中文</a></li>
+                            <li><a class="dropdown-item" href="#" data-lang="ko">🇰🇷 한국어</a></li>
+                            <li><a class="dropdown-item" href="#" data-lang="ja">🇯🇵 日本語</a></li>
+                        </ul>
                     </li>
                 </ul>
             </div>
@@ -280,5 +234,136 @@
     <script src="assets/js/main.js"></script>
     <script src="assets/js/lunar-calendar.js"></script>
     <script src="assets/js/clock.js"></script>
+    
+    <!-- Enhanced dropdown and theme functionality -->
+    <script>
+        // Enhanced dropdown functionality for static version
+        document.addEventListener('DOMContentLoaded', function() {
+            // Language dropdown functionality
+            const languageDropdown = document.querySelector('#languageDropdown');
+            const dropdownMenu = languageDropdown?.nextElementSibling;
+            const dropdownItems = document.querySelectorAll('[data-lang]');
+            
+            // Toggle dropdown
+            if (languageDropdown && dropdownMenu) {
+                languageDropdown.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    // Close other dropdowns first
+                    document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
+                        if (menu !== dropdownMenu) {
+                            menu.classList.remove('show');
+                        }
+                    });
+                    
+                    // Toggle current dropdown
+                    dropdownMenu.classList.toggle('show');
+                    languageDropdown.setAttribute('aria-expanded', 
+                        dropdownMenu.classList.contains('show') ? 'true' : 'false');
+                });
+            }
+            
+            // Language selection
+            dropdownItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const selectedLang = this.dataset.lang;
+                    const flagAndName = this.textContent.trim();
+                    
+                    // Update dropdown button text
+                    if (languageDropdown) {
+                        languageDropdown.innerHTML = `<i class="fas fa-language"></i> ${flagAndName}`;
+                    }
+                    
+                    // Update active state
+                    dropdownItems.forEach(otherItem => {
+                        otherItem.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    
+                    // Close dropdown
+                    if (dropdownMenu) {
+                        dropdownMenu.classList.remove('show');
+                        languageDropdown?.setAttribute('aria-expanded', 'false');
+                    }
+                    
+                    // Here you could add actual language switching logic
+                    console.log('Language changed to:', selectedLang);
+                });
+            });
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.dropdown')) {
+                    document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
+                        menu.classList.remove('show');
+                        const toggle = menu.previousElementSibling;
+                        if (toggle) {
+                            toggle.setAttribute('aria-expanded', 'false');
+                        }
+                    });
+                }
+            });
+            
+            // Enhanced dark mode toggle
+            const darkModeToggle = document.querySelector('#dark-mode-toggle');
+            const darkModeIcon = document.querySelector('#dark-mode-icon');
+            
+            if (darkModeToggle) {
+                // Check for saved theme or system preference
+                const savedTheme = localStorage.getItem('theme');
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const currentTheme = savedTheme || (prefersDark ? 'dark' : 'light');
+                
+                // Apply theme
+                document.documentElement.setAttribute('data-theme', currentTheme);
+                updateDarkModeIcon(currentTheme);
+                
+                darkModeToggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const current = document.documentElement.getAttribute('data-theme') || 'light';
+                    const newTheme = current === 'dark' ? 'light' : 'dark';
+                    
+                    document.documentElement.setAttribute('data-theme', newTheme);
+                    localStorage.setItem('theme', newTheme);
+                    updateDarkModeIcon(newTheme);
+                });
+            }
+            
+            function updateDarkModeIcon(theme) {
+                if (!darkModeIcon || !darkModeToggle) return;
+                
+                if (theme === 'dark') {
+                    darkModeIcon.className = 'fas fa-sun';
+                    darkModeToggle.title = 'Switch to Light Mode';
+                } else {
+                    darkModeIcon.className = 'fas fa-moon';
+                    darkModeToggle.title = 'Switch to Dark Mode';
+                }
+            }
+            
+            // Keyboard navigation for dropdown
+            if (languageDropdown) {
+                languageDropdown.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        this.click();
+                    }
+                });
+            }
+            
+            dropdownItems.forEach(item => {
+                item.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        this.click();
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
