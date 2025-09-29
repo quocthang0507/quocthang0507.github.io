@@ -129,9 +129,23 @@ const chineseTranslations = {
     "consent.decline": "拒绝",
     "consent.learn_more": "了解更多",
     "consent.manage": "管理 Cookie",
+    "consent.toast_enabled": "分析 Cookie 已启用",
+    "consent.toast_disabled": "分析 Cookie 已停用",
+    "consent.toast_updated": "Cookie 偏好已更新",
     
     // Footer
     "footer.privacy": "隐私政策",
+    "footer.theme_badge_default": "默认主题",
+    "footer.theme_badge_custom": "增强主题",
+    "footer.toggle_theme": "切换网站主题",
+
+    // Theme / UI
+    "ui.settings": "设置",
+    "ui.open_settings": "打开设置",
+    "ui.close": "关闭",
+    "ui.toggle_custom_theme": "切换增强主题",
+    "ui.custom_theme_on": "增强主题：开启",
+    "ui.custom_theme_off": "增强主题：关闭",
     
     // Error pages
     "error.title": "找不到页面",

@@ -129,9 +129,23 @@ const japaneseTranslations = {
     "consent.decline": "拒否する",
     "consent.learn_more": "詳細を見る",
     "consent.manage": "クッキー管理",
+    "consent.toast_enabled": "分析用クッキーを有効化しました",
+    "consent.toast_disabled": "分析用クッキーを無効化しました",
+    "consent.toast_updated": "クッキー設定を更新しました",
     
     // Footer
     "footer.privacy": "プライバシーポリシー",
+    "footer.theme_badge_default": "デフォルトテーマ",
+    "footer.theme_badge_custom": "拡張テーマ",
+    "footer.toggle_theme": "サイトテーマを切替",
+
+    // Theme / UI
+    "ui.settings": "設定",
+    "ui.open_settings": "設定を開く",
+    "ui.close": "閉じる",
+    "ui.toggle_custom_theme": "拡張テーマ切替",
+    "ui.custom_theme_on": "拡張テーマ：オン",
+    "ui.custom_theme_off": "拡張テーマ：オフ",
     
     // Error pages
     "error.title": "ページが見つかりません",

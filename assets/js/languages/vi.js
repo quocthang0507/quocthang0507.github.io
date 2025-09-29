@@ -129,9 +129,23 @@ const vietnameseTranslations = {
     "consent.decline": "Từ chối",
     "consent.learn_more": "Tìm hiểu thêm",
     "consent.manage": "Quản lý cookie",
+    "consent.toast_enabled": "Đã bật cookie phân tích",
+    "consent.toast_disabled": "Đã tắt cookie phân tích",
+    "consent.toast_updated": "Đã cập nhật tùy chọn cookie",
     
     // Footer
     "footer.privacy": "Chính sách bảo mật",
+    "footer.theme_badge_default": "Giao diện mặc định",
+    "footer.theme_badge_custom": "Giao diện nâng cao",
+    "footer.toggle_theme": "Chuyển đổi giao diện",
+
+    // Theme / UI
+    "ui.settings": "Cài đặt",
+    "ui.open_settings": "Mở cài đặt",
+    "ui.close": "Đóng",
+    "ui.toggle_custom_theme": "Bật/tắt giao diện nâng cao",
+    "ui.custom_theme_on": "Giao diện nâng cao: BẬT",
+    "ui.custom_theme_off": "Giao diện nâng cao: TẮT",
     
     // Error pages
     "error.title": "Trang không tìm thấy",

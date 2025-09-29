@@ -138,9 +138,23 @@ const koreanTranslations = {
     "consent.decline": "거부",
     "consent.learn_more": "자세히 알아보기",
     "consent.manage": "쿠키 관리",
+    "consent.toast_enabled": "분석 쿠키 활성화됨",
+    "consent.toast_disabled": "분석 쿠키 비활성화됨",
+    "consent.toast_updated": "쿠키 설정이 업데이트되었습니다",
     
     // Footer
     "footer.privacy": "개인정보 보호정책",
+    "footer.theme_badge_default": "기본 테마",
+    "footer.theme_badge_custom": "향상된 테마",
+    "footer.toggle_theme": "사이트 테마 전환",
+
+    // Theme / UI
+    "ui.settings": "설정",
+    "ui.open_settings": "설정 열기",
+    "ui.close": "닫기",
+    "ui.toggle_custom_theme": "향상된 테마 전환",
+    "ui.custom_theme_on": "향상된 테마 켜짐",
+    "ui.custom_theme_off": "향상된 테마 꺼짐",
     
     // Error pages
     "error.title": "페이지를 찾을 수 없습니다",
