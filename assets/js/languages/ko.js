@@ -129,5 +129,16 @@ const koreanTranslations = {
     "common.error": "오류",
     "common.success": "성공",
     "common.warning": "경고",
-    "common.close": "닫기"
+    "common.close": "닫기",
+    
+    // Cookie Consent
+    "consent.title": "쿠키 및 데이터 알림",
+    "consent.message": "이 웹사이트는 사용자 경험 개선을 위해 Google Analytics를 사용합니다. 분석 및 서비스 개선을 위해 익명 데이터를 Google과 공유할 수 있습니다.",
+    "consent.accept": "동의",
+    "consent.decline": "거부",
+    "consent.learn_more": "자세히 알아보기",
+    "consent.manage": "쿠키 관리",
+    
+    // Footer
+    "footer.privacy": "개인정보 보호정책"
 };

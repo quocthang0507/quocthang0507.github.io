@@ -120,5 +120,16 @@ const englishTranslations = {
     "common.error": "Error",
     "common.success": "Success",
     "common.warning": "Warning",
-    "common.close": "Close"
+    "common.close": "Close",
+    
+    // Cookie Consent
+    "consent.title": "Cookie & Data Notice",
+    "consent.message": "This website uses Google Analytics to improve user experience. We may share anonymous data with Google for analysis and service improvement.",
+    "consent.accept": "Accept",
+    "consent.decline": "Decline",
+    "consent.learn_more": "Learn more",
+    "consent.manage": "Manage cookies",
+    
+    // Footer
+    "footer.privacy": "Privacy Policy"
 };

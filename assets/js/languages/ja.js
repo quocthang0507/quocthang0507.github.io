@@ -120,5 +120,16 @@ const japaneseTranslations = {
     "common.error": "エラー",
     "common.success": "成功",
     "common.warning": "警告",
-    "common.close": "閉じる"
+    "common.close": "閉じる",
+    
+    // Cookie Consent
+    "consent.title": "クッキーとデータに関する通知",
+    "consent.message": "このウェブサイトはユーザー体験の向上のためにGoogle Analyticsを使用しています。分析とサービス改善のため、匿名データをGoogleと共有する場合があります。",
+    "consent.accept": "同意する",
+    "consent.decline": "拒否する",
+    "consent.learn_more": "詳細を見る",
+    "consent.manage": "クッキー管理",
+    
+    // Footer
+    "footer.privacy": "プライバシーポリシー"
 };

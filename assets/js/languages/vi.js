@@ -120,5 +120,16 @@ const vietnameseTranslations = {
     "common.error": "Lỗi",
     "common.success": "Thành công",
     "common.warning": "Cảnh báo",
-    "common.close": "Đóng"
+    "common.close": "Đóng",
+    
+    // Cookie Consent
+    "consent.title": "Thông báo về Cookie & Dữ liệu",
+    "consent.message": "Website này sử dụng Google Analytics để cải thiện trải nghiệm người dùng. Chúng tôi có thể chia sẻ dữ liệu ẩn danh với Google để phân tích và cải thiện dịch vụ.",
+    "consent.accept": "Đồng ý",
+    "consent.decline": "Từ chối",
+    "consent.learn_more": "Tìm hiểu thêm",
+    "consent.manage": "Quản lý cookie",
+    
+    // Footer
+    "footer.privacy": "Chính sách bảo mật"
 };

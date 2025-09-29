@@ -78,10 +78,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     const wheelColors = [
-        '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', 
-        '#ffeaa7', '#dda0dd', '#ff9ff3', '#54a0ff',
-        '#5f27cd', '#00d2d3', '#ff9f43', '#ee5a24',
-        '#0abde3', '#10ac84', '#f368e0', '#ff3838'
+        '#e74c3c', '#3498db', '#2ecc71', '#f39c12', 
+        '#9b59b6', '#1abc9c', '#e67e22', '#34495e',
+        '#f1c40f', '#e91e63', '#673ab7', '#00bcd4',
+        '#4caf50', '#ff5722', '#795548', '#607d8b'
     ];
     
     // Initialize
@@ -191,9 +191,9 @@ document.addEventListener('DOMContentLoaded', function() {
             const endRad = (endAngle - 90) * Math.PI / 180;
             
             // Calculate path coordinates for the slice
-            const radius = 225; // Half of wheel size (450px / 2)
-            const centerX = 225;
-            const centerY = 225;
+            const radius = 200; // Half of wheel size (400px / 2)
+            const centerX = 200;
+            const centerY = 200;
             
             const x1 = centerX + radius * Math.cos(startRad);
             const y1 = centerY + radius * Math.sin(startRad);
@@ -214,7 +214,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Calculate text position and rotation for pointing toward center
             const textAngle = (startAngle + endAngle) / 2;
             const textRad = (textAngle - 90) * Math.PI / 180;
-            const textRadius = radius * 0.7; // 70% of radius
+            const textRadius = radius * 0.65; // 65% of radius for better positioning
             const textX = centerX + textRadius * Math.cos(textRad);
             const textY = centerY + textRadius * Math.sin(textRad);
             
@@ -236,21 +236,40 @@ document.addEventListener('DOMContentLoaded', function() {
                 finalRotation = radialAngle + 180;
             }
             
-            // Adjust font size based on segment count and name length
-            let fontSize = names.length > 12 ? '10px' : names.length > 8 ? '12px' : '14px';
-            if (name.length > 10) fontSize = names.length > 8 ? '8px' : '10px';
+            // Improved font size calculation for better readability
+            let fontSize = '12px';
+            if (names.length > 16) {
+                fontSize = '8px';
+            } else if (names.length > 12) {
+                fontSize = '10px';
+            } else if (names.length > 8) {
+                fontSize = '11px';
+            }
+            
+            // Adjust for long names
+            if (name.length > 12) {
+                fontSize = names.length > 8 ? '7px' : '9px';
+            } else if (name.length > 8) {
+                fontSize = names.length > 12 ? '8px' : '10px';
+            }
             
             return `
-                <g>
-                    <path d="${pathData}" fill="${color}" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+                <g class="wheel-section">
+                    <path d="${pathData}" 
+                          fill="${color}" 
+                          stroke="rgba(255,255,255,0.5)" 
+                          stroke-width="2"
+                          style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));"
+                          />
                     <text x="${textX}" y="${textY}" 
                           text-anchor="middle" 
                           dominant-baseline="central"
                           transform="rotate(${finalRotation}, ${textX}, ${textY})"
                           fill="white" 
-                          font-weight="bold" 
+                          font-weight="600" 
                           font-size="${fontSize}"
-                          style="text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">
+                          font-family="'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
+                          style="text-shadow: 0 1px 3px rgba(0,0,0,0.8); letter-spacing: 0.5px;">
                         ${name}
                     </text>
                 </g>
@@ -258,7 +277,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }).join('');
         
         wheelNames.innerHTML = `
-            <svg width="100%" height="100%" viewBox="0 0 450 450" style="position: absolute; top: 0; left: 0;">
+            <svg width="100%" height="100%" viewBox="0 0 400 400" style="position: absolute; top: 0; left: 0;">
                 ${svgSegments}
             </svg>
         `;

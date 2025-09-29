@@ -120,5 +120,16 @@ const chineseTranslations = {
     "common.error": "错误",
     "common.success": "成功",
     "common.warning": "警告",
-    "common.close": "关闭"
+    "common.close": "关闭",
+    
+    // Cookie Consent
+    "consent.title": "Cookie 和数据通知",
+    "consent.message": "本网站使用 Google Analytics 来改善用户体验。我们可能与 Google 分享匿名数据以进行分析和服务改进。",
+    "consent.accept": "接受",
+    "consent.decline": "拒绝",
+    "consent.learn_more": "了解更多",
+    "consent.manage": "管理 Cookie",
+    
+    // Footer
+    "footer.privacy": "隐私政策"
 };
