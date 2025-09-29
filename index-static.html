@@ -234,5 +234,136 @@
     <script src="assets/js/main.js"></script>
     <script src="assets/js/lunar-calendar.js"></script>
     <script src="assets/js/clock.js"></script>
+    
+    <!-- Enhanced dropdown and theme functionality -->
+    <script>
+        // Enhanced dropdown functionality for static version
+        document.addEventListener('DOMContentLoaded', function() {
+            // Language dropdown functionality
+            const languageDropdown = document.querySelector('#languageDropdown');
+            const dropdownMenu = languageDropdown?.nextElementSibling;
+            const dropdownItems = document.querySelectorAll('[data-lang]');
+            
+            // Toggle dropdown
+            if (languageDropdown && dropdownMenu) {
+                languageDropdown.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    // Close other dropdowns first
+                    document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
+                        if (menu !== dropdownMenu) {
+                            menu.classList.remove('show');
+                        }
+                    });
+                    
+                    // Toggle current dropdown
+                    dropdownMenu.classList.toggle('show');
+                    languageDropdown.setAttribute('aria-expanded', 
+                        dropdownMenu.classList.contains('show') ? 'true' : 'false');
+                });
+            }
+            
+            // Language selection
+            dropdownItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const selectedLang = this.dataset.lang;
+                    const flagAndName = this.textContent.trim();
+                    
+                    // Update dropdown button text
+                    if (languageDropdown) {
+                        languageDropdown.innerHTML = `<i class="fas fa-language"></i> ${flagAndName}`;
+                    }
+                    
+                    // Update active state
+                    dropdownItems.forEach(otherItem => {
+                        otherItem.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    
+                    // Close dropdown
+                    if (dropdownMenu) {
+                        dropdownMenu.classList.remove('show');
+                        languageDropdown?.setAttribute('aria-expanded', 'false');
+                    }
+                    
+                    // Here you could add actual language switching logic
+                    console.log('Language changed to:', selectedLang);
+                });
+            });
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.dropdown')) {
+                    document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
+                        menu.classList.remove('show');
+                        const toggle = menu.previousElementSibling;
+                        if (toggle) {
+                            toggle.setAttribute('aria-expanded', 'false');
+                        }
+                    });
+                }
+            });
+            
+            // Enhanced dark mode toggle
+            const darkModeToggle = document.querySelector('#dark-mode-toggle');
+            const darkModeIcon = document.querySelector('#dark-mode-icon');
+            
+            if (darkModeToggle) {
+                // Check for saved theme or system preference
+                const savedTheme = localStorage.getItem('theme');
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const currentTheme = savedTheme || (prefersDark ? 'dark' : 'light');
+                
+                // Apply theme
+                document.documentElement.setAttribute('data-theme', currentTheme);
+                updateDarkModeIcon(currentTheme);
+                
+                darkModeToggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const current = document.documentElement.getAttribute('data-theme') || 'light';
+                    const newTheme = current === 'dark' ? 'light' : 'dark';
+                    
+                    document.documentElement.setAttribute('data-theme', newTheme);
+                    localStorage.setItem('theme', newTheme);
+                    updateDarkModeIcon(newTheme);
+                });
+            }
+            
+            function updateDarkModeIcon(theme) {
+                if (!darkModeIcon || !darkModeToggle) return;
+                
+                if (theme === 'dark') {
+                    darkModeIcon.className = 'fas fa-sun';
+                    darkModeToggle.title = 'Switch to Light Mode';
+                } else {
+                    darkModeIcon.className = 'fas fa-moon';
+                    darkModeToggle.title = 'Switch to Dark Mode';
+                }
+            }
+            
+            // Keyboard navigation for dropdown
+            if (languageDropdown) {
+                languageDropdown.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        this.click();
+                    }
+                });
+            }
+            
+            dropdownItems.forEach(item => {
+                item.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        this.click();
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>

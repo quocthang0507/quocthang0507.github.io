@@ -40,13 +40,48 @@
     transform: rotate(180deg);
 }
 
-/* Z-index management for Bootstrap components */
+/* Z-index management for Bootstrap components - Enhanced */
+.navbar {
+    z-index: 1030 !important;
+}
+
+.navbar .dropdown-menu {
+    z-index: 1070 !important;
+    position: absolute !important;
+}
+
 .modal {
-    z-index: 1060;
+    z-index: 1080;
 }
 
 .modal-backdrop {
-    z-index: 1055;
+    z-index: 1075;
+}
+
+.tooltip {
+    z-index: 1090;
+}
+
+.popover {
+    z-index: 1085;
+}
+
+/* Fix for language dropdown specifically */
+.nav-item.dropdown .dropdown-menu {
+    z-index: 1070 !important;
+    position: absolute !important;
+    top: 100% !important;
+    left: 0 !important;
+    transform: translateY(0) !important;
+}
+
+/* Settings panel and FAB z-index */
+.settings-fab {
+    z-index: 1040 !important;
+}
+
+.quick-settings-panel {
+    z-index: 1050 !important;
 }
 
 .toast {
