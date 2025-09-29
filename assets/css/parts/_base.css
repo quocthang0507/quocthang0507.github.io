@@ -1,0 +1,6 @@
+/* Base / layout */
+body { font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; min-height:100vh; display:flex; flex-direction:column; background:#f5f7fa; color:var(--text-color); line-height:1.6; }
+main { flex:1; }
+.card { border:1px solid var(--border-color); border-radius:12px; box-shadow:var(--shadow-light); transition:.3s; overflow:hidden; background:var(--card-bg); color:var(--text-color); }
+.card:hover { box-shadow:var(--shadow-medium); transform:translateY(-2px); }
+body.custom-theme .card-header { background:#f1f3f5; color:var(--text-color); }

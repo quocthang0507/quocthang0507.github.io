@@ -53,3 +53,10 @@ defaults:
       type: "pages"
     values:
       layout: "default"
+  
+# Sass / SCSS build configuration
+sass:
+  sass_dir: _sass
+  style: expanded # keep readable output so browser devtools + sourcemaps are clearer
+  # sourcemap setting (supported in newer jekyll-sass-converter versions). If ignored, no harm.
+  sourcemap: always

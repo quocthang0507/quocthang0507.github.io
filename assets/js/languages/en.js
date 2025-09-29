@@ -129,9 +129,23 @@ const englishTranslations = {
     "consent.decline": "Decline",
     "consent.learn_more": "Learn more",
     "consent.manage": "Manage cookies",
+    "consent.toast_enabled": "Analytics cookies enabled",
+    "consent.toast_disabled": "Analytics cookies disabled",
+    "consent.toast_updated": "Cookie preference updated",
     
     // Footer
     "footer.privacy": "Privacy Policy",
+    "footer.theme_badge_default": "Default Theme",
+    "footer.theme_badge_custom": "Enhanced Theme",
+    "footer.toggle_theme": "Toggle site theme",
+
+    // Theme / UI
+    "ui.settings": "Settings",
+    "ui.open_settings": "Open settings",
+    "ui.close": "Close",
+    "ui.toggle_custom_theme": "Toggle enhanced theme",
+    "ui.custom_theme_on": "Enhanced theme ON",
+    "ui.custom_theme_off": "Enhanced theme OFF",
     
     // Error pages
     "error.title": "Page Not Found",

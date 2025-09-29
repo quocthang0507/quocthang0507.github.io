@@ -1,0 +1,9 @@
+// Dark theme (from parts/_dark.css)
+[data-theme="dark"] { --bg-color:#1a1a1a; --text-color:#e9ecef; --text-secondary:#adb5bd; --text-muted:#6c757d; --border-color:#495057; --card-bg:#212529; --input-bg:#343a40; --navbar-bg:rgba(33,37,41,.95); }
+[data-theme="dark"] body { background:#1f1f1f; color:var(--text-color); }
+[data-theme="dark"] .card { background:var(--card-bg); border:1px solid var(--border-color); color:var(--text-color); box-shadow:0 4px 15px rgba(0,0,0,.3); }
+[data-theme="dark"] .clock-display { color:#667eea; text-shadow:0 2px 8px rgba(102,126,234,.3); }
+[data-theme="dark"] .navbar { background:var(--navbar-bg) !important; backdrop-filter:blur(20px); }
+[data-theme="dark"] .dropdown-menu { background:rgba(33,37,41,.95); border:1px solid var(--border-color); box-shadow:0 8px 25px rgba(0,0,0,.4); }
+[data-theme="dark"] .dropdown-item:hover,[data-theme="dark"] .dropdown-item:focus { background:rgba(var(--primary-rgb),.2); color:#fff; }
+[data-theme="dark"] .dropdown-item.active { background:var(--primary-color); color:#fff; }

@@ -239,24 +239,44 @@ class CookieConsent {
     }
 
     showStatusToast(state) {
+        // Create / reuse wrapper live region for accessibility
+        let live = document.getElementById('global-live-region');
+        if (!live) {
+            live = document.createElement('div');
+            live.id = 'global-live-region';
+            live.setAttribute('aria-live', 'polite');
+            live.setAttribute('aria-atomic', 'true');
+            live.className = 'visually-hidden';
+            document.body.appendChild(live);
+        }
+
         // Avoid multiple toasts stacking
         let toast = document.getElementById('cookie-status');
         if (!toast) {
             toast = document.createElement('div');
             toast.id = 'cookie-status';
-            toast.className = 'cookie-status';
+            toast.className = 'cookie-status fade';
+            toast.setAttribute('role', 'status');
+            toast.setAttribute('aria-live', 'polite');
             document.body.appendChild(toast);
         }
 
         const accepted = state === 'accepted';
         toast.classList.toggle('declined', !accepted);
-        toast.textContent = accepted ? 'Cookies enabled' : 'Cookies disabled';
-        toast.classList.add('show');
+        const messageKey = accepted ? 'consent.toast_enabled' : 'consent.toast_disabled';
+        const message = (typeof i18n !== 'undefined' && i18n.t) ? i18n.t(messageKey) : (accepted ? 'Analytics cookies enabled' : 'Analytics cookies disabled');
+        toast.textContent = message;
+        live.textContent = message; // announce
+
+        // Trigger fade-in
+        requestAnimationFrame(() => {
+            toast.classList.add('show');
+        });
 
         clearTimeout(this._toastTimer);
         this._toastTimer = setTimeout(() => {
             toast.classList.remove('show');
-        }, 3500);
+        }, 3200);
     }
 
     showPrivacyInfo() {

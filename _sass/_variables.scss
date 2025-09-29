@@ -1,0 +1,33 @@
+// Variables and root theme tokens (migrated from parts/_variables.css)
+:root {
+  --primary-color: #667eea;
+  --primary-color-hover: #5a6fd8;
+  --success-color: #28a745;
+  --success-color-hover: #218838;
+  --info-color: #17a2b8;
+  --info-color-hover: #138496;
+  --warning-color: #ffc107;
+  --warning-color-hover: #e0a800;
+  --danger-color: #dc3545;
+  --danger-color-hover: #c82333;
+  --secondary-color: #6c757d;
+  --secondary-color-hover: #5a6268;
+  --primary-rgb: 102,126,234;
+  --primary-gradient: var(--primary-color);
+  --success-gradient: var(--success-color);
+  --info-gradient: var(--info-color);
+  --warning-gradient: var(--warning-color);
+  --danger-gradient: var(--danger-color);
+  --secondary-gradient: var(--secondary-color);
+  --bg-color:#ffffff;
+  --text-color:#212529;
+  --text-secondary:#6c757d;
+  --text-muted:#adb5bd;
+  --border-color:#dee2e6;
+  --card-bg:#ffffff;
+  --input-bg:#ffffff;
+  --navbar-bg:rgba(102,126,234,0.95);
+  --shadow-light:0 4px 15px rgba(0,0,0,0.08);
+  --shadow-medium:0 8px 25px rgba(0,0,0,0.12);
+  --shadow-heavy:0 15px 35px rgba(0,0,0,0.15);
+}

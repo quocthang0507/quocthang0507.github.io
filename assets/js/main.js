@@ -2,6 +2,9 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize dark mode
     initializeDarkMode();
+    initializeCustomThemeToggle();
+    injectSettingsFloatingButton();
+    injectFooterThemeBadge();
     
     // Initialize tooltips
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
@@ -156,3 +159,93 @@ function updateDarkModeIcon(theme) {
         darkModeIcon.parentElement.title = 'Switch to Dark Mode';
     }
 }
+
+// Custom Theme Toggle (switch body.custom-theme class)
+function initializeCustomThemeToggle() {
+    const stored = localStorage.getItem('customTheme');
+    if (stored === 'on') {
+        document.body.classList.add('custom-theme');
+    }
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('[data-action="toggle-custom-theme"]');
+        if (btn) {
+            const enabled = document.body.classList.toggle('custom-theme');
+            localStorage.setItem('customTheme', enabled ? 'on' : 'off');
+            updateThemeBadge();
+            announceThemeChange(enabled);
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'custom_theme_toggle', { event_category: 'user_interface', enabled });
+            }
+        }
+    });
+}
+
+function announceThemeChange(enabled) {
+    let live = document.getElementById('global-live-region');
+    if (!live) { return; }
+    const key = enabled ? 'ui.custom_theme_on' : 'ui.custom_theme_off';
+    const msg = (window.translationSystem && window.translationSystem.t) ? window.translationSystem.t(key) : (enabled ? 'Enhanced theme ON' : 'Enhanced theme OFF');
+    live.textContent = msg;
+}
+
+function injectSettingsFloatingButton() {
+    if (document.getElementById('settings-fab')) return;
+    const btn = document.createElement('button');
+    btn.id = 'settings-fab';
+    btn.className = 'settings-fab';
+    btn.type = 'button';
+    btn.setAttribute('aria-label', 'Settings');
+    btn.innerHTML = '<i class="fas fa-gear"></i>';
+    btn.addEventListener('click', openQuickSettingsPanel);
+    document.body.appendChild(btn);
+}
+
+function openQuickSettingsPanel() {
+    let panel = document.getElementById('quick-settings-panel');
+    if (panel) { panel.classList.toggle('open'); return; }
+    panel = document.createElement('div');
+    panel.id = 'quick-settings-panel';
+    panel.className = 'quick-settings-panel';
+    panel.innerHTML = `
+      <div class="qs-header">
+        <strong>${window.t ? window.t('ui.settings') : 'Settings'}</strong>
+        <button type="button" class="btn-close" aria-label="Close" data-action="close-qsp"></button>
+      </div>
+      <div class="qs-body">
+        <button class="btn btn-sm btn-outline-primary w-100 mb-2" data-action="toggle-custom-theme">${window.t ? window.t('ui.toggle_custom_theme') : 'Toggle enhanced theme'}</button>
+        <button class="btn btn-sm btn-outline-secondary w-100" data-action="close-qsp">${window.t ? window.t('ui.close') : 'Close'}</button>
+      </div>`;
+    panel.addEventListener('click', (e) => {
+        if (e.target.matches('[data-action="close-qsp"]')) {
+            panel.classList.remove('open');
+        }
+    });
+    document.body.appendChild(panel);
+    requestAnimationFrame(()=>panel.classList.add('open'));
+}
+
+function injectFooterThemeBadge() {
+    if (document.getElementById('theme-badge-toggle')) return;
+    const footer = document.querySelector('footer .row');
+    if (!footer) return;
+    const badgeWrapper = document.createElement('div');
+    badgeWrapper.className = 'col-12 mt-3 text-center';
+    badgeWrapper.innerHTML = `<span id="theme-badge-toggle" class="theme-badge" role="button" tabindex="0" data-action="toggle-custom-theme"></span>`;
+    footer.appendChild(badgeWrapper);
+    updateThemeBadge();
+    badgeWrapper.addEventListener('keydown', (e)=>{
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); badgeWrapper.querySelector('#theme-badge-toggle').click(); }
+    });
+}
+
+function updateThemeBadge() {
+    const badge = document.getElementById('theme-badge-toggle');
+    if (!badge) return;
+    const enabled = document.body.classList.contains('custom-theme');
+    const labelKey = enabled ? 'footer.theme_badge_custom' : 'footer.theme_badge_default';
+    badge.textContent = (window.translationSystem && window.translationSystem.t) ? window.translationSystem.t(labelKey) : (enabled ? 'Enhanced Theme' : 'Default Theme');
+    badge.setAttribute('aria-pressed', enabled ? 'true' : 'false');
+}
+
+// Update translations when language changes
+window.addEventListener('languageChanged', updateThemeBadge);

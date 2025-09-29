@@ -1,0 +1,68 @@
+// UI enhancements: settings floating button, quick settings panel, theme badge, toast fade transitions
+
+.settings-fab {
+  position: fixed;
+  bottom: 1.25rem;
+  right: 1.25rem;
+  width: 48px; height:48px;
+  border-radius:50%;
+  background: var(--primary-color);
+  color:#fff;
+  display:flex; align-items:center; justify-content:center;
+  border:none;
+  box-shadow: var(--shadow-medium);
+  cursor:pointer;
+  z-index:1085;
+  transition:background .3s, transform .2s;
+}
+.settings-fab:hover { background: var(--primary-color-hover); transform: translateY(-3px); }
+.settings-fab:focus { outline:2px solid rgba(var(--primary-rgb), .6); outline-offset:2px; }
+
+.quick-settings-panel {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  width: 240px;
+  background: var(--card-bg);
+  border:1px solid var(--border-color);
+  border-radius:12px;
+  box-shadow: var(--shadow-heavy);
+  transform: translateY(10px) scale(.95);
+  opacity:0;
+  pointer-events:none;
+  transition: opacity .25s ease, transform .25s ease;
+  z-index:1086;
+  backdrop-filter: blur(8px);
+}
+.quick-settings-panel.open { opacity:1; transform: translateY(0) scale(1); pointer-events:auto; }
+.quick-settings-panel .qs-header { display:flex; justify-content:space-between; align-items:center; padding:.5rem .75rem; border-bottom:1px solid var(--border-color); }
+.quick-settings-panel .qs-body { padding:.75rem; }
+
+.theme-badge {
+  display:inline-block;
+  padding:.35rem .75rem;
+  border-radius: 999px;
+  background: rgba(var(--primary-rgb), .1);
+  color: var(--primary-color);
+  font-size:.75rem;
+  font-weight:600;
+  letter-spacing:.5px;
+  cursor:pointer;
+  user-select:none;
+  transition: background .3s, color .3s;
+}
+.theme-badge[aria-pressed="true"] { background: var(--primary-color); color:#fff; }
+.theme-badge:focus { outline:2px solid rgba(var(--primary-rgb), .5); outline-offset:2px; }
+.theme-badge:hover { background: var(--primary-color); color:#fff; }
+
+/* Toast fade animation (reuse existing cookie-status class) */
+.cookie-status { transition: opacity .4s ease, transform .4s ease; opacity:0; transform: translateY(10px); }
+.cookie-status.show { opacity:1; transform: translateY(0); }
+.cookie-status.fade:not(.show) { opacity:0; }
+
+/* Dark mode variants */
+[data-theme="dark"] .quick-settings-panel { background: var(--card-bg); }
+[data-theme="dark"] .settings-fab { background: var(--primary-color); }
+[data-theme="dark"] .settings-fab:hover { background: var(--primary-color-hover); }
+[data-theme="dark"] .theme-badge { background: rgba(var(--primary-rgb), .15); color: var(--primary-color); }
+[data-theme="dark"] .theme-badge[aria-pressed="true"] { background: var(--primary-color); color:#fff; }

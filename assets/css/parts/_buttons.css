@@ -1,0 +1,15 @@
+/* Buttons (scoped enhancements) */
+body.custom-theme .btn { border-radius:10px; font-weight:600; letter-spacing:.5px; transition:.3s; box-shadow:var(--shadow-light); }
+body.custom-theme .btn:hover { transform:translateY(-2px); box-shadow:var(--shadow-medium); }
+body.custom-theme .btn-primary { background:var(--primary-color); border-color:var(--primary-color); color:#fff; }
+body.custom-theme .btn-primary:hover { background:var(--primary-color-hover); border-color:var(--primary-color-hover); }
+body.custom-theme .btn-success { background:var(--success-color); border-color:var(--success-color); }
+body.custom-theme .btn-success:hover { background:var(--success-color-hover); border-color:var(--success-color-hover); }
+body.custom-theme .btn-info { background:var(--info-color); border-color:var(--info-color); }
+body.custom-theme .btn-info:hover { background:var(--info-color-hover); border-color:var(--info-color-hover); }
+body.custom-theme .btn-warning { background:var(--warning-color); border-color:var(--warning-color); color:#212529; }
+body.custom-theme .btn-warning:hover { background:var(--warning-color-hover); border-color:var(--warning-color-hover); color:#212529; }
+body.custom-theme .btn-danger { background:var(--danger-color); border-color:var(--danger-color); }
+body.custom-theme .btn-danger:hover { background:var(--danger-color-hover); border-color:var(--danger-color-hover); }
+.btn-lg { padding:15px 30px; font-size:1.1rem; border-radius:12px; }
+.btn-sm { padding:8px 16px; font-size:.875rem; border-radius:8px; }
