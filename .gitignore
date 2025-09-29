@@ -1,0 +1,16 @@
+# Ignore test files
+test-*.html
+
+# Ignore build artifacts
+dist/
+.cache/
+
+# Ignore node modules if any
+node_modules/
+
+# Ignore logs
+*.log
+
+# Ignore temp files
+*.tmp
+.tmp/
