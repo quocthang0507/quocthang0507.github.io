@@ -2,8 +2,10 @@
 layout: default
 title: "Trang chủ"
 description: "Trang chủ với đồng hồ và lịch hiện tại"
-custom_js: ['lunar-calendar.js', 'clock.js']
+custom_js: ['i18n.js', 'lunar-calendar.js', 'clock.js']
 ---
+
+<meta name="i18n-title" content="home.title">
 
 <div class="row">
     <div class="col-12">
@@ -15,17 +17,17 @@ custom_js: ['lunar-calendar.js', 'clock.js']
     <div class="col-lg-6 mb-4">
         <div class="card">
             <div class="card-header bg-primary text-white">
-                <h5 class="mb-0"><i class="fas fa-clock"></i> Đồng hồ số</h5>
+                <h5 class="mb-0"><i class="fas fa-clock"></i> <span data-i18n="clock.title">Đồng hồ số</span></h5>
             </div>
             <div class="card-body text-center">
                 <div id="digital-clock" class="clock-display">--:--:--</div>
                 <div id="current-date" class="date-display">Loading...</div>
                 <div class="mt-3">
                     <button id="toggle-format" class="btn btn-outline-primary">
-                        <i class="fas fa-exchange-alt"></i> Đổi định dạng 12/24h
+                        <i class="fas fa-exchange-alt"></i> <span data-i18n="clock.toggle_format">Đổi định dạng 12/24h</span>
                     </button>
                     <button id="toggle-seconds" class="btn btn-outline-secondary">
-                        <i class="fas fa-eye"></i> Ẩn/Hiện giây
+                        <i class="fas fa-eye"></i> <span data-i18n="clock.toggle_seconds">Ẩn/Hiện giây</span>
                     </button>
                 </div>
             </div>
@@ -35,7 +37,7 @@ custom_js: ['lunar-calendar.js', 'clock.js']
     <div class="col-lg-6 mb-4">
         <div class="card">
             <div class="card-header bg-success text-white">
-                <h5 class="mb-0"><i class="fas fa-calendar-alt"></i> Lịch hiện tại</h5>
+                <h5 class="mb-0"><i class="fas fa-calendar-alt"></i> <span data-i18n="calendar.title">Lịch hiện tại</span></h5>
             </div>
             <div class="card-body">
                 <div class="calendar-container">
@@ -51,15 +53,14 @@ custom_js: ['lunar-calendar.js', 'clock.js']
                     <div id="calendar-display"></div>
                     <div class="mt-3 text-center">
                         <button id="today-btn" class="btn btn-primary btn-sm">
-                            <i class="fas fa-calendar-day"></i> Về hôm nay
+                            <i class="fas fa-calendar-day"></i> <span data-i18n="calendar.today">Về hôm nay</span>
                         </button>
                     </div>
                     <div class="mt-3">
                         <small class="text-muted">
                             <i class="fas fa-info-circle"></i> 
-                            <strong>Số trên:</strong> Ngày dương lịch, 
-                            <strong class="text-success">Số dưới:</strong> Ngày/tháng âm lịch
-                            <br>Nhấn vào ngày để xem chi tiết
+                            <strong data-i18n="calendar.info">Số trên: Ngày dương lịch, Số dưới: Ngày/tháng âm lịch</strong>
+                            <br><span data-i18n="calendar.click_info">Nhấn vào ngày để xem chi tiết</span>
                         </small>
                     </div>
                 </div>
@@ -72,42 +73,42 @@ custom_js: ['lunar-calendar.js', 'clock.js']
     <div class="col-12 mb-4">
         <div class="card">
             <div class="card-header bg-info text-white">
-                <h5 class="mb-0"><i class="fas fa-stopwatch"></i> Bộ đếm thời gian</h5>
+                <h5 class="mb-0"><i class="fas fa-stopwatch"></i> <span data-i18n="timer.title">Bộ đếm thời gian</span></h5>
             </div>
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-6">
-                        <h6><i class="fas fa-play"></i> Stopwatch</h6>
+                        <h6><i class="fas fa-play"></i> <span data-i18n="stopwatch.title">Stopwatch</span></h6>
                         <div id="stopwatch-display" class="h4 text-primary">00:00:00</div>
                         <div class="btn-group">
                             <button id="start-stopwatch" class="btn btn-success">
-                                <i class="fas fa-play"></i> Bắt đầu
+                                <i class="fas fa-play"></i> <span data-i18n="stopwatch.start">Bắt đầu</span>
                             </button>
                             <button id="pause-stopwatch" class="btn btn-warning" disabled>
-                                <i class="fas fa-pause"></i> Tạm dừng
+                                <i class="fas fa-pause"></i> <span data-i18n="stopwatch.pause">Tạm dừng</span>
                             </button>
                             <button id="reset-stopwatch" class="btn btn-danger">
-                                <i class="fas fa-redo"></i> Reset
+                                <i class="fas fa-redo"></i> <span data-i18n="stopwatch.reset">Reset</span>
                             </button>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <h6><i class="fas fa-hourglass-half"></i> Timer</h6>
                         <div class="input-group mb-2">
-                            <input type="number" id="timer-minutes" class="form-control" placeholder="Phút" min="0" max="59" value="5">
+                            <input type="number" id="timer-minutes" class="form-control" data-i18n="timer.minutes" placeholder="Phút" min="0" max="59" value="5">
                             <span class="input-group-text">:</span>
-                            <input type="number" id="timer-seconds" class="form-control" placeholder="Giây" min="0" max="59" value="0">
+                            <input type="number" id="timer-seconds" class="form-control" data-i18n="timer.seconds" placeholder="Giây" min="0" max="59" value="0">
                         </div>
                         <div id="timer-display" class="h4 text-warning">05:00</div>
                         <div class="btn-group">
                             <button id="start-timer" class="btn btn-success">
-                                <i class="fas fa-play"></i> Bắt đầu
+                                <i class="fas fa-play"></i> <span data-i18n="timer.start">Bắt đầu</span>
                             </button>
                             <button id="pause-timer" class="btn btn-warning" disabled>
-                                <i class="fas fa-pause"></i> Tạm dừng
+                                <i class="fas fa-pause"></i> <span data-i18n="timer.pause">Tạm dừng</span>
                             </button>
                             <button id="reset-timer" class="btn btn-danger">
-                                <i class="fas fa-redo"></i> Reset
+                                <i class="fas fa-redo"></i> <span data-i18n="timer.reset">Reset</span>
                             </button>
                         </div>
                     </div>
@@ -121,18 +122,18 @@ custom_js: ['lunar-calendar.js', 'clock.js']
     <div class="col-12">
         <div class="card">
             <div class="card-header bg-dark text-white">
-                <h5 class="mb-0"><i class="fas fa-info-circle"></i> Thông tin hệ thống</h5>
+                <h5 class="mb-0"><i class="fas fa-info-circle"></i> <span data-i18n="system_info.title">Thông tin hệ thống</span></h5>
             </div>
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-4">
-                        <strong>Múi giờ:</strong> <span id="timezone">Loading...</span>
+                        <strong data-i18n="system_info.timezone">Múi giờ:</strong> <span id="timezone">Loading...</span>
                     </div>
                     <div class="col-md-4">
-                        <strong>Ngày trong năm:</strong> <span id="day-of-year">Loading...</span>
+                        <strong data-i18n="system_info.day_of_year">Ngày trong năm:</strong> <span id="day-of-year">Loading...</span>
                     </div>
                     <div class="col-md-4">
-                        <strong>Tuần trong năm:</strong> <span id="week-of-year">Loading...</span>
+                        <strong data-i18n="system_info.week_of_year">Tuần trong năm:</strong> <span id="week-of-year">Loading...</span>
                     </div>
                 </div>
             </div>
