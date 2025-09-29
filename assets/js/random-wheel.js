@@ -286,7 +286,10 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Show winner
     function showWinner(winner, winnerIndex) {
-        document.getElementById('wheel-result').textContent = winner;
+        const resultElement = document.getElementById('wheel-result');
+        if (resultElement) {
+            resultElement.textContent = winner;
+        }
         
         // Add to history
         const historyItem = {
@@ -305,12 +308,14 @@ document.addEventListener('DOMContentLoaded', function() {
         updateStatistics();
         
         // Show confetti effect
-        if (document.getElementById('confetti-effect').checked) {
+        const confettiElement = document.getElementById('confetti-effect');
+        if (confettiElement && confettiElement.checked) {
             showConfetti();
         }
         
         // Remove winner if option is checked
-        if (document.getElementById('remove-winner').checked) {
+        const removeWinnerElement = document.getElementById('remove-winner');
+        if (removeWinnerElement && removeWinnerElement.checked) {
             setTimeout(() => {
                 if (confirm(`Xóa "${winner}" khỏi danh sách?`)) {
                     removeName(winnerIndex);
@@ -367,6 +372,8 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateHistoryDisplay() {
         const historyDiv = document.getElementById('spin-history');
         
+        if (!historyDiv) return; // Safety check for missing element
+        
         if (spinHistory.length === 0) {
             historyDiv.innerHTML = '<p class="text-muted text-center">Chưa có lịch sử</p>';
             return;
@@ -399,8 +406,14 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Update statistics
     function updateStatistics() {
-        document.getElementById('total-spins').textContent = spinHistory.length;
-        document.getElementById('current-names-count').textContent = names.length;
+        const totalSpinsElement = document.getElementById('total-spins');
+        const currentNamesElement = document.getElementById('current-names-count');
+        const topWinnersElement = document.getElementById('top-winners');
+        
+        if (totalSpinsElement) totalSpinsElement.textContent = spinHistory.length;
+        if (currentNamesElement) currentNamesElement.textContent = names.length;
+        
+        if (!topWinnersElement) return; // Safety check
         
         // Calculate top winners
         if (spinHistory.length > 0) {
@@ -420,9 +433,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>`
             ).join('');
             
-            document.getElementById('top-winners').innerHTML = topWinnersHTML;
+            topWinnersElement.innerHTML = topWinnersHTML;
         } else {
-            document.getElementById('top-winners').innerHTML = '<p class="text-muted">Chưa có dữ liệu</p>';
+            topWinnersElement.innerHTML = '<p class="text-muted">Chưa có dữ liệu</p>';
         }
     }
     
