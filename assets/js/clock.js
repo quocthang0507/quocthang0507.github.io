@@ -67,16 +67,18 @@ document.addEventListener('DOMContentLoaded', function() {
         const lastDay = new Date(currentYear, currentMonth + 1, 0);
         const today = new Date();
         
-        // Update title
-        const monthNames = [
-            'Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6',
-            'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'
-        ];
-        document.getElementById('calendar-title').textContent = `${monthNames[currentMonth]} ${currentYear}`;
+        // Update title with translation
+        const monthKey = `month.${currentMonth + 1}`;
+        const monthName = window.t ? window.t(monthKey) : `Tháng ${currentMonth + 1}`;
+        document.getElementById('calendar-title').textContent = `${monthName} ${currentYear}`;
         
         // Create calendar table
         let calendarHTML = '<table class="calendar-table">';
-        calendarHTML += '<tr><th>CN</th><th>T2</th><th>T3</th><th>T4</th><th>T5</th><th>T6</th><th>T7</th></tr>';
+        
+        // Calendar header with translated day names
+        const dayKeys = ['cal.sunday', 'cal.monday', 'cal.tuesday', 'cal.wednesday', 'cal.thursday', 'cal.friday', 'cal.saturday'];
+        const dayNames = dayKeys.map(key => window.t ? window.t(key) : key.split('.')[1]);
+        calendarHTML += `<tr>${dayNames.map(day => `<th>${day}</th>`).join('')}</tr>`;
         
         let date = 1;
         const startDay = firstDay.getDay();
@@ -100,7 +102,24 @@ document.addEventListener('DOMContentLoaded', function() {
                                    currentMonth === today.getMonth() && 
                                    date === today.getDate();
                     const className = isToday ? 'today' : '';
-                    calendarHTML += `<td class="${className}">${date}</td>`;
+                    
+                    // Get lunar date for this day
+                    let lunarInfo = '';
+                    if (window.LunarCalendar) {
+                        try {
+                            const lunar = window.LunarCalendar.solarToLunar(date, currentMonth + 1, currentYear);
+                            if (lunar) {
+                                lunarInfo = `<small class="lunar-date">${lunar.day}/${lunar.month}${lunar.isLeap ? '*' : ''}</small>`;
+                            }
+                        } catch (e) {
+                            // Fallback if lunar calculation fails
+                        }
+                    }
+                    
+                    calendarHTML += `<td class="${className} calendar-day" data-date="${date}" data-month="${currentMonth + 1}" data-year="${currentYear}">
+                        <div class="solar-date">${date}</div>
+                        ${lunarInfo}
+                    </td>`;
                     date++;
                 }
             }
@@ -110,6 +129,16 @@ document.addEventListener('DOMContentLoaded', function() {
         calendarHTML += '</table>';
         
         document.getElementById('calendar-display').innerHTML = calendarHTML;
+        
+        // Add click handlers for calendar days
+        document.querySelectorAll('.calendar-day').forEach(cell => {
+            cell.addEventListener('click', function() {
+                const day = parseInt(this.dataset.date);
+                const month = parseInt(this.dataset.month);
+                const year = parseInt(this.dataset.year);
+                showDateDetails(day, month, year);
+            });
+        });
     }
     
     function updateSystemInfo() {
@@ -278,4 +307,97 @@ document.addEventListener('DOMContentLoaded', function() {
     const initialSeconds = parseInt(document.getElementById('timer-seconds').value) || 0;
     timerRemaining = initialMinutes * 60 + initialSeconds;
     updateTimer();
+    
+    // Listen for language changes to update calendar
+    window.addEventListener('languageChanged', function() {
+        updateCalendar();
+    });
+    
+    // Make updateCalendar globally available for i18n system
+    window.updateCalendar = updateCalendar;
+    
+    // Show date details modal
+    function showDateDetails(day, month, year) {
+        if (!window.LunarCalendar) {
+            showAlert('Lunar calendar not loaded', 'warning');
+            return;
+        }
+        
+        try {
+            const lunar = window.LunarCalendar.solarToLunar(day, month, year);
+            if (!lunar) {
+                showAlert('Unable to calculate lunar date', 'error');
+                return;
+            }
+            
+            const zodiac = window.LunarCalendar.getZodiacAnimal(lunar.year);
+            const canChi = window.LunarCalendar.getCanChi(lunar.year);
+            const lunarMonthName = window.LunarCalendar.getLunarMonthName(lunar.month, lunar.isLeap);
+            
+            const solarDate = new Date(year, month - 1, day);
+            const dayKeys = ['day.sunday', 'day.monday', 'day.tuesday', 'day.wednesday', 'day.thursday', 'day.friday', 'day.saturday'];
+            const dayOfWeek = window.t ? window.t(dayKeys[solarDate.getDay()]) : dayKeys[solarDate.getDay()];
+            
+            // Translation helper
+            const t = window.t || ((key, fallback) => fallback || key);
+            
+            const modalHTML = `
+                <div class="modal fade show" id="dateDetailsModal" style="display: block; background: rgba(0,0,0,0.5);">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header bg-primary text-white">
+                                <h5 class="modal-title">${t('lunar.details_title', 'Chi tiết ngày')} ${day}/${month}/${year}</h5>
+                                <button type="button" class="btn-close btn-close-white" onclick="closeDateModal()">×</button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h6><i class="fas fa-calendar"></i> ${t('lunar.solar', 'Dương lịch:')}</h6>
+                                        <p><strong>${dayOfWeek}</strong><br>Ngày ${day} tháng ${month} năm ${year}</p>
+                                        
+                                        <h6><i class="fas fa-moon"></i> ${t('lunar.lunar', 'Âm lịch:')}</h6>
+                                        <p>Ngày ${lunar.day} ${lunarMonthName}<br>Năm ${lunar.year} (${canChi})</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6><i class="fas fa-dragon"></i> ${t('lunar.zodiac', 'Con giáp:')}</h6>
+                                        <p class="text-primary">${zodiac}</p>
+                                        
+                                        <h6><i class="fas fa-info-circle"></i> ${t('lunar.info', 'Thông tin:')}</h6>
+                                        <ul class="list-unstyled">
+                                            <li><small>${t(lunar.isLeap ? 'lunar.year_leap' : 'lunar.year_normal', lunar.isLeap ? 'Năm âm lịch nhuận' : 'Năm âm lịch thường')}</small></li>
+                                            <li><small>${t(lunar.isLeap ? 'lunar.month_leap' : 'lunar.month_normal', lunar.isLeap ? 'Tháng nhuận' : 'Tháng thường')}</small></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" onclick="closeDateModal()">${t('lunar.close', 'Đóng')}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Remove existing modal if any
+            const existingModal = document.getElementById('dateDetailsModal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+            
+            // Add modal to body
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+            
+        } catch (error) {
+            console.error('Error showing date details:', error);
+            showAlert('Lỗi khi hiển thị thông tin ngày', 'error');
+        }
+    }
+    
+    // Function to close date modal
+    window.closeDateModal = function() {
+        const modal = document.getElementById('dateDetailsModal');
+        if (modal) {
+            modal.remove();
+        }
+    }
 });

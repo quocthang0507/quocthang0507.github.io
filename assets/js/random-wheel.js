@@ -119,17 +119,32 @@ document.addEventListener('DOMContentLoaded', function() {
             const rotation = index * anglePerSection;
             const color = wheelColors[index % wheelColors.length];
             
+            // Calculate text rotation to make it readable
+            const textRotation = anglePerSection / 2;
+            // Adjust font size based on name length and number of sections
+            let fontSize = names.length > 12 ? '0.6rem' : names.length > 8 ? '0.7rem' : '0.9rem';
+            if (name.length > 10) fontSize = names.length > 8 ? '0.5rem' : '0.7rem';
+            
             return `
                 <div class="wheel-name" style="
                     transform: rotate(${rotation}deg);
                     background: ${color};
-                    clip-path: polygon(0 0, 50% 0, 50% 50%, 0 50%);
-                    border-right: 1px solid rgba(255,255,255,0.3);
+                    clip-path: polygon(50% 50%, 100% 0%, 100% ${100 / names.length * 2}%);
+                    border: 1px solid rgba(255,255,255,0.2);
                 ">
                     <span style="
-                        transform: rotate(${anglePerSection/2}deg);
-                        margin-left: 20%;
-                        font-size: ${names.length > 8 ? '0.7rem' : '0.9rem'};
+                        transform: rotate(${textRotation}deg);
+                        position: absolute;
+                        left: 65%;
+                        top: 20%;
+                        font-size: ${fontSize};
+                        font-weight: bold;
+                        color: white;
+                        text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+                        white-space: nowrap;
+                        max-width: 80px;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
                     ">${name}</span>
                 </div>
             `;

@@ -1,0 +1,115 @@
+// Korean Language File
+const koreanTranslations = {
+    // Navigation
+    "site.title": "나의 포트폴리오 웹사이트",
+    "nav.home": "홈",
+    "nav.random_number": "랜덤 숫자",
+    "nav.random_wheel": "랜덤 휠",
+    
+    // Homepage
+    "home.title": "홈",
+    "home.description": "시계와 현재 달력이 있는 홈페이지",
+    "clock.title": "디지털 시계",
+    "clock.toggle_format": "12/24시간 형식 전환",
+    "clock.toggle_seconds": "초 표시/숨기기",
+    "calendar.title": "현재 달력",
+    "calendar.today": "오늘로 이동",
+    "calendar.info": "위: 양력 날짜, 아래: 음력 일/월",
+    "calendar.click_info": "날짜를 클릭하여 세부 정보 보기",
+    "timer.title": "타이머 도구",
+    "stopwatch.title": "스톱워치",
+    "stopwatch.start": "시작",
+    "stopwatch.pause": "일시정지",
+    "stopwatch.reset": "재설정",
+    "timer.start": "시작",
+    "timer.pause": "일시정지",
+    "timer.reset": "재설정",
+    "timer.minutes": "분",
+    "timer.seconds": "초",
+    "system_info.title": "시스템 정보",
+    "system_info.timezone": "시간대:",
+    "system_info.day_of_year": "연중 일수:",
+    "system_info.week_of_year": "연중 주수:",
+    
+    // Random Wheel
+    "wheel.title": "랜덤 휠",
+    "wheel.spin": "휠 돌리기",
+    "wheel.reset": "재설정",
+    "wheel.result": "결과:",
+    "wheel.add_names": "이름을 추가하고 \"휠 돌리기\"를 클릭하세요",
+    "wheel.remove_winner": "돌린 후 목록에서 당첨자 제거",
+    "wheel.confetti": "결과 시 색종이 효과",
+    "wheel.names_list": "이름 목록",
+    "wheel.add_name": "이름 입력...",
+    "wheel.bulk_names": "또는 여러 이름 입력 (한 줄에 하나씩):",
+    "wheel.add_all": "모두 추가",
+    "wheel.clear_all": "모두 지우기",
+    "wheel.presets": "프리셋:",
+    "wheel.colors": "색상",
+    "wheel.animals": "동물",
+    "wheel.fruits": "과일",
+    "wheel.numbers": "숫자 (1-10)",
+    "wheel.history": "돌리기 기록",
+    "wheel.clear_history": "기록 지우기",
+    "wheel.statistics": "통계",
+    "wheel.total_spins": "총 돌리기 횟수",
+    "wheel.current_names": "현재 이름 수",
+    "wheel.top_winners": "최다 당첨:",
+    "wheel.export_data": "데이터 내보내기",
+    "wheel.no_history": "아직 기록이 없습니다",
+    "wheel.no_data": "아직 데이터가 없습니다",
+    "wheel.no_names": "아직 이름이 없습니다",
+    
+    // Random Number
+    "number.title": "랜덤 숫자 생성기",
+    "number.min": "최솟값",
+    "number.max": "최댓값",
+    "number.generate": "랜덤 숫자 생성",
+    "number.result": "결과:",
+    "number.history": "기록",
+    "number.clear_history": "기록 지우기",
+    "number.export": "데이터 내보내기",
+    
+    // Lunar Calendar
+    "lunar.details_title": "날짜 세부 정보",
+    "lunar.solar": "양력:",
+    "lunar.lunar": "음력:",
+    "lunar.zodiac": "띠:",
+    "lunar.info": "정보:",
+    "lunar.year_normal": "평년",
+    "lunar.year_leap": "윤년",
+    "lunar.month_normal": "평달",
+    "lunar.month_leap": "윤달",
+    "lunar.close": "닫기",
+    
+    // Days of week
+    "day.sunday": "일요일",
+    "day.monday": "월요일",
+    "day.tuesday": "화요일",
+    "day.wednesday": "수요일",
+    "day.thursday": "목요일",
+    "day.friday": "금요일",
+    "day.saturday": "토요일",
+    
+    // Months
+    "month.1": "1월", "month.2": "2월", "month.3": "3월",
+    "month.4": "4월", "month.5": "5월", "month.6": "6월",
+    "month.7": "7월", "month.8": "8월", "month.9": "9월",
+    "month.10": "10월", "month.11": "11월", "month.12": "12월",
+    
+    // Calendar days short
+    "cal.sunday": "일", "cal.monday": "월", "cal.tuesday": "화",
+    "cal.wednesday": "수", "cal.thursday": "목", "cal.friday": "금", "cal.saturday": "토",
+    
+    // Footer
+    "footer.rights": "모든 권리 보유.",
+    "footer.built_with": "제작:",
+    "footer.using": "Jekyll & Bootstrap 사용",
+    
+    // Common
+    "common.loading": "로딩 중...",
+    "common.error": "오류",
+    "common.success": "성공",
+    "common.warning": "경고",
+    "common.close": "닫기"
+};

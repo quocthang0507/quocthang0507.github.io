@@ -49,22 +49,49 @@ main {
     text-align: center;
     padding: 8px;
     border: 1px solid #dee2e6;
+    position: relative;
+    cursor: pointer;
+    vertical-align: top;
+    height: 50px;
 }
 
 .calendar-table th {
     background-color: #007bff;
     color: white;
+    cursor: default;
 }
 
 .calendar-table .today {
     background-color: #007bff;
     color: white;
-    border-radius: 50%;
+    border-radius: 8px;
     font-weight: bold;
 }
 
 .calendar-table .other-month {
     color: #ccc;
+    cursor: default;
+}
+
+.calendar-day {
+    transition: background-color 0.2s;
+}
+
+.calendar-day:hover:not(.other-month) {
+    background-color: #e3f2fd;
+}
+
+.solar-date {
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.lunar-date {
+    color: #28a745;
+    font-size: 0.7rem;
+    display: block;
+    margin-top: 2px;
+    font-weight: normal;
 }
 
 /* Random Number Styles */
@@ -155,14 +182,15 @@ main {
     position: absolute;
     width: 50%;
     height: 50%;
-    transform-origin: 100% 100%;
+    transform-origin: 50% 100%;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    align-items: flex-start;
+    justify-content: flex-start;
     font-weight: bold;
     color: white;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
     font-size: 0.9rem;
+    overflow: hidden;
 }
 
 .btn-group .btn {
