@@ -1,4 +1,5 @@
-// Translation System
+// Prevent double-loading
+if (typeof window.TranslationSystem === 'undefined') {
 class TranslationSystem {
     constructor() {
         this.currentLanguage = 'vi'; // Default to Vietnamese
@@ -212,13 +213,20 @@ class TranslationSystem {
         return this.supportedLanguages;
     }
 }
+// Expose constructor for guard checks
+window.TranslationSystem = TranslationSystem;
+}
 
 // Initialize translation system when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    window.translationSystem = new TranslationSystem();
-    
-    // Make translation function globally available
-    window.t = (key, fallback) => window.translationSystem.t(key, fallback);
+    if (!window.translationSystem) {
+        try {
+            window.translationSystem = new window.TranslationSystem();
+            window.t = (key, fallback) => window.translationSystem.t(key, fallback);
+        } catch (e) {
+            console.error('Failed to initialize TranslationSystem:', e);
+        }
+    }
 });
 
 // Listen for language changes

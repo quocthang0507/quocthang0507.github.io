@@ -108,6 +108,7 @@ class CookieConsent {
         
         // Track consent acceptance
         this.trackConsentEvent('accept');
+        this.showStatusToast('accepted');
     }
 
     declineConsent() {
@@ -118,6 +119,7 @@ class CookieConsent {
         
         // Track consent decline (without analytics)
         console.log('Analytics consent declined');
+        this.showStatusToast('declined');
     }
 
     setConsent(value) {
@@ -234,6 +236,27 @@ class CookieConsent {
                 value: action === 'accept' ? 1 : 0
             });
         }
+    }
+
+    showStatusToast(state) {
+        // Avoid multiple toasts stacking
+        let toast = document.getElementById('cookie-status');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'cookie-status';
+            toast.className = 'cookie-status';
+            document.body.appendChild(toast);
+        }
+
+        const accepted = state === 'accepted';
+        toast.classList.toggle('declined', !accepted);
+        toast.textContent = accepted ? 'Cookies enabled' : 'Cookies disabled';
+        toast.classList.add('show');
+
+        clearTimeout(this._toastTimer);
+        this._toastTimer = setTimeout(() => {
+            toast.classList.remove('show');
+        }, 3500);
     }
 
     showPrivacyInfo() {
