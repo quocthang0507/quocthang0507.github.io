@@ -126,6 +126,7 @@ function initializeDarkMode() {
         document.documentElement.setAttribute('data-theme', newTheme);
         localStorage.setItem('theme', newTheme);
         updateDarkModeIcon(newTheme);
+        updateThemeBadge(); // Update footer badge
         
         // Track dark mode toggle
         if (typeof gtag !== 'undefined') {
@@ -230,7 +231,7 @@ function injectFooterThemeBadge() {
     if (!footer) return;
     const badgeWrapper = document.createElement('div');
     badgeWrapper.className = 'col-12 mt-3 text-center';
-    badgeWrapper.innerHTML = `<span id="theme-badge-toggle" class="theme-badge" role="button" tabindex="0" data-action="toggle-custom-theme"></span>`;
+    badgeWrapper.innerHTML = `<span id="theme-badge-toggle" class="theme-badge" role="button" tabindex="0" data-action="toggle-dark-theme"></span>`;
     footer.appendChild(badgeWrapper);
     updateThemeBadge();
     badgeWrapper.addEventListener('keydown', (e)=>{
@@ -241,11 +242,29 @@ function injectFooterThemeBadge() {
 function updateThemeBadge() {
     const badge = document.getElementById('theme-badge-toggle');
     if (!badge) return;
-    const enabled = document.body.classList.contains('custom-theme');
-    const labelKey = enabled ? 'footer.theme_badge_custom' : 'footer.theme_badge_default';
-    badge.textContent = (window.translationSystem && window.translationSystem.t) ? window.translationSystem.t(labelKey) : (enabled ? 'Enhanced Theme' : 'Default Theme');
-    badge.setAttribute('aria-pressed', enabled ? 'true' : 'false');
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const labelKey = isDark ? 'ui.dark_mode' : 'ui.light_mode';
+    badge.textContent = (window.translationSystem && window.translationSystem.t) ? window.translationSystem.t(labelKey) : (isDark ? 'Dark Mode' : 'Light Mode');
+    badge.setAttribute('aria-pressed', isDark ? 'true' : 'false');
 }
 
 // Update translations when language changes
 window.addEventListener('languageChanged', updateThemeBadge);
+
+// Handle footer theme badge clicks
+document.addEventListener('click', (e) => {
+    if (e.target.matches('[data-action="toggle-dark-theme"]')) {
+        // Trigger the same dark mode toggle as the navigation button
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        if (darkModeToggle) {
+            darkModeToggle.click();
+        } else {
+            // Fallback: toggle dark mode directly
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeBadge();
+        }
+    }
+});

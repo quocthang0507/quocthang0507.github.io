@@ -135,6 +135,69 @@
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
+/* Calendar Styles */
+.calendar-table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    margin: 0;
+}
+
+.calendar-table th {
+    background: var(--bs-primary);
+    color: white;
+    font-weight: 600;
+    text-align: center;
+    padding: 12px 4px;
+    font-size: 0.9rem;
+    border: none;
+}
+
+.calendar-table td {
+    border: 1px solid #dee2e6;
+    padding: 8px 4px;
+    text-align: center;
+    vertical-align: middle;
+    height: 60px;
+    position: relative;
+    cursor: pointer;
+    background: white;
+    transition: background-color 0.2s ease;
+}
+
+.calendar-table td:hover {
+    background-color: #f8f9fa;
+}
+
+.calendar-table td.today {
+    background-color: #e7f3ff;
+    border-color: var(--bs-primary);
+    font-weight: bold;
+}
+
+.calendar-table td.other-month {
+    color: #6c757d;
+    background-color: #f8f9fa;
+}
+
+.solar-date {
+    font-size: 1.1rem;
+    font-weight: 600;
+    line-height: 1.2;
+    color: #333;
+}
+
+.lunar-date {
+    font-size: 0.7rem;
+    color: #6c757d;
+    margin-top: 2px;
+    line-height: 1;
+}
+
+.calendar-container {
+    padding: 20px;
+}
+
 /* Random Wheel Styles */
 .wheel-container {
     display: flex;
@@ -173,16 +236,16 @@
 .wheel-pointer {
     position: absolute;
     top: 50%;
-    right: -20px;
+    right: -30px;
     transform: translateY(-50%);
     width: 0;
     height: 0;
-    border-top: 15px solid transparent;
-    border-bottom: 15px solid transparent;
-    border-left: 30px solid var(--bs-danger);
+    border-top: 20px solid transparent;
+    border-bottom: 20px solid transparent;
+    border-left: 40px solid var(--bs-danger);
     z-index: 15;
     pointer-events: none;
-    filter: drop-shadow(0 3px 6px rgba(0,0,0,0.3));
+    filter: drop-shadow(0 3px 8px rgba(0,0,0,0.4));
     animation: pointer-pulse 2s ease-in-out infinite;
 }
 
@@ -491,19 +554,36 @@
     }
     .calendar-table th,
     .calendar-table td { 
-        padding: 6px 2px; 
-        height: 50px; 
-        font-size: 0.9rem; 
+        padding: 4px 1px; 
+        height: 45px; 
+        font-size: 0.8rem; 
+        text-align: center;
+        vertical-align: middle;
     }
     .solar-date { 
-        font-size: 1rem; 
+        font-size: 0.9rem; 
+        font-weight: 600;
+        line-height: 1.1;
     }
     .lunar-date { 
-        font-size: 0.65rem; 
+        font-size: 0.6rem; 
         margin-top: 1px; 
+        color: #6c757d;
+        line-height: 1;
     }
     .calendar-container { 
-        padding: 15px; 
+        padding: 10px; 
+    }
+    .calendar-table {
+        width: 100%;
+        table-layout: fixed;
+    }
+    .calendar-table th {
+        font-size: 0.75rem;
+        padding: 8px 2px;
+        background: var(--bs-primary);
+        color: white;
+        border: none;
     }
 }
 
