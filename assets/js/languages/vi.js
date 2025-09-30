@@ -147,6 +147,16 @@ const vietnameseTranslations = {
     "ui.custom_theme_on": "Giao diện nâng cao: BẬT",
     "ui.custom_theme_off": "Giao diện nâng cao: TẮT",
     
+    // Theme / UI
+    "ui.settings": "Cài đặt",
+    "ui.open_settings": "Mở cài đặt",
+    "ui.close": "Đóng",
+    "ui.toggle_custom_theme": "Chuyển đổi giao diện nâng cao",
+    "ui.custom_theme_on": "Giao diện nâng cao BẬT",
+    "ui.custom_theme_off": "Giao diện nâng cao TẮT",
+    "ui.light_mode": "Chế độ sáng",
+    "ui.dark_mode": "Chế độ tối",
+    
     // Error pages
     "error.title": "Trang không tìm thấy",
     "error.message": "Xin lỗi, trang bạn đang tìm kiếm không tồn tại hoặc đã bị di chuyển.",

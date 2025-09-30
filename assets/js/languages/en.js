@@ -146,6 +146,8 @@ const englishTranslations = {
     "ui.toggle_custom_theme": "Toggle enhanced theme",
     "ui.custom_theme_on": "Enhanced theme ON",
     "ui.custom_theme_off": "Enhanced theme OFF",
+    "ui.light_mode": "Light Mode",
+    "ui.dark_mode": "Dark Mode",
     
     // Error pages
     "error.title": "Page Not Found",
