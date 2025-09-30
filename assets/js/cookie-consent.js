@@ -325,14 +325,63 @@ class CookieConsent {
 
         document.body.appendChild(modal);
         
-        // Show modal
-        const bootstrapModal = new bootstrap.Modal(modal);
-        bootstrapModal.show();
+        // Show modal with fallback for when Bootstrap is not available
+        let bootstrapModal;
+        try {
+            if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+                bootstrapModal = new bootstrap.Modal(modal);
+                bootstrapModal.show();
+            } else {
+                // Fallback: show modal manually
+                modal.style.display = 'block';
+                modal.classList.add('show');
+                modal.setAttribute('aria-hidden', 'false');
+                
+                // Add backdrop
+                const backdrop = document.createElement('div');
+                backdrop.className = 'modal-backdrop fade show';
+                backdrop.id = 'privacy-modal-backdrop';
+                document.body.appendChild(backdrop);
+                
+                // Prevent body scroll
+                document.body.style.overflow = 'hidden';
+                document.body.classList.add('modal-open');
+            }
+        } catch (error) {
+            console.warn('Bootstrap Modal not available, using fallback:', error);
+            // Fallback: show modal manually
+            modal.style.display = 'block';
+            modal.classList.add('show');
+            modal.setAttribute('aria-hidden', 'false');
+        }
+        
+        // Function to hide modal
+        const hideModal = () => {
+            if (bootstrapModal) {
+                bootstrapModal.hide();
+            } else {
+                // Manual fallback hide
+                modal.style.display = 'none';
+                modal.classList.remove('show');
+                modal.setAttribute('aria-hidden', 'true');
+                
+                // Remove backdrop
+                const backdrop = document.getElementById('privacy-modal-backdrop');
+                if (backdrop) backdrop.remove();
+                
+                // Restore body scroll
+                document.body.style.overflow = '';
+                document.body.classList.remove('modal-open');
+                
+                // Remove modal
+                setTimeout(() => modal.remove(), 150);
+            }
+        };
         
         // Handle accept from modal
         modal.querySelector('#accept-from-modal').addEventListener('click', () => {
             this.acceptConsent();
-            bootstrapModal.hide();
+            hideModal();
             
             // Remove consent banner if still visible
             const banner = document.getElementById('cookie-consent-banner');
@@ -341,7 +390,17 @@ class CookieConsent {
             }
         });
         
-        // Clean up modal after hiding
+        // Handle close button
+        modal.querySelector('[data-bs-dismiss="modal"]').addEventListener('click', hideModal);
+        
+        // Handle backdrop click
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                hideModal();
+            }
+        });
+        
+        // Clean up modal after hiding (Bootstrap event)
         modal.addEventListener('hidden.bs.modal', () => {
             modal.remove();
         });
@@ -399,23 +458,83 @@ class CookieConsent {
 
         document.body.appendChild(modal);
         
-        const bootstrapModal = new bootstrap.Modal(modal);
-        bootstrapModal.show();
+        // Show modal with fallback for when Bootstrap is not available
+        let bootstrapModal;
+        try {
+            if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+                bootstrapModal = new bootstrap.Modal(modal);
+                bootstrapModal.show();
+            } else {
+                // Fallback: show modal manually
+                modal.style.display = 'block';
+                modal.classList.add('show');
+                modal.setAttribute('aria-hidden', 'false');
+                
+                // Add backdrop
+                const backdrop = document.createElement('div');
+                backdrop.className = 'modal-backdrop fade show';
+                backdrop.id = 'manage-modal-backdrop';
+                document.body.appendChild(backdrop);
+                
+                // Prevent body scroll
+                document.body.style.overflow = 'hidden';
+                document.body.classList.add('modal-open');
+            }
+        } catch (error) {
+            console.warn('Bootstrap Modal not available, using fallback:', error);
+            // Fallback: show modal manually
+            modal.style.display = 'block';
+            modal.classList.add('show');
+            modal.setAttribute('aria-hidden', 'false');
+        }
+        
+        // Function to hide modal
+        const hideModal = () => {
+            if (bootstrapModal) {
+                bootstrapModal.hide();
+            } else {
+                // Manual fallback hide
+                modal.style.display = 'none';
+                modal.classList.remove('show');
+                modal.setAttribute('aria-hidden', 'true');
+                
+                // Remove backdrop
+                const backdrop = document.getElementById('manage-modal-backdrop');
+                if (backdrop) backdrop.remove();
+                
+                // Restore body scroll
+                document.body.style.overflow = '';
+                document.body.classList.remove('modal-open');
+                
+                // Remove modal
+                setTimeout(() => modal.remove(), 150);
+            }
+        };
         
         // Handle save preferences
         modal.querySelector('#save-preferences').addEventListener('click', () => {
-            const selectedPreference = modal.querySelector('input[name="cookie-preference"]:checked').value;
+            const selectedPreference = modal.querySelector('input[name="cookie-preference"]:checked')?.value;
             
             if (selectedPreference === 'accept') {
                 this.acceptConsent();
-            } else {
+            } else if (selectedPreference === 'decline') {
                 this.declineConsent();
             }
             
-            bootstrapModal.hide();
+            hideModal();
         });
         
-        // Clean up modal after hiding
+        // Handle close button
+        modal.querySelector('[data-bs-dismiss="modal"]').addEventListener('click', hideModal);
+        
+        // Handle backdrop click
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                hideModal();
+            }
+        });
+        
+        // Clean up modal after hiding (Bootstrap event)
         modal.addEventListener('hidden.bs.modal', () => {
             modal.remove();
         });
