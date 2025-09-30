@@ -46,6 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const max = parseInt(document.getElementById('max-number').value);
         const count = parseInt(document.getElementById('count-numbers').value);
         const unique = document.getElementById('unique-numbers').checked;
+        const excludeHistory = document.getElementById('exclude-history')?.checked === true;
         
         if (isNaN(min) || isNaN(max) || isNaN(count)) {
             showAlert('Vui lòng nhập số hợp lệ!', 'danger');
@@ -62,18 +63,42 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        if (unique && count > (max - min + 1)) {
+        let rangeSize = (max - min + 1);
+        let historyNumbersSet = null;
+        if (excludeHistory) {
+            // Build a set of historical numbers in the same range to exclude
+            const allHistoryNumbers = history
+                .filter(item => {
+                    // Only consider history items whose recorded range overlaps current range (or fully inside)
+                    // Simpler: include all numbers within min-max interval
+                    return true;
+                })
+                .flatMap(item => item.numbers)
+                .filter(n => n >= min && n <= max);
+            historyNumbersSet = new Set(allHistoryNumbers);
+            rangeSize -= historyNumbersSet.size;
+        }
+
+        if (unique || excludeHistory) {
+            if (count > rangeSize) {
+                showAlert('Không thể tạo đủ số vì phạm vi còn lại quá nhỏ!', 'danger');
+                return;
+            }
+        } else if (unique && count > (max - min + 1)) {
+            // (kept for logical clarity; though path covered above)
             showAlert('Không thể tạo nhiều số không trùng lặp hơn phạm vi cho phép!', 'danger');
             return;
         }
         
         let numbers = [];
         
-        if (unique) {
+        if (unique || excludeHistory) {
             // Generate unique numbers
             let availableNumbers = [];
             for (let i = min; i <= max; i++) {
-                availableNumbers.push(i);
+                if (!excludeHistory || !historyNumbersSet.has(i)) {
+                    availableNumbers.push(i);
+                }
             }
             
             for (let i = 0; i < count; i++) {
@@ -119,14 +144,26 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (numbers.length === 1) {
             resultDiv.textContent = numbers[0];
-            resultDiv.className = 'result-display';
+            resultDiv.className = 'result-display result-single';
         } else {
+            // Determine size class based on count
+            let sizeClass = 'multi-small';
+            if (numbers.length <= 4) {
+                sizeClass = 'multi-xl';
+            } else if (numbers.length <= 8) {
+                sizeClass = 'multi-lg';
+            } else if (numbers.length <= 15) {
+                sizeClass = 'multi-md';
+            } else if (numbers.length <= 30) {
+                sizeClass = 'multi-sm';
+            }
+
             resultDiv.innerHTML = `
-                <div class="d-flex flex-wrap justify-content-center gap-2">
-                    ${numbers.map(num => `<span class="badge bg-primary fs-6">${num}</span>`).join('')}
+                <div class="d-flex flex-wrap justify-content-center gap-2 ${sizeClass}">
+                    ${numbers.map(num => `<span class="badge bg-primary generated-number">${num}</span>`).join('')}
                 </div>
             `;
-            resultDiv.className = 'result-display';
+            resultDiv.className = 'result-display result-multi';
         }
         
         // Enable action buttons

@@ -15,7 +15,8 @@ main {
 
 /* Clock and calendar specific styles */
 .clock-display {
-  font-size: 3rem;
+  /* Increased from 3rem to 4.5rem for better prominence */
+  font-size: 4.5rem;
   font-weight: 700;
   color: var(--bs-primary);
   font-family: 'Courier New', monospace;
@@ -83,10 +84,54 @@ main {
   background: var(--bs-light);
 }
 
+/* Date details modal enhancements */
+.date-modal-header {
+  background: linear-gradient(135deg, var(--bs-primary), var(--bs-primary-border-subtle));
+  color: #fff;
+}
+
+.date-card {
+  background: var(--bs-body-bg);
+  border: 1px solid var(--bs-border-color);
+  border-radius: .75rem;
+  position: relative;
+  overflow: hidden;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.date-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(0,0,0,.12);
+}
+
+.date-card.solar-card::before,
+.date-card.lunar-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top left, rgba(255,255,255,.4), rgba(255,255,255,0));
+  pointer-events: none;
+}
+
+.date-badge {
+  font-weight: 500;
+  backdrop-filter: blur(4px);
+}
+
+[data-theme="dark"] .date-card {
+  background: var(--bs-dark-bg-subtle);
+  border-color: var(--bs-border-color-translucent);
+}
+
+[data-theme="dark"] .date-modal-header {
+  background: linear-gradient(135deg, var(--bs-primary), #0d6efd);
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
   .clock-display {
-    font-size: 2.5rem;
+    /* Slightly larger on mobile as well (was 2.5rem) */
+    font-size: 3rem;
   }
   
   .date-display {

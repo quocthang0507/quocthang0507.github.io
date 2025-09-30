@@ -78,6 +78,18 @@ const vietnameseTranslations = {
     "number.total_generated": "Tổng số đã tạo",
     "number.average": "Trung bình",
     "number.most_common": "Số xuất hiện nhiều nhất",
+    "number.save_result": "Lưu kết quả",
+    "number.export_history": "Xuất lịch sử",
+    "number.reset_stats": "Reset thống kê",
+    "number.generate_multiple": "Tạo nhiều số",
+    "number.quick_pick": "Chọn nhanh",
+    "number.presets": "Presets:",
+    "number.preset.dice": "Xúc xắc (1-6)",
+    "number.preset.percent": "Phần trăm (1-100)",
+    "number.preset.lotto": "Lotto (1-45)",
+    "number.preset.coin": "Tung đồng xu (0-1)",
+    "number.initial_prompt": "Nhấn nút để tạo số ngẫu nhiên",
+    "number.exclude_history": "Loại trừ số đã có trong lịch sử",
     
     // Lunar Calendar
     "lunar.details_title": "Chi tiết ngày",

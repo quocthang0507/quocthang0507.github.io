@@ -378,79 +378,145 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Show date details modal
     function showDateDetails(day, month, year) {
-        if (!window.LunarCalendar) {
-            showAlert('Lunar calendar not loaded', 'warning');
-            return;
-        }
-        
-        try {
-            const lunar = window.LunarCalendar.solarToLunar(day, month, year);
-            if (!lunar) {
-                showAlert('Unable to calculate lunar date', 'error');
-                return;
+        // Helper translation function
+        const t = window.t || ((key, fallback) => fallback || key);
+
+        const solarDate = new Date(year, month - 1, day);
+        const dayKeys = ['day.sunday', 'day.monday', 'day.tuesday', 'day.wednesday', 'day.thursday', 'day.friday', 'day.saturday'];
+        const dayOfWeek = t(dayKeys[solarDate.getDay()], dayKeys[solarDate.getDay()]);
+
+        // Compute day-of-year and ISO week for extra context
+        const start = new Date(year, 0, 0);
+        const diff = solarDate - start;
+        const oneDay = 1000 * 60 * 60 * 24;
+        const dayOfYear = Math.floor(diff / oneDay);
+        const jan1 = new Date(year, 0, 1);
+        const days = Math.floor((solarDate - jan1) / oneDay);
+        const weekOfYear = Math.ceil((days + jan1.getDay() + 1) / 7);
+
+        let lunar = null; let zodiac = ''; let canChi = ''; let lunarMonthName = ''; let lunarOk = false;
+        if (window.LunarCalendar) {
+            try {
+                lunar = window.LunarCalendar.solarToLunar(day, month, year);
+                if (lunar) {
+                    zodiac = window.LunarCalendar.getZodiacAnimal(lunar.year) || '';
+                    canChi = window.LunarCalendar.getCanChi(lunar.year) || '';
+                    lunarMonthName = window.LunarCalendar.getLunarMonthName(lunar.month, lunar.isLeap) || '';
+                    lunarOk = true;
+                }
+            } catch(err) {
+                lunarOk = false;
             }
-            
-            const zodiac = window.LunarCalendar.getZodiacAnimal(lunar.year);
-            const canChi = window.LunarCalendar.getCanChi(lunar.year);
-            const lunarMonthName = window.LunarCalendar.getLunarMonthName(lunar.month, lunar.isLeap);
-            
-            const solarDate = new Date(year, month - 1, day);
-            const dayKeys = ['day.sunday', 'day.monday', 'day.tuesday', 'day.wednesday', 'day.thursday', 'day.friday', 'day.saturday'];
-            const dayOfWeek = window.t ? window.t(dayKeys[solarDate.getDay()]) : dayKeys[solarDate.getDay()];
-            
-            // Translation helper
-            const t = window.t || ((key, fallback) => fallback || key);
-            
-            const modalHTML = `
-                <div class="modal fade show" id="dateDetailsModal" style="display: block; background: rgba(0,0,0,0.5);">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header bg-primary text-white">
-                                <h5 class="modal-title">${t('lunar.details_title', 'Chi tiết ngày')} ${day}/${month}/${year}</h5>
-                                <button type="button" class="btn-close btn-close-white" onclick="closeDateModal()">×</button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <h6><i class="fas fa-calendar"></i> ${t('lunar.solar', 'Dương lịch:')}</h6>
-                                        <p><strong>${dayOfWeek}</strong><br>Ngày ${day} tháng ${month} năm ${year}</p>
-                                        
-                                        <h6><i class="fas fa-moon"></i> ${t('lunar.lunar', 'Âm lịch:')}</h6>
-                                        <p>Ngày ${lunar.day} ${lunarMonthName}<br>Năm ${lunar.year} (${canChi})</p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <h6><i class="fas fa-dragon"></i> ${t('lunar.zodiac', 'Con giáp:')}</h6>
-                                        <p class="text-primary">${zodiac}</p>
-                                        
-                                        <h6><i class="fas fa-info-circle"></i> ${t('lunar.info', 'Thông tin:')}</h6>
-                                        <ul class="list-unstyled">
-                                            <li><small>${t(lunar.isLeap ? 'lunar.year_leap' : 'lunar.year_normal', lunar.isLeap ? 'Năm âm lịch nhuận' : 'Năm âm lịch thường')}</small></li>
-                                            <li><small>${t(lunar.isLeap ? 'lunar.month_leap' : 'lunar.month_normal', lunar.isLeap ? 'Tháng nhuận' : 'Tháng thường')}</small></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" onclick="closeDateModal()">${t('lunar.close', 'Đóng')}</button>
-                            </div>
-                        </div>
+        }
+
+        // Create (or reuse) modal container skeleton once
+        let modal = document.getElementById('dateDetailsModal');
+        if (!modal) {
+            document.body.insertAdjacentHTML('beforeend', `
+            <div class="modal fade" id="dateDetailsModal" tabindex="-1" aria-hidden="true">
+              <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content date-modal">
+                  <div class="modal-header date-modal-header">
+                    <h5 class="modal-title" id="dateDetailsTitle"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body" id="dateDetailsBody"></div>
+                  <div class="modal-footer flex-wrap gap-2">
+                    <div class="btn-group me-auto" role="group" aria-label="Navigation">
+                      <button type="button" class="btn btn-outline-primary" id="datePrevBtn"><i class="fas fa-chevron-left"></i></button>
+                      <button type="button" class="btn btn-outline-secondary" id="dateTodayBtn"><i class="fas fa-calendar-day"></i></button>
+                      <button type="button" class="btn btn-outline-primary" id="dateNextBtn"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                    <button type="button" class="btn btn-outline-success" id="dateCopyBtn"><i class="fas fa-copy"></i> ${t('lunar.copy','Sao chép')}</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">${t('lunar.close','Đóng')}</button>
+                  </div>
+                </div>
+              </div>
+            </div>`);
+            modal = document.getElementById('dateDetailsModal');
+        }
+
+        // Fill content
+        const titleEl = modal.querySelector('#dateDetailsTitle');
+        titleEl.textContent = `${t('lunar.details_title','Chi tiết ngày')} ${day}/${month}/${year}`;
+
+        // Build detail HTML
+        let lunarSection = '';
+        if (lunarOk) {
+            lunarSection = `
+            <div class="col-md-6">
+                <div class="date-card lunar-card p-3 h-100">
+                    <h6 class="text-muted mb-2"><i class="fas fa-moon"></i> ${t('lunar.lunar','Âm lịch')}</h6>
+                    <div class="display-6 fw-bold mb-1">${lunar.day}</div>
+                    <div class="fs-6">${lunarMonthName}</div>
+                    <div class="small text-secondary mt-1">${t('lunar.year','Năm')}: ${lunar.year} (${canChi})</div>
+                    <div class="d-flex flex-wrap gap-2 mt-3">
+                        <span class="badge bg-info-subtle text-info-emphasis border date-badge">${zodiac}</span>
+                        <span class="badge bg-warning-subtle text-warning-emphasis border date-badge">${lunar.isLeap ? t('lunar.month_leap','Tháng nhuận') : t('lunar.month_normal','Tháng thường')}</span>
                     </div>
                 </div>
-            `;
-            
-            // Remove existing modal if any
-            const existingModal = document.getElementById('dateDetailsModal');
-            if (existingModal) {
-                existingModal.remove();
-            }
-            
-            // Add modal to body
-            document.body.insertAdjacentHTML('beforeend', modalHTML);
-            
-        } catch (error) {
-            console.error('Error showing date details:', error);
-            showAlert('Lỗi khi hiển thị thông tin ngày', 'error');
+            </div>`;
+        } else {
+            lunarSection = `<div class="col-md-6"><div class="alert alert-warning mb-0">${t('lunar.unavailable','Không có dữ liệu âm lịch')}</div></div>`;
         }
+
+        const bodyHTML = `
+        <div class="row g-3 align-items-stretch">
+            <div class="col-md-6">
+                <div class="date-card solar-card p-3 h-100">
+                    <h6 class="text-muted mb-2"><i class="fas fa-sun"></i> ${t('lunar.solar','Dương lịch')}</h6>
+                    <div class="display-6 fw-bold mb-1">${day}</div>
+                    <div class="fs-5">${dayOfWeek}</div>
+                    <div class="small text-secondary mt-1">${t('lunar.full_date','Ngày')} ${day} / ${month} / ${year}</div>
+                    <div class="d-flex flex-wrap gap-2 mt-3">
+                        <span class="badge bg-primary-subtle text-primary-emphasis border date-badge">${t('lunar.day_of_year','Ngày trong năm')}: ${dayOfYear}</span>
+                        <span class="badge bg-secondary-subtle text-secondary-emphasis border date-badge">${t('lunar.week_of_year','Tuần')}: ${weekOfYear}</span>
+                    </div>
+                </div>
+            </div>
+            ${lunarSection}
+        </div>`;
+
+        modal.querySelector('#dateDetailsBody').innerHTML = bodyHTML;
+
+        // Store current shown date for navigation
+        modal.dataset.day = day;
+        modal.dataset.month = month;
+        modal.dataset.year = year;
+
+        // Navigation handlers (rebind each time to ensure updated references)
+        modal.querySelector('#datePrevBtn').onclick = () => {
+            const d = new Date(year, month - 1, day);
+            d.setDate(d.getDate() - 1);
+            showDateDetails(d.getDate(), d.getMonth() + 1, d.getFullYear());
+        };
+        modal.querySelector('#dateNextBtn').onclick = () => {
+            const d = new Date(year, month - 1, day);
+            d.setDate(d.getDate() + 1);
+            showDateDetails(d.getDate(), d.getMonth() + 1, d.getFullYear());
+        };
+        modal.querySelector('#dateTodayBtn').onclick = () => {
+            const today = new Date();
+            showDateDetails(today.getDate(), today.getMonth() + 1, today.getFullYear());
+        };
+        modal.querySelector('#dateCopyBtn').onclick = () => {
+            const parts = [
+                `${t('lunar.solar','Dương lịch')}: ${day}/${month}/${year} (${dayOfWeek})`,
+                lunarOk ? `${t('lunar.lunar','Âm lịch')}: ${lunar.day} ${lunarMonthName} ${lunar.year} (${canChi})` : '',
+                lunarOk ? `${t('lunar.zodiac','Con giáp')}: ${zodiac}` : '',
+                `${t('lunar.day_of_year','Ngày trong năm')}: ${dayOfYear}`,
+                `${t('lunar.week_of_year','Tuần')}: ${weekOfYear}`
+            ].filter(Boolean).join('\n');
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(parts).then(() => {
+                    showAlert(t('lunar.copied','Đã sao chép!'), 'success');
+                });
+            }
+        };
+
+        // Show via Bootstrap API for proper backdrop & accessibility
+        const bootstrapModal = bootstrap.Modal.getOrCreateInstance(modal);
+        bootstrapModal.show();
     }
     
     // Function to close date modal

@@ -34,8 +34,7 @@ sitemap:
                     </div>
                     <!-- Audio element for wheel spinning sound -->
                     <audio id="wheel-spin-audio" preload="auto">
-                        <source src="{{ '/assets/audio/wheel-spin.mp3' | relative_url }}" type="audio/mpeg">
-                        <source src="{{ '/assets/audio/wheel-spin.ogg' | relative_url }}" type="audio/ogg">
+                        <source src="{{ '/assets/audio/wheel-spin.wav' | relative_url }}" type="audio/wav">
                         <!-- Fallback: Generate audio using Web Audio API -->
                     </audio>
                 </div>
@@ -107,7 +106,7 @@ sitemap:
                 
                 <div class="mt-3">
                     <h6 data-i18n="wheel.presets">Mẫu có sẵn:</h6>
-                    <div class="btn-group-vertical d-grid gap-2">
+                    <div class="d-flex flex-wrap gap-2 justify-content-center">
                         <button class="btn btn-outline-secondary preset-names-btn" data-preset="colors">
                             <i class="fas fa-palette"></i> <span data-i18n="wheel.colors">Màu sắc</span>
                         </button>

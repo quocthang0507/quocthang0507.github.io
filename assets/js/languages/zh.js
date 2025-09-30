@@ -78,6 +78,18 @@ const chineseTranslations = {
     "number.total_generated": "总生成数",
     "number.average": "平均值",
     "number.most_common": "最常见",
+    "number.save_result": "保存结果",
+    "number.export_history": "导出历史",
+    "number.reset_stats": "重置统计",
+    "number.generate_multiple": "生成多个",
+    "number.quick_pick": "快速选择",
+    "number.presets": "预设：",
+    "number.preset.dice": "骰子 (1-6)",
+    "number.preset.percent": "百分比 (1-100)",
+    "number.preset.lotto": "乐透 (1-45)",
+    "number.preset.coin": "抛硬币 (0-1)",
+    "number.initial_prompt": "点击按钮生成随机数",
+    "number.exclude_history": "排除历史中已有的数字",
     
     // Lunar Calendar
     "lunar.details_title": "日期详情",

@@ -78,6 +78,18 @@ const englishTranslations = {
     "number.total_generated": "Total generated",
     "number.average": "Average",
     "number.most_common": "Most common",
+    "number.save_result": "Save Result",
+    "number.export_history": "Export History",
+    "number.reset_stats": "Reset Statistics",
+    "number.generate_multiple": "Generate Multiple",
+    "number.quick_pick": "Quick Pick",
+    "number.presets": "Presets:",
+    "number.preset.dice": "Dice (1-6)",
+    "number.preset.percent": "Percent (1-100)",
+    "number.preset.lotto": "Lotto (1-45)",
+    "number.preset.coin": "Coin Flip (0-1)",
+    "number.initial_prompt": "Press the button to generate random numbers",
+    "number.exclude_history": "Exclude numbers already in history",
     
     // Lunar Calendar
     "lunar.details_title": "Date Details",

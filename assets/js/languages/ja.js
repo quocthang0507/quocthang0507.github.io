@@ -78,6 +78,18 @@ const japaneseTranslations = {
     "number.total_generated": "総生成数",
     "number.average": "平均",
     "number.most_common": "最频出",
+    "number.save_result": "結果を保存",
+    "number.export_history": "履歴をエクスポート",
+    "number.reset_stats": "統計をリセット",
+    "number.generate_multiple": "複数生成",
+    "number.quick_pick": "クイック選択",
+    "number.presets": "プリセット：",
+    "number.preset.dice": "サイコロ (1-6)",
+    "number.preset.percent": "パーセント (1-100)",
+    "number.preset.lotto": "ロト (1-45)",
+    "number.preset.coin": "コイントス (0-1)",
+    "number.initial_prompt": "ボタンを押してランダム数を生成",
+    "number.exclude_history": "履歴にある数値を除外",
     
     // Lunar Calendar
     "lunar.details_title": "日付の詳細",
