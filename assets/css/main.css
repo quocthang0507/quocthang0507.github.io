@@ -563,6 +563,119 @@
     background: #dc3545;
 }
 
+/* Fallback Modal Styles - for when Bootstrap is not available */
+.modal.show {
+    display: block !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    z-index: 1060 !important;
+    overflow: auto !important;
+}
+
+.modal-backdrop.show {
+    opacity: 0.5 !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background-color: #000 !important;
+    z-index: 1055 !important;
+}
+
+.modal-dialog {
+    margin: 1.75rem auto !important;
+    max-width: 500px !important;
+    position: relative !important;
+}
+
+.modal-dialog.modal-lg {
+    max-width: 800px !important;
+}
+
+.modal-content {
+    background-color: #fff !important;
+    border: 1px solid rgba(0, 0, 0, 0.2) !important;
+    border-radius: 0.5rem !important;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    position: relative !important;
+}
+
+.modal-header {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 1rem 1rem !important;
+    border-bottom: 1px solid #dee2e6 !important;
+    border-top-left-radius: calc(0.5rem - 1px) !important;
+    border-top-right-radius: calc(0.5rem - 1px) !important;
+}
+
+.modal-title {
+    margin-bottom: 0 !important;
+    line-height: 1.5 !important;
+    font-size: 1.25rem !important;
+    font-weight: 500 !important;
+}
+
+.modal-body {
+    position: relative !important;
+    flex: 1 1 auto !important;
+    padding: 1rem !important;
+}
+
+.modal-footer {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    padding: 0.75rem !important;
+    border-top: 1px solid #dee2e6 !important;
+    border-bottom-right-radius: calc(0.5rem - 1px) !important;
+    border-bottom-left-radius: calc(0.5rem - 1px) !important;
+    gap: 0.5rem !important;
+}
+
+.btn-close {
+    box-sizing: content-box !important;
+    width: 1em !important;
+    height: 1em !important;
+    padding: 0.25em 0.25em !important;
+    color: #000 !important;
+    background: transparent url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000'%3e%3cpath d='m.235.757 8.015 8.015-8.015 8.015c-.21.21-.21.55 0 .76s.55.21.76 0l8.015-8.015 8.015 8.015c.21.21.55.21.76 0s.21-.55 0-.76L8.77 8.757l8.015-8.015c.21-.21.21-.55 0-.76s-.55-.21-.76 0L8.01 7.997-.005-.018c-.21-.21-.55-.21-.76 0s-.21.55 0 .76z'/%3e%3c/svg%3e") center/1em auto no-repeat !important;
+    border: 0 !important;
+    border-radius: 0.375rem !important;
+    opacity: 0.5 !important;
+}
+
+.btn-close:hover {
+    opacity: 0.75 !important;
+}
+
+body.modal-open {
+    overflow: hidden !important;
+}
+
+[data-theme="dark"] .modal-content {
+    background-color: var(--bs-dark) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+[data-theme="dark"] .modal-header {
+    border-bottom-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+[data-theme="dark"] .modal-footer {
+    border-top-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+[data-theme="dark"] .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%) !important;
+}
+
 [data-theme="dark"] .result-display {
     background-color: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(15px);
