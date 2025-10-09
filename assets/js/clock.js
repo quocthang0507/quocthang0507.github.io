@@ -409,6 +409,12 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
+        // Check for holidays
+        let holiday = null;
+        if (window.VietnamHolidays) {
+            holiday = window.VietnamHolidays.getHoliday(day, month, year);
+        }
+
         // Create (or reuse) modal container skeleton once
         let modal = document.getElementById('dateDetailsModal');
         if (!modal) {
@@ -460,6 +466,33 @@ document.addEventListener('DOMContentLoaded', function() {
             lunarSection = `<div class="col-md-6"><div class="alert alert-warning mb-0">${t('lunar.unavailable','Không có dữ liệu âm lịch')}</div></div>`;
         }
 
+        // Build holiday section
+        let holidaySection = '';
+        if (holiday) {
+            const holidayIcon = holiday.is_public_holiday ? '<i class="fas fa-star text-danger"></i>' : '<i class="fas fa-calendar-alt text-info"></i>';
+            const holidayBadge = holiday.is_public_holiday ? 
+                `<span class="badge bg-danger-subtle text-danger-emphasis border date-badge"><i class="fas fa-flag"></i> Ngày lễ chính thức</span>` : 
+                `<span class="badge bg-info-subtle text-info-emphasis border date-badge">Ngày kỷ niệm</span>`;
+            const holidayType = holiday.type === 'lunar' ? 
+                `<span class="badge bg-secondary-subtle text-secondary-emphasis border date-badge"><i class="fas fa-moon"></i> Âm lịch</span>` : 
+                `<span class="badge bg-primary-subtle text-primary-emphasis border date-badge"><i class="fas fa-sun"></i> Dương lịch</span>`;
+            
+            holidaySection = `
+            <div class="col-12 mt-3">
+                <div class="alert alert-${holiday.is_public_holiday ? 'danger' : 'info'} mb-0">
+                    <h6 class="alert-heading mb-2">${holidayIcon} Ngày lễ</h6>
+                    <p class="mb-2 fw-bold">${holiday.name}</p>
+                    ${holiday.name_en ? `<p class="mb-2 small text-muted">${holiday.name_en}</p>` : ''}
+                    ${holiday.description ? `<p class="mb-2 small">${holiday.description}</p>` : ''}
+                    <div class="d-flex flex-wrap gap-2 mt-2">
+                        ${holidayBadge}
+                        ${holidayType}
+                        ${holiday.duration_days ? `<span class="badge bg-success-subtle text-success-emphasis border date-badge">Nghỉ: ${holiday.duration_days} ngày</span>` : ''}
+                    </div>
+                </div>
+            </div>`;
+        }
+
         const bodyHTML = `
         <div class="row g-3 align-items-stretch">
             <div class="col-md-6">
@@ -475,6 +508,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             </div>
             ${lunarSection}
+            ${holidaySection}
         </div>`;
 
         modal.querySelector('#dateDetailsBody').innerHTML = bodyHTML;

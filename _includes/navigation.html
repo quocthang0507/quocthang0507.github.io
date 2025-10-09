@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container">
         <a class="navbar-brand" href="{{ '/' | relative_url }}">
-            <i class="fas fa-home"></i> <span data-i18n="site.title">{{ site.title }}</span>
+            <span data-i18n="site.title">{{ site.title }}</span>
         </a>
         
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -12,17 +12,17 @@
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
                     <a class="nav-link {% if page.url == '/' %}active{% endif %}" href="{{ '/' | relative_url }}">
-                        <i class="fas fa-clock"></i> <span data-i18n="nav.home">Trang chủ</span>
+                        <span data-i18n="nav.home">Trang chủ</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {% if page.url == '/random-number/' %}active{% endif %}" href="{{ '/random-number/' | relative_url }}">
-                        <i class="fas fa-dice"></i> <span data-i18n="nav.random_number">Random Number</span>
+                        <span data-i18n="nav.random_number">Random Number</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {% if page.url == '/random-wheel/' %}active{% endif %}" href="{{ '/random-wheel/' | relative_url }}">
-                        <i class="fas fa-sync-alt"></i> <span data-i18n="nav.random_wheel">Random Wheel</span>
+                        <span data-i18n="nav.random_wheel">Random Wheel</span>
                     </a>
                 </li>
                 <!-- Dark mode toggle -->

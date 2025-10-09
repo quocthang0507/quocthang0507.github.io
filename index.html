@@ -3,7 +3,7 @@ layout: default
 title: "Trang chủ"
 description: "Trang chủ với đồng hồ số, lịch âm dương, đồng hồ bấm giờ và hẹn giờ. Hỗ trợ đa ngôn ngữ và giao diện tối."
 keywords: "đồng hồ số, lịch âm, lịch dương, đồng hồ bấm giờ, hẹn giờ, timer, stopwatch, lunar calendar, multi-language"
-custom_js: ['i18n.js', 'lunar-calendar.js', 'clock.js']
+custom_js: ['i18n.js', 'lunar-calendar.js', 'vietnam-holidays.js', 'clock.js']
 permalink: /
 sitemap:
   priority: 1.0
@@ -83,10 +83,10 @@ sitemap:
             </div>
             <div class="card-body">
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-6 text-center">
                         <h6><i class="fas fa-play"></i> <span data-i18n="stopwatch.title">Stopwatch</span></h6>
                         <div id="stopwatch-display" class="h4 text-primary">00:00:00.000</div>
-                        <div class="btn-group">
+                        <div class="btn-group" role="group">
                             <button id="start-stopwatch" class="btn btn-success">
                                 <i class="fas fa-play"></i> <span data-i18n="stopwatch.start">Bắt đầu</span>
                             </button>
@@ -98,7 +98,7 @@ sitemap:
                             </button>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-6 text-center">
                         <h6><i class="fas fa-hourglass-half"></i> Timer</h6>
                         <div class="row mb-2">
                             <div class="col">

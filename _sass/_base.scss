@@ -84,6 +84,37 @@ main {
   background: var(--bs-light);
 }
 
+// Holiday indicators in calendar
+.calendar-day {
+  position: relative;
+}
+
+.holiday-indicator {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  font-size: 0.5rem;
+  color: var(--bs-warning);
+  z-index: 1;
+}
+
+.has-holiday {
+  border-left: 3px solid var(--bs-info);
+}
+
+.public-holiday {
+  border-left: 3px solid var(--bs-danger);
+  background: rgba(220, 53, 69, 0.05);
+}
+
+.public-holiday .holiday-indicator {
+  color: var(--bs-danger);
+}
+
+.calendar-table .public-holiday:hover {
+  background: rgba(220, 53, 69, 0.1);
+}
+
 // Date details modal enhancements
 .date-modal-header {
   background: linear-gradient(135deg, var(--bs-primary), var(--bs-primary-border-subtle));

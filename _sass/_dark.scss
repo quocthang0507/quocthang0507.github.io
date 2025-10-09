@@ -106,3 +106,16 @@
   color: var(--bs-secondary);
   background-color: var(--custom-bg-dark);
 }
+
+[data-theme="dark"] .public-holiday {
+  background: rgba(220, 53, 69, 0.15);
+}
+
+[data-theme="dark"] .calendar-table .public-holiday:hover {
+  background: rgba(220, 53, 69, 0.25);
+}
+
+[data-theme="dark"] .has-holiday {
+  border-left-color: var(--bs-info);
+}
+

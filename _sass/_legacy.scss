@@ -21,32 +21,6 @@
 [data-theme="dark"] .dark-mode-toggle:hover { background-color: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.3); color: #ffed4e; }
 [data-theme="dark"] .dark-mode-toggle:focus { outline: 2px solid #ffd700; outline-offset: 2px; }
 
-/* Cookie Consent Banner */
-.cookie-consent-banner { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-top: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1); z-index: 1070; transform: translateY(100%); transition: transform 0.3s ease-in-out; padding: 1rem 0; }
-.cookie-consent-banner.show { transform: translateY(0); }
-[data-theme="dark"] .cookie-consent-banner { background: rgba(33, 37, 41, 0.95); border-top: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3); }
-.cookie-consent-content { max-width: 1200px; margin: 0 auto; padding: 0 1rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
-@media (max-width: 768px) { .cookie-consent-content { flex-direction: column; text-align: center; } }
-.cookie-consent-text { flex: 1; min-width: 300px; }
-.cookie-consent-title { margin: 0 0 0.5rem 0; font-size: 1.1rem; font-weight: 600; color: var(--text-color); }
-.cookie-consent-message { margin: 0; font-size: 0.9rem; color: var(--text-secondary); line-height: 1.4; }
-.cookie-consent-actions { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
-@media (max-width: 480px) { .cookie-consent-actions { width: 100%; justify-content: center; } .cookie-consent-actions .btn { flex: 1; min-width: 80px; } }
-
-/* Cookie preference indicators */
-.cookie-status { position: fixed; bottom: 20px; right: 20px; background: var(--success-color); color: white; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.8rem; z-index: 1000; opacity: 0; transform: translateY(20px); transition: all 0.3s ease; }
-.cookie-status.show { opacity: 1; transform: translateY(0); }
-.cookie-status.declined { background: var(--danger-color); }
-#manage-cookies { color: var(--text-secondary); text-decoration: none; font-size: 0.8rem; transition: color 0.3s ease; }
-#manage-cookies:hover { color: var(--primary-color); text-decoration: underline; }
-
-/* Accessibility improvements for consent banner */
-.cookie-consent-banner:focus-within { outline: 2px solid var(--primary-color); outline-offset: -2px; }
-.cookie-consent-banner .btn:focus { box-shadow: 0 0 0 0.2rem rgba(var(--primary-rgb), 0.25); }
-
-/* Animation for consent acceptance */
-@keyframes consentAccepted { 0% { background: var(--success-color); transform: scale(1);} 50% { transform: scale(1.05);} 100% { background: var(--success-color); transform: scale(1);} }
-
 /* Table improvements */
 .table { background: rgba(255, 255, 255, 0.9); border-radius: 12px; overflow: hidden; box-shadow: var(--shadow-light); }
 .table th { background: var(--primary-gradient); color: white; font-weight: 600; text-shadow: 0 1px 2px rgba(0,0,0,0.1); border: none; }
