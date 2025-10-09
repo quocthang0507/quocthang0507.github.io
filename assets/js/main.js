@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize dark mode
     initializeDarkMode();
     initializeCustomThemeToggle();
-    injectFooterThemeBadge();
+    // Footer theme badge removed
     
     // Initialize tooltips
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
@@ -105,9 +105,7 @@ function loadFromLocalStorage(key) {
 function initializeDarkMode() {
     const darkModeToggle = document.getElementById('dark-mode-toggle');
     const darkModeIcon = document.getElementById('dark-mode-icon');
-    
-    if (!darkModeToggle) return;
-    
+    // Always initialize theme even if toggle is missing (e.g., minimal pages)
     // Check for saved theme preference or default to light mode
     const savedTheme = localStorage.getItem('theme');
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -117,25 +115,26 @@ function initializeDarkMode() {
     document.documentElement.setAttribute('data-theme', currentTheme);
     updateDarkModeIcon(currentTheme);
     
-    // Add click event listener
-    darkModeToggle.addEventListener('click', function() {
-        const currentTheme = document.documentElement.getAttribute('data-theme');
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        
-        document.documentElement.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
-        updateDarkModeIcon(newTheme);
-        updateThemeBadge(); // Update footer badge
-        
-        // Track dark mode toggle
-        if (typeof gtag !== 'undefined') {
-            gtag('event', 'theme_change', {
-                event_category: 'user_interface',
-                event_label: newTheme,
-                theme_switched_to: newTheme
-            });
-        }
-    });
+    // Add click event listener if toggle exists
+    if (darkModeToggle) {
+        darkModeToggle.addEventListener('click', function() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateDarkModeIcon(newTheme);
+            
+            // Track dark mode toggle
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'theme_change', {
+                    event_category: 'user_interface',
+                    event_label: newTheme,
+                    theme_switched_to: newTheme
+                });
+            }
+        });
+    }
     
     // Listen for system theme changes
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
@@ -171,7 +170,6 @@ function initializeCustomThemeToggle() {
         if (btn) {
             const enabled = document.body.classList.toggle('custom-theme');
             localStorage.setItem('customTheme', enabled ? 'on' : 'off');
-            updateThemeBadge();
             announceThemeChange(enabled);
             if (typeof gtag !== 'undefined') {
                 gtag('event', 'custom_theme_toggle', { event_category: 'user_interface', enabled });
@@ -224,46 +222,4 @@ function openQuickSettingsPanel() {
     requestAnimationFrame(()=>panel.classList.add('open'));
 }
 
-function injectFooterThemeBadge() {
-    if (document.getElementById('theme-badge-toggle')) return;
-    const footer = document.querySelector('footer .row');
-    if (!footer) return;
-    const badgeWrapper = document.createElement('div');
-    badgeWrapper.className = 'col-12 mt-3 text-center';
-    badgeWrapper.innerHTML = `<span id="theme-badge-toggle" class="theme-badge" role="button" tabindex="0" data-action="toggle-dark-theme"></span>`;
-    footer.appendChild(badgeWrapper);
-    updateThemeBadge();
-    badgeWrapper.addEventListener('keydown', (e)=>{
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); badgeWrapper.querySelector('#theme-badge-toggle').click(); }
-    });
-}
-
-function updateThemeBadge() {
-    const badge = document.getElementById('theme-badge-toggle');
-    if (!badge) return;
-    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    const labelKey = isDark ? 'ui.dark_mode' : 'ui.light_mode';
-    badge.textContent = (window.translationSystem && window.translationSystem.t) ? window.translationSystem.t(labelKey) : (isDark ? 'Dark Mode' : 'Light Mode');
-    badge.setAttribute('aria-pressed', isDark ? 'true' : 'false');
-}
-
-// Update translations when language changes
-window.addEventListener('languageChanged', updateThemeBadge);
-
-// Handle footer theme badge clicks
-document.addEventListener('click', (e) => {
-    if (e.target.matches('[data-action="toggle-dark-theme"]')) {
-        // Trigger the same dark mode toggle as the navigation button
-        const darkModeToggle = document.getElementById('dark-mode-toggle');
-        if (darkModeToggle) {
-            darkModeToggle.click();
-        } else {
-            // Fallback: toggle dark mode directly
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            document.documentElement.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            updateThemeBadge();
-        }
-    }
-});
+// Footer theme badge and related listeners removed
