@@ -7,6 +7,47 @@ body {
   transition: background-color var(--transition-normal), color var(--transition-normal);
 }
 
+.holiday-indicator {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  font-size: 0.5rem;
+  color: var(--bs-warning);
+  z-index: 1;
+}
+
+/* Corner badge for holidays */
+.holiday-badge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  font-size: 0.625rem;
+  line-height: 1;
+  padding: 2px 4px;
+  border-radius: 6px;
+  background: var(--bs-warning);
+  color: #000;
+  font-weight: 700;
+  z-index: 2;
+}
+
+.public-holiday .holiday-indicator {
+  color: var(--bs-danger);
+}
+
+.public-holiday .holiday-badge {
+  background: var(--bs-danger);
+  color: #fff;
+}
+/* Base styles - Using Bootstrap defaults with minimal customizations */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: background-color var(--transition-normal), color var(--transition-normal);
+}
+
 main {
   flex: 1;
   padding-top: 2rem;

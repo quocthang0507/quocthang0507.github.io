@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize dark mode
     initializeDarkMode();
     initializeCustomThemeToggle();
-    injectSettingsFloatingButton();
     injectFooterThemeBadge();
     
     // Initialize tooltips

@@ -120,8 +120,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                     
                     calendarHTML += `<td class="${className} calendar-day" data-date="${date}" data-month="${currentMonth + 1}" data-year="${currentYear}">
-                        <div class="solar-date">${date}</div>
-                        ${lunarInfo}
+                        <a href="#" class="calendar-day-link d-block position-relative p-1" aria-label="${date}/${currentMonth + 1}/${currentYear}">
+                            <div class="solar-date">${date}</div>
+                            ${lunarInfo}
+                        </a>
                     </td>`;
                     date++;
                 }
@@ -133,12 +135,15 @@ document.addEventListener('DOMContentLoaded', function() {
         
         document.getElementById('calendar-display').innerHTML = calendarHTML;
         
-        // Add click handlers for calendar days
-        document.querySelectorAll('.calendar-day').forEach(cell => {
-            cell.addEventListener('click', function() {
-                const day = parseInt(this.dataset.date);
-                const month = parseInt(this.dataset.month);
-                const year = parseInt(this.dataset.year);
+        // Add click handlers for calendar day links
+        document.querySelectorAll('.calendar-day-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const cell = this.closest('.calendar-day');
+                if (!cell) return;
+                const day = parseInt(cell.dataset.date);
+                const month = parseInt(cell.dataset.month);
+                const year = parseInt(cell.dataset.year);
                 showDateDetails(day, month, year);
             });
         });

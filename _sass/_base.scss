@@ -89,13 +89,19 @@ main {
   position: relative;
 }
 
-.holiday-indicator {
+// Corner badge for holidays
+.holiday-badge {
   position: absolute;
-  top: 2px;
-  right: 2px;
-  font-size: 0.5rem;
-  color: var(--bs-warning);
-  z-index: 1;
+  top: 4px;
+  right: 4px;
+  font-size: 0.625rem; // 10px
+  line-height: 1;
+  padding: 2px 4px;
+  border-radius: 6px;
+  background: var(--bs-warning);
+  color: #000;
+  font-weight: 700;
+  z-index: 2;
 }
 
 .has-holiday {
@@ -107,8 +113,9 @@ main {
   background: rgba(220, 53, 69, 0.05);
 }
 
-.public-holiday .holiday-indicator {
-  color: var(--bs-danger);
+.public-holiday .holiday-badge {
+  background: var(--bs-danger);
+  color: #fff;
 }
 
 .calendar-table .public-holiday:hover {

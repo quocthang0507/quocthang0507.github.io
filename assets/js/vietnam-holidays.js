@@ -74,18 +74,21 @@
         if (holiday.is_public_holiday) {
             cell.classList.add('public-holiday');
         }
-        
-        // Add holiday indicator dot or icon
-        const holidayDot = document.createElement('span');
-        holidayDot.className = 'holiday-indicator';
-        holidayDot.title = holiday.name;
-        if (holiday.is_public_holiday) {
-            holidayDot.innerHTML = '<i class="fas fa-star"></i>';
-        } else {
-            holidayDot.innerHTML = '<i class="fas fa-circle"></i>';
-        }
-        
-        cell.appendChild(holidayDot);
+
+        // Add holiday badge in the corner of the clickable area
+        let anchor = cell.querySelector('.calendar-day-link');
+        if (!anchor) anchor = cell; // Fallback
+
+        // Avoid duplicates if re-enhanced
+        const existing = anchor.querySelector('.holiday-badge');
+        if (existing) existing.remove();
+
+        const badge = document.createElement('span');
+        badge.className = 'holiday-badge';
+        badge.title = holiday.name;
+        badge.setAttribute('aria-label', holiday.name);
+        badge.textContent = holiday.is_public_holiday ? 'PH' : 'H';
+        anchor.appendChild(badge);
     }
     
     // Enhance calendar with holidays
