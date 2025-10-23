@@ -87,7 +87,7 @@
         badge.className = 'holiday-badge';
         badge.title = holiday.name;
         badge.setAttribute('aria-label', holiday.name);
-        badge.textContent = holiday.is_public_holiday ? 'PH' : 'H';
+        badge.textContent = holiday.is_public_holiday ? 'PH' : '🌸';
         anchor.appendChild(badge);
     }
     

@@ -312,10 +312,11 @@
             const darkModeIcon = document.querySelector('#dark-mode-icon');
             
             if (darkModeToggle) {
-                // Check for saved theme or system preference
+                // Check for saved theme preference or default to light mode
                 const savedTheme = localStorage.getItem('theme');
-                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                const currentTheme = savedTheme || (prefersDark ? 'dark' : 'light');
+                // Only use browser preference if user hasn't set a preference yet
+                // Default to light mode to prevent automatic dark mode on page load
+                const currentTheme = savedTheme || 'light';
                 
                 // Apply theme
                 document.documentElement.setAttribute('data-theme', currentTheme);

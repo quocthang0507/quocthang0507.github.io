@@ -4,12 +4,125 @@ document.addEventListener('DOMContentLoaded', function() {
     let spinHistory = loadFromLocalStorage('wheelSpinHistory') || [];
     let isSpinning = false;
     let currentRotation = 0;
+    let currentColorTheme = localStorage.getItem('wheelColorTheme') || 'classic';
     
     const presets = {
         colors: ['Đỏ', 'Xanh lá', 'Xanh dương', 'Vàng', 'Tím', 'Cam', 'Hồng', 'Nâu'],
         animals: ['Chó', 'Mèo', 'Voi', 'Sư tử', 'Hổ', 'Gấu', 'Thỏ', 'Cáo'],
         fruits: ['Táo', 'Chuối', 'Cam', 'Nho', 'Dâu', 'Dứa', 'Xoài', 'Lê'],
         numbers: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
+    };
+    
+    // Color theme presets
+    const colorThemes = {
+        classic: {
+            name: 'Classic',
+            colors: [
+                '#e74c3c', '#3498db', '#2ecc71', '#f39c12', 
+                '#9b59b6', '#1abc9c', '#e67e22', '#34495e',
+                '#f1c40f', '#e91e63', '#673ab7', '#00bcd4',
+                '#4caf50', '#ff5722', '#795548', '#607d8b'
+            ]
+        },
+        vibrant: {
+            name: 'Vibrant',
+            colors: [
+                '#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A',
+                '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E2',
+                '#F8B739', '#52B788', '#F48FB1', '#4DB8FF',
+                '#FFD93D', '#6BCF7F', '#A78BFA', '#FB8B24'
+            ]
+        },
+        pastel: {
+            name: 'Pastel',
+            colors: [
+                '#FFB3BA', '#BAFFC9', '#BAE1FF', '#FFFFBA',
+                '#E0BBE4', '#FFDFD3', '#D4F1F4', '#FFE5B4',
+                '#C7CEEA', '#FFC8DD', '#CCD5AE', '#E0AFA0',
+                '#B4E7CE', '#F6BD60', '#E5B8F4', '#A8DADC'
+            ]
+        },
+        neon: {
+            name: 'Neon',
+            colors: [
+                '#FF10F0', '#39FF14', '#FFFF00', '#FF3F00',
+                '#00F0FF', '#BC13FE', '#FF073A', '#7FFF00',
+                '#FE4EDA', '#4D4DFF', '#FFB900', '#FE019A',
+                '#39FF14', '#FF6EC7', '#08F7FE', '#DEFE47'
+            ]
+        },
+        ocean: {
+            name: 'Ocean',
+            colors: [
+                '#006994', '#1E88A8', '#3FA7D6', '#59C3F0',
+                '#7AD8F5', '#89CFF0', '#4FA3CC', '#2E8BC0',
+                '#0077B6', '#00B4D8', '#90E0EF', '#48CAE4',
+                '#00A3C4', '#0096C7', '#0288D1', '#029ACA'
+            ]
+        },
+        sunset: {
+            name: 'Sunset',
+            colors: [
+                '#FF6B35', '#F7931E', '#FDC830', '#F37335',
+                '#FFA07A', '#FF7F50', '#FF8C42', '#FF6F61',
+                '#FF5E5B', '#D64545', '#FA8072', '#E9573F',
+                '#FF6B6B', '#EE6352', '#FF9A76', '#FFA384'
+            ]
+        },
+        forest: {
+            name: 'Forest',
+            colors: [
+                '#2D5016', '#406343', '#4A7C59', '#56A36C',
+                '#6BB77B', '#7EC488', '#90D399', '#A7DBA9',
+                '#50723C', '#73A24E', '#8FBC66', '#A8D08D',
+                '#C7E9C0', '#87B87F', '#6DA76A', '#4F9153'
+            ]
+        },
+        candy: {
+            name: 'Candy',
+            colors: [
+                '#FF1493', '#FF69B4', '#FFB6C1', '#FFC0CB',
+                '#FF85C1', '#FF6B9D', '#FF1493', '#C71585',
+                '#DA70D6', '#EE82EE', '#DDA0DD', '#D8BFD8',
+                '#FF77FF', '#F754E1', '#FF00FF', '#FF69EB'
+            ]
+        },
+        autumn: {
+            name: 'Autumn',
+            colors: [
+                '#8B4513', '#A0522D', '#D2691E', '#CD853F',
+                '#DEB887', '#F4A460', '#D2B48C', '#BC8F8F',
+                '#B8860B', '#DAA520', '#CD5C5C', '#A0522D',
+                '#8B7355', '#C19A6B', '#B87333', '#966919'
+            ]
+        },
+        monochrome: {
+            name: 'Monochrome',
+            colors: [
+                '#1A1A1A', '#333333', '#4D4D4D', '#666666',
+                '#808080', '#999999', '#B3B3B3', '#CCCCCC',
+                '#2B2B2B', '#404040', '#595959', '#737373',
+                '#8C8C8C', '#A6A6A6', '#BFBFBF', '#D9D9D9'
+            ]
+        },
+        rainbow: {
+            name: 'Rainbow',
+            colors: [
+                '#FF0000', '#FF7F00', '#FFFF00', '#00FF00',
+                '#0000FF', '#4B0082', '#9400D3', '#FF1493',
+                '#FF4500', '#FFD700', '#7FFF00', '#00FFFF',
+                '#1E90FF', '#8A2BE2', '#FF69B4', '#DC143C'
+            ]
+        },
+        earth: {
+            name: 'Earth',
+            colors: [
+                '#8B7355', '#A0826D', '#C19A6B', '#D2B48C',
+                '#8B4513', '#A0522D', '#B87333', '#CD853F',
+                '#7B6043', '#93785B', '#AB8F76', '#C4A88F',
+                '#6B5344', '#86705D', '#9D8777', '#B39D8F'
+            ]
+        }
     };
     
     // Audio context for generating spinning sound
@@ -77,14 +190,53 @@ document.addEventListener('DOMContentLoaded', function() {
         oscillator.stop(audioContext.currentTime + 3);
     }
     
-    const wheelColors = [
-        '#e74c3c', '#3498db', '#2ecc71', '#f39c12', 
-        '#9b59b6', '#1abc9c', '#e67e22', '#34495e',
-        '#f1c40f', '#e91e63', '#673ab7', '#00bcd4',
-        '#4caf50', '#ff5722', '#795548', '#607d8b'
-    ];
+    // Get current wheel colors based on selected theme
+    function getWheelColors() {
+        return colorThemes[currentColorTheme]?.colors || colorThemes.classic.colors;
+    }
+    
+    // Change color theme
+    function changeColorTheme(theme) {
+        if (colorThemes[theme]) {
+            currentColorTheme = theme;
+            localStorage.setItem('wheelColorTheme', theme);
+            updateNamesDisplay();
+            updateWheelDisplay();
+            
+            // Update theme selector
+            const themeSelector = document.getElementById('color-theme-selector');
+            if (themeSelector) {
+                themeSelector.value = theme;
+            }
+            
+            // Track theme change
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'color_theme_change', {
+                    event_category: 'random_wheel_customization',
+                    event_label: theme
+                });
+            }
+        }
+    }
+    
+    // Initialize color theme selector
+    function initializeColorThemeSelector() {
+        const themeSelector = document.getElementById('color-theme-selector');
+        if (themeSelector) {
+            // Populate theme options
+            themeSelector.innerHTML = Object.entries(colorThemes).map(([key, theme]) => 
+                `<option value="${key}" ${key === currentColorTheme ? 'selected' : ''}>${theme.name}</option>`
+            ).join('');
+            
+            // Add change event listener
+            themeSelector.addEventListener('change', function() {
+                changeColorTheme(this.value);
+            });
+        }
+    }
     
     // Initialize
+    initializeColorThemeSelector();
     updateNamesDisplay();
     updateWheelDisplay();
     updateHistoryDisplay();
@@ -149,6 +301,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         document.getElementById('spin-btn').disabled = false;
         
+        const wheelColors = getWheelColors();
         namesList.innerHTML = names.map((name, index) => `
             <div class="d-flex justify-content-between align-items-center mb-2 p-2 border rounded">
                 <span class="name-item" style="color: ${wheelColors[index % wheelColors.length]}">
@@ -178,109 +331,90 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        const anglePerSection = 360 / names.length;
+        // Create canvas if it doesn't exist
+        let canvas = wheelNames.querySelector('canvas');
+        if (!canvas) {
+            canvas = document.createElement('canvas');
+            canvas.width = 400;
+            canvas.height = 400;
+            canvas.style.position = 'absolute';
+            canvas.style.top = '0';
+            canvas.style.left = '0';
+            canvas.style.width = '100%';
+            canvas.style.height = '100%';
+            wheelNames.innerHTML = '';
+            wheelNames.appendChild(canvas);
+        }
         
-        // Create SVG-based wheel segments for better control
-        const svgSegments = names.map((name, index) => {
-            const startAngle = index * anglePerSection;
-            const endAngle = (index + 1) * anglePerSection;
+        const ctx = canvas.getContext('2d');
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        const radius = canvas.width / 2;
+        const anglePerSection = (2 * Math.PI) / names.length;
+        const wheelColors = getWheelColors();
+        
+        // Clear canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Draw wheel segments
+        names.forEach((name, index) => {
+            const startAngle = index * anglePerSection - Math.PI / 2; // Start from top
+            const endAngle = (index + 1) * anglePerSection - Math.PI / 2;
             const color = wheelColors[index % wheelColors.length];
             
-            // Convert angles to radians
-            const startRad = (startAngle - 90) * Math.PI / 180; // -90 to start from top
-            const endRad = (endAngle - 90) * Math.PI / 180;
+            // Draw segment
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+            ctx.closePath();
+            ctx.fillStyle = color;
+            ctx.fill();
             
-            // Calculate path coordinates for the slice
-            const radius = 200; // Half of wheel size (400px / 2)
-            const centerX = 200;
-            const centerY = 200;
+            // Draw border
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+            ctx.lineWidth = 2;
+            ctx.stroke();
             
-            const x1 = centerX + radius * Math.cos(startRad);
-            const y1 = centerY + radius * Math.sin(startRad);
-            const x2 = centerX + radius * Math.cos(endRad);
-            const y2 = centerY + radius * Math.sin(endRad);
+            // Draw text
+            ctx.save();
             
-            // Large arc flag
-            const largeArcFlag = anglePerSection > 180 ? 1 : 0;
+            // Calculate text position
+            const textAngle = startAngle + anglePerSection / 2;
+            const textRadius = radius * 0.65;
+            const textX = centerX + textRadius * Math.cos(textAngle);
+            const textY = centerY + textRadius * Math.sin(textAngle);
             
-            // Create path for the slice
-            const pathData = [
-                `M ${centerX} ${centerY}`,
-                `L ${x1} ${y1}`,
-                `A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2}`,
-                'Z'
-            ].join(' ');
+            // Move to text position and rotate
+            ctx.translate(textX, textY);
+            ctx.rotate(textAngle + Math.PI / 2);
             
-            // Calculate text position and rotation for pointing toward center
-            const textAngle = (startAngle + endAngle) / 2;
-            const textRad = (textAngle - 90) * Math.PI / 180;
-            const textRadius = radius * 0.65; // 65% of radius for better positioning
-            const textX = centerX + textRadius * Math.cos(textRad);
-            const textY = centerY + textRadius * Math.sin(textRad);
-            
-            // Calculate rotation angle so text points toward center
-            // Text should be perpendicular to the radius line
-            let textRotation = textAngle;
-            
-            // If text would be upside down, rotate it 180 degrees
-            if (textAngle > 90 && textAngle < 270) {
-                textRotation = textAngle + 180;
-            }
-            
-            // For better readability, adjust text to point radially inward
-            const radialAngle = textAngle + 90; // Perpendicular to radius
-            let finalRotation = radialAngle;
-            
-            // Keep text right-side up
-            if (radialAngle > 90 && radialAngle < 270) {
-                finalRotation = radialAngle + 180;
-            }
-            
-            // Improved font size calculation for better readability
-            let fontSize = '12px';
-            if (names.length > 16) {
-                fontSize = '8px';
-            } else if (names.length > 12) {
-                fontSize = '10px';
+            // Adjust font size based on number of names and name length
+            let fontSize = 16;
+            if (names.length > 12) {
+                fontSize = 12;
             } else if (names.length > 8) {
-                fontSize = '11px';
+                fontSize = 14;
             }
             
-            // Adjust for long names
             if (name.length > 12) {
-                fontSize = names.length > 8 ? '7px' : '9px';
+                fontSize = Math.max(10, fontSize - 2);
             } else if (name.length > 8) {
-                fontSize = names.length > 12 ? '8px' : '10px';
+                fontSize = Math.max(12, fontSize - 1);
             }
             
-            return `
-                <g class="wheel-section">
-                    <path d="${pathData}" 
-                          fill="${color}" 
-                          stroke="rgba(255,255,255,0.5)" 
-                          stroke-width="2"
-                          style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));"
-                          />
-                    <text x="${textX}" y="${textY}" 
-                          text-anchor="middle" 
-                          dominant-baseline="central"
-                          transform="rotate(${finalRotation}, ${textX}, ${textY})"
-                          fill="white" 
-                          font-weight="600" 
-                          font-size="${fontSize}"
-                          font-family="'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
-                          style="text-shadow: 0 1px 3px rgba(0,0,0,0.8); letter-spacing: 0.5px;">
-                        ${name}
-                    </text>
-                </g>
-            `;
-        }).join('');
-        
-        wheelNames.innerHTML = `
-            <svg width="100%" height="100%" viewBox="0 0 400 400" style="position: absolute; top: 0; left: 0;">
-                ${svgSegments}
-            </svg>
-        `;
+            // Draw text with shadow
+            ctx.font = `bold ${fontSize}px 'Segoe UI', Arial, sans-serif`;
+            ctx.fillStyle = 'white';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
+            ctx.shadowBlur = 3;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 1;
+            ctx.fillText(name, 0, 0);
+            
+            ctx.restore();
+        });
     }
     
     // Spin wheel

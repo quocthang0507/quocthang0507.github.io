@@ -210,7 +210,7 @@
     margin: 30px 0;
     perspective: 1000px;
     position: relative;
-    padding: 20px;
+    padding: 60px 20px 20px 20px; /* Extra padding at top for pointer */
 }
 
 .wheel {
@@ -230,7 +230,6 @@
 }
 
 .wheel:hover {
-    transform: translateY(-3px) scale(1.02);
     box-shadow: 
         0 0 0 2px rgba(255, 255, 255, 0.9),
         0 12px 30px rgba(0, 0, 0, 0.2),
@@ -239,14 +238,14 @@
 
 .wheel-pointer {
     position: absolute;
-    bottom: 100%; /* place above wheel */
+    top: 60px; /* Position from top of container */
     left: 50%;
-    transform: translate(-50%, 10px); /* slight overlap */
+    transform: translateX(-50%);
     width: 0;
     height: 0;
-    border-left: 22px solid transparent;
-    border-right: 22px solid transparent;
-    border-bottom: 36px solid var(--bs-danger); /* downward pointing triangle */
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-top: 40px solid var(--bs-danger); /* Downward pointing triangle */
     z-index: 15;
     pointer-events: none;
     filter: drop-shadow(0 3px 8px rgba(0,0,0,0.4));
@@ -254,8 +253,14 @@
 }
 
 @keyframes pointer-pulse {
-    0%, 100% { transform: translate(-50%, 10px) scale(1); }
-    50% { transform: translate(-50%, 10px) scale(1.1); }
+    0%, 100% { 
+        transform: translateX(-50%) scale(1); 
+        filter: drop-shadow(0 3px 8px rgba(0,0,0,0.4));
+    }
+    50% { 
+        transform: translateX(-50%) scale(1.1); 
+        filter: drop-shadow(0 5px 12px rgba(0,0,0,0.5));
+    }
 }
 
 .wheel-center {
@@ -311,6 +316,24 @@
 
 .wheel-section {
     filter: brightness(1.1) contrast(1.1);
+}
+
+/* Color theme selector styling */
+#color-theme-selector {
+    cursor: pointer;
+    font-weight: 500;
+    border: 2px solid var(--bs-primary);
+    transition: all 0.3s ease;
+}
+
+#color-theme-selector:hover {
+    border-color: var(--bs-success);
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+#color-theme-selector:focus {
+    border-color: var(--bs-primary);
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
 }
 
 .wheel-section:hover {
@@ -537,6 +560,9 @@
     .date-display { 
         font-size: 1.2rem; 
     }
+    .wheel-container {
+        padding: 50px 20px 20px 20px;
+    }
     .wheel { 
         width: 300px; 
         height: 300px; 
@@ -547,11 +573,11 @@
         height: 40px; 
         font-size: 0.7rem; 
     }
-    .wheel-pointer { 
-        right: -15px; 
-        border-top: 12px solid transparent; 
-        border-bottom: 12px solid transparent; 
-        border-left: 24px solid var(--bs-danger); 
+    .wheel-pointer {
+        top: 50px;
+        border-left: 15px solid transparent;
+        border-right: 15px solid transparent;
+        border-top: 30px solid var(--bs-danger);
     }
     .result-display { 
         font-size: 2rem; 

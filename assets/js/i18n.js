@@ -70,12 +70,12 @@ class TranslationSystem {
         languageDropdown.className = 'nav-item dropdown';
         languageDropdown.innerHTML = `
             <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="fas fa-language"></i> ${this.supportedLanguages[this.currentLanguage].flag} ${this.supportedLanguages[this.currentLanguage].name}
+                <i class="fas fa-language"></i> ${this.supportedLanguages[this.currentLanguage].name}
             </a>
             <ul class="dropdown-menu" aria-labelledby="languageDropdown">
                 ${Object.entries(this.supportedLanguages).map(([code, info]) => `
                     <li><a class="dropdown-item ${code === this.currentLanguage ? 'active' : ''}" href="#" data-lang="${code}">
-                        ${info.flag} ${info.name}
+                        ${info.name}
                     </a></li>
                 `).join('')}
             </ul>
@@ -116,7 +116,7 @@ class TranslationSystem {
         // Update dropdown display
         const dropdownToggle = document.getElementById('languageDropdown');
         if (dropdownToggle) {
-            dropdownToggle.innerHTML = `<i class="fas fa-language"></i> ${this.supportedLanguages[newLanguage].flag} ${this.supportedLanguages[newLanguage].name}`;
+            dropdownToggle.innerHTML = `<i class="fas fa-language"></i> ${this.supportedLanguages[newLanguage].name}`;
         }
         
         // Update active state

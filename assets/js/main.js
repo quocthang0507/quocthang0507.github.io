@@ -108,8 +108,9 @@ function initializeDarkMode() {
     // Always initialize theme even if toggle is missing (e.g., minimal pages)
     // Check for saved theme preference or default to light mode
     const savedTheme = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const currentTheme = savedTheme || (prefersDark ? 'dark' : 'light');
+    // Only use browser preference if user hasn't set a preference yet
+    // Default to light mode to prevent automatic dark mode on page load
+    const currentTheme = savedTheme || 'light';
     
     // Apply the theme
     document.documentElement.setAttribute('data-theme', currentTheme);
@@ -136,7 +137,7 @@ function initializeDarkMode() {
         });
     }
     
-    // Listen for system theme changes
+    // Listen for system theme changes only if user hasn't set a preference
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
         if (!localStorage.getItem('theme')) {
             const theme = e.matches ? 'dark' : 'light';
