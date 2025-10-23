@@ -25,6 +25,11 @@
                         <span data-i18n="nav.random_wheel">Random Wheel</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if page.url == '/password-generator/' %}active{% endif %}" href="{{ '/password-generator/' | relative_url }}">
+                        <span data-i18n="nav.password_generator">Password Generator</span>
+                    </a>
+                </li>
                 <!-- Dark mode toggle -->
                 <li class="nav-item">
                     <button class="dark-mode-toggle" id="dark-mode-toggle" title="Toggle Dark Mode">
