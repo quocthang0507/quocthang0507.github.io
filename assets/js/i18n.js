@@ -12,11 +12,13 @@ class TranslationSystem {
             'ja': { name: '日本語', flag: '🇯🇵' }
         };
         
-        // Load saved language from localStorage
-        const savedLanguage = localStorage.getItem('preferredLanguage');
-        if (savedLanguage && this.supportedLanguages[savedLanguage]) {
-            this.currentLanguage = savedLanguage;
-        }
+        // Load saved language from localStorage (tolerate blocked storage)
+        try {
+            const savedLanguage = localStorage.getItem('preferredLanguage');
+            if (savedLanguage && this.supportedLanguages[savedLanguage]) {
+                this.currentLanguage = savedLanguage;
+            }
+        } catch (e) { /* ignore storage errors */ }
         
         this.loadLanguages();
     }
@@ -101,7 +103,7 @@ class TranslationSystem {
         
         const oldLanguage = this.currentLanguage;
         this.currentLanguage = newLanguage;
-        localStorage.setItem('preferredLanguage', newLanguage);
+        try { localStorage.setItem('preferredLanguage', newLanguage); } catch (e) {}
         
         // Track language change
         if (typeof gtag !== 'undefined') {

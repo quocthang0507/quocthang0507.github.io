@@ -107,7 +107,8 @@ function initializeDarkMode() {
     const darkModeIcon = document.getElementById('dark-mode-icon');
     // Always initialize theme even if toggle is missing (e.g., minimal pages)
     // Check for saved theme preference or default to light mode
-    const savedTheme = localStorage.getItem('theme');
+    let savedTheme = null;
+    try { savedTheme = localStorage.getItem('theme'); } catch (e) { savedTheme = null; }
     // Only use browser preference if user hasn't set a preference yet
     // Default to light mode to prevent automatic dark mode on page load
     const currentTheme = savedTheme || 'light';
@@ -123,7 +124,7 @@ function initializeDarkMode() {
             const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
             
             document.documentElement.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
+            try { localStorage.setItem('theme', newTheme); } catch (e) {}
             updateDarkModeIcon(newTheme);
             
             // Track dark mode toggle
@@ -139,7 +140,8 @@ function initializeDarkMode() {
     
     // Listen for system theme changes only if user hasn't set a preference
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
-        if (!localStorage.getItem('theme')) {
+        let hasPref = false; try { hasPref = !!localStorage.getItem('theme'); } catch (e2) { hasPref = false; }
+        if (!hasPref) {
             const theme = e.matches ? 'dark' : 'light';
             document.documentElement.setAttribute('data-theme', theme);
             updateDarkModeIcon(theme);
@@ -162,7 +164,7 @@ function updateDarkModeIcon(theme) {
 
 // Custom Theme Toggle (switch body.custom-theme class)
 function initializeCustomThemeToggle() {
-    const stored = localStorage.getItem('customTheme');
+    let stored = null; try { stored = localStorage.getItem('customTheme'); } catch (e) { stored = null; }
     if (stored === 'on') {
         document.body.classList.add('custom-theme');
     }

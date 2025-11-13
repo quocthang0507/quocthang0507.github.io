@@ -7,13 +7,12 @@
     // Load holidays data
     async function loadHolidays() {
         try {
-            const response = await fetch('/_data/vietnam_holidays.json');
+            // Prefer the public assets path to avoid 404 noise on GitHub Pages
+            const response = await fetch('/assets/data/vietnam_holidays.json');
             if (!response.ok) {
-                // Try alternative path
-                const altResponse = await fetch('/assets/data/vietnam_holidays.json');
-                if (!altResponse.ok) {
-                    throw new Error('Could not load holidays data');
-                }
+                // Fallback (for local dev where _data may be served)
+                const altResponse = await fetch('/_data/vietnam_holidays.json');
+                if (!altResponse.ok) throw new Error('Could not load holidays data');
                 holidaysData = await altResponse.json();
             } else {
                 holidaysData = await response.json();
