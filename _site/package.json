@@ -1,0 +1,23 @@
+{
+  "name": "quocthang0507-github-io",
+  "version": "1.0.0",
+  "description": "Testing suite for the personal website",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:ui": "playwright test",
+    "test:ui:headed": "playwright test --headed",
+    "test:ui:debug": "playwright test --debug",
+    "test:all": "npm run test && npm run test:ui"
+  },
+  "keywords": [],
+  "author": "quocthang0507",
+  "license": "MIT",
+  "devDependencies": {
+    "@playwright/test": "^1.40.0",
+    "@types/jest": "^29.5.11",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0"
+  }
+}

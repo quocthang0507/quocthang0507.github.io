@@ -8,9 +8,21 @@ dist/
 # Ignore node modules if any
 node_modules/
 
+# Ignore Ruby gems installed locally
+vendor/bundle/
+.bundle/
+
+# Ignore test reports
+playwright-report/
+test-results/
+coverage/
+
 # Ignore logs
 *.log
 
 # Ignore temp files
 *.tmp
 .tmp/
+
+# Ignore package lock files
+package-lock.json

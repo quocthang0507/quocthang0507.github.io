@@ -1,0 +1,108 @@
+/* Dark theme - Simplified using Bootstrap's approach */
+[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+[data-theme="dark"] body {
+  background-color: var(--custom-bg-dark);
+  color: var(--custom-text-dark);
+}
+
+[data-theme="dark"] .card {
+  background-color: var(--custom-card-dark);
+  border-color: var(--custom-border-dark);
+  color: var(--custom-text-dark);
+}
+
+[data-theme="dark"] .card-header {
+  background-color: var(--custom-card-dark) !important;
+  border-bottom-color: var(--custom-border-dark);
+  color: var(--custom-text-dark) !important;
+}
+
+[data-theme="dark"] .clock-display {
+  color: var(--bs-primary);
+}
+
+[data-theme="dark"] .navbar {
+  background-color: var(--custom-card-dark) !important;
+  border-bottom: 1px solid var(--custom-border-dark);
+}
+
+[data-theme="dark"] .dropdown-menu {
+  background-color: var(--custom-card-dark);
+  border-color: var(--custom-border-dark);
+}
+
+[data-theme="dark"] .dropdown-item {
+  color: var(--custom-text-dark);
+}
+
+[data-theme="dark"] .dropdown-item:hover,
+[data-theme="dark"] .dropdown-item:focus {
+  background-color: var(--bs-primary);
+  color: white;
+}
+
+[data-theme="dark"] .dropdown-item.active {
+  background-color: var(--bs-primary);
+  color: white;
+}
+
+[data-theme="dark"] .form-control {
+  background-color: var(--custom-input-dark);
+  border-color: var(--custom-border-dark);
+  color: var(--custom-text-dark);
+}
+
+[data-theme="dark"] .form-control:focus {
+  background-color: var(--custom-input-dark);
+  border-color: var(--bs-primary);
+  color: var(--custom-text-dark);
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+[data-theme="dark"] .text-muted {
+  color: var(--bs-secondary) !important;
+}
+
+[data-theme="dark"] .text-secondary {
+  color: var(--bs-secondary) !important;
+}
+
+[data-theme="dark"] .bg-light {
+  background-color: var(--custom-card-dark) !important;
+  color: var(--custom-text-dark) !important;
+}
+
+[data-theme="dark"] .border {
+  border-color: var(--custom-border-dark) !important;
+}
+
+/* Calendar dark theme */
+[data-theme="dark"] .calendar-container {
+  background-color: var(--custom-card-dark);
+  border-color: var(--custom-border-dark);
+}
+
+[data-theme="dark"] .calendar-table th {
+  background-color: var(--bs-primary);
+  color: white;
+  border-color: var(--custom-border-dark);
+}
+
+[data-theme="dark"] .calendar-table td {
+  border-color: var(--custom-border-dark);
+  color: var(--custom-text-dark);
+  background-color: var(--custom-card-dark);
+}
+
+[data-theme="dark"] .calendar-table .today {
+  background-color: var(--bs-primary);
+  color: white;
+}
+
+[data-theme="dark"] .calendar-table .other-month {
+  color: var(--bs-secondary);
+  background-color: var(--custom-bg-dark);
+}
