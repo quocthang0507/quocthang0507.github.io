@@ -1,0 +1,236 @@
+---
+layout: default
+title: "Chuyển đổi đơn vị"
+description: "Công cụ chuyển đổi đơn vị đa năng: độ dài, khối lượng, nhiệt độ, thể tích, diện tích, tốc độ, thời gian và dung lượng dữ liệu."
+keywords: "unit converter, chuyển đổi đơn vị, length converter, weight converter, temperature converter, volume converter, đổi đơn vị"
+custom_js: ['unit-converter.js']
+permalink: /unit-converter/
+sitemap:
+  priority: 0.8
+  changefreq: weekly
+  lastmod: 2024-11-13
+---
+
+<div class="row">
+    <div class="col-12">
+        <div id="alert-container"></div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12 mb-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-exchange-alt"></i> <span data-i18n="converter.title">Chuyển đổi đơn vị</span></h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <label for="category-selector" class="form-label">
+                            <i class="fas fa-list"></i> <span data-i18n="converter.select_category">Chọn loại đơn vị</span>
+                        </label>
+                        <select id="category-selector" class="form-select">
+                            <option value="length" data-i18n="converter.length">Độ dài</option>
+                            <option value="weight" data-i18n="converter.weight">Khối lượng</option>
+                            <option value="temperature" data-i18n="converter.temperature">Nhiệt độ</option>
+                            <option value="volume" data-i18n="converter.volume">Thể tích</option>
+                            <option value="area" data-i18n="converter.area">Diện tích</option>
+                            <option value="speed" data-i18n="converter.speed">Tốc độ</option>
+                            <option value="time" data-i18n="converter.time">Thời gian</option>
+                            <option value="data" data-i18n="converter.data">Dung lượng dữ liệu</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">
+                            <i class="fas fa-info-circle"></i> <span data-i18n="converter.quick_info">Thông tin nhanh</span>
+                        </label>
+                        <div class="alert alert-info mb-0">
+                            <small id="category-info" data-i18n="converter.info_length">
+                                Chuyển đổi giữa các đơn vị độ dài như mét, kilômét, dặm, feet...
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="card border-primary">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0"><span data-i18n="converter.from">Từ</span></h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="from-unit" class="form-label" data-i18n="converter.unit">Đơn vị</label>
+                                    <select id="from-unit" class="form-select">
+                                        <!-- Options will be populated by JS -->
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="from-value" class="form-label" data-i18n="converter.value">Giá trị</label>
+                                    <input type="number" id="from-value" class="form-control form-control-lg" 
+                                           placeholder="0" step="any" value="1">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <div class="card border-success">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0"><span data-i18n="converter.to">Sang</span></h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="to-unit" class="form-label" data-i18n="converter.unit">Đơn vị</label>
+                                    <select id="to-unit" class="form-select">
+                                        <!-- Options will be populated by JS -->
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="to-value" class="form-label" data-i18n="converter.result">Kết quả</label>
+                                    <input type="text" id="to-value" class="form-control form-control-lg" 
+                                           readonly placeholder="0">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center mb-3">
+                    <button id="swap-units-btn" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-exchange-alt"></i> <span data-i18n="converter.swap">Đổi chiều</span>
+                    </button>
+                    <button id="reset-converter-btn" class="btn btn-outline-secondary btn-lg">
+                        <i class="fas fa-redo"></i> <span data-i18n="converter.reset">Reset</span>
+                    </button>
+                    <button id="copy-result-btn" class="btn btn-outline-success btn-lg">
+                        <i class="fas fa-copy"></i> <span data-i18n="converter.copy">Sao chép</span>
+                    </button>
+                </div>
+
+                <div id="conversion-formula" class="alert alert-secondary text-center" style="display: none;">
+                    <strong><span data-i18n="converter.formula">Công thức:</span></strong> 
+                    <span id="formula-display"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h6 class="mb-0"><i class="fas fa-history"></i> <span data-i18n="converter.history">Lịch sử chuyển đổi</span></h6>
+            </div>
+            <div class="card-body">
+                <div id="conversion-history" class="conversion-history">
+                    <p class="text-muted text-center" data-i18n="converter.no_history">Chưa có lịch sử chuyển đổi</p>
+                </div>
+                <div class="text-center mt-3">
+                    <button id="clear-history-btn" class="btn btn-sm btn-outline-danger">
+                        <i class="fas fa-trash"></i> <span data-i18n="converter.clear_history">Xóa lịch sử</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h6 class="mb-0"><i class="fas fa-table"></i> <span data-i18n="converter.common_conversions">Chuyển đổi phổ biến</span></h6>
+            </div>
+            <div class="card-body">
+                <div id="common-conversions" class="table-responsive">
+                    <!-- Common conversions will be populated by JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12 mb-4">
+        <div class="card">
+            <div class="card-header bg-warning text-dark">
+                <h6 class="mb-0"><i class="fas fa-lightbulb"></i> <span data-i18n="converter.tips_title">Mẹo sử dụng</span></h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success"></i> <span data-i18n="converter.tip1">Nhập số ở bất kỳ ô nào để xem kết quả ngay lập tức</span></li>
+                            <li><i class="fas fa-check text-success"></i> <span data-i18n="converter.tip2">Sử dụng nút "Đổi chiều" để chuyển đổi ngược lại nhanh chóng</span></li>
+                            <li><i class="fas fa-check text-success"></i> <span data-i18n="converter.tip3">Lịch sử chuyển đổi được lưu tự động</span></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success"></i> <span data-i18n="converter.tip4">Hỗ trợ số thập phân và số rất lớn/rất nhỏ</span></li>
+                            <li><i class="fas fa-check text-success"></i> <span data-i18n="converter.tip5">Click vào chuyển đổi phổ biến để áp dụng nhanh</span></li>
+                            <li><i class="fas fa-check text-success"></i> <span data-i18n="converter.tip6">Sử dụng nút sao chép để copy kết quả</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.conversion-history {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.history-item {
+    padding: 10px;
+    margin-bottom: 8px;
+    border-left: 3px solid #007bff;
+    background: #f8f9fa;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.history-item:hover {
+    background: #e9ecef;
+    cursor: pointer;
+}
+
+.history-item small {
+    color: #6c757d;
+}
+
+.common-conversion-item {
+    padding: 8px;
+    border-bottom: 1px solid #dee2e6;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.common-conversion-item:hover {
+    background: #f8f9fa;
+}
+
+.common-conversion-item:last-child {
+    border-bottom: none;
+}
+
+body.dark-mode .history-item {
+    background: #2a2a2a;
+    border-left-color: #4a9eff;
+}
+
+body.dark-mode .history-item:hover {
+    background: #333;
+}
+
+body.dark-mode .common-conversion-item {
+    border-bottom-color: #444;
+}
+
+body.dark-mode .common-conversion-item:hover {
+    background: #2a2a2a;
+}
+</style>

@@ -35,6 +35,16 @@
                         <span data-i18n="nav.world_clocks">World Clocks</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if page.url == '/unit-converter/' %}active{% endif %}" href="{{ '/unit-converter/' | relative_url }}">
+                        <span data-i18n="nav.unit_converter">Unit Converter</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if page.url == '/qr-generator/' %}active{% endif %}" href="{{ '/qr-generator/' | relative_url }}">
+                        <span data-i18n="nav.qr_generator">QR Generator</span>
+                    </a>
+                </li>
                 <!-- Dark mode toggle -->
                 <li class="nav-item">
                     <button class="dark-mode-toggle" id="dark-mode-toggle" title="Toggle Dark Mode">
