@@ -4,6 +4,9 @@ test-*.html
 # Ignore build artifacts
 dist/
 .cache/
+_site/
+.jekyll-cache/
+.jekyll-metadata
 
 # Ignore node modules if any
 node_modules/
@@ -26,3 +29,4 @@ coverage/
 
 # Ignore package lock files
 package-lock.json
+Gemfile.lock
