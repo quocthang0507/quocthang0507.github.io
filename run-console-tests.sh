@@ -38,8 +38,8 @@ echo ""
 echo "Running console validation tests..."
 echo ""
 
-# Run the tests
-npx playwright test --config=playwright-noserver.config.js tests/ui/console-validation.spec.js
+# Run the tests (use default config but with reuseExistingServer)
+npx playwright test tests/ui/console-validation.spec.js --reporter=list
 
 TEST_EXIT_CODE=$?
 

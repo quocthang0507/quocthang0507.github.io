@@ -21,7 +21,7 @@ export default defineConfig({
   webServer: {
     command: 'cd /home/runner/work/quocthang0507.github.io/quocthang0507.github.io && export PATH="$HOME/.local/share/gem/ruby/3.2.0/bin:$PATH" && bundle exec jekyll serve --port 4000 --host 0.0.0.0',
     port: 4000,
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: true,
     timeout: 120000,
   },
 });
