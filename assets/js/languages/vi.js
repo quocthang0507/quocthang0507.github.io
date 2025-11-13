@@ -6,6 +6,7 @@ const vietnameseTranslations = {
     "nav.random_number": "Tạo Số Ngẫu Nhiên",
     "nav.random_wheel": "Vòng Quay May Mắn",
     "nav.password_generator": "Tạo Mật Khẩu",
+    "nav.world_clocks": "Đồng Hồ Thế Giới",
     
     // Homepage
     "home.title": "Trang chủ",

@@ -36,6 +36,7 @@ const koreanTranslations = {
     "nav.random_number": "랜덤 숫자",
     "nav.random_wheel": "랜덤 휠",
     "nav.password_generator": "비밀번호 생성기",
+    "nav.world_clocks": "세계 시계",
     
     // Homepage
     "home.title": "홈",
@@ -206,6 +207,21 @@ const koreanTranslations = {
     "password.tip4": "각 계정마다 다른 비밀번호를 사용하세요",
     "password.tip5": "정기적으로 비밀번호를 변경하세요, 특히 중요한 계정의 경우",
     "password.tip6": "안전한 저장을 위해 비밀번호 관리자를 사용하세요",
+    
+    // World Clocks
+    "worldclocks.title": "세계 시계",
+    "worldclocks.select_timezone": "시간대 선택",
+    "worldclocks.selected_time": "선택된 시간",
+    "worldclocks.add_clock": "시계 추가",
+    "worldclocks.info": "목록에서 시간대를 선택하고 \"시계 추가\"를 클릭하여 해당 도시의 시간을 확인하세요. 최대 12개의 시계를 추가할 수 있습니다.",
+    "worldclocks.clocks": "시계",
+    "worldclocks.clear_all": "모두 지우기",
+    "worldclocks.preset_cities": "인기 도시",
+    "worldclocks.settings": "설정",
+    "worldclocks.show_seconds": "초침 표시",
+    "worldclocks.show_numbers": "시간 숫자 표시",
+    "worldclocks.show_digital": "디지털 시계 표시",
+    "worldclocks.theme": "시계 테마",
     
     // Error pages
     "error.title": "페이지를 찾을 수 없습니다",

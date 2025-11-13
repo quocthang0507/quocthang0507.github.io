@@ -6,6 +6,7 @@ const chineseTranslations = {
     "nav.random_number": "随机数字",
     "nav.random_wheel": "随机轮盘",
     "nav.password_generator": "密码生成器",
+    "nav.world_clocks": "世界时钟",
     
     // Homepage
     "home.title": "主页",
@@ -197,6 +198,21 @@ const chineseTranslations = {
     "password.tip4": "为每个账户使用不同的密码",
     "password.tip5": "定期更改密码，特别是重要账户",
     "password.tip6": "使用密码管理器安全存储",
+    
+    // World Clocks
+    "worldclocks.title": "世界时钟",
+    "worldclocks.select_timezone": "选择时区",
+    "worldclocks.selected_time": "选定的时间",
+    "worldclocks.add_clock": "添加时钟",
+    "worldclocks.info": "从列表中选择时区，然后点击\"添加时钟\"查看该城市的时间。您最多可以添加12个时钟。",
+    "worldclocks.clocks": "时钟",
+    "worldclocks.clear_all": "清除所有",
+    "worldclocks.preset_cities": "热门城市",
+    "worldclocks.settings": "设置",
+    "worldclocks.show_seconds": "显示秒针",
+    "worldclocks.show_numbers": "显示小时数字",
+    "worldclocks.show_digital": "显示数字时钟",
+    "worldclocks.theme": "时钟主题",
     
     // Error pages
     "error.title": "找不到页面",

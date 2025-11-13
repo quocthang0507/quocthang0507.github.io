@@ -162,13 +162,40 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
+    // Stop spinning sound
+    function stopSpinSound() {
+        // Stop HTML audio element
+        const audioElement = document.getElementById('wheel-spin-audio');
+        if (audioElement) {
+            audioElement.pause();
+            audioElement.currentTime = 0;
+        }
+        
+        // Stop Web Audio API oscillator
+        if (oscillator) {
+            try {
+                oscillator.stop();
+                oscillator.disconnect();
+                oscillator = null;
+            } catch (e) {
+                // Oscillator may already be stopped
+                oscillator = null;
+            }
+        }
+    }
+    
     // Generate spinning sound using Web Audio API
     function generateSpinSound() {
         if (!audioContext) return;
         
         // Stop any existing sound
         if (oscillator) {
-            oscillator.stop();
+            try {
+                oscillator.stop();
+                oscillator.disconnect();
+            } catch (e) {
+                // Oscillator may already be stopped
+            }
         }
         
         // Create oscillator for spinning sound
@@ -451,6 +478,9 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Calculate winner after animation
         setTimeout(() => {
+            // Stop the spinning sound
+            stopSpinSound();
+            
             const normalizedAngle = (360 - (currentRotation % 360)) % 360;
             const anglePerSection = 360 / names.length;
             const winnerIndex = Math.floor(normalizedAngle / anglePerSection);

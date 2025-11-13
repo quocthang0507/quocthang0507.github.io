@@ -6,6 +6,7 @@ const englishTranslations = {
     "nav.random_number": "Random Number",
     "nav.random_wheel": "Random Wheel",
     "nav.password_generator": "Password Generator",
+    "nav.world_clocks": "World Clocks",
     
     // Homepage
     "home.title": "Home",
@@ -199,6 +200,21 @@ const englishTranslations = {
     "password.tip4": "Use different passwords for each account",
     "password.tip5": "Change passwords periodically, especially for important accounts",
     "password.tip6": "Use a password manager for secure storage",
+    
+    // World Clocks
+    "worldclocks.title": "World Clocks",
+    "worldclocks.select_timezone": "Select Timezone",
+    "worldclocks.selected_time": "Selected Time",
+    "worldclocks.add_clock": "Add Clock",
+    "worldclocks.info": "Select a timezone from the list and click \"Add Clock\" to view the time of that city. You can add up to 12 clocks.",
+    "worldclocks.clocks": "Clocks",
+    "worldclocks.clear_all": "Clear All",
+    "worldclocks.preset_cities": "Popular Cities",
+    "worldclocks.settings": "Settings",
+    "worldclocks.show_seconds": "Show second hand",
+    "worldclocks.show_numbers": "Show hour numbers",
+    "worldclocks.show_digital": "Show digital clock",
+    "worldclocks.theme": "Clock Theme",
     
     // Error pages
     "error.title": "Page Not Found",

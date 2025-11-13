@@ -1,0 +1,236 @@
+---
+layout: default
+title: "Đồng hồ thế giới"
+description: "Xem giờ hiện tại của nhiều thành phố lớn trên thế giới với đồng hồ analog đẹp mắt. Chọn múi giờ để xem thời gian chính xác."
+keywords: "world clock, đồng hồ thế giới, time zones, analog clock, múi giờ, thời gian quốc tế, world time"
+custom_js: ['world-clocks.js']
+permalink: /world-clocks/
+sitemap:
+  priority: 0.7
+  changefreq: weekly
+  lastmod: 2024-11-13
+---
+
+<div class="row">
+    <div class="col-12">
+        <div id="alert-container"></div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12 mb-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-globe"></i> <span data-i18n="worldclocks.title">Đồng hồ thế giới</span></h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <label for="timezone-selector" class="form-label">
+                            <i class="fas fa-clock"></i> <span data-i18n="worldclocks.select_timezone">Chọn múi giờ</span>
+                        </label>
+                        <select id="timezone-selector" class="form-select">
+                            <optgroup label="Popular Cities">
+                                <option value="Asia/Ho_Chi_Minh" selected>Hanoi, Vietnam (UTC+7)</option>
+                                <option value="Asia/Tokyo">Tokyo, Japan (UTC+9)</option>
+                                <option value="Asia/Shanghai">Beijing, China (UTC+8)</option>
+                                <option value="Asia/Seoul">Seoul, South Korea (UTC+9)</option>
+                                <option value="Asia/Singapore">Singapore (UTC+8)</option>
+                                <option value="Asia/Bangkok">Bangkok, Thailand (UTC+7)</option>
+                                <option value="Asia/Dubai">Dubai, UAE (UTC+4)</option>
+                                <option value="Europe/London">London, UK (UTC+0)</option>
+                                <option value="Europe/Paris">Paris, France (UTC+1)</option>
+                                <option value="Europe/Berlin">Berlin, Germany (UTC+1)</option>
+                                <option value="Europe/Moscow">Moscow, Russia (UTC+3)</option>
+                                <option value="America/New_York">New York, USA (UTC-5)</option>
+                                <option value="America/Los_Angeles">Los Angeles, USA (UTC-8)</option>
+                                <option value="America/Chicago">Chicago, USA (UTC-6)</option>
+                                <option value="America/Toronto">Toronto, Canada (UTC-5)</option>
+                                <option value="America/Sao_Paulo">São Paulo, Brazil (UTC-3)</option>
+                                <option value="Australia/Sydney">Sydney, Australia (UTC+11)</option>
+                                <option value="Pacific/Auckland">Auckland, New Zealand (UTC+13)</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">
+                            <i class="fas fa-info-circle"></i> <span data-i18n="worldclocks.selected_time">Thời gian đã chọn</span>
+                        </label>
+                        <div class="input-group">
+                            <input type="text" id="selected-time-display" class="form-control" readonly>
+                            <button class="btn btn-outline-primary" id="add-clock-btn">
+                                <i class="fas fa-plus"></i> <span data-i18n="worldclocks.add_clock">Thêm đồng hồ</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    <span data-i18n="worldclocks.info">
+                        Chọn múi giờ từ danh sách và nhấn "Thêm đồng hồ" để xem thời gian của thành phố đó. Bạn có thể thêm tối đa 12 đồng hồ.
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12 mb-4">
+        <div class="card">
+            <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                <h6 class="mb-0"><i class="fas fa-clock"></i> <span data-i18n="worldclocks.clocks">Đồng hồ</span></h6>
+                <button id="clear-all-clocks-btn" class="btn btn-sm btn-outline-light">
+                    <i class="fas fa-trash"></i> <span data-i18n="worldclocks.clear_all">Xóa tất cả</span>
+                </button>
+            </div>
+            <div class="card-body">
+                <div id="clocks-container" class="row g-4">
+                    <!-- Clocks will be dynamically added here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h6 class="mb-0"><i class="fas fa-list"></i> <span data-i18n="worldclocks.preset_cities">Thành phố phổ biến</span></h6>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <button class="btn btn-outline-primary preset-city-btn" data-timezone="Asia/Ho_Chi_Minh" data-city="Hanoi">
+                        <i class="fas fa-city"></i> Hanoi, Vietnam
+                    </button>
+                    <button class="btn btn-outline-primary preset-city-btn" data-timezone="Asia/Tokyo" data-city="Tokyo">
+                        <i class="fas fa-city"></i> Tokyo, Japan
+                    </button>
+                    <button class="btn btn-outline-primary preset-city-btn" data-timezone="America/New_York" data-city="New York">
+                        <i class="fas fa-city"></i> New York, USA
+                    </button>
+                    <button class="btn btn-outline-primary preset-city-btn" data-timezone="Europe/London" data-city="London">
+                        <i class="fas fa-city"></i> London, UK
+                    </button>
+                    <button class="btn btn-outline-primary preset-city-btn" data-timezone="Australia/Sydney" data-city="Sydney">
+                        <i class="fas fa-city"></i> Sydney, Australia
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header bg-warning text-dark">
+                <h6 class="mb-0"><i class="fas fa-cog"></i> <span data-i18n="worldclocks.settings">Cài đặt</span></h6>
+            </div>
+            <div class="card-body">
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="show-seconds" checked>
+                    <label class="form-check-label" for="show-seconds" data-i18n="worldclocks.show_seconds">
+                        Hiển thị kim giây
+                    </label>
+                </div>
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="show-numbers" checked>
+                    <label class="form-check-label" for="show-numbers" data-i18n="worldclocks.show_numbers">
+                        Hiển thị số giờ
+                    </label>
+                </div>
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="show-digital" checked>
+                    <label class="form-check-label" for="show-digital" data-i18n="worldclocks.show_digital">
+                        Hiển thị đồng hồ kỹ thuật số
+                    </label>
+                </div>
+                <div class="mb-3">
+                    <label for="clock-theme" class="form-label" data-i18n="worldclocks.theme">Chủ đề đồng hồ</label>
+                    <select id="clock-theme" class="form-select">
+                        <option value="light">Light</option>
+                        <option value="dark">Dark</option>
+                        <option value="colorful">Colorful</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.clock-item {
+    text-align: center;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.clock-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.clock-canvas {
+    width: 100%;
+    max-width: 250px;
+    height: auto;
+    margin: 0 auto;
+    display: block;
+}
+
+.clock-city-name {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin: 10px 0 5px 0;
+    color: #333;
+}
+
+.clock-digital-time {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: #007bff;
+    font-family: 'Courier New', monospace;
+}
+
+.clock-date {
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 5px;
+}
+
+.clock-timezone {
+    font-size: 0.85rem;
+    color: #999;
+    font-style: italic;
+}
+
+.clock-remove-btn {
+    margin-top: 10px;
+}
+
+@media (max-width: 768px) {
+    .clock-canvas {
+        max-width: 200px;
+    }
+}
+
+/* Dark theme for body in dark mode */
+body.dark-mode .clock-item {
+    background: #2a2a2a;
+    border-color: #444;
+}
+
+body.dark-mode .clock-city-name {
+    color: #fff;
+}
+
+body.dark-mode .clock-date,
+body.dark-mode .clock-timezone {
+    color: #aaa;
+}
+</style>

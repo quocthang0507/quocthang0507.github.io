@@ -6,6 +6,7 @@ const japaneseTranslations = {
     "nav.random_number": "ランダム数値",
     "nav.random_wheel": "ランダムホイール",
     "nav.password_generator": "パスワード生成器",
+    "nav.world_clocks": "世界時計",
     
     // Homepage
     "home.title": "ホーム",
@@ -197,6 +198,21 @@ const japaneseTranslations = {
     "password.tip4": "各アカウントに異なるパスワードを使用してください",
     "password.tip5": "定期的にパスワードを変更してください、特に重要なアカウントの場合",
     "password.tip6": "安全な保存のためにパスワードマネージャーを使用してください",
+    
+    // World Clocks
+    "worldclocks.title": "世界時計",
+    "worldclocks.select_timezone": "タイムゾーンを選択",
+    "worldclocks.selected_time": "選択された時刻",
+    "worldclocks.add_clock": "時計を追加",
+    "worldclocks.info": "リストからタイムゾーンを選択し、\"時計を追加\"をクリックしてその都市の時刻を表示します。最大12個の時計を追加できます。",
+    "worldclocks.clocks": "時計",
+    "worldclocks.clear_all": "すべてクリア",
+    "worldclocks.preset_cities": "人気都市",
+    "worldclocks.settings": "設定",
+    "worldclocks.show_seconds": "秒針を表示",
+    "worldclocks.show_numbers": "時刻の数字を表示",
+    "worldclocks.show_digital": "デジタル時計を表示",
+    "worldclocks.theme": "時計のテーマ",
     
     // Error pages
     "error.title": "ページが見つかりません",
