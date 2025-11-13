@@ -9,6 +9,10 @@ const vietnameseTranslations = {
     "nav.world_clocks": "Đồng Hồ Thế Giới",
     "nav.unit_converter": "Chuyển Đổi Đơn Vị",
     "nav.qr_generator": "Tạo Mã QR",
+    "nav.tools": "Công cụ",
+    "nav.cat.random": "Ngẫu nhiên",
+    "nav.cat.time": "Thời gian",
+    "nav.cat.utilities": "Tiện ích",
     
     // Homepage
     "home.title": "Trang chủ",

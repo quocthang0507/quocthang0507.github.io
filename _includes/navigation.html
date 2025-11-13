@@ -15,35 +15,48 @@
                         <span data-i18n="nav.home">Trang chủ</span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link {% if page.url == '/random-number/' %}active{% endif %}" href="{{ '/random-number/' | relative_url }}">
-                        <span data-i18n="nav.random_number">Random Number</span>
+                <!-- Tools grouped dropdown -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="toolsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-tools"></i> <span data-i18n="nav.tools">Tools</span>
                     </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {% if page.url == '/random-wheel/' %}active{% endif %}" href="{{ '/random-wheel/' | relative_url }}">
-                        <span data-i18n="nav.random_wheel">Random Wheel</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {% if page.url == '/password-generator/' %}active{% endif %}" href="{{ '/password-generator/' | relative_url }}">
-                        <span data-i18n="nav.password_generator">Password Generator</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {% if page.url == '/world-clocks/' %}active{% endif %}" href="{{ '/world-clocks/' | relative_url }}">
-                        <span data-i18n="nav.world_clocks">World Clocks</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {% if page.url == '/unit-converter/' %}active{% endif %}" href="{{ '/unit-converter/' | relative_url }}">
-                        <span data-i18n="nav.unit_converter">Unit Converter</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {% if page.url == '/qr-generator/' %}active{% endif %}" href="{{ '/qr-generator/' | relative_url }}">
-                        <span data-i18n="nav.qr_generator">QR Generator</span>
-                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="toolsDropdown">
+                        <li><h6 class="dropdown-header" data-i18n="nav.cat.random">Random</h6></li>
+                        <li>
+                            <a class="dropdown-item {% if page.url == '/random-number/' %}active{% endif %}" href="{{ '/random-number/' | relative_url }}">
+                                <span data-i18n="nav.random_number">Random Number</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item {% if page.url == '/random-wheel/' %}active{% endif %}" href="{{ '/random-wheel/' | relative_url }}">
+                                <span data-i18n="nav.random_wheel">Random Wheel</span>
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><h6 class="dropdown-header" data-i18n="nav.cat.time">Time</h6></li>
+                        <li>
+                            <a class="dropdown-item {% if page.url == '/world-clocks/' %}active{% endif %}" href="{{ '/world-clocks/' | relative_url }}">
+                                <span data-i18n="nav.world_clocks">World Clocks</span>
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><h6 class="dropdown-header" data-i18n="nav.cat.utilities">Utilities</h6></li>
+                        <li>
+                            <a class="dropdown-item {% if page.url == '/password-generator/' %}active{% endif %}" href="{{ '/password-generator/' | relative_url }}">
+                                <span data-i18n="nav.password_generator">Password Generator</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item {% if page.url == '/unit-converter/' %}active{% endif %}" href="{{ '/unit-converter/' | relative_url }}">
+                                <span data-i18n="nav.unit_converter">Unit Converter</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item {% if page.url == '/qr-generator/' %}active{% endif %}" href="{{ '/qr-generator/' | relative_url }}">
+                                <span data-i18n="nav.qr_generator">QR Generator</span>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
                 <!-- Dark mode toggle -->
                 <li class="nav-item">

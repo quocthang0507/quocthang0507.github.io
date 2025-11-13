@@ -9,6 +9,10 @@ const japaneseTranslations = {
     "nav.world_clocks": "世界時計",
     "nav.unit_converter": "単位変換",
     "nav.qr_generator": "QRコード生成",
+        "nav.tools": "ツール",
+        "nav.cat.random": "ランダム",
+        "nav.cat.time": "時間",
+        "nav.cat.utilities": "ユーティリティ",
     
     // Homepage
     "home.title": "ホーム",

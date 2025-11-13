@@ -9,6 +9,10 @@ const englishTranslations = {
     "nav.world_clocks": "World Clocks",
     "nav.unit_converter": "Unit Converter",
     "nav.qr_generator": "QR Generator",
+    "nav.tools": "Tools",
+    "nav.cat.random": "Random",
+    "nav.cat.time": "Time",
+    "nav.cat.utilities": "Utilities",
     
     // Homepage
     "home.title": "Home",

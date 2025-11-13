@@ -39,6 +39,10 @@ const koreanTranslations = {
     "nav.world_clocks": "세계 시계",
     "nav.unit_converter": "단위 변환기",
     "nav.qr_generator": "QR 코드 생성기",
+    "nav.tools": "도구",
+    "nav.cat.random": "무작위",
+    "nav.cat.time": "시간",
+    "nav.cat.utilities": "유틸리티",
     
     // Homepage
     "home.title": "홈",

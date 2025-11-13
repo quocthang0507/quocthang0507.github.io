@@ -9,6 +9,10 @@ const chineseTranslations = {
     "nav.world_clocks": "世界时钟",
     "nav.unit_converter": "单位转换器",
     "nav.qr_generator": "二维码生成器",
+    "nav.tools": "工具",
+    "nav.cat.random": "随机",
+    "nav.cat.time": "时间",
+    "nav.cat.utilities": "实用工具",
     
     // Homepage
     "home.title": "主页",
