@@ -327,10 +327,19 @@ document.addEventListener('DOMContentLoaded', function() {
     function showAlert(message, type) {
         const alertDiv = document.createElement('div');
         alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
-        alertDiv.innerHTML = `
-            ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `;
+        
+        // Safely set text content (prevents XSS)
+        const messageSpan = document.createElement('span');
+        messageSpan.textContent = message;
+        
+        const closeBtn = document.createElement('button');
+        closeBtn.type = 'button';
+        closeBtn.className = 'btn-close';
+        closeBtn.setAttribute('data-bs-dismiss', 'alert');
+        closeBtn.setAttribute('aria-label', 'Close');
+        
+        alertDiv.appendChild(messageSpan);
+        alertDiv.appendChild(closeBtn);
         
         alertContainer.innerHTML = '';
         alertContainer.appendChild(alertDiv);

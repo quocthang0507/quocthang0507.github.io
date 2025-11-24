@@ -120,7 +120,10 @@ layout: compress
     <!-- Security Headers -->
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; img-src 'self' data: https:; font-src 'self' https://cdnjs.cloudflare.com; connect-src 'self'; frame-ancestors 'self';">
+    <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()"
     
     <!-- Google Analytics will be loaded conditionally by cookie consent -->
     
@@ -150,9 +153,11 @@ layout: compress
     
     <!-- Custom JS -->
     {% if jekyll.environment == "production" %}
+    <script src="{{ '/assets/js/security.min.js' | relative_url }}"></script>
     <script src="{{ '/assets/js/main.min.js' | relative_url }}"></script>
     <script id="i18n-script" src="{{ '/assets/js/i18n.min.js' | relative_url }}"></script>
     {% else %}
+    <script src="{{ '/assets/js/security.js' | relative_url }}"></script>
     <script src="{{ '/assets/js/main.js' | relative_url }}"></script>
     <script id="i18n-script" src="{{ '/assets/js/i18n.js' | relative_url }}"></script>
     {% endif %}

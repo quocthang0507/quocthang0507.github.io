@@ -34,12 +34,8 @@ jobs:
       - name: Install Node dependencies
         run: npm ci || npm install
       
-      - name: Install Terser for JS minification
-        run: npm install --save-dev terser
-      
       - name: Minify JavaScript files
         run: npm run minify:js
-        continue-on-error: true  # Don't fail if minification has issues
       
       - name: Build with Jekyll
         run: |
