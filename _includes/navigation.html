@@ -39,6 +39,11 @@
                                 <span data-i18n="nav.world_clocks">World Clocks</span>
                             </a>
                         </li>
+                        <li>
+                            <a class="dropdown-item {% if page.url == '/date-calculator/' %}active{% endif %}" href="{{ '/date-calculator/' | relative_url }}">
+                                <span data-i18n="nav.date_calculator">Date Calculator</span>
+                            </a>
+                        </li>
                         <li><hr class="dropdown-divider"></li>
                         <li><h6 class="dropdown-header" data-i18n="nav.cat.utilities">Utilities</h6></li>
                         <li>
@@ -54,6 +59,21 @@
                         <li>
                             <a class="dropdown-item {% if page.url == '/qr-generator/' %}active{% endif %}" href="{{ '/qr-generator/' | relative_url }}">
                                 <span data-i18n="nav.qr_generator">QR Generator</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item {% if page.url == '/encoder-decoder/' %}active{% endif %}" href="{{ '/encoder-decoder/' | relative_url }}">
+                                <span data-i18n="nav.encoder_decoder">Encoder/Decoder</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item {% if page.url == '/hash-generator/' %}active{% endif %}" href="{{ '/hash-generator/' | relative_url }}">
+                                <span data-i18n="nav.hash_generator">Hash Generator</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item {% if page.url == '/color-picker/' %}active{% endif %}" href="{{ '/color-picker/' | relative_url }}">
+                                <span data-i18n="nav.color_picker">Color Picker</span>
                             </a>
                         </li>
                     </ul>

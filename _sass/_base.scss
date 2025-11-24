@@ -67,6 +67,17 @@ main {
   vertical-align: top;
 }
 
+// Remove underline from calendar day links
+.calendar-day-link {
+  text-decoration: none !important;
+  color: inherit;
+}
+
+.calendar-day-link:hover {
+  text-decoration: none !important;
+  color: inherit;
+}
+
 .calendar-table td:hover {
   background: var(--bs-primary-bg-subtle);
   border-color: var(--bs-primary);

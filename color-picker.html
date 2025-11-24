@@ -1,0 +1,319 @@
+---
+layout: default
+title: "Color Picker & Converter"
+description: "Interactive color picker with color wheel, harmonies, and converter. Convert between HEX, RGB, HSL, HSV, and CMYK formats."
+keywords: "color picker, color converter, color wheel, hex to rgb, rgb to hex, hsl, hsv, cmyk, color harmonies"
+custom_js: ['color-picker.js']
+permalink: /color-picker/
+sitemap:
+  priority: 0.8
+  changefreq: weekly
+  lastmod: 2025-11-24
+---
+
+<div class="row">
+    <div class="col-12">
+        <div id="alert-container"></div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Color Picker Section -->
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-palette"></i> 
+                    <span data-i18n="color.picker_title">Color Picker</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                <!-- Color Display -->
+                <div class="color-preview mb-4" id="color-preview" style="width: 100%; height: 150px; border-radius: 8px; border: 2px solid #ddd; cursor: pointer;"></div>
+
+                <!-- Color Inputs -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">HEX</label>
+                    <div class="input-group">
+                        <span class="input-group-text">#</span>
+                        <input type="text" class="form-control font-monospace" id="hex-input" maxlength="6" placeholder="FF5733">
+                        <button class="btn btn-outline-primary copy-btn" data-target="hex-input">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">RGB</label>
+                    <div class="row g-2">
+                        <div class="col">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">R</span>
+                                <input type="number" class="form-control" id="rgb-r" min="0" max="255" value="255">
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">G</span>
+                                <input type="number" class="form-control" id="rgb-g" min="0" max="255" value="87">
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">B</span>
+                                <input type="number" class="form-control" id="rgb-b" min="0" max="255" value="51">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">HSL</label>
+                    <div class="row g-2">
+                        <div class="col">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">H</span>
+                                <input type="number" class="form-control" id="hsl-h" min="0" max="360" value="11">
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">S</span>
+                                <input type="number" class="form-control" id="hsl-s" min="0" max="100" value="100">
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">L</span>
+                                <input type="number" class="form-control" id="hsl-l" min="0" max="100" value="60">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">HSV</label>
+                    <div class="row g-2">
+                        <div class="col">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">H</span>
+                                <input type="number" class="form-control" id="hsv-h" min="0" max="360" value="11">
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">S</span>
+                                <input type="number" class="form-control" id="hsv-s" min="0" max="100" value="80">
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">V</span>
+                                <input type="number" class="form-control" id="hsv-v" min="0" max="100" value="100">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">CMYK</label>
+                    <div class="row g-2">
+                        <div class="col-6 col-sm-3">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">C</span>
+                                <input type="number" class="form-control" id="cmyk-c" min="0" max="100" value="0">
+                            </div>
+                        </div>
+                        <div class="col-6 col-sm-3">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">M</span>
+                                <input type="number" class="form-control" id="cmyk-m" min="0" max="100" value="66">
+                            </div>
+                        </div>
+                        <div class="col-6 col-sm-3">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">Y</span>
+                                <input type="number" class="form-control" id="cmyk-y" min="0" max="100" value="80">
+                            </div>
+                        </div>
+                        <div class="col-6 col-sm-3">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">K</span>
+                                <input type="number" class="form-control" id="cmyk-k" min="0" max="100" value="0">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Random Color Button -->
+                <div class="d-grid">
+                    <button class="btn btn-outline-primary" id="random-color-btn">
+                        <i class="fas fa-random"></i> <span data-i18n="color.random">Random Color</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Color Wheel Section -->
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-circle-notch"></i> 
+                    <span data-i18n="color.wheel_title">Color Wheel</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                <!-- Color Wheel Canvas -->
+                <div class="text-center mb-3">
+                    <canvas id="color-wheel" width="300" height="300" style="cursor: crosshair; border: 1px solid #ddd; border-radius: 8px;"></canvas>
+                </div>
+
+                <!-- Harmony Selector -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold" data-i18n="color.harmony">Color Harmony:</label>
+                    <select class="form-select" id="harmony-select">
+                        <option value="none" data-i18n="color.harmony_none">None</option>
+                        <option value="complementary" data-i18n="color.harmony_complementary">Complementary</option>
+                        <option value="analogous" data-i18n="color.harmony_analogous">Analogous</option>
+                        <option value="triadic" data-i18n="color.harmony_triadic">Triadic</option>
+                        <option value="split-complementary" data-i18n="color.harmony_split">Split Complementary</option>
+                        <option value="square" data-i18n="color.harmony_square">Square</option>
+                        <option value="tetradic" data-i18n="color.harmony_tetradic">Tetradic (Compound)</option>
+                        <option value="monochromatic" data-i18n="color.harmony_monochromatic">Monochromatic</option>
+                        <option value="shades" data-i18n="color.harmony_shades">Shades</option>
+                    </select>
+                </div>
+
+                <!-- Harmony Colors Display -->
+                <div id="harmony-colors" class="harmony-colors"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Color Palette Section -->
+<div class="row">
+    <div class="col-12 mb-4">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-swatchbook"></i> 
+                    <span data-i18n="color.palette_title">Color Palette</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6 data-i18n="color.saved_colors">Saved Colors:</h6>
+                        <div id="saved-colors" class="saved-colors mb-3">
+                            <div class="text-muted small" data-i18n="color.no_saved">No saved colors yet. Click "Add to Palette" to save colors.</div>
+                        </div>
+                        <button class="btn btn-sm btn-primary" id="add-to-palette-btn">
+                            <i class="fas fa-plus"></i> <span data-i18n="color.add_palette">Add to Palette</span>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" id="clear-palette-btn">
+                            <i class="fas fa-trash"></i> <span data-i18n="color.clear_palette">Clear Palette</span>
+                        </button>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 data-i18n="color.color_info">Color Information:</h6>
+                        <div class="small">
+                            <div class="mb-2">
+                                <strong data-i18n="color.css_format">CSS Formats:</strong><br>
+                                <code id="css-hex"></code><br>
+                                <code id="css-rgb"></code><br>
+                                <code id="css-hsl"></code>
+                            </div>
+                            <div>
+                                <strong data-i18n="color.brightness">Brightness:</strong> <span id="brightness-value"></span><br>
+                                <strong data-i18n="color.luminance">Luminance:</strong> <span id="luminance-value"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.harmony-colors {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    min-height: 60px;
+}
+
+.harmony-color {
+    flex: 1;
+    min-width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    border: 2px solid #ddd;
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.2s;
+}
+
+.harmony-color:hover {
+    transform: scale(1.05);
+}
+
+.harmony-color-label {
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    font-family: monospace;
+    white-space: nowrap;
+}
+
+.saved-colors {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-height: 50px;
+}
+
+.saved-color {
+    width: 50px;
+    height: 50px;
+    border-radius: 6px;
+    border: 2px solid #ddd;
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.2s;
+}
+
+.saved-color:hover {
+    transform: scale(1.1);
+}
+
+.saved-color .delete-btn {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #dc3545;
+    color: white;
+    border: 2px solid white;
+    font-size: 10px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.saved-color:hover .delete-btn {
+    display: flex;
+}
+
+.copy-btn {
+    cursor: pointer;
+}
+</style>

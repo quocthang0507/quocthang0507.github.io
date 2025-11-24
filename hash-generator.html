@@ -1,0 +1,212 @@
+---
+layout: default
+title: "Hash Generator"
+description: "Generate cryptographic hashes with MD5, SHA-1, SHA-256, SHA-384, and SHA-512. Hash text or files securely in your browser."
+keywords: "hash generator, md5, sha1, sha256, sha512, checksum, cryptographic hash, file hash"
+custom_js: ['hash-generator.js']
+permalink: /hash-generator/
+sitemap:
+  priority: 0.8
+  changefreq: weekly
+  lastmod: 2025-11-24
+---
+
+<div class="row">
+    <div class="col-12">
+        <div id="alert-container"></div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-10 mx-auto mb-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-lock"></i> 
+                    <span data-i18n="hash.title">Hash Generator</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                <!-- Input Section -->
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <label class="form-label fw-bold mb-0" data-i18n="hash.input">Input:</label>
+                        <div>
+                            <button class="btn btn-sm btn-outline-secondary" id="paste-input-btn">
+                                <i class="fas fa-paste"></i> <span data-i18n="hash.paste">Paste</span>
+                            </button>
+                            <button class="btn btn-sm btn-outline-secondary" id="clear-input-btn">
+                                <i class="fas fa-eraser"></i> <span data-i18n="hash.clear">Clear</span>
+                            </button>
+                        </div>
+                    </div>
+                    <textarea 
+                        class="form-control font-monospace" 
+                        id="input-text" 
+                        rows="6" 
+                        placeholder="Enter text to hash..."
+                        data-i18n-placeholder="hash.input_placeholder"
+                    ></textarea>
+                    <div class="mt-2">
+                        <small class="text-muted">
+                            <span data-i18n="hash.char_count">Characters:</span> <span id="input-char-count">0</span> |
+                            <span data-i18n="hash.byte_count">Bytes:</span> <span id="input-byte-count">0</span>
+                        </small>
+                    </div>
+                </div>
+
+                <!-- File Upload Section -->
+                <div class="mb-4">
+                    <label class="form-label fw-bold" data-i18n="hash.or_upload">Or upload a file:</label>
+                    <div class="input-group">
+                        <input type="file" class="form-control" id="file-input" accept="*/*">
+                        <button class="btn btn-outline-danger" type="button" id="clear-file-btn">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <small class="text-muted" data-i18n="hash.file_info">
+                        Max file size: 100MB. All hashing is performed locally in your browser.
+                    </small>
+                </div>
+
+                <!-- File Hash Progress -->
+                <div id="file-hash-progress" style="display: none;" class="mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <small class="text-muted">
+                            <span data-i18n="hash.processing">Processing:</span> <span id="progress-text">0%</span>
+                        </small>
+                        <small class="text-muted" id="file-size-info"></small>
+                    </div>
+                    <div class="progress" style="height: 25px;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                             id="progress-bar" 
+                             role="progressbar" 
+                             style="width: 0%"
+                             aria-valuenow="0" 
+                             aria-valuemin="0" 
+                             aria-valuemax="100">0%</div>
+                    </div>
+                    <div class="mt-2 text-center">
+                        <small class="text-muted">
+                            <i class="fas fa-info-circle"></i> <span data-i18n="hash.large_file_info">Large files are processed in chunks for better performance</span>
+                        </small>
+                    </div>
+                </div>
+
+                <!-- Action Button -->
+                <div class="d-grid mb-4">
+                    <button class="btn btn-success btn-lg" id="generate-btn">
+                        <i class="fas fa-fingerprint"></i> <span data-i18n="hash.generate">Generate Hashes</span>
+                    </button>
+                </div>
+
+                <!-- Hash Results -->
+                <div id="hash-results" style="display: none;">
+                    <h6 class="fw-bold mb-3" data-i18n="hash.results">Hash Results:</h6>
+
+                    <!-- MD5 -->
+                    <div class="mb-3">
+                        <label class="form-label d-flex justify-content-between align-items-center">
+                            <span class="fw-bold">MD5 <small class="text-muted">(128-bit)</small></span>
+                            <button class="btn btn-sm btn-outline-primary copy-hash-btn" data-target="md5-hash">
+                                <i class="fas fa-copy"></i> <span data-i18n="hash.copy">Copy</span>
+                            </button>
+                        </label>
+                        <input type="text" class="form-control font-monospace" id="md5-hash" readonly>
+                    </div>
+
+                    <!-- SHA-1 -->
+                    <div class="mb-3">
+                        <label class="form-label d-flex justify-content-between align-items-center">
+                            <span class="fw-bold">SHA-1 <small class="text-muted">(160-bit)</small></span>
+                            <button class="btn btn-sm btn-outline-primary copy-hash-btn" data-target="sha1-hash">
+                                <i class="fas fa-copy"></i> <span data-i18n="hash.copy">Copy</span>
+                            </button>
+                        </label>
+                        <input type="text" class="form-control font-monospace" id="sha1-hash" readonly>
+                    </div>
+
+                    <!-- SHA-256 -->
+                    <div class="mb-3">
+                        <label class="form-label d-flex justify-content-between align-items-center">
+                            <span class="fw-bold">SHA-256 <small class="text-muted">(256-bit)</small></span>
+                            <button class="btn btn-sm btn-outline-primary copy-hash-btn" data-target="sha256-hash">
+                                <i class="fas fa-copy"></i> <span data-i18n="hash.copy">Copy</span>
+                            </button>
+                        </label>
+                        <input type="text" class="form-control font-monospace" id="sha256-hash" readonly>
+                    </div>
+
+                    <!-- SHA-384 -->
+                    <div class="mb-3">
+                        <label class="form-label d-flex justify-content-between align-items-center">
+                            <span class="fw-bold">SHA-384 <small class="text-muted">(384-bit)</small></span>
+                            <button class="btn btn-sm btn-outline-primary copy-hash-btn" data-target="sha384-hash">
+                                <i class="fas fa-copy"></i> <span data-i18n="hash.copy">Copy</span>
+                            </button>
+                        </label>
+                        <input type="text" class="form-control font-monospace" id="sha384-hash" readonly>
+                    </div>
+
+                    <!-- SHA-512 -->
+                    <div class="mb-3">
+                        <label class="form-label d-flex justify-content-between align-items-center">
+                            <span class="fw-bold">SHA-512 <small class="text-muted">(512-bit)</small></span>
+                            <button class="btn btn-sm btn-outline-primary copy-hash-btn" data-target="sha512-hash">
+                                <i class="fas fa-copy"></i> <span data-i18n="hash.copy">Copy</span>
+                            </button>
+                        </label>
+                        <input type="text" class="form-control font-monospace" id="sha512-hash" readonly>
+                    </div>
+
+                    <!-- Copy All Button -->
+                    <div class="d-grid mt-4">
+                        <button class="btn btn-outline-primary" id="copy-all-btn">
+                            <i class="fas fa-clipboard"></i> <span data-i18n="hash.copy_all">Copy All Hashes</span>
+                        </button>
+                    </div>
+
+                    <!-- File Info (if file was hashed) -->
+                    <div id="file-info-display" style="display: none;" class="mt-3">
+                        <div class="alert alert-secondary mb-0">
+                            <h6 class="alert-heading" data-i18n="hash.file_details">File Details:</h6>
+                            <div class="small">
+                                <strong data-i18n="hash.filename">Filename:</strong> <span id="file-name"></span><br>
+                                <strong data-i18n="hash.filesize">File Size:</strong> <span id="file-size"></span><br>
+                                <strong data-i18n="hash.filetype">File Type:</strong> <span id="file-type"></span><br>
+                                <strong data-i18n="hash.processing_time">Processing Time:</strong> <span id="processing-time"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Info Section -->
+                <div class="alert alert-info mt-4">
+                    <h6 class="alert-heading">
+                        <i class="fas fa-info-circle"></i> <span data-i18n="hash.info_title">Information</span>
+                    </h6>
+                    <ul class="mb-0 small">
+                        <li data-i18n="hash.info_md5">
+                            <strong>MD5:</strong> 128-bit hash, fast but not recommended for security (vulnerable to collisions)
+                        </li>
+                        <li data-i18n="hash.info_sha1">
+                            <strong>SHA-1:</strong> 160-bit hash, deprecated for security but still used for checksums
+                        </li>
+                        <li data-i18n="hash.info_sha256">
+                            <strong>SHA-256:</strong> 256-bit hash, widely used and secure for most applications
+                        </li>
+                        <li data-i18n="hash.info_sha384">
+                            <strong>SHA-384:</strong> 384-bit hash, more secure than SHA-256, good for sensitive data
+                        </li>
+                        <li data-i18n="hash.info_sha512">
+                            <strong>SHA-512:</strong> 512-bit hash, highest security level, used for critical applications
+                        </li>
+                        <li data-i18n="hash.info_privacy">
+                            <strong>Privacy:</strong> All hashing is performed locally in your browser. No data is sent to any server.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

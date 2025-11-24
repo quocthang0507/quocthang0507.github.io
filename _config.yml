@@ -31,6 +31,7 @@ permalink: pretty
 plugins:
   - jekyll-feed
   - jekyll-sitemap
+  - jekyll-compress-html
 
 # Exclude files from build
 exclude:
@@ -57,6 +58,16 @@ defaults:
 # Sass / SCSS build configuration
 sass:
   sass_dir: _sass
-  style: expanded # keep readable output so browser devtools + sourcemaps are clearer
-  # sourcemap setting (supported in newer jekyll-sass-converter versions). If ignored, no harm.
-  sourcemap: always
+  style: compressed # minify CSS output for production
+  sourcemap: false # disable sourcemaps in production
+
+# HTML Compression (jekyll-compress-html)
+compress_html:
+  clippings: all
+  comments: all
+  endings: all
+  startings: []
+  blanklines: false
+  profile: false
+  ignore:
+    envs: [development]

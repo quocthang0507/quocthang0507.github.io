@@ -9,7 +9,10 @@
     "test:ui": "playwright test",
     "test:ui:headed": "playwright test --headed",
     "test:ui:debug": "playwright test --debug",
-    "test:all": "npm run test && npm run test:ui"
+    "test:all": "npm run test && npm run test:ui",
+    "minify:js": "node scripts/minify-js.js",
+    "build": "npm run minify:js && JEKYLL_ENV=production bundle exec jekyll build",
+    "serve": "bundle exec jekyll serve"
   },
   "keywords": [],
   "author": "quocthang0507",

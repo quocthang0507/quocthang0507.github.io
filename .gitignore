@@ -30,3 +30,7 @@ coverage/
 # Ignore package lock files
 package-lock.json
 Gemfile.lock
+
+# Optional: Ignore minified JS files (if you prefer to generate them on build)
+# Uncomment the line below if you don't want to commit .min.js files
+# assets/js/**/*.min.js

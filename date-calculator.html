@@ -1,0 +1,327 @@
+---
+layout: default
+title: Date Calculator
+permalink: /date-calculator/
+---
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-10 mx-auto">
+            <h1 class="mb-4">
+                <i class="fas fa-calendar-alt"></i>
+                <span data-i18n="date_calc.title">Date Calculator</span>
+            </h1>
+            
+            <!-- Date Difference Calculator -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-minus-circle"></i>
+                        <span data-i18n="date_calc.diff.title">Date Difference</span>
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted" data-i18n="date_calc.diff.desc">Calculate the difference between two dates</p>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" data-i18n="date_calc.diff.from">From Date:</label>
+                            <input type="date" class="form-control" id="diffFromDate">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" data-i18n="date_calc.diff.to">To Date:</label>
+                            <input type="date" class="form-control" id="diffToDate">
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary mb-3" onclick="calculateDateDifference()">
+                        <i class="fas fa-calculator"></i>
+                        <span data-i18n="date_calc.calculate">Calculate</span>
+                    </button>
+                    
+                    <div id="diffResult" class="result-box" style="display: none;">
+                        <h6 data-i18n="date_calc.result">Result:</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="stat-card">
+                                    <div class="stat-value" id="diffYears">0</div>
+                                    <div class="stat-label" data-i18n="date_calc.years">Years</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="stat-card">
+                                    <div class="stat-value" id="diffMonths">0</div>
+                                    <div class="stat-label" data-i18n="date_calc.months">Months</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="stat-card">
+                                    <div class="stat-value" id="diffDays">0</div>
+                                    <div class="stat-label" data-i18n="date_calc.days">Days</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="stat-card">
+                                    <div class="stat-value" id="diffWeeks">0</div>
+                                    <div class="stat-label" data-i18n="date_calc.weeks">Weeks</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="stat-card">
+                                    <div class="stat-value" id="diffHours">0</div>
+                                    <div class="stat-label" data-i18n="date_calc.hours">Hours</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="stat-card">
+                                    <div class="stat-value" id="diffMinutes">0</div>
+                                    <div class="stat-label" data-i18n="date_calc.minutes">Minutes</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <strong data-i18n="date_calc.total">Total:</strong>
+                            <div id="diffTotal"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add/Subtract Days Calculator -->
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-plus-circle"></i>
+                        <span data-i18n="date_calc.add.title">Add/Subtract Days</span>
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted" data-i18n="date_calc.add.desc">Add or subtract days, months, or years from a date</p>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" data-i18n="date_calc.add.start_date">Start Date:</label>
+                            <input type="date" class="form-control" id="addStartDate">
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-3 mb-2">
+                            <label class="form-label" data-i18n="date_calc.years">Years:</label>
+                            <input type="number" class="form-control" id="addYears" value="0">
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <label class="form-label" data-i18n="date_calc.months">Months:</label>
+                            <input type="number" class="form-control" id="addMonths" value="0">
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <label class="form-label" data-i18n="date_calc.days">Days:</label>
+                            <input type="number" class="form-control" id="addDays" value="0">
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <label class="form-label" data-i18n="date_calc.weeks">Weeks:</label>
+                            <input type="number" class="form-control" id="addWeeks" value="0">
+                        </div>
+                    </div>
+                    
+                    <div class="btn-group mb-3" role="group">
+                        <button class="btn btn-success" onclick="addToDate()">
+                            <i class="fas fa-plus"></i>
+                            <span data-i18n="date_calc.add.btn">Add</span>
+                        </button>
+                        <button class="btn btn-danger" onclick="subtractFromDate()">
+                            <i class="fas fa-minus"></i>
+                            <span data-i18n="date_calc.subtract.btn">Subtract</span>
+                        </button>
+                    </div>
+                    
+                    <div id="addResult" class="result-box" style="display: none;">
+                        <h6 data-i18n="date_calc.result">Result:</h6>
+                        <div class="result-date" id="addResultDate"></div>
+                        <small class="text-muted" id="addResultInfo"></small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Age Calculator -->
+            <div class="card mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-birthday-cake"></i>
+                        <span data-i18n="date_calc.age.title">Age Calculator</span>
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted" data-i18n="date_calc.age.desc">Calculate your exact age</p>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" data-i18n="date_calc.age.birth_date">Birth Date:</label>
+                            <input type="date" class="form-control" id="birthDate">
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-info mb-3" onclick="calculateAge()">
+                        <i class="fas fa-calculator"></i>
+                        <span data-i18n="date_calc.calculate">Calculate</span>
+                    </button>
+                    
+                    <div id="ageResult" class="result-box" style="display: none;">
+                        <h6 data-i18n="date_calc.age.your_age">Your Age:</h6>
+                        <div class="age-display mb-3">
+                            <span class="age-number" id="ageYears">0</span>
+                            <span data-i18n="date_calc.years">years</span>,
+                            <span class="age-number" id="ageMonths">0</span>
+                            <span data-i18n="date_calc.months">months</span>,
+                            <span class="age-number" id="ageDays">0</span>
+                            <span data-i18n="date_calc.days">days</span>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="stat-card">
+                                    <div class="stat-value" id="ageTotalMonths">0</div>
+                                    <div class="stat-label" data-i18n="date_calc.total_months">Total Months</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="stat-card">
+                                    <div class="stat-value" id="ageTotalWeeks">0</div>
+                                    <div class="stat-label" data-i18n="date_calc.total_weeks">Total Weeks</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="stat-card">
+                                    <div class="stat-value" id="ageTotalDays">0</div>
+                                    <div class="stat-label" data-i18n="date_calc.total_days">Total Days</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <strong data-i18n="date_calc.age.next_birthday">Next Birthday:</strong>
+                            <div id="nextBirthday"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Weekday Calculator -->
+            <div class="card mb-4">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0">
+                        <i class="fas fa-calendar-day"></i>
+                        <span data-i18n="date_calc.weekday.title">Weekday Calculator</span>
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted" data-i18n="date_calc.weekday.desc">Find out what day of the week a date falls on</p>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" data-i18n="date_calc.weekday.date">Date:</label>
+                            <input type="date" class="form-control" id="weekdayDate">
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-warning mb-3" onclick="calculateWeekday()">
+                        <i class="fas fa-search"></i>
+                        <span data-i18n="date_calc.find">Find</span>
+                    </button>
+                    
+                    <div id="weekdayResult" class="result-box" style="display: none;">
+                        <h6 data-i18n="date_calc.result">Result:</h6>
+                        <div class="weekday-display" id="weekdayName"></div>
+                        <div class="mt-3">
+                            <div id="weekdayInfo"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="{{ '/assets/js/date-calculator.js' | relative_url }}"></script>
+
+<style>
+.result-box {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 15px;
+}
+
+[data-theme="dark"] .result-box {
+    background: #2d3748;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 5px 0;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+[data-theme="dark"] .stat-card {
+    background: #1a202c;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--bs-primary);
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-top: 5px;
+}
+
+.result-date {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--bs-success);
+    margin-bottom: 10px;
+}
+
+.age-display {
+    font-size: 1.5rem;
+    font-weight: 500;
+}
+
+.age-number {
+    color: var(--bs-info);
+    font-weight: bold;
+    font-size: 2rem;
+}
+
+.weekday-display {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--bs-warning);
+    text-align: center;
+    padding: 20px;
+    background: rgba(255, 193, 7, 0.1);
+    border-radius: 8px;
+}
+
+.card-header h5 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-group {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-group .btn {
+    flex: 1;
+}
+</style>

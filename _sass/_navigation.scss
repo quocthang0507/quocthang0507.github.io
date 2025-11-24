@@ -50,3 +50,34 @@ li.nav-item.dropdown {
 .navbar-nav > li.nav-item.dropdown:last-child {
   margin-right: 0;
 }
+
+// Fix dropdown header and divider hover
+.dropdown-header {
+  pointer-events: none;
+  padding-top: 0.5rem;
+  padding-bottom: 0.25rem;
+}
+
+.dropdown-divider {
+  margin: 0.25rem 0;
+}
+
+// Prevent hover effect on non-clickable items
+.dropdown-menu .dropdown-header:hover {
+  background-color: transparent !important;
+  color: inherit !important;
+}
+
+// Ensure dropdown items hover properly
+.dropdown-item {
+  transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+  border-radius: 0.25rem;
+  margin: 0.1rem 0.25rem;
+  padding: 0.4rem 0.75rem;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+  background-color: var(--bs-primary);
+  color: #ffffff !important;
+}
