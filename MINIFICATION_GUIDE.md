@@ -15,7 +15,7 @@
 bundle install
 ```
 
-This installs the `jekyll-compress-html` plugin.
+This installs Jekyll and its plugins. Note: HTML compression is handled by the `_layouts/compress.html` layout file, not a plugin.
 
 ### 2. Install Node Dependencies (for JS minification)
 
@@ -75,10 +75,10 @@ npm run minify:js
 ## Files Modified
 
 ```
-_config.yml                 # Added HTML compression & CSS settings
-Gemfile                     # Added jekyll-compress-html plugin
+_config.yml                 # Added HTML compression settings & CSS configuration
+Gemfile                     # Jekyll plugins (feed, sitemap)
 _layouts/default.html       # Uses compress layout
-_layouts/compress.html      # HTML compression layout (new)
+_layouts/compress.html      # HTML compression layout (pure Liquid template)
 package.json                # Added minification scripts
 scripts/minify-js.js        # JS minification script (new)
 .github/workflows/deploy.yml # Automated deployment (new)

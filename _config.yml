@@ -31,7 +31,6 @@ permalink: pretty
 plugins:
   - jekyll-feed
   - jekyll-sitemap
-  - jekyll-compress-html
 
 # Exclude files from build
 exclude:
@@ -59,9 +58,9 @@ defaults:
 sass:
   sass_dir: _sass
   style: compressed # minify CSS output for production
-  sourcemap: false # disable sourcemaps in production
+  sourcemap: never # disable sourcemaps in production
 
-# HTML Compression (jekyll-compress-html)
+# HTML Compression (using compress layout)
 compress_html:
   clippings: all
   comments: all
