@@ -125,17 +125,24 @@ function showSafeAlert(message, type, container) {
 function isInputSafe(input) {
     if (!input) return true;
     
-    // Check for common XSS patterns
-    const dangerousPatterns = [
-        /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
-        /javascript:/gi,
-        /on\w+\s*=/gi, // Event handlers like onclick=
-        /<iframe/gi,
-        /<object/gi,
-        /<embed/gi
+    // Normalize input for checking (lowercase, remove whitespace variations)
+    const normalized = input.toLowerCase().replace(/\s+/g, ' ');
+    
+    // Check for dangerous keywords and patterns
+    const dangerousKeywords = [
+        '<script',
+        'javascript:',
+        'onerror=',
+        'onload=',
+        'onclick=',
+        '<iframe',
+        '<object',
+        '<embed',
+        'eval(',
+        'expression('
     ];
     
-    return !dangerousPatterns.some(pattern => pattern.test(input));
+    return !dangerousKeywords.some(keyword => normalized.includes(keyword));
 }
 
 // Export functions for use in other modules
