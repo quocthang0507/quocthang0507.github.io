@@ -147,6 +147,9 @@ class TranslationSystem {
             
             if (element.tagName === 'INPUT' && (element.type === 'text' || element.type === 'number')) {
                 element.placeholder = translation;
+            } else if (element.hasAttribute('data-i18n-html') || translation.includes('<strong>') || translation.includes('<')) {
+                // Use innerHTML for elements with HTML content
+                element.innerHTML = translation;
             } else {
                 element.textContent = translation;
             }
