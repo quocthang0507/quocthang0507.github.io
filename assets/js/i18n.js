@@ -20,38 +20,63 @@ class TranslationSystem {
             }
         } catch (e) { /* ignore storage errors */ }
         
+        // Add loading class to body to prevent FOUC (Flash of Untranslated Content)
+        document.body.classList.add('i18n-loading');
+        
         this.loadLanguages();
     }
     
-    // Load all language files
+    // Load all language files with priority for current language
     async loadLanguages() {
         try {
-            // Load language scripts dynamically
-            await this.loadLanguageFile('vi');
-            await this.loadLanguageFile('en');
-            await this.loadLanguageFile('zh');
-            await this.loadLanguageFile('ko');
-            await this.loadLanguageFile('ja');
+            // First, load the current language with high priority
+            await this.loadLanguageFile(this.currentLanguage);
             
-            // Set up translations object
-            this.translations = {
-                'vi': typeof vietnameseTranslations !== 'undefined' ? vietnameseTranslations : {},
-                'en': typeof englishTranslations !== 'undefined' ? englishTranslations : {},
-                'zh': typeof chineseTranslations !== 'undefined' ? chineseTranslations : {},
-                'ko': typeof koreanTranslations !== 'undefined' ? koreanTranslations : {},
-                'ja': typeof japaneseTranslations !== 'undefined' ? japaneseTranslations : {}
-            };
+            // Set up initial translations for current language
+            this.updateTranslationsFromGlobals();
             
+            // Translate page immediately with current language
             this.initializeLanguageSelector();
             this.translatePage();
+            
+            // Remove loading class - content is now translated
+            document.body.classList.remove('i18n-loading');
+            
+            // Load remaining languages in parallel (background)
+            const otherLanguages = Object.keys(this.supportedLanguages).filter(lang => lang !== this.currentLanguage);
+            await Promise.all(otherLanguages.map(lang => this.loadLanguageFile(lang).catch(() => {})));
+            
+            // Update translations object with all loaded languages
+            this.updateTranslationsFromGlobals();
+            
         } catch (error) {
             console.error('Error loading languages:', error);
+            // Still remove loading class on error to show content
+            document.body.classList.remove('i18n-loading');
         }
+    }
+    
+    // Update translations object from global variables
+    updateTranslationsFromGlobals() {
+        this.translations = {
+            'vi': typeof vietnameseTranslations !== 'undefined' ? vietnameseTranslations : {},
+            'en': typeof englishTranslations !== 'undefined' ? englishTranslations : {},
+            'zh': typeof chineseTranslations !== 'undefined' ? chineseTranslations : {},
+            'ko': typeof koreanTranslations !== 'undefined' ? koreanTranslations : {},
+            'ja': typeof japaneseTranslations !== 'undefined' ? japaneseTranslations : {}
+        };
     }
     
     // Load individual language file
     loadLanguageFile(lang) {
         return new Promise((resolve, reject) => {
+            // Check if already loaded
+            const existingScript = document.querySelector(`script[src*="/languages/${lang}.js"]`);
+            if (existingScript) {
+                resolve();
+                return;
+            }
+            
             const script = document.createElement('script');
             // Get the base path from the current i18n.js script tag
             const currentScript = document.querySelector('script[src*="i18n.js"]');
