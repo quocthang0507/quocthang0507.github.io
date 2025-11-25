@@ -40,10 +40,46 @@ document.addEventListener('DOMContentLoaded', function() {
     const cssHsl = document.getElementById('css-hsl');
     const brightnessValue = document.getElementById('brightness-value');
     const luminanceValue = document.getElementById('luminance-value');
+    const presetPaletteDisplay = document.getElementById('preset-palette-display');
 
     let currentColor = { r: 255, g: 87, b: 51 };
     let savedColors = JSON.parse(localStorage.getItem('colorPalette') || '[]');
     let isUpdating = false;
+
+    // Preset color palettes
+    const presetPalettes = {
+        pastel: ['FFB3BA', 'FFDFBA', 'FFFFBA', 'BAFFC9', 'BAE1FF', 'E8BAFF'],
+        vintage: ['8B4513', 'A0522D', 'CD853F', 'DEB887', 'F5DEB3', '2F4F4F'],
+        retro: ['FF6B6B', 'FFE66D', '4ECDC4', '45B7D1', '96CEB4', 'FFEAA7'],
+        neon: ['FF00FF', '00FFFF', '00FF00', 'FFFF00', 'FF0080', '8000FF'],
+        gold: ['FFD700', 'FFC125', 'FFB90F', 'DAA520', 'B8860B', '8B6914'],
+        light: ['FFFFFF', 'F8F9FA', 'E9ECEF', 'DEE2E6', 'CED4DA', 'ADB5BD'],
+        dark: ['212529', '343A40', '495057', '6C757D', '868E96', 'ADB5BD'],
+        warm: ['FF6B6B', 'FF8E72', 'FFA07A', 'FFB347', 'FFCC5C', 'FFE66D'],
+        cold: ['4A90D9', '5DADE2', '76D7EA', '7FDBFF', 'A8E6CF', 'B8D4E3'],
+        summer: ['FF6B6B', 'FFA07A', 'FFD93D', '6BCB77', '4D96FF', 'F72585'],
+        fall: ['D35400', 'E67E22', 'F39C12', 'FFC300', '8B4513', '654321'],
+        winter: ['1E3A5F', '3D5A80', '98C1D9', 'E0FBFC', 'FFFFFF', '293241'],
+        spring: ['98D8AA', 'C9F4AA', 'FCFFB2', 'FFD4D4', 'F0B3B3', 'E7A0C4'],
+        happy: ['FFD93D', 'FF6B6B', '6BCB77', '4D96FF', 'C9B1FF', 'FF8FAB'],
+        nature: ['228B22', '32CD32', '90EE90', '8FBC8F', '2E8B57', '006400'],
+        earth: ['8B4513', 'A0522D', 'D2691E', 'DEB887', '8B8B00', '556B2F'],
+        night: ['0D1B2A', '1B263B', '415A77', '778DA9', 'E0E1DD', '000814'],
+        space: ['0B0C10', '1F2833', '45A29E', '66FCF1', 'C5C6C7', '5C2D91'],
+        rainbow: ['FF0000', 'FF7F00', 'FFFF00', '00FF00', '0000FF', '8B00FF'],
+        gradient: ['667EEA', '764BA2', 'F093FB', 'F5576C', 'FED6E3', '4FACFE'],
+        sunset: ['FF512F', 'F09819', 'DD2476', 'FF512F', 'FDC830', 'F37335'],
+        sky: ['87CEEB', '00BFFF', '1E90FF', '4169E1', '6495ED', 'B0E0E6'],
+        sea: ['006994', '0077B6', '0096C7', '00B4D8', '48CAE4', '90E0EF'],
+        kids: ['FF6B6B', 'FFD93D', '6BCB77', '4D96FF', 'C9B1FF', 'FF8FAB'],
+        skin: ['FFE5D9', 'D4A574', 'C68642', '8D5524', '6B4423', '4A312C'],
+        food: ['FF6347', 'FFD700', '32CD32', 'FF69B4', '8B4513', 'FFA500'],
+        cream: ['FFFDD0', 'FFF8DC', 'FAEBD7', 'FFE4C4', 'FFDAB9', 'FFE4E1'],
+        coffee: ['3C2415', '5C4033', '6F4E37', '8B7355', 'A0826D', 'D2B48C'],
+        wedding: ['FFFFFF', 'FFFAF0', 'FFF0F5', 'FFE4E1', 'D4AF37', 'C0C0C0'],
+        christmas: ['C41E3A', '165B33', 'FFD700', 'FFFFFF', 'BB0A21', '146B3A'],
+        halloween: ['FF6600', '000000', '800080', '008000', 'FFD700', 'DC143C']
+    };
 
     // Initialize
     drawColorWheel();
@@ -64,6 +100,19 @@ document.addEventListener('DOMContentLoaded', function() {
     clearPaletteBtn.addEventListener('click', clearPalette);
     colorPreview.addEventListener('click', () => hexInput.focus());
 
+    // Preset palette buttons
+    document.querySelectorAll('.preset-palette-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Remove active class from all buttons
+            document.querySelectorAll('.preset-palette-btn').forEach(b => b.classList.remove('active'));
+            // Add active class to clicked button
+            this.classList.add('active');
+            // Display the palette
+            const paletteName = this.getAttribute('data-palette');
+            displayPresetPalette(paletteName);
+        });
+    });
+
     // Copy buttons
     document.querySelectorAll('.copy-btn').forEach(btn => {
         btn.addEventListener('click', function() {
@@ -73,6 +122,30 @@ document.addEventListener('DOMContentLoaded', function() {
             copyToClipboard(value, this);
         });
     });
+
+    // Display preset palette
+    function displayPresetPalette(paletteName) {
+        if (!presetPaletteDisplay || !presetPalettes[paletteName]) return;
+        
+        presetPaletteDisplay.innerHTML = '';
+        presetPalettes[paletteName].forEach(hex => {
+            const colorDiv = document.createElement('div');
+            colorDiv.className = 'preset-color';
+            colorDiv.style.backgroundColor = `#${hex}`;
+            colorDiv.title = `#${hex}`;
+            colorDiv.addEventListener('click', () => {
+                currentColor = hexToRgb(hex);
+                updateAllFormats();
+            });
+            
+            const label = document.createElement('div');
+            label.className = 'preset-color-label';
+            label.textContent = `#${hex}`;
+            colorDiv.appendChild(label);
+            
+            presetPaletteDisplay.appendChild(colorDiv);
+        });
+    }
 
     // Color Conversion Functions
     function rgbToHex(r, g, b) {

@@ -204,6 +204,45 @@ sitemap:
                 </h5>
             </div>
             <div class="card-body">
+                <!-- Preset Palettes -->
+                <div class="mb-4">
+                    <h6 data-i18n="color.preset_palettes">Preset Palettes:</h6>
+                    <div class="preset-palette-tags d-flex flex-wrap gap-2 mb-3">
+                        <button class="btn btn-sm btn-outline-secondary preset-palette-btn" data-palette="pastel">Pastel</button>
+                        <button class="btn btn-sm btn-outline-secondary preset-palette-btn" data-palette="vintage">Vintage</button>
+                        <button class="btn btn-sm btn-outline-secondary preset-palette-btn" data-palette="retro">Retro</button>
+                        <button class="btn btn-sm btn-outline-secondary preset-palette-btn" data-palette="neon">Neon</button>
+                        <button class="btn btn-sm btn-outline-secondary preset-palette-btn" data-palette="gold">Gold</button>
+                        <button class="btn btn-sm btn-outline-secondary preset-palette-btn" data-palette="light">Light</button>
+                        <button class="btn btn-sm btn-outline-secondary preset-palette-btn" data-palette="dark">Dark</button>
+                        <button class="btn btn-sm btn-outline-secondary preset-palette-btn" data-palette="warm">Warm</button>
+                        <button class="btn btn-sm btn-outline-secondary preset-palette-btn" data-palette="cold">Cold</button>
+                        <button class="btn btn-sm btn-outline-secondary preset-palette-btn" data-palette="summer">Summer</button>
+                        <button class="btn btn-sm btn-outline-secondary preset-palette-btn" data-palette="fall">Fall</button>
+                        <button class="btn btn-sm btn-outline-secondary preset-palette-btn" data-palette="winter">Winter</button>
+                        <button class="btn btn-sm btn-outline-secondary preset-palette-btn" data-palette="spring">Spring</button>
+                        <button class="btn btn-sm btn-outline-secondary preset-palette-btn" data-palette="happy">Happy</button>
+                        <button class="btn btn-sm btn-outline-secondary preset-palette-btn" data-palette="nature">Nature</button>
+                        <button class="btn btn-sm btn-outline-secondary preset-palette-btn" data-palette="earth">Earth</button>
+                        <button class="btn btn-sm btn-outline-secondary preset-palette-btn" data-palette="night">Night</button>
+                        <button class="btn btn-sm btn-outline-secondary preset-palette-btn" data-palette="space">Space</button>
+                        <button class="btn btn-sm btn-outline-secondary preset-palette-btn" data-palette="rainbow">Rainbow</button>
+                        <button class="btn btn-sm btn-outline-secondary preset-palette-btn" data-palette="gradient">Gradient</button>
+                        <button class="btn btn-sm btn-outline-secondary preset-palette-btn" data-palette="sunset">Sunset</button>
+                        <button class="btn btn-sm btn-outline-secondary preset-palette-btn" data-palette="sky">Sky</button>
+                        <button class="btn btn-sm btn-outline-secondary preset-palette-btn" data-palette="sea">Sea</button>
+                        <button class="btn btn-sm btn-outline-secondary preset-palette-btn" data-palette="kids">Kids</button>
+                        <button class="btn btn-sm btn-outline-secondary preset-palette-btn" data-palette="skin">Skin</button>
+                        <button class="btn btn-sm btn-outline-secondary preset-palette-btn" data-palette="food">Food</button>
+                        <button class="btn btn-sm btn-outline-secondary preset-palette-btn" data-palette="cream">Cream</button>
+                        <button class="btn btn-sm btn-outline-secondary preset-palette-btn" data-palette="coffee">Coffee</button>
+                        <button class="btn btn-sm btn-outline-secondary preset-palette-btn" data-palette="wedding">Wedding</button>
+                        <button class="btn btn-sm btn-outline-secondary preset-palette-btn" data-palette="christmas">Christmas</button>
+                        <button class="btn btn-sm btn-outline-secondary preset-palette-btn" data-palette="halloween">Halloween</button>
+                    </div>
+                    <div id="preset-palette-display" class="preset-palette-display"></div>
+                </div>
+                <hr>
                 <div class="row">
                     <div class="col-md-6">
                         <h6 data-i18n="color.saved_colors">Saved Colors:</h6>
@@ -315,5 +354,53 @@ sitemap:
 
 .copy-btn {
     cursor: pointer;
+}
+
+.preset-palette-btn {
+    transition: all 0.2s;
+}
+
+.preset-palette-btn:hover, .preset-palette-btn.active {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+    color: white;
+}
+
+.preset-palette-display {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-height: 50px;
+}
+
+.preset-color {
+    width: 50px;
+    height: 50px;
+    border-radius: 6px;
+    border: 2px solid #ddd;
+    cursor: pointer;
+    transition: transform 0.2s;
+    position: relative;
+}
+
+.preset-color:hover {
+    transform: scale(1.15);
+    z-index: 1;
+}
+
+.preset-color-label {
+    position: absolute;
+    bottom: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 9px;
+    font-family: monospace;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.preset-color:hover .preset-color-label {
+    opacity: 1;
 }
 </style>

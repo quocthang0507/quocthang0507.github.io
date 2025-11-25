@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const fileSizeDisplay = document.getElementById('file-size');
     const fileTypeDisplay = document.getElementById('file-type');
     const processingTimeDisplay = document.getElementById('processing-time');
+    const selectAllBtn = document.getElementById('select-all-algorithms');
     
     const hashOutputs = {
         md5: document.getElementById('md5-hash'),
@@ -28,6 +29,15 @@ document.addEventListener('DOMContentLoaded', function() {
         sha256: document.getElementById('sha256-hash'),
         sha384: document.getElementById('sha384-hash'),
         sha512: document.getElementById('sha512-hash')
+    };
+
+    // Hash algorithm checkboxes
+    const algorithmChecks = {
+        md5: document.getElementById('check-md5'),
+        sha1: document.getElementById('check-sha1'),
+        sha256: document.getElementById('check-sha256'),
+        sha384: document.getElementById('check-sha384'),
+        sha512: document.getElementById('check-sha512')
     };
 
     let fileData = null;
@@ -52,6 +62,16 @@ document.addEventListener('DOMContentLoaded', function() {
     clearInputBtn.addEventListener('click', clearInput);
     copyAllBtn.addEventListener('click', copyAllHashes);
 
+    // Select All / Deselect All toggle
+    if (selectAllBtn) {
+        selectAllBtn.addEventListener('click', function() {
+            const checks = document.querySelectorAll('.hash-algorithm-check');
+            const allChecked = Array.from(checks).every(c => c.checked);
+            checks.forEach(c => c.checked = !allChecked);
+            this.textContent = allChecked ? (getTranslation('hash.select_all') || 'Select All') : (getTranslation('hash.deselect_all') || 'Deselect All');
+        });
+    }
+
     // Copy individual hash buttons
     document.querySelectorAll('.copy-hash-btn').forEach(btn => {
         btn.addEventListener('click', function() {
@@ -59,6 +79,17 @@ document.addEventListener('DOMContentLoaded', function() {
             copyHash(targetId, this);
         });
     });
+
+    // Helper function to get selected algorithms
+    function getSelectedAlgorithms() {
+        const selected = [];
+        Object.entries(algorithmChecks).forEach(([name, checkbox]) => {
+            if (checkbox && checkbox.checked) {
+                selected.push(name);
+            }
+        });
+        return selected;
+    }
 
     // Functions
     function handleFileSelect(e) {
@@ -104,6 +135,12 @@ document.addEventListener('DOMContentLoaded', function() {
             let data;
             let isLargeFile = false;
 
+            // Get selected algorithms
+            const selectedAlgorithms = getSelectedAlgorithms();
+            if (selectedAlgorithms.length === 0) {
+                throw new Error(getTranslation('hash.error_no_algorithm') || 'Please select at least one hash algorithm');
+            }
+
             if (fileData) {
                 data = new Uint8Array(fileData);
                 isLargeFile = fileSize > 5 * 1024 * 1024; // 5MB threshold
@@ -125,26 +162,53 @@ document.addEventListener('DOMContentLoaded', function() {
             generateBtn.disabled = true;
             generateBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Generating...';
 
-            // Generate all hashes (with progress for large files)
-            let hashes;
-            if (isLargeFile) {
-                hashes = await generateHashesWithProgress(data);
-            } else {
-                hashes = await Promise.all([
-                    generateMD5(data),
-                    generateSHA('SHA-1', data),
-                    generateSHA('SHA-256', data),
-                    generateSHA('SHA-384', data),
-                    generateSHA('SHA-512', data)
-                ]);
+            // Clear all hash outputs first
+            Object.values(hashOutputs).forEach(output => {
+                if (output) output.value = '';
+            });
+
+            // Generate only selected hashes
+            const hashPromises = [];
+            const hashOrder = [];
+
+            if (selectedAlgorithms.includes('md5')) {
+                hashPromises.push(generateMD5(data));
+                hashOrder.push('md5');
+            }
+            if (selectedAlgorithms.includes('sha1')) {
+                hashPromises.push(generateSHA('SHA-1', data));
+                hashOrder.push('sha1');
+            }
+            if (selectedAlgorithms.includes('sha256')) {
+                hashPromises.push(generateSHA('SHA-256', data));
+                hashOrder.push('sha256');
+            }
+            if (selectedAlgorithms.includes('sha384')) {
+                hashPromises.push(generateSHA('SHA-384', data));
+                hashOrder.push('sha384');
+            }
+            if (selectedAlgorithms.includes('sha512')) {
+                hashPromises.push(generateSHA('SHA-512', data));
+                hashOrder.push('sha512');
             }
 
-            // Display results
-            hashOutputs.md5.value = hashes[0];
-            hashOutputs.sha1.value = hashes[1];
-            hashOutputs.sha256.value = hashes[2];
-            hashOutputs.sha384.value = hashes[3];
-            hashOutputs.sha512.value = hashes[4];
+            const hashes = await Promise.all(hashPromises);
+
+            // Display results for selected algorithms
+            hashOrder.forEach((algo, index) => {
+                if (hashOutputs[algo]) {
+                    hashOutputs[algo].value = hashes[index];
+                    // Show the parent container
+                    hashOutputs[algo].closest('.mb-3').style.display = 'block';
+                }
+            });
+
+            // Hide unselected hash outputs
+            Object.entries(hashOutputs).forEach(([algo, output]) => {
+                if (output && !selectedAlgorithms.includes(algo)) {
+                    output.closest('.mb-3').style.display = 'none';
+                }
+            });
 
             hashResults.style.display = 'block';
             
@@ -417,11 +481,26 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     async function copyAllHashes() {
-        const allHashes = `MD5: ${hashOutputs.md5.value}
-SHA-1: ${hashOutputs.sha1.value}
-SHA-256: ${hashOutputs.sha256.value}
-SHA-384: ${hashOutputs.sha384.value}
-SHA-512: ${hashOutputs.sha512.value}`;
+        const selectedAlgorithms = getSelectedAlgorithms();
+        const hashLines = [];
+        
+        if (selectedAlgorithms.includes('md5') && hashOutputs.md5.value) {
+            hashLines.push(`MD5: ${hashOutputs.md5.value}`);
+        }
+        if (selectedAlgorithms.includes('sha1') && hashOutputs.sha1.value) {
+            hashLines.push(`SHA-1: ${hashOutputs.sha1.value}`);
+        }
+        if (selectedAlgorithms.includes('sha256') && hashOutputs.sha256.value) {
+            hashLines.push(`SHA-256: ${hashOutputs.sha256.value}`);
+        }
+        if (selectedAlgorithms.includes('sha384') && hashOutputs.sha384.value) {
+            hashLines.push(`SHA-384: ${hashOutputs.sha384.value}`);
+        }
+        if (selectedAlgorithms.includes('sha512') && hashOutputs.sha512.value) {
+            hashLines.push(`SHA-512: ${hashOutputs.sha512.value}`);
+        }
+
+        const allHashes = hashLines.join('\n');
 
         try {
             await navigator.clipboard.writeText(allHashes);

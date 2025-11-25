@@ -69,6 +69,46 @@ sitemap:
                     </small>
                 </div>
 
+                <!-- Hash Algorithm Selection -->
+                <div class="mb-4">
+                    <label class="form-label fw-bold" data-i18n="hash.select_algorithms">Select Hash Algorithms:</label>
+                    <div class="row">
+                        <div class="col-6 col-md-4 col-lg-2">
+                            <div class="form-check">
+                                <input class="form-check-input hash-algorithm-check" type="checkbox" id="check-md5" value="md5" checked>
+                                <label class="form-check-label" for="check-md5">MD5</label>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-4 col-lg-2">
+                            <div class="form-check">
+                                <input class="form-check-input hash-algorithm-check" type="checkbox" id="check-sha1" value="sha1" checked>
+                                <label class="form-check-label" for="check-sha1">SHA-1</label>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-4 col-lg-2">
+                            <div class="form-check">
+                                <input class="form-check-input hash-algorithm-check" type="checkbox" id="check-sha256" value="sha256" checked>
+                                <label class="form-check-label" for="check-sha256">SHA-256</label>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-4 col-lg-2">
+                            <div class="form-check">
+                                <input class="form-check-input hash-algorithm-check" type="checkbox" id="check-sha384" value="sha384" checked>
+                                <label class="form-check-label" for="check-sha384">SHA-384</label>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-4 col-lg-2">
+                            <div class="form-check">
+                                <input class="form-check-input hash-algorithm-check" type="checkbox" id="check-sha512" value="sha512" checked>
+                                <label class="form-check-label" for="check-sha512">SHA-512</label>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-4 col-lg-2">
+                            <button class="btn btn-sm btn-outline-secondary" id="select-all-algorithms" data-i18n="hash.select_all">Select All</button>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- File Hash Progress -->
                 <div id="file-hash-progress" style="display: none;" class="mb-4">
                     <div class="d-flex justify-content-between align-items-center mb-2">

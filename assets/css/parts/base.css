@@ -7,6 +7,16 @@ body {
   transition: background-color var(--transition-normal), color var(--transition-normal);
 }
 
+/* Prevent flash of untranslated content during i18n loading */
+body.i18n-loading [data-i18n] {
+  visibility: hidden;
+}
+
+body.i18n-loading [data-i18n]::after {
+  content: '';
+  visibility: visible;
+}
+
 .holiday-indicator {
   position: absolute;
   top: 2px;
