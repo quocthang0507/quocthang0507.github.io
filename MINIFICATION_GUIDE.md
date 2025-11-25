@@ -149,7 +149,7 @@ After deployment, test your site:
 
 1. **Use minified files in production**
    - Update HTML to reference `.min.js` files
-   - Use conditional logic: `{% if jekyll.environment == "production" %}`
+   - Use conditional logic: `{% raw %}{% if jekyll.environment == "production" %}{% endraw %}`
 
 2. **Optimize images**
    - Use WebP format
