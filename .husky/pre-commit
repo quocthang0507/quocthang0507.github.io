@@ -1,0 +1,19 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# Check if any JS files (non-minified) are being committed
+JS_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E 'assets/js/.*\.js$' | grep -v '\.min\.js$' || true)
+
+if [ -n "$JS_FILES" ]; then
+    echo "🔨 JavaScript files changed, running minification..."
+    npm run minify:js
+    
+    # Stage the minified files
+    git add assets/js/**/*.min.js 2>/dev/null || true
+    
+    echo "✅ Minified JS files added to commit"
+else
+    echo "ℹ️  No JS files changed, skipping minification"
+fi
+
+echo "✅ Pre-commit checks passed!"

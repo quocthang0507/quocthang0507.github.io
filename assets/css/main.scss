@@ -2,12 +2,12 @@
 ---
 /* Main Sass bundler importing modular partials. (Processed by Jekyll into main.css) */
 // Order matters: variables first, then base styles, components, utilities, dark theme, legacy extras.
-@import "variables";
-@import "base";
-@import "buttons";
-@import "navigation";
-@import "components";
-@import "utilities";
-@import "dark";
-@import "ui"; // New UI utilities (settings panel, fab, theme badge, toasts)
-@import "legacy"; // Contains extended / legacy rules pending further refactor
+@use "variables";
+@use "base";
+@use "buttons";
+@use "navigation";
+@use "components";
+@use "utilities";
+@use "dark";
+@use "ui"; // New UI utilities (settings panel, fab, theme badge, toasts)
+@use "legacy"; // Contains extended / legacy rules pending further refactor
