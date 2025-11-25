@@ -4,6 +4,13 @@
   background: var(--bs-primary) !important;
   backdrop-filter: blur(20px);
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 1030;
+}
+
+// Ensure dropdown menus appear above page content
+.dropdown-menu {
+  z-index: 1031;
 }
 
 .navbar-brand,
