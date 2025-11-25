@@ -74,20 +74,9 @@
             cell.classList.add('public-holiday');
         }
 
-        // Add holiday badge in the corner of the clickable area
-        let anchor = cell.querySelector('.calendar-day-link');
-        if (!anchor) anchor = cell; // Fallback
-
-        // Avoid duplicates if re-enhanced
-        const existing = anchor.querySelector('.holiday-badge');
-        if (existing) existing.remove();
-
-        const badge = document.createElement('span');
-        badge.className = 'holiday-badge';
-        badge.title = holiday.name;
-        badge.setAttribute('aria-label', holiday.name);
-        badge.textContent = holiday.is_public_holiday ? 'PH' : '🌸';
-        anchor.appendChild(badge);
+        // Add title attribute to show holiday name on hover
+        cell.title = holiday.name;
+        cell.setAttribute('aria-label', `${holiday.name}`);
     }
     
     // Enhance calendar with holidays

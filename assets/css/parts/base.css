@@ -16,28 +16,21 @@ body {
   z-index: 1;
 }
 
-/* Corner badge for holidays */
-.holiday-badge {
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  font-size: 0.625rem;
-  line-height: 1;
-  padding: 2px 4px;
-  border-radius: 6px;
-  background: var(--bs-warning);
-  color: #000;
-  font-weight: 700;
-  z-index: 2;
+/* Holiday cell background colors */
+.has-holiday {
+  background: rgba(255, 193, 7, 0.15);
 }
 
-.public-holiday .holiday-indicator {
-  color: var(--bs-danger);
+.public-holiday {
+  background: rgba(220, 53, 69, 0.15);
 }
 
-.public-holiday .holiday-badge {
-  background: var(--bs-danger);
-  color: #fff;
+.calendar-table .has-holiday:hover {
+  background: rgba(255, 193, 7, 0.25);
+}
+
+.calendar-table .public-holiday:hover {
+  background: rgba(220, 53, 69, 0.25);
 }
 /* Base styles - Using Bootstrap defaults with minimal customizations */
 body {

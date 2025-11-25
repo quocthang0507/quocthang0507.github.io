@@ -100,37 +100,21 @@ main {
   position: relative;
 }
 
-// Corner badge for holidays
-.holiday-badge {
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  font-size: 0.625rem; // 10px
-  line-height: 1;
-  padding: 2px 4px;
-  border-radius: 6px;
-  background: var(--bs-warning);
-  color: #000;
-  font-weight: 700;
-  z-index: 2;
-}
-
+// Holiday cell background colors
 .has-holiday {
-  border-left: 3px solid var(--bs-info);
+  background: rgba(255, 193, 7, 0.15); // Yellow for regular holidays
 }
 
 .public-holiday {
-  border-left: 3px solid var(--bs-danger);
-  background: rgba(220, 53, 69, 0.05);
+  background: rgba(220, 53, 69, 0.15); // Red for public holidays
 }
 
-.public-holiday .holiday-badge {
-  background: var(--bs-danger);
-  color: #fff;
+.calendar-table .has-holiday:hover {
+  background: rgba(255, 193, 7, 0.25);
 }
 
 .calendar-table .public-holiday:hover {
-  background: rgba(220, 53, 69, 0.1);
+  background: rgba(220, 53, 69, 0.25);
 }
 
 // Date details modal enhancements
