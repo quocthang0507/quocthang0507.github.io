@@ -28,7 +28,7 @@ coverage/
 .tmp/
 
 # Ignore package lock files
-package-lock.json
+# Note: package-lock.json is NOT ignored - it's needed for npm ci and GitHub Actions caching
 Gemfile.lock
 
 # Optional: Ignore minified JS files (if you prefer to generate them on build)
