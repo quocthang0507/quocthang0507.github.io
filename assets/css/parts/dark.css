@@ -1,6 +1,12 @@
 /* Dark theme - Simplified using Bootstrap's approach */
 [data-theme="dark"] {
   color-scheme: dark;
+  --bs-body-bg: var(--custom-bg-dark);
+  --bs-body-color: var(--custom-text-dark);
+  --bs-border-color: var(--custom-border-dark);
+  --bs-primary-bg-subtle: rgba(var(--bs-primary-rgb), 0.18);
+  --bs-primary-border-subtle: rgba(var(--bs-primary-rgb), 0.35);
+  --custom-muted-dark: rgba(230, 225, 229, 0.75);
 }
 
 [data-theme="dark"] body {
@@ -59,11 +65,11 @@
   background-color: var(--custom-input-dark);
   border-color: var(--bs-primary);
   color: var(--custom-text-dark);
-  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+  box-shadow: var(--md-focus-ring);
 }
 
 [data-theme="dark"] .text-muted {
-  color: var(--bs-secondary) !important;
+  color: var(--custom-muted-dark) !important;
 }
 
 [data-theme="dark"] .text-secondary {

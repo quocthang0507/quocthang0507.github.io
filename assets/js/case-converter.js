@@ -1,0 +1,140 @@
+// Case Converter
+document.addEventListener('DOMContentLoaded', function () {
+  const input = document.getElementById('case-input');
+  const acronymsInput = document.getElementById('acronyms-input');
+  const preserveAcronyms = document.getElementById('preserve-acronyms');
+
+  const outCamel = document.getElementById('out-camel');
+  const outPascal = document.getElementById('out-pascal');
+  const outSnake = document.getElementById('out-snake');
+  const outKebab = document.getElementById('out-kebab');
+  const outTitle = document.getElementById('out-title');
+
+  function getAcronymSet() {
+    if (!preserveAcronyms || !preserveAcronyms.checked) return new Set();
+    const list = (acronymsInput?.value || '')
+      .split(',')
+      .map(s => s.trim())
+      .filter(Boolean)
+      .map(s => s.toUpperCase());
+    return new Set(list);
+  }
+
+  function splitWords(text) {
+    if (!text) return [];
+
+    // Normalize separators to spaces
+    const normalized = text
+      .replace(/[_\-]+/g, ' ')
+      .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+      .replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2')
+      .replace(/[^\p{L}\p{N}]+/gu, ' ')
+      .trim();
+
+    return normalized ? normalized.split(/\s+/g) : [];
+  }
+
+  function applyAcronym(word, acronymSet) {
+    if (!word) return word;
+    const upper = word.toUpperCase();
+    if (acronymSet.has(upper)) return upper;
+    return word;
+  }
+
+  function toCamel(words, acronymSet) {
+    if (!words.length) return '';
+    const first = applyAcronym(words[0], acronymSet);
+    const firstOut = acronymSet.has(first.toUpperCase())
+      ? first.toLowerCase()
+      : first.toLowerCase();
+
+    const rest = words.slice(1).map(w => {
+      const aw = applyAcronym(w, acronymSet);
+      if (acronymSet.has(aw.toUpperCase())) return aw; // keep acronym uppercase
+      return aw.charAt(0).toUpperCase() + aw.slice(1).toLowerCase();
+    });
+
+    return [firstOut, ...rest].join('');
+  }
+
+  function toPascal(words, acronymSet) {
+    return words
+      .map(w => {
+        const aw = applyAcronym(w, acronymSet);
+        if (acronymSet.has(aw.toUpperCase())) return aw;
+        return aw.charAt(0).toUpperCase() + aw.slice(1).toLowerCase();
+      })
+      .join('');
+  }
+
+  function toSnake(words, acronymSet) {
+    return words
+      .map(w => {
+        const aw = applyAcronym(w, acronymSet);
+        return acronymSet.has(aw.toUpperCase()) ? aw.toLowerCase() : aw.toLowerCase();
+      })
+      .join('_');
+  }
+
+  function toKebab(words, acronymSet) {
+    return words
+      .map(w => {
+        const aw = applyAcronym(w, acronymSet);
+        return acronymSet.has(aw.toUpperCase()) ? aw.toLowerCase() : aw.toLowerCase();
+      })
+      .join('-');
+  }
+
+  function toTitle(words, acronymSet) {
+    return words
+      .map(w => {
+        const aw = applyAcronym(w, acronymSet);
+        if (acronymSet.has(aw.toUpperCase())) return aw;
+        return aw.charAt(0).toUpperCase() + aw.slice(1).toLowerCase();
+      })
+      .join(' ');
+  }
+
+  function updateOutputs() {
+    const acronymSet = getAcronymSet();
+    const words = splitWords(input.value);
+
+    outCamel.value = toCamel(words, acronymSet);
+    outPascal.value = toPascal(words, acronymSet);
+    outSnake.value = toSnake(words, acronymSet);
+    outKebab.value = toKebab(words, acronymSet);
+    outTitle.value = toTitle(words, acronymSet);
+  }
+
+  function copyValueFromInputId(id, btn) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const value = el.value || '';
+    if (!value) return;
+
+    navigator.clipboard.writeText(value).then(() => {
+      if (typeof showAlert === 'function') {
+        showAlert((window.t ? window.t('common.copied') : 'Đã sao chép!'), 'success');
+      }
+      if (btn) {
+        const old = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-check"></i>';
+        setTimeout(() => (btn.innerHTML = old), 1200);
+      }
+    });
+  }
+
+  document.querySelectorAll('.copy-output').forEach(btn => {
+    btn.addEventListener('click', function () {
+      copyValueFromInputId(this.getAttribute('data-target'), this);
+    });
+  });
+
+  input.addEventListener('input', updateOutputs);
+  acronymsInput?.addEventListener('input', updateOutputs);
+  preserveAcronyms?.addEventListener('change', updateOutputs);
+
+  // Seed
+  input.value = input.value || 'hello world API response';
+  updateOutputs();
+});

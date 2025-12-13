@@ -13,10 +13,33 @@ const chineseTranslations = {
     "nav.hash_generator": "哈希生成器",
     "nav.color_picker": "颜色选择器",
     "nav.date_calculator": "日期计算器",
+    "nav.case_converter": "大小写转换",
+    "nav.regex_tester": "正则测试器",
     "nav.tools": "工具",
     "nav.cat.random": "随机",
     "nav.cat.time": "时间",
     "nav.cat.utilities": "实用工具",
+
+    // Case Converter
+    "case.title": "大小写转换",
+    "case.input_label": "输入文本",
+    "case.input_placeholder": "输入文本...",
+    "case.acronyms_label": "缩写（保持大写）",
+    "case.acronyms_help": "用逗号分隔，例如：API, URL, ID",
+    "case.preserve_acronyms": "启用缩写处理",
+    "case.tip": "提示：可粘贴任意文本（含下划线、连字符或空格），结果会自动更新。",
+
+    // Regex Tester
+    "regex.title": "正则测试器",
+    "regex.pattern": "模式（Pattern）",
+    "regex.flags_help": "输入 flags，例如：g i m s u y",
+    "regex.text": "测试文本",
+    "regex.matches": "匹配结果",
+    "regex.match_count": "匹配数量：",
+    "regex.replace": "替换",
+    "regex.replace_help": "使用 $&（整个匹配）、$1..$n（分组）",
+    "regex.run_replace": "执行替换",
+    "regex.explain": "解释（基础）",
     
     // Homepage
     "home.title": "主页",
@@ -336,6 +359,28 @@ const chineseTranslations = {
     "color.css_format": "CSS格式",
     "color.brightness": "亮度",
     "color.luminance": "发光度",
+
+    // Color Tools: Contrast & Gradient
+    "color.contrast_title": "对比度检测（WCAG）",
+    "color.contrast_text": "文字颜色",
+    "color.contrast_bg": "背景颜色",
+    "color.contrast_ratio": "对比度：",
+    "color.contrast_aa": "AA",
+    "color.contrast_aaa": "AAA",
+    "color.contrast_aa_large": "AA（大号文本）",
+    "color.contrast_aaa_large": "AAA（大号文本）",
+    "color.contrast_sample_short": "Aa",
+    "color.contrast_sample_text": "敏捷的棕色狐狸跳过了懒狗。",
+    "color.gradient_title": "CSS 渐变生成器",
+    "color.gradient_angle": "角度（度）",
+    "color.gradient_stops": "色标",
+    "color.gradient_add_stop": "添加色标",
+    "color.gradient_css": "CSS",
+    "color.alert_added": "已添加到调色板！",
+    "color.alert_exists": "调色板中已存在该颜色",
+    "color.alert_palette_cleared": "已清空调色板",
+    "color.confirm_clear_palette": "确定要清除所有已保存的颜色吗？",
+    "color.copy_failed": "复制失败",
     
     // QR Generator
     "qr.title": "二维码生成器",

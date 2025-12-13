@@ -3,7 +3,7 @@
 .navbar {
   background: var(--bs-primary) !important;
   backdrop-filter: blur(20px);
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--md-elevation-2);
   position: relative;
   z-index: 1030;
 }
@@ -78,7 +78,7 @@ li.nav-item.dropdown {
 // Ensure dropdown items hover properly
 .dropdown-item {
   transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
-  border-radius: 0.25rem;
+  border-radius: var(--md-radius-sm);
   margin: 0.1rem 0.25rem;
   padding: 0.4rem 0.75rem;
 }

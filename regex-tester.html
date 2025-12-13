@@ -1,0 +1,97 @@
+---
+layout: default
+title: "Regex Tester"
+description: "Công cụ kiểm thử Regex trực tiếp: test, highlight match, replace, flags, và giải thích cơ bản."
+keywords: "regex tester, regular expression, replace, flags, matches"
+custom_js: ['regex-tester.js']
+permalink: /regex-tester/
+sitemap:
+  priority: 0.7
+  changefreq: monthly
+  lastmod: 2025-12-13
+---
+
+<meta name="i18n-title" content="regex.title">
+
+<div class="row">
+  <div class="col-12">
+    <div id="alert-container"></div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-lg-10 mx-auto">
+    <div class="card mb-4">
+      <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">
+          <i class="fas fa-search"></i>
+          <span data-i18n="regex.title">Regex Tester</span>
+        </h5>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-12">
+            <label for="regex-pattern" class="form-label" data-i18n="regex.pattern">Pattern</label>
+            <div class="input-group">
+              <span class="input-group-text">/</span>
+              <input id="regex-pattern" class="form-control font-monospace" type="text" placeholder="\\b\\w+\\b" />
+              <span class="input-group-text">/</span>
+              <input id="regex-flags" class="form-control font-monospace" type="text" placeholder="gim" style="max-width: 120px;" />
+            </div>
+            <div class="form-text" data-i18n="regex.flags_help">Nhập flags như: g i m s u y</div>
+          </div>
+
+          <div class="col-12">
+            <label for="regex-text" class="form-label" data-i18n="regex.text">Test Text</label>
+            <textarea id="regex-text" class="form-control" rows="7" placeholder="Enter text to test..."></textarea>
+          </div>
+
+          <div class="col-12">
+            <label class="form-label" data-i18n="regex.matches">Matches</label>
+            <div class="border rounded p-3 regex-highlight" id="regex-highlight" aria-label="Match preview"></div>
+            <div class="d-flex justify-content-between mt-2 small text-muted">
+              <div><span data-i18n="regex.match_count">Match count:</span> <span id="match-count">0</span></div>
+              <div id="regex-error" class="text-danger"></div>
+            </div>
+          </div>
+
+          <div class="col-12">
+            <label class="form-label" data-i18n="regex.replace">Replace</label>
+            <div class="row g-2">
+              <div class="col-md-6">
+                <input id="regex-replacement" class="form-control font-monospace" type="text" placeholder="$&" />
+                <div class="form-text" data-i18n="regex.replace_help">Dùng $& (toàn bộ match), $1..$n (group)</div>
+              </div>
+              <div class="col-md-6">
+                <button id="run-replace" class="btn btn-outline-primary w-100" type="button">
+                  <i class="fas fa-exchange-alt"></i> <span data-i18n="regex.run_replace">Run Replace</span>
+                </button>
+              </div>
+              <div class="col-12">
+                <textarea id="regex-replace-output" class="form-control font-monospace" rows="6" readonly></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12">
+            <label class="form-label" data-i18n="regex.explain">Explain (basic)</label>
+            <div class="small text-muted" id="regex-explain"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .regex-highlight {
+    white-space: pre-wrap;
+    font-family: var(--bs-font-monospace);
+    background: var(--bs-body-bg);
+    min-height: 140px;
+  }
+  .regex-highlight mark {
+    padding: 0.1rem 0.2rem;
+    border-radius: 0.25rem;
+  }
+</style>

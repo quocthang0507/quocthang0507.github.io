@@ -43,10 +43,33 @@ const koreanTranslations = {
     "nav.hash_generator": "해시 생성기",
     "nav.color_picker": "색상 선택기",
     "nav.date_calculator": "날짜 계산기",
+    "nav.case_converter": "케이스 변환기",
+    "nav.regex_tester": "정규식 테스터",
     "nav.tools": "도구",
     "nav.cat.random": "무작위",
     "nav.cat.time": "시간",
     "nav.cat.utilities": "유틸리티",
+
+    // Case Converter
+    "case.title": "케이스 변환기",
+    "case.input_label": "입력 텍스트",
+    "case.input_placeholder": "텍스트를 입력...",
+    "case.acronyms_label": "약어(대문자 유지)",
+    "case.acronyms_help": "쉼표로 구분. 예: API, URL, ID",
+    "case.preserve_acronyms": "약어 처리 사용",
+    "case.tip": "팁: 밑줄, 하이픈, 공백이 포함된 텍스트도 붙여넣을 수 있으며 결과는 자동으로 업데이트됩니다.",
+
+    // Regex Tester
+    "regex.title": "정규식 테스터",
+    "regex.pattern": "패턴",
+    "regex.flags_help": "flags 입력: g i m s u y",
+    "regex.text": "테스트 텍스트",
+    "regex.matches": "매치 결과",
+    "regex.match_count": "매치 수:",
+    "regex.replace": "치환",
+    "regex.replace_help": "$&(전체 매치), $1..$n(그룹) 사용",
+    "regex.run_replace": "치환 실행",
+    "regex.explain": "설명(기본)",
     
     // Homepage
     "home.title": "홈",
@@ -345,6 +368,28 @@ const koreanTranslations = {
     "color.css_format": "CSS 형식",
     "color.brightness": "밝기",
     "color.luminance": "휘도",
+
+    // Color Tools: Contrast & Gradient
+    "color.contrast_title": "대비 검사(WCAG)",
+    "color.contrast_text": "텍스트 색상",
+    "color.contrast_bg": "배경 색상",
+    "color.contrast_ratio": "대비 비율:",
+    "color.contrast_aa": "AA",
+    "color.contrast_aaa": "AAA",
+    "color.contrast_aa_large": "AA(큰 글자)",
+    "color.contrast_aaa_large": "AAA(큰 글자)",
+    "color.contrast_sample_short": "Aa",
+    "color.contrast_sample_text": "빠른 갈색 여우가 게으른 개를 뛰어넘었다.",
+    "color.gradient_title": "CSS 그라디언트 생성기",
+    "color.gradient_angle": "각도(도)",
+    "color.gradient_stops": "스톱",
+    "color.gradient_add_stop": "스톱 추가",
+    "color.gradient_css": "CSS",
+    "color.alert_added": "팔레트에 색상을 추가했습니다!",
+    "color.alert_exists": "이미 팔레트에 있는 색상입니다",
+    "color.alert_palette_cleared": "팔레트를 비웠습니다",
+    "color.confirm_clear_palette": "저장된 색상을 모두 삭제하시겠습니까?",
+    "color.copy_failed": "복사에 실패했습니다",
     
     // QR Generator
     "qr.title": "QR 코드 생성기",

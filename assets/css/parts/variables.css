@@ -1,23 +1,52 @@
-/* Bootstrap-compatible variables - Using Bootstrap 5.3.0 defaults */
+/* Theme variables (Material-inspired) */
 :root {
-  /* Use Bootstrap's default color scheme */
-  --bs-primary: #0d6efd;
-  --bs-secondary: #6c757d;
-  --bs-success: #198754;
-  --bs-info: #0dcaf0;
-  --bs-warning: #ffc107;
-  --bs-danger: #dc3545;
-  --bs-light: #f8f9fa;
-  --bs-dark: #212529;
-  
-  /* Minimal custom variables for dark mode only */
-  --custom-bg-dark: #1a1a1a;
-  --custom-text-dark: #e9ecef;
-  --custom-border-dark: #495057;
-  --custom-card-dark: #212529;
-  --custom-input-dark: #343a40;
-  
-  /* Simple transitions */
+  /* Palette */
+  --bs-primary: #6750A4;
+  --bs-primary-rgb: 103, 80, 164;
+  --bs-secondary: #625B71;
+  --bs-secondary-rgb: 98, 91, 113;
+  --bs-success: #2E7D32;
+  --bs-success-rgb: 46, 125, 50;
+  --bs-info: #0288D1;
+  --bs-info-rgb: 2, 136, 209;
+  --bs-warning: #ED6C02;
+  --bs-warning-rgb: 237, 108, 2;
+  --bs-danger: #D32F2F;
+  --bs-danger-rgb: 211, 47, 47;
+  --bs-light: #F5F5F5;
+  --bs-dark: #1C1B1F;
+
+  /* Surfaces & text */
+  --bs-body-bg: #FFFBFE;
+  --bs-body-color: #1C1B1F;
+  --bs-border-color: #E7E0EC;
+  --bs-link-color: var(--bs-primary);
+  --bs-link-hover-color: #4F378B;
+
+  /* Bootstrap subtle tokens */
+  --bs-primary-bg-subtle: rgba(var(--bs-primary-rgb), 0.10);
+  --bs-primary-border-subtle: rgba(var(--bs-primary-rgb), 0.30);
+  --bs-primary-text-emphasis: #4F378B;
+
+  /* Shape + elevation */
+  --md-radius-sm: 0.75rem;
+  --md-radius-md: 1rem;
+  --md-radius-lg: 1.25rem;
+  --md-radius-pill: 999px;
+
+  --md-elevation-1: 0 1px 2px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.06);
+  --md-elevation-2: 0 2px 4px rgba(0, 0, 0, 0.08), 0 6px 16px rgba(0, 0, 0, 0.08);
+  --md-elevation-3: 0 4px 10px rgba(0, 0, 0, 0.10), 0 14px 34px rgba(0, 0, 0, 0.10);
+  --md-focus-ring: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.25);
+
+  /* Dark-mode helper vars */
+  --custom-bg-dark: #1C1B1F;
+  --custom-text-dark: #E6E1E5;
+  --custom-border-dark: rgba(231, 224, 236, 0.18);
+  --custom-card-dark: #2B2930;
+  --custom-input-dark: #2B2930;
+
+  /* Transitions */
   --transition-fast: 150ms ease-in-out;
   --transition-normal: 250ms ease-in-out;
 }

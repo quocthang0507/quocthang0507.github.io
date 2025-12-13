@@ -72,6 +72,16 @@
                             </a>
                         </li>
                         <li>
+                            <a class="dropdown-item {% if page.url == '/case-converter/' %}active{% endif %}" href="{{ '/case-converter/' | relative_url }}">
+                                <span data-i18n="nav.case_converter">Case Converter</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item {% if page.url == '/regex-tester/' %}active{% endif %}" href="{{ '/regex-tester/' | relative_url }}">
+                                <span data-i18n="nav.regex_tester">Regex Tester</span>
+                            </a>
+                        </li>
+                        <li>
                             <a class="dropdown-item {% if page.url == '/color-picker/' %}active{% endif %}" href="{{ '/color-picker/' | relative_url }}">
                                 <span data-i18n="nav.color_picker">Color Picker</span>
                             </a>

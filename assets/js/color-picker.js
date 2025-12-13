@@ -42,9 +42,45 @@ document.addEventListener('DOMContentLoaded', function() {
     const luminanceValue = document.getElementById('luminance-value');
     const presetPaletteDisplay = document.getElementById('preset-palette-display');
 
+    // Contrast checker elements
+    const contrastTextColor = document.getElementById('contrast-text-color');
+    const contrastTextHex = document.getElementById('contrast-text-hex');
+    const contrastBgColor = document.getElementById('contrast-bg-color');
+    const contrastBgHex = document.getElementById('contrast-bg-hex');
+    const contrastPreview = document.getElementById('contrast-preview');
+    const contrastRatioEl = document.getElementById('contrast-ratio');
+    const contrastAaNormal = document.getElementById('contrast-aa-normal');
+    const contrastAaaNormal = document.getElementById('contrast-aaa-normal');
+    const contrastAaLarge = document.getElementById('contrast-aa-large');
+    const contrastAaaLarge = document.getElementById('contrast-aaa-large');
+
+    // Gradient generator elements
+    const gradientAngle = document.getElementById('gradient-angle');
+    const gradientAngleNumber = document.getElementById('gradient-angle-number');
+    const gradientStopsEl = document.getElementById('gradient-stops');
+    const gradientAddStopBtn = document.getElementById('gradient-add-stop');
+    const gradientPreview = document.getElementById('gradient-preview');
+    const gradientCss = document.getElementById('gradient-css');
+    const gradientCopyBtn = document.getElementById('gradient-copy');
+
     let currentColor = { r: 255, g: 87, b: 51 };
     let savedColors = JSON.parse(localStorage.getItem('colorPalette') || '[]');
     let isUpdating = false;
+
+    function tr(key, fallback) {
+        try {
+            if (window.translationSystem && typeof window.translationSystem.t === 'function') {
+                return window.translationSystem.t(key, fallback ?? key);
+            }
+        } catch (e) { /* ignore */ }
+        return fallback ?? key;
+    }
+
+    // Gradient state
+    let gradientStops = [
+        { color: '#667EEA', pos: 0 },
+        { color: '#764BA2', pos: 100 }
+    ];
 
     // Preset color palettes
     const presetPalettes = {
@@ -85,6 +121,13 @@ document.addEventListener('DOMContentLoaded', function() {
     drawColorWheel();
     updateFromRGB();
     displaySavedColors();
+    initializeContrastChecker();
+    initializeGradientGenerator();
+
+    // Keep dynamic text in sync with language changes
+    window.addEventListener('languageChanged', () => {
+        displaySavedColors();
+    });
 
     // Event Listeners
     hexInput.addEventListener('input', () => updateFromHex());
@@ -163,6 +206,48 @@ document.addEventListener('DOMContentLoaded', function() {
             g: (num >> 8) & 255,
             b: num & 255
         };
+    }
+
+    function normalizeHexColor(input) {
+        if (!input) return null;
+        let hex = String(input).trim();
+        if (!hex) return null;
+        if (hex[0] !== '#') hex = '#' + hex;
+        const m3 = /^#([0-9A-Fa-f]{3})$/.exec(hex);
+        if (m3) {
+            const h = m3[1];
+            return '#' + h.split('').map(c => c + c).join('').toUpperCase();
+        }
+        const m6 = /^#([0-9A-Fa-f]{6})$/.exec(hex);
+        if (m6) return '#' + m6[1].toUpperCase();
+        return null;
+    }
+
+    function hexToRgbObj(hex) {
+        const n = normalizeHexColor(hex);
+        if (!n) return null;
+        const rgb = hexToRgb(n);
+        return { r: rgb.r, g: rgb.g, b: rgb.b };
+    }
+
+    function srgbToLinear(channel) {
+        const c = channel / 255;
+        return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+    }
+
+    function relativeLuminance(rgb) {
+        const r = srgbToLinear(rgb.r);
+        const g = srgbToLinear(rgb.g);
+        const b = srgbToLinear(rgb.b);
+        return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    }
+
+    function contrastRatio(fgRgb, bgRgb) {
+        const L1 = relativeLuminance(fgRgb);
+        const L2 = relativeLuminance(bgRgb);
+        const lighter = Math.max(L1, L2);
+        const darker = Math.min(L1, L2);
+        return (lighter + 0.05) / (darker + 0.05);
     }
 
     function rgbToHsl(r, g, b) {
@@ -389,6 +474,203 @@ document.addEventListener('DOMContentLoaded', function() {
         updateHarmony();
     }
 
+    // Contrast Checker
+    function initializeContrastChecker() {
+        if (!contrastTextColor || !contrastBgColor || !contrastPreview) return;
+
+        const syncFromPicker = (picker, hexInputEl) => {
+            const hex = normalizeHexColor(picker.value);
+            if (hex) hexInputEl.value = hex;
+        };
+
+        const syncFromHex = (hexInputEl, picker) => {
+            const hex = normalizeHexColor(hexInputEl.value);
+            if (hex) {
+                hexInputEl.value = hex;
+                picker.value = hex;
+            }
+        };
+
+        contrastTextColor.addEventListener('input', () => {
+            syncFromPicker(contrastTextColor, contrastTextHex);
+            updateContrastUI();
+        });
+        contrastBgColor.addEventListener('input', () => {
+            syncFromPicker(contrastBgColor, contrastBgHex);
+            updateContrastUI();
+        });
+        contrastTextHex.addEventListener('input', () => {
+            syncFromHex(contrastTextHex, contrastTextColor);
+            updateContrastUI();
+        });
+        contrastBgHex.addEventListener('input', () => {
+            syncFromHex(contrastBgHex, contrastBgColor);
+            updateContrastUI();
+        });
+
+        // Normalize initial
+        syncFromHex(contrastTextHex, contrastTextColor);
+        syncFromHex(contrastBgHex, contrastBgColor);
+        updateContrastUI();
+    }
+
+    function setBadgeState(el, pass) {
+        if (!el) return;
+        el.classList.remove('bg-secondary', 'bg-success', 'bg-danger');
+        el.classList.add(pass ? 'bg-success' : 'bg-danger');
+    }
+
+    function updateContrastUI() {
+        if (!contrastPreview) return;
+        const fg = hexToRgbObj(contrastTextHex ? contrastTextHex.value : contrastTextColor.value);
+        const bg = hexToRgbObj(contrastBgHex ? contrastBgHex.value : contrastBgColor.value);
+
+        if (!fg || !bg) {
+            if (contrastRatioEl) contrastRatioEl.textContent = '-';
+            return;
+        }
+
+        const ratio = contrastRatio(fg, bg);
+        if (contrastRatioEl) contrastRatioEl.textContent = ratio.toFixed(2) + ':1';
+
+        contrastPreview.style.backgroundColor = normalizeHexColor(contrastBgColor.value) || '#ffffff';
+        contrastPreview.style.color = normalizeHexColor(contrastTextColor.value) || '#111111';
+
+        // WCAG thresholds
+        const aaNormal = ratio >= 4.5;
+        const aaaNormal = ratio >= 7;
+        const aaLarge = ratio >= 3;
+        const aaaLarge = ratio >= 4.5;
+
+        setBadgeState(contrastAaNormal, aaNormal);
+        setBadgeState(contrastAaaNormal, aaaNormal);
+        setBadgeState(contrastAaLarge, aaLarge);
+        setBadgeState(contrastAaaLarge, aaaLarge);
+    }
+
+    // Gradient Generator
+    function initializeGradientGenerator() {
+        if (!gradientAngle || !gradientStopsEl || !gradientPreview || !gradientCss) return;
+
+        const angleChanged = (value) => {
+            const n = Math.max(0, Math.min(360, parseInt(value, 10) || 0));
+            gradientAngle.value = String(n);
+            gradientAngleNumber.value = String(n);
+            updateGradientUI();
+        };
+
+        gradientAngle.addEventListener('input', () => angleChanged(gradientAngle.value));
+        gradientAngleNumber.addEventListener('input', () => angleChanged(gradientAngleNumber.value));
+
+        if (gradientAddStopBtn) {
+            gradientAddStopBtn.addEventListener('click', () => {
+                if (gradientStops.length >= 5) return;
+                // Add a stop in the middle with a reasonable default
+                const pos = gradientStops.length === 2 ? 50 : Math.round(100 * (gradientStops.length / 4));
+                gradientStops.push({ color: '#F093FB', pos: pos });
+                updateGradientUI();
+            });
+        }
+
+        if (gradientCopyBtn) {
+            gradientCopyBtn.addEventListener('click', () => {
+                copyToClipboard(gradientCss.value, gradientCopyBtn);
+            });
+        }
+
+        updateGradientUI();
+    }
+
+    function getGradientCssText() {
+        const angle = Math.max(0, Math.min(360, parseInt(gradientAngle.value, 10) || 0));
+        const stops = [...gradientStops]
+            .map(s => ({ color: normalizeHexColor(s.color) || '#000000', pos: Math.max(0, Math.min(100, parseInt(s.pos, 10) || 0)) }))
+            .sort((a, b) => a.pos - b.pos);
+
+        const stopText = stops.map(s => `${s.color} ${s.pos}%`).join(', ');
+        return `background: linear-gradient(${angle}deg, ${stopText});`;
+    }
+
+    function updateGradientUI() {
+        if (!gradientStopsEl) return;
+
+        // Render stop rows
+        gradientStopsEl.innerHTML = '';
+        gradientStops
+            .map((s, idx) => ({ ...s, idx }))
+            .forEach((stop) => {
+                const row = document.createElement('div');
+                row.className = 'gradient-stop-row';
+
+                const colorInput = document.createElement('input');
+                colorInput.type = 'color';
+                colorInput.className = 'form-control form-control-color';
+                colorInput.value = normalizeHexColor(stop.color) || '#000000';
+                colorInput.title = 'Stop color';
+
+                const hexInput = document.createElement('input');
+                hexInput.type = 'text';
+                hexInput.className = 'form-control font-monospace';
+                hexInput.value = normalizeHexColor(stop.color) || '#000000';
+                hexInput.placeholder = '#000000';
+
+                const posInput = document.createElement('input');
+                posInput.type = 'number';
+                posInput.className = 'form-control';
+                posInput.min = '0';
+                posInput.max = '100';
+                posInput.value = String(Math.max(0, Math.min(100, parseInt(stop.pos, 10) || 0)));
+
+                const removeBtn = document.createElement('button');
+                removeBtn.type = 'button';
+                removeBtn.className = 'btn btn-outline-danger';
+                removeBtn.innerHTML = '<i class="fas fa-trash"></i>';
+                removeBtn.disabled = gradientStops.length <= 2;
+
+                const onChange = () => {
+                    const hex = normalizeHexColor(hexInput.value) || normalizeHexColor(colorInput.value);
+                    if (hex) {
+                        hexInput.value = hex;
+                        colorInput.value = hex;
+                    }
+                    const pos = Math.max(0, Math.min(100, parseInt(posInput.value, 10) || 0));
+                    gradientStops[stop.idx] = { color: hex || '#000000', pos: pos };
+                    updateGradientCssAndPreview();
+                };
+
+                colorInput.addEventListener('input', () => {
+                    hexInput.value = normalizeHexColor(colorInput.value) || '#000000';
+                    onChange();
+                });
+                hexInput.addEventListener('input', onChange);
+                posInput.addEventListener('input', onChange);
+
+                removeBtn.addEventListener('click', () => {
+                    if (gradientStops.length <= 2) return;
+                    gradientStops.splice(stop.idx, 1);
+                    updateGradientUI();
+                });
+
+                row.appendChild(colorInput);
+                row.appendChild(hexInput);
+                row.appendChild(posInput);
+                row.appendChild(removeBtn);
+                gradientStopsEl.appendChild(row);
+            });
+
+        updateGradientCssAndPreview();
+    }
+
+    function updateGradientCssAndPreview() {
+        if (!gradientCss || !gradientPreview) return;
+        const cssText = getGradientCssText();
+        gradientCss.value = cssText;
+
+        const m = cssText.match(/linear-gradient\((.*)\);$/);
+        const gradient = m ? `linear-gradient(${m[1]})` : 'linear-gradient(90deg, #000000 0%, #ffffff 100%)';
+        gradientPreview.style.backgroundImage = gradient;
+    }
+
     // Color Wheel Functions
     function drawColorWheel() {
         const centerX = colorWheel.width / 2;
@@ -559,24 +841,25 @@ document.addEventListener('DOMContentLoaded', function() {
             savedColors.push(hex);
             localStorage.setItem('colorPalette', JSON.stringify(savedColors));
             displaySavedColors();
-            showAlert('Color added to palette!', 'success');
+            showAlert(tr('color.alert_added', 'Color added to palette!'), 'success');
         } else {
-            showAlert('Color already in palette', 'info');
+            showAlert(tr('color.alert_exists', 'Color already in palette'), 'info');
         }
     }
 
     function clearPalette() {
-        if (confirm('Are you sure you want to clear all saved colors?')) {
+        if (confirm(tr('color.confirm_clear_palette', 'Are you sure you want to clear all saved colors?'))) {
             savedColors = [];
             localStorage.setItem('colorPalette', JSON.stringify(savedColors));
             displaySavedColors();
-            showAlert('Palette cleared', 'success');
+            showAlert(tr('color.alert_palette_cleared', 'Palette cleared'), 'success');
         }
     }
 
     function displaySavedColors() {
         if (savedColors.length === 0) {
-            savedColorsContainer.innerHTML = '<div class="text-muted small" data-i18n="color.no_saved">No saved colors yet.</div>';
+            const emptyText = tr('color.no_saved', 'No saved colors yet. Click "Add to Palette" to save colors.');
+            savedColorsContainer.innerHTML = `<div class="text-muted small">${emptyText}</div>`;
             return;
         }
         
@@ -624,7 +907,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 button.innerHTML = originalHTML;
             }, 1500);
         } catch (error) {
-            showAlert('Failed to copy', 'danger');
+            showAlert(tr('common.copy_error', tr('color.copy_failed', 'Failed to copy')), 'danger');
         }
     }
 

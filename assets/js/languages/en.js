@@ -13,10 +13,33 @@ const englishTranslations = {
     "nav.hash_generator": "Hash Generator",
     "nav.color_picker": "Color Picker",
     "nav.date_calculator": "Date Calculator",
+    "nav.case_converter": "Case Converter",
+    "nav.regex_tester": "Regex Tester",
     "nav.tools": "Tools",
     "nav.cat.random": "Random",
     "nav.cat.time": "Time",
     "nav.cat.utilities": "Utilities",
+
+    // Case Converter
+    "case.title": "Case Converter",
+    "case.input_label": "Input text",
+    "case.input_placeholder": "Enter text...",
+    "case.acronyms_label": "Acronyms (keep uppercase)",
+    "case.acronyms_help": "Comma-separated. Example: API, URL, ID",
+    "case.preserve_acronyms": "Enable acronym handling",
+    "case.tip": "Tip: Paste any text (with underscores, hyphens, or spaces). Results update automatically.",
+
+    // Regex Tester
+    "regex.title": "Regex Tester",
+    "regex.pattern": "Pattern",
+    "regex.flags_help": "Enter flags like: g i m s u y",
+    "regex.text": "Test Text",
+    "regex.matches": "Matches",
+    "regex.match_count": "Match count:",
+    "regex.replace": "Replace",
+    "regex.replace_help": "Use $& (whole match), $1..$n (groups)",
+    "regex.run_replace": "Run Replace",
+    "regex.explain": "Explain (basic)",
     
     // Homepage
     "home.title": "Home",
@@ -343,6 +366,28 @@ const englishTranslations = {
     "color.css_format": "CSS Formats",
     "color.brightness": "Brightness",
     "color.luminance": "Luminance",
+
+    // Color Tools: Contrast & Gradient
+    "color.contrast_title": "Contrast Checker (WCAG)",
+    "color.contrast_text": "Text color",
+    "color.contrast_bg": "Background color",
+    "color.contrast_ratio": "Contrast ratio:",
+    "color.contrast_aa": "AA",
+    "color.contrast_aaa": "AAA",
+    "color.contrast_aa_large": "AA Large",
+    "color.contrast_aaa_large": "AAA Large",
+    "color.contrast_sample_short": "Aa",
+    "color.contrast_sample_text": "The quick brown fox jumps over the lazy dog.",
+    "color.gradient_title": "CSS Gradient Generator",
+    "color.gradient_angle": "Angle (deg)",
+    "color.gradient_stops": "Stops",
+    "color.gradient_add_stop": "Add stop",
+    "color.gradient_css": "CSS",
+    "color.alert_added": "Color added to palette!",
+    "color.alert_exists": "Color already in palette",
+    "color.alert_palette_cleared": "Palette cleared",
+    "color.confirm_clear_palette": "Are you sure you want to clear all saved colors?",
+    "color.copy_failed": "Failed to copy",
     
     // QR Generator
     "qr.title": "QR Code Generator",

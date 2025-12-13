@@ -13,10 +13,33 @@ const vietnameseTranslations = {
     "nav.hash_generator": "Tạo Mã Băm",
     "nav.color_picker": "Chọn Màu",
     "nav.date_calculator": "Tính Toán Ngày Tháng",
+    "nav.case_converter": "Chuyển đổi kiểu chữ",
+    "nav.regex_tester": "Kiểm thử Regex",
     "nav.tools": "Công cụ",
     "nav.cat.random": "Ngẫu nhiên",
     "nav.cat.time": "Thời gian",
     "nav.cat.utilities": "Tiện ích",
+
+    // Case Converter
+    "case.title": "Chuyển đổi kiểu chữ",
+    "case.input_label": "Văn bản đầu vào",
+    "case.input_placeholder": "Nhập văn bản...",
+    "case.acronyms_label": "Acronyms (giữ nguyên chữ hoa)",
+    "case.acronyms_help": "Ngăn cách bằng dấu phẩy. Ví dụ: API, URL, ID",
+    "case.preserve_acronyms": "Bật xử lý acronym",
+    "case.tip": "Mẹo: Dán bất kỳ văn bản nào (kể cả có dấu gạch dưới, dấu gạch ngang, hoặc khoảng trắng). Kết quả sẽ cập nhật tự động.",
+
+    // Regex Tester
+    "regex.title": "Kiểm thử Regex",
+    "regex.pattern": "Mẫu (pattern)",
+    "regex.flags_help": "Nhập flags như: g i m s u y",
+    "regex.text": "Văn bản kiểm thử",
+    "regex.matches": "Kết quả khớp (matches)",
+    "regex.match_count": "Số match:",
+    "regex.replace": "Thay thế (replace)",
+    "regex.replace_help": "Dùng $& (toàn bộ match), $1..$n (group)",
+    "regex.run_replace": "Chạy thay thế",
+    "regex.explain": "Giải thích (cơ bản)",
     
     // Homepage
     "home.title": "Trang chủ",
@@ -351,6 +374,28 @@ const vietnameseTranslations = {
     "color.css_format": "Định dạng CSS",
     "color.brightness": "Độ sáng",
     "color.luminance": "Độ phát quang",
+
+    // Color Tools: Contrast & Gradient
+    "color.contrast_title": "Kiểm tra tương phản (WCAG)",
+    "color.contrast_text": "Màu chữ",
+    "color.contrast_bg": "Màu nền",
+    "color.contrast_ratio": "Tỷ lệ tương phản:",
+    "color.contrast_aa": "AA",
+    "color.contrast_aaa": "AAA",
+    "color.contrast_aa_large": "AA (chữ lớn)",
+    "color.contrast_aaa_large": "AAA (chữ lớn)",
+    "color.contrast_sample_short": "Aa",
+    "color.contrast_sample_text": "Nhanh như chớp, cáo nâu nhảy qua chú chó lười.",
+    "color.gradient_title": "Tạo CSS Gradient",
+    "color.gradient_angle": "Góc (độ)",
+    "color.gradient_stops": "Các điểm màu",
+    "color.gradient_add_stop": "Thêm điểm",
+    "color.gradient_css": "CSS",
+    "color.alert_added": "Đã thêm màu vào bảng màu!",
+    "color.alert_exists": "Màu này đã có trong bảng màu",
+    "color.alert_palette_cleared": "Đã xóa bảng màu",
+    "color.confirm_clear_palette": "Bạn có chắc muốn xóa tất cả màu đã lưu không?",
+    "color.copy_failed": "Không thể sao chép",
     
     // QR Generator
     "qr.title": "Tạo mã QR",

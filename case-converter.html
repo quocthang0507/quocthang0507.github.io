@@ -1,0 +1,109 @@
+---
+layout: default
+title: "Chuyển đổi kiểu chữ"
+description: "Công cụ chuyển đổi văn bản sang camelCase, snake_case, kebab-case, PascalCase và Title Case với xử lý acronym."
+keywords: "case converter, camelCase, snake_case, kebab-case, PascalCase, Title Case, acronym"
+custom_js: ['case-converter.js']
+permalink: /case-converter/
+sitemap:
+  priority: 0.7
+  changefreq: monthly
+  lastmod: 2025-12-13
+---
+
+<meta name="i18n-title" content="case.title">
+
+<div class="row">
+  <div class="col-12">
+    <div id="alert-container"></div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-lg-10 mx-auto">
+    <div class="card mb-4">
+      <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">
+          <i class="fas fa-font"></i>
+          <span data-i18n="case.title">Chuyển đổi kiểu chữ</span>
+        </h5>
+      </div>
+      <div class="card-body">
+        <div class="mb-3">
+          <label for="case-input" class="form-label" data-i18n="case.input_label">Văn bản đầu vào</label>
+          <textarea id="case-input" class="form-control" rows="5" placeholder="Enter text..." data-i18n="case.input_placeholder"></textarea>
+        </div>
+
+        <div class="row g-2 align-items-end mb-4">
+          <div class="col-md-6">
+            <label for="acronyms-input" class="form-label" data-i18n="case.acronyms_label">Acronyms (giữ nguyên chữ hoa)</label>
+            <input id="acronyms-input" class="form-control" type="text" value="API,HTTP,HTTPS,URL,URI,ID,UUID,JSON,HTML,CSS,SQL" />
+            <div class="form-text" data-i18n="case.acronyms_help">Ngăn cách bằng dấu phẩy. Ví dụ: API, URL, ID</div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-check mt-4">
+              <input class="form-check-input" type="checkbox" id="preserve-acronyms" checked>
+              <label class="form-check-label" for="preserve-acronyms" data-i18n="case.preserve_acronyms">Bật xử lý acronym</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">camelCase</label>
+            <div class="input-group">
+              <input id="out-camel" class="form-control font-monospace" readonly>
+              <button class="btn btn-outline-primary copy-output" type="button" data-target="out-camel" aria-label="Copy camelCase">
+                <i class="fas fa-copy"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">PascalCase</label>
+            <div class="input-group">
+              <input id="out-pascal" class="form-control font-monospace" readonly>
+              <button class="btn btn-outline-primary copy-output" type="button" data-target="out-pascal" aria-label="Copy PascalCase">
+                <i class="fas fa-copy"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">snake_case</label>
+            <div class="input-group">
+              <input id="out-snake" class="form-control font-monospace" readonly>
+              <button class="btn btn-outline-primary copy-output" type="button" data-target="out-snake" aria-label="Copy snake_case">
+                <i class="fas fa-copy"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">kebab-case</label>
+            <div class="input-group">
+              <input id="out-kebab" class="form-control font-monospace" readonly>
+              <button class="btn btn-outline-primary copy-output" type="button" data-target="out-kebab" aria-label="Copy kebab-case">
+                <i class="fas fa-copy"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="col-12">
+            <label class="form-label">Title Case</label>
+            <div class="input-group">
+              <input id="out-title" class="form-control" readonly>
+              <button class="btn btn-outline-primary copy-output" type="button" data-target="out-title" aria-label="Copy Title Case">
+                <i class="fas fa-copy"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-3 small text-muted" data-i18n="case.tip">
+          Mẹo: Dán bất kỳ văn bản nào (kể cả có dấu gạch dưới, dấu gạch ngang, hoặc khoảng trắng). Kết quả sẽ cập nhật tự động.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

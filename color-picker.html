@@ -277,6 +277,91 @@ sitemap:
     </div>
 </div>
 
+<!-- Contrast Checker + Gradient Generator -->
+<div class="row">
+    <!-- Contrast Checker -->
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0">
+                    <i class="fas fa-adjust"></i>
+                    <span data-i18n="color.contrast_title">Contrast Checker (WCAG)</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold" for="contrast-text-hex" data-i18n="color.contrast_text">Text color</label>
+                        <div class="input-group">
+                            <input type="color" class="form-control form-control-color" id="contrast-text-color" value="#111111" title="Text color">
+                            <input type="text" class="form-control font-monospace" id="contrast-text-hex" value="#111111" placeholder="#111111" aria-label="Text color hex">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold" for="contrast-bg-hex" data-i18n="color.contrast_bg">Background color</label>
+                        <div class="input-group">
+                            <input type="color" class="form-control form-control-color" id="contrast-bg-color" value="#ffffff" title="Background color">
+                            <input type="text" class="form-control font-monospace" id="contrast-bg-hex" value="#ffffff" placeholder="#ffffff" aria-label="Background color hex">
+                        </div>
+                    </div>
+                </div>
+
+                <div id="contrast-preview" class="contrast-preview mb-3" role="region" aria-label="Contrast preview">
+                    <div class="contrast-sample contrast-sample-lg" data-i18n="color.contrast_sample_short">Aa</div>
+                    <div class="contrast-sample" data-i18n="color.contrast_sample_text">The quick brown fox jumps over the lazy dog.</div>
+                </div>
+
+                <div class="d-flex flex-wrap align-items-center gap-2">
+                    <span class="fw-bold" data-i18n="color.contrast_ratio">Contrast ratio:</span>
+                    <span class="font-monospace" id="contrast-ratio">-</span>
+                    <span class="badge bg-secondary" id="contrast-aa-normal" data-i18n="color.contrast_aa">AA</span>
+                    <span class="badge bg-secondary" id="contrast-aaa-normal" data-i18n="color.contrast_aaa">AAA</span>
+                    <span class="badge bg-secondary" id="contrast-aa-large" data-i18n="color.contrast_aa_large">AA Large</span>
+                    <span class="badge bg-secondary" id="contrast-aaa-large" data-i18n="color.contrast_aaa_large">AAA Large</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gradient Generator -->
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-water"></i>
+                    <span data-i18n="color.gradient_title">CSS Gradient Generator</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3 align-items-end mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold" for="gradient-angle" data-i18n="color.gradient_angle">Angle (deg)</label>
+                        <input type="range" class="form-range" id="gradient-angle" min="0" max="360" value="90">
+                        <input type="number" class="form-control mt-2" id="gradient-angle-number" min="0" max="360" value="90">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold" data-i18n="color.gradient_stops">Stops</label>
+                        <div id="gradient-stops" class="gradient-stops"></div>
+                        <button class="btn btn-sm btn-outline-primary mt-2" type="button" id="gradient-add-stop">
+                            <i class="fas fa-plus"></i> <span data-i18n="color.gradient_add_stop">Add stop</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="gradient-preview" class="gradient-preview mb-3" role="img" aria-label="Gradient preview"></div>
+
+                <label class="form-label fw-bold" for="gradient-css" data-i18n="color.gradient_css">CSS</label>
+                <div class="input-group">
+                    <textarea id="gradient-css" class="form-control font-monospace" rows="3" readonly></textarea>
+                    <button class="btn btn-outline-primary" type="button" id="gradient-copy" aria-label="Copy CSS">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <style>
 .harmony-colors {
     display: flex;
@@ -402,5 +487,42 @@ sitemap:
 
 .preset-color:hover .preset-color-label {
     opacity: 1;
+}
+
+.contrast-preview {
+    border-radius: 8px;
+    border: 2px solid var(--bs-border-color);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.contrast-sample {
+    line-height: 1.35;
+}
+
+.contrast-sample-lg {
+    font-size: 32px;
+    font-weight: 700;
+}
+
+.gradient-preview {
+    height: 140px;
+    border-radius: 8px;
+    border: 2px solid var(--bs-border-color);
+}
+
+.gradient-stops {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.gradient-stop-row {
+    display: grid;
+    grid-template-columns: 44px 1fr 90px 40px;
+    gap: 8px;
+    align-items: center;
 }
 </style>

@@ -13,10 +13,33 @@ const japaneseTranslations = {
     "nav.hash_generator": "ハッシュ生成器",
     "nav.color_picker": "カラーピッカー",
     "nav.date_calculator": "日付計算機",
+    "nav.case_converter": "ケース変換",
+    "nav.regex_tester": "正規表現テスター",
         "nav.tools": "ツール",
         "nav.cat.random": "ランダム",
         "nav.cat.time": "時間",
         "nav.cat.utilities": "ユーティリティ",
+
+    // Case Converter
+    "case.title": "ケース変換",
+    "case.input_label": "入力テキスト",
+    "case.input_placeholder": "テキストを入力...",
+    "case.acronyms_label": "略語（大文字を保持）",
+    "case.acronyms_help": "カンマ区切り。例：API, URL, ID",
+    "case.preserve_acronyms": "略語処理を有効化",
+    "case.tip": "ヒント：下線・ハイフン・空白を含むテキストでも貼り付けできます。結果は自動更新されます。",
+
+    // Regex Tester
+    "regex.title": "正規表現テスター",
+    "regex.pattern": "パターン",
+    "regex.flags_help": "flags を入力：g i m s u y",
+    "regex.text": "テストテキスト",
+    "regex.matches": "マッチ結果",
+    "regex.match_count": "マッチ数：",
+    "regex.replace": "置換",
+    "regex.replace_help": "$&（全体一致）、$1..$n（グループ）を使用",
+    "regex.run_replace": "置換を実行",
+    "regex.explain": "説明（基本）",
     
     // Homepage
     "home.title": "ホーム",
@@ -336,6 +359,28 @@ const japaneseTranslations = {
     "color.css_format": "CSSフォーマット",
     "color.brightness": "明るさ",
     "color.luminance": "輝度",
+
+    // Color Tools: Contrast & Gradient
+    "color.contrast_title": "コントラストチェック（WCAG）",
+    "color.contrast_text": "文字色",
+    "color.contrast_bg": "背景色",
+    "color.contrast_ratio": "コントラスト比：",
+    "color.contrast_aa": "AA",
+    "color.contrast_aaa": "AAA",
+    "color.contrast_aa_large": "AA（大きい文字）",
+    "color.contrast_aaa_large": "AAA（大きい文字）",
+    "color.contrast_sample_short": "Aa",
+    "color.contrast_sample_text": "素早い茶色のキツネは怠け者の犬を飛び越えた。",
+    "color.gradient_title": "CSS グラデーション生成",
+    "color.gradient_angle": "角度（度）",
+    "color.gradient_stops": "ストップ",
+    "color.gradient_add_stop": "ストップ追加",
+    "color.gradient_css": "CSS",
+    "color.alert_added": "パレットに追加しました！",
+    "color.alert_exists": "その色はすでにパレットにあります",
+    "color.alert_palette_cleared": "パレットをクリアしました",
+    "color.confirm_clear_palette": "保存した色をすべて削除しますか？",
+    "color.copy_failed": "コピーに失敗しました",
     
     // QR Generator
     "qr.title": "QRコード生成",
