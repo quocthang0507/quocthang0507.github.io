@@ -29,6 +29,17 @@ document.addEventListener('DOMContentLoaded', function() {
     // State
     let currentPassword = '';
     let passwordHistory = loadFromLocalStorage('passwordHistory') || [];
+
+    function tr(key, fallback) {
+        try {
+            if (typeof window.t !== 'function') return fallback;
+            const value = window.t(key);
+            if (!value || value === key) return fallback;
+            return value;
+        } catch (_) {
+            return fallback;
+        }
+    }
     
     // Initialize
     updateHistoryDisplay();
@@ -63,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Validate at least one option is selected
         if (!options.uppercase && !options.lowercase && !options.numbers && !options.symbols) {
-            showAlert(window.t ? window.t('password.error_no_options') : 'Vui lòng chọn ít nhất một loại ký tự!', 'warning');
+            showAlert(tr('password.error_no_options', 'Vui lòng chọn ít nhất một loại ký tự!'), 'warning');
             return;
         }
         
@@ -82,8 +93,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // Check if enough unique characters for no duplicate option
         if (options.noDuplicate && charset.length < length) {
             showAlert(
-                window.t ? window.t('password.error_not_enough_chars') : 
+                tr('password.error_not_enough_chars',
                 `Không đủ ký tự duy nhất (${charset.length}) cho độ dài mật khẩu (${length})!`, 
+                ),
                 'warning'
             );
             return;
@@ -199,23 +211,23 @@ document.addEventListener('DOMContentLoaded', function() {
         let strengthText, strengthClass, strengthWidth;
         
         if (score >= 80) {
-            strengthText = window.t ? window.t('password.very_strong') : 'Rất mạnh';
+            strengthText = tr('password.very_strong', 'Rất mạnh');
             strengthClass = 'bg-success';
             strengthWidth = 100;
         } else if (score >= 60) {
-            strengthText = window.t ? window.t('password.strong') : 'Mạnh';
+            strengthText = tr('password.strong', 'Mạnh');
             strengthClass = 'bg-info';
             strengthWidth = 80;
         } else if (score >= 40) {
-            strengthText = window.t ? window.t('password.good') : 'Tốt';
+            strengthText = tr('password.good', 'Tốt');
             strengthClass = 'bg-primary';
             strengthWidth = 60;
         } else if (score >= 20) {
-            strengthText = window.t ? window.t('password.weak') : 'Yếu';
+            strengthText = tr('password.weak', 'Yếu');
             strengthClass = 'bg-warning';
             strengthWidth = 40;
         } else {
-            strengthText = window.t ? window.t('password.very_weak') : 'Rất yếu';
+            strengthText = tr('password.very_weak', 'Rất yếu');
             strengthClass = 'bg-danger';
             strengthWidth = 20;
         }
@@ -234,16 +246,16 @@ document.addEventListener('DOMContentLoaded', function() {
         
         navigator.clipboard.writeText(currentPassword).then(() => {
             showAlert(
-                window.t ? window.t('password.copied') : 'Đã sao chép mật khẩu!', 
+                tr('password.copied', 'Đã sao chép mật khẩu!'),
                 'success'
             );
             
             // Visual feedback
             copyBtn.innerHTML = '<i class="fas fa-check"></i> ' + 
-                (window.t ? window.t('password.copied_short') : 'Đã sao chép');
+                tr('password.copied_short', 'Đã sao chép');
             setTimeout(() => {
                 copyBtn.innerHTML = '<i class="fas fa-copy"></i> ' + 
-                    (window.t ? window.t('password.copy') : 'Sao chép');
+                    tr('password.copy', 'Sao chép');
             }, 2000);
             
             // Track copy action
@@ -255,7 +267,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }).catch(() => {
             showAlert(
-                window.t ? window.t('password.copy_error') : 'Không thể sao chép!', 
+                tr('password.copy_error', 'Không thể sao chép!'),
                 'danger'
             );
         });
@@ -295,7 +307,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="flex-grow-1">
                         <code class="history-password">${item.password}</code>
-                        <small class="text-muted d-block">${item.timestamp} • ${item.length} ${window.t ? window.t('password.characters') : 'ký tự'}</small>
+                        <small class="text-muted d-block">${item.timestamp} • ${item.length} ${tr('password.characters', 'ký tự')}</small>
                     </div>
                     <button class="btn btn-sm btn-outline-primary copy-history-btn" data-password="${item.password}">
                         <i class="fas fa-copy"></i>
@@ -310,7 +322,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const password = this.dataset.password;
                 navigator.clipboard.writeText(password).then(() => {
                     showAlert(
-                        window.t ? window.t('password.copied') : 'Đã sao chép mật khẩu!', 
+                        tr('password.copied', 'Đã sao chép mật khẩu!'),
                         'success'
                     );
                 });
@@ -322,12 +334,12 @@ document.addEventListener('DOMContentLoaded', function() {
     function clearHistory() {
         if (passwordHistory.length === 0) return;
         
-        if (confirm(window.t ? window.t('password.confirm_clear') : 'Xóa toàn bộ lịch sử?')) {
+        if (confirm(tr('password.confirm_clear', 'Xóa toàn bộ lịch sử?'))) {
             passwordHistory = [];
             saveToLocalStorage('passwordHistory', passwordHistory);
             updateHistoryDisplay();
             showAlert(
-                window.t ? window.t('password.history_cleared') : 'Đã xóa lịch sử!', 
+                tr('password.history_cleared', 'Đã xóa lịch sử!'),
                 'info'
             );
         }

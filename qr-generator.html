@@ -13,6 +13,8 @@ sitemap:
 
 <!-- QRCode.js library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<!-- QR Code Styling (supports dot/rounded patterns) -->
+<script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.6.0/lib/qr-code-styling.js"></script>
 
 <div class="row">
     <div class="col-12">
@@ -194,6 +196,38 @@ sitemap:
                         <option value="H" data-i18n="qr.level_high">Rất cao (30%)</option>
                     </select>
                     <small class="text-muted" data-i18n="qr.error_hint">Độ chính xác cao hơn giúp mã QR dễ quét hơn khi bị hỏng</small>
+                </div>
+
+                <!-- Pattern Type -->
+                <div class="mb-3">
+                    <label for="qr-pattern" class="form-label" data-i18n="qr.pattern">Kiểu chấm</label>
+                    <select id="qr-pattern" class="form-select">
+                        <option value="square" selected>Square</option>
+                        <option value="dots">Dots</option>
+                        <option value="rounded">Rounded</option>
+                        <option value="classy">Classy</option>
+                        <option value="classy-rounded">Classy Rounded</option>
+                        <option value="extra-rounded">Extra Rounded</option>
+                    </select>
+                    <small class="text-muted" data-i18n="qr.pattern_hint">Chọn kiểu hiển thị điểm của mã QR</small>
+                </div>
+
+                <!-- Corner Styles -->
+                <div class="mb-3">
+                    <label for="qr-corner-square" class="form-label" data-i18n="qr.corner_square">Góc (ô vuông)</label>
+                    <select id="qr-corner-square" class="form-select">
+                        <option value="square" selected>Square</option>
+                        <option value="dot">Dot</option>
+                        <option value="extra-rounded">Extra Rounded</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="qr-corner-dot" class="form-label" data-i18n="qr.corner_dot">Góc (chấm)</label>
+                    <select id="qr-corner-dot" class="form-select">
+                        <option value="square">Square</option>
+                        <option value="dot" selected>Dot</option>
+                    </select>
                 </div>
 
                 <!-- Logo/Image Upload -->

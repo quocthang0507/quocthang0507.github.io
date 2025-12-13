@@ -3,7 +3,9 @@ document.addEventListener('DOMContentLoaded', function() {
     let qrHistory = loadFromLocalStorage('qrHistory') || [];
     let currentQRCode = null;
     let currentQRData = null;
+    let currentQRStyling = null;
     let logoImage = null;
+    let logoDataUrl = null;
     
     // Initialize
     renderHistory();
@@ -16,7 +18,19 @@ document.addEventListener('DOMContentLoaded', function() {
             height: parseInt(document.getElementById('qr-size').value),
             colorDark: document.getElementById('qr-color').value,
             colorLight: document.getElementById('qr-bgcolor').value,
-            correctLevel: QRCode.CorrectLevel[document.getElementById('qr-error-level').value]
+            correctLevel: document.getElementById('qr-error-level').value
+        };
+    }
+
+    function getQRStyleSettings() {
+        const dotsType = document.getElementById('qr-pattern')?.value || 'square';
+        const cornerSquareType = document.getElementById('qr-corner-square')?.value || 'square';
+        const cornerDotType = document.getElementById('qr-corner-dot')?.value || 'dot';
+
+        return {
+            dotsType,
+            cornerSquareType,
+            cornerDotType
         };
     }
     
@@ -85,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Generate QR Code
-    function generateQRCode() {
+    async function generateQRCode() {
         const content = getQRContent();
         
         if (!content) {
@@ -99,33 +113,76 @@ document.addEventListener('DOMContentLoaded', function() {
         
         try {
             const settings = getQRSettings();
+
+            const styleSettings = getQRStyleSettings();
             
-            // Create QR code
-            currentQRCode = new QRCode(container, {
-                text: content,
-                width: settings.width,
-                height: settings.height,
-                colorDark: settings.colorDark,
-                colorLight: settings.colorLight,
-                correctLevel: settings.correctLevel
-            });
+            // Create QR code using QRCodeStyling (supports patterns)
+            if (typeof QRCodeStyling !== 'undefined') {
+                currentQRStyling = new QRCodeStyling({
+                    width: settings.width,
+                    height: settings.height,
+                    type: 'canvas',
+                    data: content,
+                    qrOptions: {
+                        errorCorrectionLevel: settings.correctLevel
+                    },
+                    dotsOptions: {
+                        color: settings.colorDark,
+                        type: styleSettings.dotsType
+                    },
+                    backgroundOptions: {
+                        color: settings.colorLight
+                    },
+                    cornersSquareOptions: {
+                        color: settings.colorDark,
+                        type: styleSettings.cornerSquareType
+                    },
+                    cornersDotOptions: {
+                        color: settings.colorDark,
+                        type: styleSettings.cornerDotType
+                    },
+                    image: logoDataUrl || undefined,
+                    imageOptions: {
+                        crossOrigin: 'anonymous',
+                        margin: 5,
+                        imageSize: 0.2,
+                        hideBackgroundDots: true
+                    }
+                });
+
+                currentQRStyling.append(container);
+                currentQRCode = currentQRStyling;
+            } else {
+                // Fallback to qrcodejs if QRCodeStyling isn't available
+                currentQRCode = new QRCode(container, {
+                    text: content,
+                    width: settings.width,
+                    height: settings.height,
+                    colorDark: settings.colorDark,
+                    colorLight: settings.colorLight,
+                    correctLevel: QRCode.CorrectLevel[settings.correctLevel]
+                });
+            }
             
             currentQRData = {
                 content: content,
                 type: document.querySelector('input[name="qr-type"]:checked').value,
                 settings: settings,
+                style: styleSettings,
                 timestamp: new Date().toISOString()
             };
-            
-            // Add logo if uploaded
-            if (logoImage) {
-                setTimeout(() => addLogoToQR(), 100);
-            }
-            
+
             // Show display container
             document.getElementById('qr-display-container').style.display = 'block';
-            
-            // Add to history
+
+            // If we're using fallback canvas mode, still draw logo manually
+            if (!currentQRStyling && logoImage) {
+                await addLogoToQR({
+                    colorLight: settings.colorLight
+                });
+            }
+
+            // Add to history (after logo compositing)
             addToHistory(currentQRData);
             
             // Track generation
@@ -142,32 +199,118 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Add logo to QR code
-    function addLogoToQR() {
-        const canvas = document.querySelector('#qr-code-display canvas');
-        if (!canvas || !logoImage) return;
-        
+    function waitForCanvas(selector, timeoutMs = 1500) {
+        const start = performance.now();
+        return new Promise((resolve, reject) => {
+            function tick() {
+                const canvas = document.querySelector(selector);
+                if (canvas) {
+                    resolve(canvas);
+                    return;
+                }
+
+                if (performance.now() - start > timeoutMs) {
+                    reject(new Error('QR canvas not found'));
+                    return;
+                }
+
+                requestAnimationFrame(tick);
+            }
+            tick();
+        });
+    }
+
+    async function decodeImage(img) {
+        if (!img) return;
+        if (img.decode) {
+            try {
+                await img.decode();
+                return;
+            } catch (_) {
+                // Fall back to onload checks below
+            }
+        }
+        if (img.complete && img.naturalWidth > 0) return;
+        await new Promise((resolve, reject) => {
+            img.onload = () => resolve();
+            img.onerror = () => reject(new Error('Logo image failed to load'));
+        });
+    }
+
+    // Add logo to QR code and sync preview <img>
+    async function addLogoToQR(settingsOverride) {
+        if (!logoImage) return;
+
+        const canvas = await waitForCanvas('#qr-code-display canvas');
         const ctx = canvas.getContext('2d');
-        const logoSize = canvas.width * 0.2; // Logo takes 20% of QR code
-        const logoX = (canvas.width - logoSize) / 2;
-        const logoY = (canvas.height - logoSize) / 2;
-        
-        // Draw white background for logo
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(logoX - 5, logoY - 5, logoSize + 10, logoSize + 10);
-        
+        if (!ctx) return;
+
+        await decodeImage(logoImage);
+
+        const settings = settingsOverride || getQRSettings();
+
+        // qrcodejs sometimes renders an <img> from canvas; ensure we export after compositing
+        const qrSize = Math.min(canvas.width, canvas.height);
+        const targetSize = Math.round(qrSize * 0.2);
+        const padding = Math.max(4, Math.round(qrSize * 0.02));
+
+        const aspect = logoImage.naturalWidth && logoImage.naturalHeight
+            ? logoImage.naturalWidth / logoImage.naturalHeight
+            : 1;
+
+        let drawW = targetSize;
+        let drawH = targetSize;
+        if (aspect > 1) {
+            drawH = Math.round(targetSize / aspect);
+        } else {
+            drawW = Math.round(targetSize * aspect);
+        }
+
+        const logoX = Math.round((canvas.width - drawW) / 2);
+        const logoY = Math.round((canvas.height - drawH) / 2);
+
+        // Background behind logo (use current light/background color)
+        ctx.save();
+        ctx.fillStyle = settings.colorLight || '#ffffff';
+        ctx.fillRect(
+            Math.round((canvas.width - targetSize) / 2) - padding,
+            Math.round((canvas.height - targetSize) / 2) - padding,
+            targetSize + padding * 2,
+            targetSize + padding * 2
+        );
+        ctx.restore();
+
         // Draw logo
-        ctx.drawImage(logoImage, logoX, logoY, logoSize, logoSize);
+        ctx.drawImage(logoImage, logoX, logoY, drawW, drawH);
+
+        // Sync the preview image (qrcodejs often shows <img> instead of <canvas>)
+        const img = document.querySelector('#qr-code-display img');
+        if (img) {
+            try {
+                img.src = canvas.toDataURL('image/png');
+            } catch (_) {
+                // If canvas becomes tainted, ignore (shouldn't happen with local uploads)
+            }
+        }
     }
     
     // Download as PNG
     function downloadPNG() {
+        if (currentQRStyling && typeof currentQRStyling.download === 'function') {
+            currentQRStyling.download({
+                name: `qrcode-${Date.now()}`,
+                extension: 'png'
+            });
+            showAlert('Đã tải xuống PNG!', 'success');
+            return;
+        }
+
         const canvas = document.querySelector('#qr-code-display canvas');
         if (!canvas) {
             showAlert('Chưa có mã QR để tải!', 'warning');
             return;
         }
-        
+
         canvas.toBlob(function(blob) {
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
@@ -177,34 +320,43 @@ document.addEventListener('DOMContentLoaded', function() {
             link.click();
             document.body.removeChild(link);
             URL.revokeObjectURL(url);
-            
+
             showAlert('Đã tải xuống PNG!', 'success');
         });
     }
     
     // Download as SVG
     function downloadSVG() {
+        if (currentQRStyling && typeof currentQRStyling.download === 'function') {
+            currentQRStyling.download({
+                name: `qrcode-${Date.now()}`,
+                extension: 'svg'
+            });
+            showAlert('Đã tải xuống SVG!', 'success');
+            return;
+        }
+
+        // Fallback: old SVG generation
         const canvas = document.querySelector('#qr-code-display canvas');
         if (!canvas) {
             showAlert('Chưa có mã QR để tải!', 'warning');
             return;
         }
-        
+
         const settings = getQRSettings();
         const size = settings.width;
         const content = currentQRData.content;
-        
-        // Generate QR code data manually for SVG
+
         const qr = qrcode(0, document.getElementById('qr-error-level').value);
         qr.addData(content);
         qr.make();
-        
+
         const moduleCount = qr.getModuleCount();
         const cellSize = size / moduleCount;
-        
+
         let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}">`;
         svg += `<rect width="100%" height="100%" fill="${settings.colorLight}"/>`;
-        
+
         for (let row = 0; row < moduleCount; row++) {
             for (let col = 0; col < moduleCount; col++) {
                 if (qr.isDark(row, col)) {
@@ -214,9 +366,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         }
-        
+
+        if (logoDataUrl) {
+            const logoSize = size * 0.2;
+            const padding = Math.max(4, size * 0.02);
+            const x = (size - logoSize) / 2;
+            const y = (size - logoSize) / 2;
+            svg += `<rect x="${x - padding}" y="${y - padding}" width="${logoSize + padding * 2}" height="${logoSize + padding * 2}" fill="${settings.colorLight}"/>`;
+            svg += `<image x="${x}" y="${y}" width="${logoSize}" height="${logoSize}" href="${logoDataUrl}" preserveAspectRatio="xMidYMid meet"/>`;
+        }
+
         svg += '</svg>';
-        
+
         const blob = new Blob([svg], { type: 'image/svg+xml' });
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
@@ -226,7 +387,7 @@ document.addEventListener('DOMContentLoaded', function() {
         link.click();
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
-        
+
         showAlert('Đã tải xuống SVG!', 'success');
     }
     
@@ -348,21 +509,62 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Add to history
     function addToHistory(qrData) {
-        // Create a copy with canvas data
+        // Create a copy with rendered image data
+        if (currentQRStyling && typeof currentQRStyling.getRawData === 'function') {
+            currentQRStyling.getRawData('png').then(blob => {
+                const reader = new FileReader();
+                reader.onloadend = function() {
+                    const historyItem = {
+                        ...qrData,
+                        imageData: reader.result,
+                        id: Date.now()
+                    };
+
+                    qrHistory.unshift(historyItem);
+                    if (qrHistory.length > 20) {
+                        qrHistory = qrHistory.slice(0, 20);
+                    }
+
+                    saveToLocalStorage('qrHistory', qrHistory);
+                    renderHistory();
+                };
+                reader.readAsDataURL(blob);
+            }).catch(() => {
+                // Fallback to canvas
+                const canvas = document.querySelector('#qr-code-display canvas');
+                if (!canvas) return;
+                const historyItem = {
+                    ...qrData,
+                    imageData: canvas.toDataURL(),
+                    id: Date.now()
+                };
+
+                qrHistory.unshift(historyItem);
+                if (qrHistory.length > 20) {
+                    qrHistory = qrHistory.slice(0, 20);
+                }
+
+                saveToLocalStorage('qrHistory', qrHistory);
+                renderHistory();
+            });
+
+            return;
+        }
+
         const canvas = document.querySelector('#qr-code-display canvas');
         if (!canvas) return;
-        
+
         const historyItem = {
             ...qrData,
             imageData: canvas.toDataURL(),
             id: Date.now()
         };
-        
+
         qrHistory.unshift(historyItem);
         if (qrHistory.length > 20) {
             qrHistory = qrHistory.slice(0, 20);
         }
-        
+
         saveToLocalStorage('qrHistory', qrHistory);
         renderHistory();
     }
@@ -467,6 +669,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('qr-code-display').innerHTML = '';
         document.getElementById('qr-display-container').style.display = 'none';
         currentQRCode = null;
+        currentQRStyling = null;
         currentQRData = null;
     }
     
@@ -495,8 +698,12 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('qr-color').value = '#000000';
         document.getElementById('qr-bgcolor').value = '#ffffff';
         document.getElementById('qr-error-level').value = 'M';
+        if (document.getElementById('qr-pattern')) document.getElementById('qr-pattern').value = 'square';
+        if (document.getElementById('qr-corner-square')) document.getElementById('qr-corner-square').value = 'square';
+        if (document.getElementById('qr-corner-dot')) document.getElementById('qr-corner-dot').value = 'dot';
         document.getElementById('qr-logo').value = '';
         logoImage = null;
+        logoDataUrl = null;
         updateSizeValue();
         
         if (currentQRCode) {
@@ -523,7 +730,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('qr-size').addEventListener('input', updateSizeValue);
     
     // Auto-generate on customization change
-    ['qr-size', 'qr-color', 'qr-bgcolor', 'qr-error-level'].forEach(id => {
+    ['qr-size', 'qr-color', 'qr-bgcolor', 'qr-error-level', 'qr-pattern', 'qr-corner-square', 'qr-corner-dot'].forEach(id => {
         document.getElementById(id).addEventListener('change', function() {
             if (currentQRCode) {
                 generateQRCode();
@@ -551,6 +758,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const img = new Image();
                 img.onload = function() {
                     logoImage = img;
+                    logoDataUrl = event.target.result;
                     if (currentQRCode) {
                         generateQRCode();
                     }
@@ -558,6 +766,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 img.src = event.target.result;
             };
             reader.readAsDataURL(file);
+        } else {
+            logoImage = null;
+            logoDataUrl = null;
         }
     });
     

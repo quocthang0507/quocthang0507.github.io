@@ -362,8 +362,6 @@ document.addEventListener('DOMContentLoaded', function() {
         let canvas = wheelNames.querySelector('canvas');
         if (!canvas) {
             canvas = document.createElement('canvas');
-            canvas.width = 400;
-            canvas.height = 400;
             canvas.style.position = 'absolute';
             canvas.style.top = '0';
             canvas.style.left = '0';
@@ -372,16 +370,27 @@ document.addEventListener('DOMContentLoaded', function() {
             wheelNames.innerHTML = '';
             wheelNames.appendChild(canvas);
         }
-        
+
+        // Match canvas backing store to displayed size (fixes blurry / stretched / clipped wheel)
+        const dpr = window.devicePixelRatio || 1;
+        const rect = canvas.getBoundingClientRect();
+        const cssSize = Math.max(1, Math.floor(Math.min(rect.width, rect.height) || 400));
+
+        // Keep canvas square
+        canvas.width = Math.round(cssSize * dpr);
+        canvas.height = Math.round(cssSize * dpr);
+
         const ctx = canvas.getContext('2d');
-        const centerX = canvas.width / 2;
-        const centerY = canvas.height / 2;
-        const radius = canvas.width / 2;
+        // Clear using device pixels, then draw in CSS pixels
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+        const centerX = cssSize / 2;
+        const centerY = cssSize / 2;
+        const radius = cssSize / 2;
         const anglePerSection = (2 * Math.PI) / names.length;
         const wheelColors = getWheelColors();
-        
-        // Clear canvas
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
         
         // Draw wheel segments
         names.forEach((name, index) => {
@@ -473,8 +482,9 @@ document.addEventListener('DOMContentLoaded', function() {
         
         currentRotation += totalRotation;
         
-        const wheel = document.getElementById('wheel');
-        wheel.style.transform = `rotate(${currentRotation}deg)`;
+        // Rotate only the wheel content, not the center button
+        const wheelNames = document.getElementById('wheel-names');
+        wheelNames.style.transform = `rotate(${currentRotation}deg)`;
         
         // Calculate winner after animation
         setTimeout(() => {
@@ -716,10 +726,21 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('spin-btn').addEventListener('click', spinWheel);
     
     document.getElementById('reset-wheel-btn').addEventListener('click', function() {
-        const wheel = document.getElementById('wheel');
+        const wheelNames = document.getElementById('wheel-names');
         currentRotation = 0;
-        wheel.style.transform = 'rotate(0deg)';
+        wheelNames.style.transform = 'rotate(0deg)';
         document.getElementById('wheel-result').textContent = 'Thêm tên và nhấn "Quay bánh xe"';
+    });
+
+    // Redraw on resize to keep canvas aligned with responsive wheel size
+    let resizeTimer;
+    window.addEventListener('resize', function() {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+            if (!isSpinning) {
+                updateWheelDisplay();
+            }
+        }, 150);
     });
     
     document.getElementById('clear-names-btn').addEventListener('click', function() {
