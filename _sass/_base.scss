@@ -40,6 +40,7 @@ main {
 
 .calendar-table {
   width: 100%;
+  table-layout: fixed;
   border-collapse: separate;
   border-spacing: 2px;
 }
@@ -65,6 +66,26 @@ main {
   position: relative;
   min-height: 60px;
   vertical-align: top;
+}
+
+// Day number and lunar date positioning
+.calendar-table .solar-date {
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.calendar-table .lunar-date {
+  position: absolute;
+  right: 6px;
+  bottom: 4px;
+  font-size: 0.75rem;
+  color: var(--bs-secondary);
+}
+
+// Make calendar day link fill the cell for consistent spacing
+.calendar-day-link {
+  display: block;
+  height: 100%;
 }
 
 // Remove underline from calendar day links
