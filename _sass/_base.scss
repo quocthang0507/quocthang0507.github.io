@@ -86,10 +86,6 @@ main {
 .calendar-day-link {
   display: block;
   height: 100%;
-}
-
-// Remove underline from calendar day links
-.calendar-day-link {
   text-decoration: none !important;
   color: inherit;
 }
