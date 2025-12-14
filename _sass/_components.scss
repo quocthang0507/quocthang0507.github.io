@@ -122,7 +122,7 @@
 // Random wheel
 .wheel-container {
   --wheel-size: clamp(250px, 70vw, 400px);
-  --wheel-pointer-offset: clamp(12px, 4vw, 28px);
+  --wheel-pointer-offset: clamp(0.75rem, 4vw, 1.75rem);
   display: flex;
   justify-content: center;
   align-items: center;

@@ -32,6 +32,8 @@ main {
 
 // Calendar container
 .calendar-container {
+  --calendar-lunar-offset-x: 0.5rem;
+  --calendar-lunar-offset-y: 0.35rem;
   background: var(--bs-light);
   border-radius: var(--md-radius-md);
   padding: 1.5rem;
@@ -53,6 +55,7 @@ main {
   border-radius: var(--md-radius-sm);
   font-weight: 600;
   font-size: 0.9rem;
+  width: calc(100% / 7);
 }
 
 .calendar-table td {
@@ -76,8 +79,8 @@ main {
 
 .calendar-table .lunar-date {
   position: absolute;
-  right: 6px;
-  bottom: 4px;
+  right: var(--calendar-lunar-offset-x);
+  bottom: var(--calendar-lunar-offset-y);
   font-size: 0.75rem;
   color: var(--bs-secondary);
 }
