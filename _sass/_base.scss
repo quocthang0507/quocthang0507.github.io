@@ -32,6 +32,8 @@ main {
 
 // Calendar container
 .calendar-container {
+  --calendar-lunar-offset-x: 0.5rem;
+  --calendar-lunar-offset-y: 0.35rem;
   background: var(--bs-light);
   border-radius: var(--md-radius-md);
   padding: 1.5rem;
@@ -40,6 +42,7 @@ main {
 
 .calendar-table {
   width: 100%;
+  table-layout: fixed;
   border-collapse: separate;
   border-spacing: 2px;
 }
@@ -52,6 +55,7 @@ main {
   border-radius: var(--md-radius-sm);
   font-weight: 600;
   font-size: 0.9rem;
+  width: calc(100% / 7);
 }
 
 .calendar-table td {
@@ -67,8 +71,24 @@ main {
   vertical-align: top;
 }
 
-// Remove underline from calendar day links
+// Day number and lunar date positioning
+.calendar-table .solar-date {
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.calendar-table .lunar-date {
+  position: absolute;
+  right: var(--calendar-lunar-offset-x);
+  bottom: var(--calendar-lunar-offset-y);
+  font-size: 0.75rem;
+  color: var(--bs-secondary);
+}
+
+// Make calendar day link fill the cell for consistent spacing
 .calendar-day-link {
+  display: block;
+  height: 100%;
   text-decoration: none !important;
   color: inherit;
 }
