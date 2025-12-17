@@ -1,7 +1,7 @@
 // Vietnamese Language File
 const vietnameseTranslations = {
     // Navigation
-    "site.title": "Website Portfolio Của Tôi",
+    "site.title": "Website Của Tôi",
     "nav.home": "Trang chủ", 
     "nav.random_number": "Tạo Số Ngẫu Nhiên",
     "nav.random_wheel": "Vòng Quay May Mắn",

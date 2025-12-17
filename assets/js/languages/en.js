@@ -1,7 +1,7 @@
 // English Language File
 const englishTranslations = {
     // Navigation
-    "site.title": "My Portfolio Website",
+    "site.title": "My website",
     "nav.home": "Home",
     "nav.random_number": "Random Number",
     "nav.random_wheel": "Random Wheel",
