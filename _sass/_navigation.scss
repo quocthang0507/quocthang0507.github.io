@@ -11,6 +11,7 @@
 // Ensure dropdown menus appear above page content
 .dropdown-menu {
   z-index: 1031;
+  padding: 0.25rem;
 }
 
 .navbar-brand,
@@ -44,7 +45,6 @@ li.nav-item.dropdown {
 // Compact dropdown menu styling
 .dropdown-menu[aria-labelledby="languageDropdown"] {
   min-width: 11rem;
-  padding: 0.4rem 0.3rem;
 }
 
 .dropdown-menu[aria-labelledby="languageDropdown"] .dropdown-item.active {
@@ -79,8 +79,15 @@ li.nav-item.dropdown {
 .dropdown-item {
   transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
   border-radius: var(--md-radius-sm);
-  margin: 0.1rem 0.25rem;
+  margin: 0;
   padding: 0.4rem 0.75rem;
+}
+
+.dropdown-item.active,
+.dropdown-item:active {
+  background-color: var(--bs-primary);
+  color: #ffffff !important;
+  font-weight: 600;
 }
 
 .dropdown-item:hover,

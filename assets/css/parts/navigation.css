@@ -11,6 +11,7 @@
 /* Ensure dropdown menus appear above page content */
 .dropdown-menu {
     z-index: 1031;
+    padding: 0.25rem;
 }
 
 .navbar-brand,
@@ -45,10 +46,26 @@ li.nav-item.dropdown {
 /* Ensure language menu has enough width and items fit edge-to-edge */
 .nav-item.dropdown .dropdown-menu[aria-labelledby="languageDropdown"] {
     min-width: 11rem;
-    padding: 0.25rem;
 }
 
 .nav-item.dropdown .dropdown-menu[aria-labelledby="languageDropdown"] .dropdown-item {
     margin: 0; /* override global margins so item fits the menu width */
     border-radius: var(--md-radius-sm);
+}
+
+/* Ensure dropdown items fit the menu width */
+.dropdown-item {
+    transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+    border-radius: var(--md-radius-sm);
+    margin: 0;
+    padding: 0.4rem 0.75rem;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus,
+.dropdown-item.active,
+.dropdown-item:active {
+    background-color: var(--bs-primary);
+    color: #ffffff !important;
+    font-weight: 600;
 }

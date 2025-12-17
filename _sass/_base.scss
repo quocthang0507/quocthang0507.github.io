@@ -71,24 +71,27 @@ main {
   vertical-align: top;
 }
 
-// Day number and lunar date positioning
+// Day number and lunar date layout
 .calendar-table .solar-date {
   font-weight: 700;
   font-size: 1rem;
+  line-height: 1.1;
 }
 
 .calendar-table .lunar-date {
-  position: absolute;
-  right: var(--calendar-lunar-offset-x);
-  bottom: var(--calendar-lunar-offset-y);
+  display: block;
+  margin-top: auto;
   font-size: 0.75rem;
+  line-height: 1;
   color: var(--bs-secondary);
 }
 
-// Make calendar day link fill the cell for consistent spacing
+// Make calendar day link provide vertical layout (solar top, lunar bottom)
 .calendar-day-link {
-  display: block;
-  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 60px;
   text-decoration: none !important;
   color: inherit;
 }

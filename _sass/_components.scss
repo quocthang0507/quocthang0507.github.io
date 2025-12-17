@@ -82,8 +82,20 @@
 }
 
 // Random number result sizing
+.result-display#result-display {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
 .result-display.result-single {
   font-size: 3rem;
+}
+
+.result-display#result-display.result-single {
+  font-size: 4rem;
+  line-height: 1.1;
 }
 
 .result-display.result-multi {
@@ -112,6 +124,10 @@
 .result-display .multi-small .generated-number { font-size: 0.95rem; padding: 0.45rem 0.65rem; }
 
 @media (max-width: 768px) {
+  .result-display#result-display.result-single {
+    font-size: 3rem;
+  }
+
   .result-display .multi-xl .generated-number { font-size: 1.9rem; }
   .result-display .multi-lg .generated-number { font-size: 1.5rem; }
   .result-display .multi-md .generated-number { font-size: 1.2rem; }
