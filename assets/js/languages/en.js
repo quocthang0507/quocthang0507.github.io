@@ -15,10 +15,18 @@ const englishTranslations = {
     "nav.date_calculator": "Date Calculator",
     "nav.case_converter": "Case Converter",
     "nav.regex_tester": "Regex Tester",
+    "nav.markdown_preview": "Markdown Preview",
     "nav.tools": "Tools",
     "nav.cat.random": "Random",
     "nav.cat.time": "Time",
     "nav.cat.utilities": "Utilities",
+
+    // Markdown Preview
+    "md.title": "Markdown Preview",
+    "md.input": "Markdown input",
+    "md.preview": "Preview",
+    "md.copy_html": "Copy HTML",
+    "md.placeholder": "Write Markdown here...",
 
     // Case Converter
     "case.title": "Case Converter",

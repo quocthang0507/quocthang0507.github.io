@@ -15,10 +15,18 @@ const chineseTranslations = {
     "nav.date_calculator": "日期计算器",
     "nav.case_converter": "大小写转换",
     "nav.regex_tester": "正则测试器",
+    "nav.markdown_preview": "Markdown 预览",
     "nav.tools": "工具",
     "nav.cat.random": "随机",
     "nav.cat.time": "时间",
     "nav.cat.utilities": "实用工具",
+
+    // Markdown Preview
+    "md.title": "Markdown 预览",
+    "md.input": "Markdown 输入",
+    "md.preview": "预览",
+    "md.copy_html": "复制 HTML",
+    "md.placeholder": "在此编写 Markdown...",
 
     // Case Converter
     "case.title": "大小写转换",

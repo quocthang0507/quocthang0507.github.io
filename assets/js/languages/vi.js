@@ -15,10 +15,18 @@ const vietnameseTranslations = {
     "nav.date_calculator": "Tính Toán Ngày Tháng",
     "nav.case_converter": "Chuyển đổi kiểu chữ",
     "nav.regex_tester": "Kiểm thử Regex",
+    "nav.markdown_preview": "Xem trước Markdown",
     "nav.tools": "Công cụ",
     "nav.cat.random": "Ngẫu nhiên",
     "nav.cat.time": "Thời gian",
     "nav.cat.utilities": "Tiện ích",
+
+    // Markdown Preview
+    "md.title": "Xem trước Markdown",
+    "md.input": "Markdown đầu vào",
+    "md.preview": "Xem trước",
+    "md.copy_html": "Sao chép HTML",
+    "md.placeholder": "Viết Markdown ở đây...",
 
     // Case Converter
     "case.title": "Chuyển đổi kiểu chữ",

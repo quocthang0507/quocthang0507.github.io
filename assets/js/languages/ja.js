@@ -15,10 +15,18 @@ const japaneseTranslations = {
     "nav.date_calculator": "日付計算機",
     "nav.case_converter": "ケース変換",
     "nav.regex_tester": "正規表現テスター",
+    "nav.markdown_preview": "Markdown プレビュー",
         "nav.tools": "ツール",
         "nav.cat.random": "ランダム",
         "nav.cat.time": "時間",
         "nav.cat.utilities": "ユーティリティ",
+
+    // Markdown Preview
+    "md.title": "Markdown プレビュー",
+    "md.input": "Markdown 入力",
+    "md.preview": "プレビュー",
+    "md.copy_html": "HTML をコピー",
+    "md.placeholder": "ここに Markdown を入力...",
 
     // Case Converter
     "case.title": "ケース変換",

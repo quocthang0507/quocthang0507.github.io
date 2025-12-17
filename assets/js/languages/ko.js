@@ -45,10 +45,18 @@ const koreanTranslations = {
     "nav.date_calculator": "날짜 계산기",
     "nav.case_converter": "케이스 변환기",
     "nav.regex_tester": "정규식 테스터",
+    "nav.markdown_preview": "Markdown 미리보기",
     "nav.tools": "도구",
     "nav.cat.random": "무작위",
     "nav.cat.time": "시간",
     "nav.cat.utilities": "유틸리티",
+
+    // Markdown Preview
+    "md.title": "Markdown 미리보기",
+    "md.input": "Markdown 입력",
+    "md.preview": "미리보기",
+    "md.copy_html": "HTML 복사",
+    "md.placeholder": "여기에 Markdown을 작성하세요...",
 
     // Case Converter
     "case.title": "케이스 변환기",

@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         try {
                             const lunar = window.LunarCalendar.solarToLunar(date, currentMonth + 1, currentYear);
                             if (lunar) {
-                                lunarInfo = `<small class="lunar-date">${lunar.day}/${lunar.month}${lunar.isLeap ? '*' : ''}</small>`;
+                                lunarInfo = `<small class="lunar-date mt-auto">${lunar.day}/${lunar.month}${lunar.isLeap ? '*' : ''}</small>`;
                             }
                         } catch (e) {
                             // Fallback if lunar calculation fails
@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                     
                     calendarHTML += `<td class="${className} calendar-day" data-date="${date}" data-month="${currentMonth + 1}" data-year="${currentYear}">
-                        <a href="#" class="calendar-day-link d-block position-relative p-1" aria-label="${date}/${currentMonth + 1}/${currentYear}">
+                        <a href="#" class="calendar-day-link d-flex flex-column align-items-center p-1" aria-label="${date}/${currentMonth + 1}/${currentYear}">
                             <div class="solar-date">${date}</div>
                             ${lunarInfo}
                         </a>

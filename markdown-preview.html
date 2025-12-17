@@ -1,0 +1,69 @@
+---
+layout: default
+title: "Markdown Preview"
+description: "Preview Markdown as rendered HTML and copy the generated HTML."
+keywords: "markdown preview, markdown to html, copy html, markdown renderer"
+custom_js: ['markdown-preview.js']
+permalink: /markdown-preview/
+sitemap:
+  priority: 0.7
+  changefreq: monthly
+  lastmod: 2025-12-17
+---
+
+<meta name="i18n-title" content="md.title">
+
+<div class="row">
+  <div class="col-12">
+    <div id="alert-container"></div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-lg-10 mx-auto">
+    <div class="card mb-4">
+      <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">
+          <i class="fas fa-file-lines"></i>
+          <span data-i18n="md.title">Markdown Preview</span>
+        </h5>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-12 col-lg-6">
+            <label for="md-input" class="form-label" data-i18n="md.input">Markdown input</label>
+            <textarea
+              id="md-input"
+              class="form-control font-monospace"
+              rows="14"
+              placeholder="# Hello\n\nWrite *Markdown* here..."
+              data-i18n="md.placeholder"
+            ></textarea>
+          </div>
+
+          <div class="col-12 col-lg-6">
+            <div class="d-flex justify-content-between align-items-center">
+              <label for="md-preview" class="form-label mb-0" data-i18n="md.preview">Preview</label>
+              <button id="copy-html" class="btn btn-outline-primary btn-sm" type="button">
+                <i class="fas fa-copy"></i> <span data-i18n="md.copy_html">Copy HTML</span>
+              </button>
+            </div>
+            <div id="md-preview" class="border rounded p-3" aria-label="Markdown preview"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Lightweight renderer + sanitizer (allowed by CSP: cdnjs) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.11/purify.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<style>
+  #md-preview {
+    min-height: 320px;
+    overflow: auto;
+    background: var(--bs-body-bg);
+  }
+</style>

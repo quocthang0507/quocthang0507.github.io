@@ -82,6 +82,11 @@
                             </a>
                         </li>
                         <li>
+                            <a class="dropdown-item {% if page.url == '/markdown-preview/' %}active{% endif %}" href="{{ '/markdown-preview/' | relative_url }}">
+                                <span data-i18n="nav.markdown_preview">Markdown Preview</span>
+                            </a>
+                        </li>
+                        <li>
                             <a class="dropdown-item {% if page.url == '/color-picker/' %}active{% endif %}" href="{{ '/color-picker/' | relative_url }}">
                                 <span data-i18n="nav.color_picker">Color Picker</span>
                             </a>

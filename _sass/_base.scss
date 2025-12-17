@@ -113,6 +113,12 @@ main {
   font-weight: 700;
 }
 
+// Ensure lunar date remains readable on highlighted (today) cells
+.calendar-table .today .lunar-date {
+  color: currentColor;
+  opacity: 0.85;
+}
+
 .calendar-table .other-month {
   color: var(--bs-secondary);
   background: var(--bs-light);
