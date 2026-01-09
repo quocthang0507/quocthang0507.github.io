@@ -24,12 +24,20 @@
 .card-header.bg-success,
 .card-header.bg-info,
 .card-header.bg-dark,
-.card-header.bg-danger,
-.card-header.bg-warning {
+.card-header.bg-danger {
   color: white !important;
   
   h1, h2, h3, h4, h5, h6, i, span {
     color: white !important;
+  }
+}
+
+// Warning background uses dark text for better contrast
+.card-header.bg-warning {
+  color: #000 !important;
+  
+  h1, h2, h3, h4, h5, h6, i, span {
+    color: #000 !important;
   }
 }
 

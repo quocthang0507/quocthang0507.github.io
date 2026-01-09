@@ -18,13 +18,12 @@
     padding: 1rem 1.5rem;
     font-weight: 600;
 }
-/* Ensure card headers with Bootstrap color classes have white text */
+/* Ensure card headers with Bootstrap color classes have appropriate text color */
 .card-header.bg-primary,
 .card-header.bg-success,
 .card-header.bg-info,
 .card-header.bg-dark,
-.card-header.bg-danger,
-.card-header.bg-warning {
+.card-header.bg-danger {
     color: white !important;
 }
 
@@ -42,11 +41,19 @@
 .card-header.bg-dark i, .card-header.bg-dark span,
 .card-header.bg-danger h1, .card-header.bg-danger h2, .card-header.bg-danger h3,
 .card-header.bg-danger h4, .card-header.bg-danger h5, .card-header.bg-danger h6,
-.card-header.bg-danger i, .card-header.bg-danger span,
+.card-header.bg-danger i, .card-header.bg-danger span {
+    color: white !important;
+}
+
+/* Warning background uses dark text for better contrast */
+.card-header.bg-warning {
+    color: #000 !important;
+}
+
 .card-header.bg-warning h1, .card-header.bg-warning h2, .card-header.bg-warning h3,
 .card-header.bg-warning h4, .card-header.bg-warning h5, .card-header.bg-warning h6,
 .card-header.bg-warning i, .card-header.bg-warning span {
-    color: white !important;
+    color: #000 !important;
 }
 
 
