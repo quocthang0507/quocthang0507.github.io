@@ -18,6 +18,45 @@
     padding: 1rem 1.5rem;
     font-weight: 600;
 }
+/* Ensure card headers with Bootstrap color classes have appropriate text color */
+.card-header.bg-primary,
+.card-header.bg-success,
+.card-header.bg-info,
+.card-header.bg-dark,
+.card-header.bg-danger {
+    color: white !important;
+}
+
+.card-header.bg-primary h1, .card-header.bg-primary h2, .card-header.bg-primary h3,
+.card-header.bg-primary h4, .card-header.bg-primary h5, .card-header.bg-primary h6,
+.card-header.bg-primary i, .card-header.bg-primary span,
+.card-header.bg-success h1, .card-header.bg-success h2, .card-header.bg-success h3,
+.card-header.bg-success h4, .card-header.bg-success h5, .card-header.bg-success h6,
+.card-header.bg-success i, .card-header.bg-success span,
+.card-header.bg-info h1, .card-header.bg-info h2, .card-header.bg-info h3,
+.card-header.bg-info h4, .card-header.bg-info h5, .card-header.bg-info h6,
+.card-header.bg-info i, .card-header.bg-info span,
+.card-header.bg-dark h1, .card-header.bg-dark h2, .card-header.bg-dark h3,
+.card-header.bg-dark h4, .card-header.bg-dark h5, .card-header.bg-dark h6,
+.card-header.bg-dark i, .card-header.bg-dark span,
+.card-header.bg-danger h1, .card-header.bg-danger h2, .card-header.bg-danger h3,
+.card-header.bg-danger h4, .card-header.bg-danger h5, .card-header.bg-danger h6,
+.card-header.bg-danger i, .card-header.bg-danger span {
+    color: white !important;
+}
+
+/* Warning background uses dark text for better contrast */
+.card-header.bg-warning {
+    color: #000 !important;
+}
+
+.card-header.bg-warning h1, .card-header.bg-warning h2, .card-header.bg-warning h3,
+.card-header.bg-warning h4, .card-header.bg-warning h5, .card-header.bg-warning h6,
+.card-header.bg-warning i, .card-header.bg-warning span {
+    color: #000 !important;
+}
+
+
 
 .card-body {
     padding: 1.5rem;
@@ -46,37 +85,4 @@
     border: none;
     font-weight: 500;
     box-shadow: var(--md-elevation-1);
-}
-
-/* Table improvements */
-.table {
-    background: var(--bs-body-bg);
-    border-radius: var(--md-radius-lg);
-    overflow: hidden;
-    box-shadow: var(--md-elevation-1);
-}
-
-.table th {
-    background: var(--bs-primary);
-    color: white;
-    font-weight: 600;
-    border: none;
-}
-
-.table td {
-    border-color: var(--bs-border-color);
-}
-
-/* List group improvements */
-.list-group-item {
-    transition: all var(--transition-normal);
-}
-
-.list-group-item:hover {
-    background: var(--bs-primary-bg-subtle);
-}
-
-/* Footer improvements */
-.bg-light {
-    border-top: 1px solid var(--bs-border-color);
 }
