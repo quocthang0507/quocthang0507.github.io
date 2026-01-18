@@ -41,26 +41,32 @@ document.addEventListener('DOMContentLoaded', function() {
 // Utility functions
 function showAlert(message, type = 'info') {
     const alertContainer = document.getElementById('alert-container');
-    if (alertContainer) {
-        const alertElement = document.createElement('div');
-        alertElement.className = `alert alert-${type} alert-dismissible fade show`;
-        alertElement.innerHTML = `
-            ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `;
-        alertContainer.appendChild(alertElement);
-        
-        // Auto-dismiss after 5 seconds
-        setTimeout(() => {
-            if (alertElement.parentNode) {
-                alertElement.remove();
-            }
-        }, 5000);
+    if (!alertContainer) {
+        return;
     }
+    const alertElement = document.createElement('div');
+    alertElement.className = `alert alert-${type} alert-dismissible fade show`;
+    const messageSpan = document.createElement('span');
+    messageSpan.textContent = message;
+    const closeButton = document.createElement('button');
+    closeButton.type = 'button';
+    closeButton.className = 'btn-close';
+    closeButton.setAttribute('data-bs-dismiss', 'alert');
+    closeButton.setAttribute('aria-label', 'Close');
+    alertElement.appendChild(messageSpan);
+    alertElement.appendChild(closeButton);
+    alertContainer.appendChild(alertElement);
+    
+    // Auto-dismiss after 5 seconds
+    setTimeout(() => {
+        if (alertElement.parentNode) {
+            alertElement.remove();
+        }
+    }, 5000);
 }
 
 function copyToClipboard(text) {
-    navigator.clipboard.writeText(text).then(() => {
+    const onSuccess = () => {
         showAlert('Đã sao chép vào clipboard!', 'success');
         // Track copy to clipboard action
         if (typeof gtag !== 'undefined') {
@@ -69,7 +75,9 @@ function copyToClipboard(text) {
                 event_label: 'clipboard_copy'
             });
         }
-    }).catch(() => {
+        return true;
+    };
+    const onError = () => {
         showAlert('Không thể sao chép. Vui lòng thử lại.', 'danger');
         // Track copy failure
         if (typeof gtag !== 'undefined') {
@@ -78,7 +86,34 @@ function copyToClipboard(text) {
                 event_label: 'clipboard_copy_failed'
             });
         }
-    });
+        return false;
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        return navigator.clipboard.writeText(text).then(onSuccess).catch(onError);
+    }
+    const fallbackResult = fallbackCopyToClipboard(text);
+    return Promise.resolve(fallbackResult ? onSuccess() : onError());
+}
+
+function fallbackCopyToClipboard(text) {
+    if (!document.body) {
+        return false;
+    }
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.setAttribute('readonly', '');
+    textarea.style.position = 'absolute';
+    textarea.style.left = '-9999px';
+    document.body.appendChild(textarea);
+    textarea.select();
+    let copied = false;
+    try {
+        copied = typeof document.execCommand === 'function' && document.execCommand('copy');
+    } catch (e) {
+        copied = false;
+    }
+    document.body.removeChild(textarea);
+    return copied;
 }
 
 function saveToLocalStorage(key, data) {
@@ -139,14 +174,22 @@ function initializeDarkMode() {
     }
     
     // Listen for system theme changes only if user hasn't set a preference
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
-        let hasPref = false; try { hasPref = !!localStorage.getItem('theme'); } catch (e2) { hasPref = false; }
-        if (!hasPref) {
-            const theme = e.matches ? 'dark' : 'light';
-            document.documentElement.setAttribute('data-theme', theme);
-            updateDarkModeIcon(theme);
+    const mediaQuery = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+    if (mediaQuery) {
+        const handleThemeChange = function(e) {
+            let hasPref = false; try { hasPref = !!localStorage.getItem('theme'); } catch (e2) { hasPref = false; }
+            if (!hasPref) {
+                const theme = e.matches ? 'dark' : 'light';
+                document.documentElement.setAttribute('data-theme', theme);
+                updateDarkModeIcon(theme);
+            }
+        };
+        if (mediaQuery.addEventListener) {
+            mediaQuery.addEventListener('change', handleThemeChange);
+        } else if (mediaQuery.addListener) {
+            mediaQuery.addListener(handleThemeChange);
         }
-    });
+    }
 }
 
 function updateDarkModeIcon(theme) {
@@ -172,7 +215,7 @@ function initializeCustomThemeToggle() {
         const btn = e.target.closest('[data-action="toggle-custom-theme"]');
         if (btn) {
             const enabled = document.body.classList.toggle('custom-theme');
-            localStorage.setItem('customTheme', enabled ? 'on' : 'off');
+            try { localStorage.setItem('customTheme', enabled ? 'on' : 'off'); } catch (e2) {}
             announceThemeChange(enabled);
             if (typeof gtag !== 'undefined') {
                 gtag('event', 'custom_theme_toggle', { event_category: 'user_interface', enabled });
@@ -226,3 +269,19 @@ function openQuickSettingsPanel() {
 }
 
 // Footer theme badge and related listeners removed
+
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        showAlert,
+        copyToClipboard,
+        fallbackCopyToClipboard,
+        saveToLocalStorage,
+        loadFromLocalStorage,
+        initializeDarkMode,
+        updateDarkModeIcon,
+        initializeCustomThemeToggle,
+        announceThemeChange,
+        injectSettingsFloatingButton,
+        openQuickSettingsPanel
+    };
+}
