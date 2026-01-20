@@ -25,7 +25,7 @@
   --bs-focus-color: #0F62FE;
 
   /* Bootstrap subtle tokens */
-  --bs-primary-bg-subtle: rgba(var(--bs-primary-rgb), 0.50);
+  --bs-primary-bg-subtle: rgba(var(--bs-primary-rgb), 0.15);
   --bs-primary-border-subtle: rgba(51, 78, 104, 0.30);
   --bs-primary-text-emphasis: #102A43;
 

@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Auto-render on input with debounce
     latexInput.addEventListener('input', function() {
         clearTimeout(renderTimeout);
-        renderTimeout = setTimeout(renderLatex, RENDER_DEBOUNCE_MS);
+        renderTimeout = setTimeout(renderLatexAndSaveHistory, RENDER_DEBOUNCE_MS);
     });
     
     // Render button
@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             // Wait for MathJax to finish rendering
             if (typeof MathJax !== 'undefined' && MathJax.typesetPromise) {
-                await MathJax.typesetPromise();
+                await MathJax.typesetPromise([output]);
             }
             
             // Use html2canvas to capture the preview
@@ -245,15 +245,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Save to history on successful render
-    const originalRender = renderLatex;
-    renderLatex = function() {
-        originalRender();
+    // Render LaTeX and save to history
+    function renderLatexAndSaveHistory() {
+        renderLatex();
         const latex = latexInput.value.trim();
         if (latex) {
             setTimeout(() => addToHistory(latex), HISTORY_SAVE_DELAY_MS);
         }
-    };
+    }
     
     // Keyboard shortcuts
     latexInput.addEventListener('keydown', function(e) {
