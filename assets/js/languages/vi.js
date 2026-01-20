@@ -103,6 +103,7 @@ const vietnameseTranslations = {
     "wheel.no_data": "Chưa có dữ liệu",
     "wheel.no_names": "Chưa có tên nào",
     "wheel.winner": "Người thắng",
+    "wheel.color_theme": "Chủ đề màu sắc",
     "wheel.spinning": "Đang quay...",
     
     // Random Number
@@ -456,6 +457,10 @@ const vietnameseTranslations = {
     "qr.batch_results": "Kết quả tạo hàng loạt",
     "qr.download_all": "Tải tất cả (ZIP)",
     "qr.close": "Đóng",
+    "qr.pattern": "Kiểu chấm",
+    "qr.pattern_hint": "Chọn kiểu hiển thị điểm của mã QR",
+    "qr.corner_square": "Góc (ô vuông)",
+    "qr.corner_dot": "Góc (chấm)",
     
     // Date Calculator
     "date_calc.title": "Tính Toán Ngày Tháng",

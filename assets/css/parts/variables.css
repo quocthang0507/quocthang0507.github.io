@@ -1,10 +1,10 @@
 /* Theme variables (Material-inspired) */
 :root {
-  /* Palette */
-  --bs-primary: #6750A4;
-  --bs-primary-rgb: 103, 80, 164;
-  --bs-secondary: #625B71;
-  --bs-secondary-rgb: 98, 91, 113;
+  /* Palette - Cloud white theme */
+  --bs-primary: #F0F4F8;
+  --bs-primary-rgb: 240, 244, 248;
+  --bs-secondary: #334E68;
+  --bs-secondary-rgb: 51, 78, 104;
   --bs-success: #2E7D32;
   --bs-success-rgb: 46, 125, 50;
   --bs-info: #0288D1;
@@ -17,16 +17,16 @@
   --bs-dark: #1C1B1F;
 
   /* Surfaces & text */
-  --bs-body-bg: #FFFBFE;
-  --bs-body-color: #1C1B1F;
-  --bs-border-color: #E7E0EC;
-  --bs-link-color: var(--bs-primary);
-  --bs-link-hover-color: #4F378B;
+  --bs-body-bg: #FFFFFF;
+  --bs-body-color: #243B53;
+  --bs-border-color: #D9E2EC;
+  --bs-link-color: #0F62FE;
+  --bs-link-hover-color: #0043CE;
 
   /* Bootstrap subtle tokens */
-  --bs-primary-bg-subtle: rgba(var(--bs-primary-rgb), 0.10);
-  --bs-primary-border-subtle: rgba(var(--bs-primary-rgb), 0.30);
-  --bs-primary-text-emphasis: #4F378B;
+  --bs-primary-bg-subtle: rgba(var(--bs-primary-rgb), 0.50);
+  --bs-primary-border-subtle: rgba(51, 78, 104, 0.30);
+  --bs-primary-text-emphasis: #102A43;
 
   /* Shape + elevation */
   --md-radius-sm: 0.75rem;
