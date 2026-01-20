@@ -1,5 +1,10 @@
 // LaTeX Editor functionality
 document.addEventListener('DOMContentLoaded', function() {
+    // Configuration constants
+    const RENDER_DEBOUNCE_MS = 500; // Debounce delay for auto-render
+    const HISTORY_SAVE_DELAY_MS = 1000; // Delay before saving to history
+    const MAX_HISTORY_ITEMS = 20; // Maximum number of history items
+    
     let latexHistory = loadFromLocalStorage('latexHistory') || [];
     const latexInput = document.getElementById('latex-input');
     const latexOutput = document.getElementById('latex-output');
@@ -12,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Auto-render on input with debounce
     latexInput.addEventListener('input', function() {
         clearTimeout(renderTimeout);
-        renderTimeout = setTimeout(renderLatex, 500);
+        renderTimeout = setTimeout(renderLatex, RENDER_DEBOUNCE_MS);
     });
     
     // Render button
@@ -165,9 +170,9 @@ document.addEventListener('DOMContentLoaded', function() {
         
         latexHistory.unshift(historyItem);
         
-        // Keep only last 20 items
-        if (latexHistory.length > 20) {
-            latexHistory = latexHistory.slice(0, 20);
+        // Keep only last N items
+        if (latexHistory.length > MAX_HISTORY_ITEMS) {
+            latexHistory = latexHistory.slice(0, MAX_HISTORY_ITEMS);
         }
         
         saveToLocalStorage('latexHistory', latexHistory);
@@ -246,7 +251,7 @@ document.addEventListener('DOMContentLoaded', function() {
         originalRender();
         const latex = latexInput.value.trim();
         if (latex) {
-            setTimeout(() => addToHistory(latex), 1000);
+            setTimeout(() => addToHistory(latex), HISTORY_SAVE_DELAY_MS);
         }
     };
     

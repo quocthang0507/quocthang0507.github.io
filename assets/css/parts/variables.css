@@ -22,6 +22,7 @@
   --bs-border-color: #D9E2EC;
   --bs-link-color: #0F62FE;
   --bs-link-hover-color: #0043CE;
+  --bs-focus-color: #0F62FE;
 
   /* Bootstrap subtle tokens */
   --bs-primary-bg-subtle: rgba(var(--bs-primary-rgb), 0.50);

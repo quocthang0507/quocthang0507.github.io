@@ -1,5 +1,10 @@
 // QR Code Generator functionality
 document.addEventListener('DOMContentLoaded', function() {
+    // Configuration constants
+    const MAX_LOGO_SIZE = 200; // Maximum logo dimensions in pixels
+    const PREVIEW_MAX_SIZE = 256; // Preview QR size for fast rendering
+    const DOWNLOAD_SIZE = 512; // High-quality download size
+    
     let qrHistory = loadFromLocalStorage('qrHistory') || [];
     let currentQRCode = null;
     let currentQRData = null;
@@ -12,10 +17,10 @@ document.addEventListener('DOMContentLoaded', function() {
     updateSizeValue();
     
     // Get QR settings
-    function getQRSettings(forPreview = true) {
+    function getQRSettings(usePreviewSize = false) {
         const userSize = parseInt(document.getElementById('qr-size').value);
-        // Use smaller size for preview (max 256px) for fast rendering
-        const size = forPreview ? Math.min(userSize, 256) : userSize;
+        // Use preview size when explicitly requested for preview rendering
+        const size = usePreviewSize ? Math.min(userSize, PREVIEW_MAX_SIZE) : userSize;
         
         return {
             width: size,
@@ -116,7 +121,7 @@ document.addEventListener('DOMContentLoaded', function() {
         container.innerHTML = '';
         
         try {
-            const settings = getQRSettings();
+            const settings = getQRSettings(true); // Use preview size for display
 
             const styleSettings = getQRStyleSettings();
             
@@ -305,15 +310,14 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Generate high-quality version (512px) for download
-        const highQualitySize = 512;
-        const settings = getQRSettings();
+        // Generate high-quality version for download
+        const settings = getQRSettings(false); // Use full size, not preview
         const styleSettings = getQRStyleSettings();
         
         if (typeof QRCodeStyling !== 'undefined') {
             const qrCode = new QRCodeStyling({
-                width: highQualitySize,
-                height: highQualitySize,
+                width: DOWNLOAD_SIZE,
+                height: DOWNLOAD_SIZE,
                 type: 'canvas',
                 data: currentQRData.content,
                 qrOptions: {
@@ -804,7 +808,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 const img = new Image();
                 img.onload = function() {
                     // Resize logo to fixed maximum dimensions
-                    const maxLogoSize = 200; // Fixed max size for logo
                     const canvas = document.createElement('canvas');
                     const ctx = canvas.getContext('2d');
                     
@@ -812,8 +815,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     let height = img.height;
                     
                     // Scale down if larger than max
-                    if (width > maxLogoSize || height > maxLogoSize) {
-                        const ratio = Math.min(maxLogoSize / width, maxLogoSize / height);
+                    if (width > MAX_LOGO_SIZE || height > MAX_LOGO_SIZE) {
+                        const ratio = Math.min(MAX_LOGO_SIZE / width, MAX_LOGO_SIZE / height);
                         width = Math.round(width * ratio);
                         height = Math.round(height * ratio);
                     }

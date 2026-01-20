@@ -20,7 +20,7 @@
 }
 /* Ensure card headers with Bootstrap color classes have appropriate text color */
 .card-header.bg-primary {
-    background-color: #0F62FE !important;
+    background-color: var(--bs-focus-color) !important;
     color: white !important;
 }
 
@@ -76,7 +76,7 @@
 }
 
 .form-control:focus {
-    border-color: #0F62FE;
+    border-color: var(--bs-focus-color);
     box-shadow: 0 0 0 0.25rem rgba(15, 98, 254, 0.25);
     outline: none;
 }
