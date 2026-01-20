@@ -1,0 +1,359 @@
+---
+layout: default
+title: "Trình soạn thảo LaTeX"
+description: "Công cụ soạn thảo và xem trước LaTeX trực tuyến với các ký hiệu toán học cơ bản, menu đầy đủ, lưu hình ảnh và sao chép mã."
+keywords: "LaTeX editor, math editor, equation editor, soạn thảo LaTeX, công thức toán học, MathJax"
+custom_js: ['latex-editor.js']
+permalink: /latex-editor/
+sitemap:
+  priority: 0.8
+  changefreq: weekly
+  lastmod: 2026-01-20
+---
+
+<!-- MathJax for LaTeX rendering -->
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<!-- html2canvas for saving as image -->
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+<div class="row">
+    <div class="col-12">
+        <div id="alert-container"></div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8 mb-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-square-root-alt"></i> <span data-i18n="latex.title">Trình soạn thảo LaTeX</span></h5>
+            </div>
+            <div class="card-body">
+                <!-- LaTeX Input -->
+                <div class="mb-3">
+                    <label for="latex-input" class="form-label" data-i18n="latex.input_label">Mã LaTeX</label>
+                    <textarea id="latex-input" class="form-control font-monospace" rows="6" placeholder="\frac{a}{b} + \sqrt{c}">\frac{-b \pm \sqrt{b^2 - 4ac}}{2a}</textarea>
+                    <small class="text-muted" data-i18n="latex.input_hint">Nhập công thức LaTeX ở đây. Không cần $ hoặc $$.</small>
+                </div>
+
+                <!-- Quick Insert Buttons -->
+                <div class="mb-3">
+                    <label class="form-label" data-i18n="latex.quick_symbols">Ký hiệu cơ bản:</label>
+                    <div class="d-flex flex-wrap gap-2" id="quick-symbols">
+                        <button class="btn btn-sm btn-outline-secondary insert-symbol" data-symbol="\frac{a}{b}">
+                            <span class="latex-preview">\(\frac{a}{b}\)</span>
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary insert-symbol" data-symbol="\sqrt{x}">
+                            <span class="latex-preview">\(\sqrt{x}\)</span>
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary insert-symbol" data-symbol="x^{2}">
+                            <span class="latex-preview">\(x^{2}\)</span>
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary insert-symbol" data-symbol="x_{i}">
+                            <span class="latex-preview">\(x_{i}\)</span>
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary insert-symbol" data-symbol="\sum_{i=1}^{n}">
+                            <span class="latex-preview">\(\sum_{i=1}^{n}\)</span>
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary insert-symbol" data-symbol="\int_{a}^{b}">
+                            <span class="latex-preview">\(\int_{a}^{b}\)</span>
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary insert-symbol" data-symbol="\lim_{x \to \infty}">
+                            <span class="latex-preview">\(\lim_{x \to \infty}\)</span>
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary insert-symbol" data-symbol="\alpha">
+                            <span class="latex-preview">\(\alpha\)</span>
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary insert-symbol" data-symbol="\beta">
+                            <span class="latex-preview">\(\beta\)</span>
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary insert-symbol" data-symbol="\pi">
+                            <span class="latex-preview">\(\pi\)</span>
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary insert-symbol" data-symbol="\theta">
+                            <span class="latex-preview">\(\theta\)</span>
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary insert-symbol" data-symbol="\infty">
+                            <span class="latex-preview">\(\infty\)</span>
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary insert-symbol" data-symbol="\leq">
+                            <span class="latex-preview">\(\leq\)</span>
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary insert-symbol" data-symbol="\geq">
+                            <span class="latex-preview">\(\geq\)</span>
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary insert-symbol" data-symbol="\neq">
+                            <span class="latex-preview">\(\neq\)</span>
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary insert-symbol" data-symbol="\pm">
+                            <span class="latex-preview">\(\pm\)</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Preview -->
+                <div class="mb-3">
+                    <label class="form-label" data-i18n="latex.preview_label">Xem trước:</label>
+                    <div id="latex-preview" class="latex-preview-box p-4 bg-white border rounded text-center">
+                        <div id="latex-output" class="fs-3"></div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="text-center">
+                    <button id="render-btn" class="btn btn-primary">
+                        <i class="fas fa-eye"></i> <span data-i18n="latex.render">Xem trước</span>
+                    </button>
+                    <button id="copy-latex-btn" class="btn btn-success">
+                        <i class="fas fa-copy"></i> <span data-i18n="latex.copy_code">Sao chép mã LaTeX</span>
+                    </button>
+                    <button id="save-image-btn" class="btn btn-info">
+                        <i class="fas fa-download"></i> <span data-i18n="latex.save_image">Lưu hình ảnh</span>
+                    </button>
+                    <button id="clear-btn" class="btn btn-outline-secondary">
+                        <i class="fas fa-eraser"></i> <span data-i18n="latex.clear">Xóa</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Symbol Reference Panel -->
+    <div class="col-lg-4 mb-4">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h6 class="mb-0"><i class="fas fa-book"></i> <span data-i18n="latex.symbol_reference">Tham khảo ký hiệu</span></h6>
+            </div>
+            <div class="card-body" style="max-height: 600px; overflow-y: auto;">
+                <!-- Greek Letters -->
+                <div class="mb-3">
+                    <h6 class="text-primary" data-i18n="latex.greek_letters">Chữ cái Hy Lạp</h6>
+                    <div class="symbol-grid">
+                        <button class="symbol-btn insert-symbol" data-symbol="\alpha" title="\alpha">\(\alpha\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\beta" title="\beta">\(\beta\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\gamma" title="\gamma">\(\gamma\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\delta" title="\delta">\(\delta\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\epsilon" title="\epsilon">\(\epsilon\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\theta" title="\theta">\(\theta\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\lambda" title="\lambda">\(\lambda\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\mu" title="\mu">\(\mu\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\pi" title="\pi">\(\pi\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\sigma" title="\sigma">\(\sigma\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\phi" title="\phi">\(\phi\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\omega" title="\omega">\(\omega\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\Gamma" title="\Gamma">\(\Gamma\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\Delta" title="\Delta">\(\Delta\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\Theta" title="\Theta">\(\Theta\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\Lambda" title="\Lambda">\(\Lambda\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\Sigma" title="\Sigma">\(\Sigma\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\Phi" title="\Phi">\(\Phi\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\Omega" title="\Omega">\(\Omega\)</button>
+                    </div>
+                </div>
+
+                <!-- Binary Operators -->
+                <div class="mb-3">
+                    <h6 class="text-primary" data-i18n="latex.binary_operators">Toán tử hai ngôi</h6>
+                    <div class="symbol-grid">
+                        <button class="symbol-btn insert-symbol" data-symbol="\pm" title="\pm">\(\pm\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\mp" title="\mp">\(\mp\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\times" title="\times">\(\times\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\div" title="\div">\(\div\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\cdot" title="\cdot">\(\cdot\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\ast" title="\ast">\(\ast\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\star" title="\star">\(\star\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\cap" title="\cap">\(\cap\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\cup" title="\cup">\(\cup\)</button>
+                    </div>
+                </div>
+
+                <!-- Relations -->
+                <div class="mb-3">
+                    <h6 class="text-primary" data-i18n="latex.relations">Quan hệ</h6>
+                    <div class="symbol-grid">
+                        <button class="symbol-btn insert-symbol" data-symbol="=" title="=">\(=\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\neq" title="\neq">\(\neq\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="<" title="<">\(<\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol=">" title=">">\(>\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\leq" title="\leq">\(\leq\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\geq" title="\geq">\(\geq\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\equiv" title="\equiv">\(\equiv\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\approx" title="\approx">\(\approx\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\propto" title="\propto">\(\propto\)</button>
+                    </div>
+                </div>
+
+                <!-- Arrows -->
+                <div class="mb-3">
+                    <h6 class="text-primary" data-i18n="latex.arrows">Mũi tên</h6>
+                    <div class="symbol-grid">
+                        <button class="symbol-btn insert-symbol" data-symbol="\leftarrow" title="\leftarrow">\(\leftarrow\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\rightarrow" title="\rightarrow">\(\rightarrow\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\leftrightarrow" title="\leftrightarrow">\(\leftrightarrow\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\Leftarrow" title="\Leftarrow">\(\Leftarrow\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\Rightarrow" title="\Rightarrow">\(\Rightarrow\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\Leftrightarrow" title="\Leftrightarrow">\(\Leftrightarrow\)</button>
+                    </div>
+                </div>
+
+                <!-- Misc Symbols -->
+                <div class="mb-3">
+                    <h6 class="text-primary" data-i18n="latex.misc_symbols">Ký hiệu khác</h6>
+                    <div class="symbol-grid">
+                        <button class="symbol-btn insert-symbol" data-symbol="\infty" title="\infty">\(\infty\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\forall" title="\forall">\(\forall\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\exists" title="\exists">\(\exists\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\in" title="\in">\(\in\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\notin" title="\notin">\(\notin\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\subset" title="\subset">\(\subset\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\supset" title="\supset">\(\supset\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\emptyset" title="\emptyset">\(\emptyset\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\nabla" title="\nabla">\(\nabla\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\partial" title="\partial">\(\partial\)</button>
+                    </div>
+                </div>
+
+                <!-- Common Templates -->
+                <div class="mb-3">
+                    <h6 class="text-primary" data-i18n="latex.templates">Mẫu phổ biến</h6>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-sm btn-outline-primary insert-symbol text-start" data-symbol="\frac{a}{b}">
+                            <code>\frac{a}{b}</code> - Phân số
+                        </button>
+                        <button class="btn btn-sm btn-outline-primary insert-symbol text-start" data-symbol="\sqrt{x}">
+                            <code>\sqrt{x}</code> - Căn bậc hai
+                        </button>
+                        <button class="btn btn-sm btn-outline-primary insert-symbol text-start" data-symbol="\sqrt[n]{x}">
+                            <code>\sqrt[n]{x}</code> - Căn bậc n
+                        </button>
+                        <button class="btn btn-sm btn-outline-primary insert-symbol text-start" data-symbol="x^{n}">
+                            <code>x^{n}</code> - Lũy thừa
+                        </button>
+                        <button class="btn btn-sm btn-outline-primary insert-symbol text-start" data-symbol="x_{i}">
+                            <code>x_{i}</code> - Chỉ số dưới
+                        </button>
+                        <button class="btn btn-sm btn-outline-primary insert-symbol text-start" data-symbol="\sum_{i=1}^{n}">
+                            <code>\sum_{i=1}^{n}</code> - Tổng
+                        </button>
+                        <button class="btn btn-sm btn-outline-primary insert-symbol text-start" data-symbol="\prod_{i=1}^{n}">
+                            <code>\prod_{i=1}^{n}</code> - Tích
+                        </button>
+                        <button class="btn btn-sm btn-outline-primary insert-symbol text-start" data-symbol="\int_{a}^{b}">
+                            <code>\int_{a}^{b}</code> - Tích phân
+                        </button>
+                        <button class="btn btn-sm btn-outline-primary insert-symbol text-start" data-symbol="\lim_{x \to \infty}">
+                            <code>\lim_{x \to \infty}</code> - Giới hạn
+                        </button>
+                        <button class="btn btn-sm btn-outline-primary insert-symbol text-start" data-symbol="\begin{matrix} a & b \\ c & d \end{matrix}">
+                            <code>\begin{matrix}...</code> - Ma trận
+                        </button>
+                        <button class="btn btn-sm btn-outline-primary insert-symbol text-start" data-symbol="\begin{cases} x, & \text{if } x > 0 \\ 0, & \text{otherwise} \end{cases}">
+                            <code>\begin{cases}...</code> - Điều kiện
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Guide -->
+        <div class="card mt-3">
+            <div class="card-header bg-info text-white">
+                <h6 class="mb-0"><i class="fas fa-info-circle"></i> <span data-i18n="latex.guide">Hướng dẫn nhanh</span></h6>
+            </div>
+            <div class="card-body">
+                <small>
+                    <p><strong data-i18n="latex.guide_title">Cú pháp cơ bản:</strong></p>
+                    <ul class="small">
+                        <li><code>^{}</code> - <span data-i18n="latex.guide_superscript">Chỉ số trên</span></li>
+                        <li><code>_{}</code> - <span data-i18n="latex.guide_subscript">Chỉ số dưới</span></li>
+                        <li><code>\frac{}{}</code> - <span data-i18n="latex.guide_fraction">Phân số</span></li>
+                        <li><code>\sqrt{}</code> - <span data-i18n="latex.guide_sqrt">Căn bậc hai</span></li>
+                        <li><code>\text{}</code> - <span data-i18n="latex.guide_text">Văn bản thường</span></li>
+                        <li><code>\left( \right)</code> - <span data-i18n="latex.guide_brackets">Ngoặc tự động</span></li>
+                    </ul>
+                    <p class="mt-2"><strong data-i18n="latex.guide_tip">Mẹo:</strong> <span data-i18n="latex.guide_tip_text">Nhấn vào ký hiệu để chèn vào vị trí con trỏ</span></p>
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- History -->
+<div class="row">
+    <div class="col-12 mb-4">
+        <div class="card">
+            <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+                <h6 class="mb-0"><i class="fas fa-history"></i> <span data-i18n="latex.history">Lịch sử</span></h6>
+                <button id="clear-history-btn" class="btn btn-sm btn-outline-dark">
+                    <i class="fas fa-trash"></i> <span data-i18n="latex.clear_history">Xóa lịch sử</span>
+                </button>
+            </div>
+            <div class="card-body">
+                <div id="latex-history" class="row g-3">
+                    <p class="text-muted text-center" data-i18n="latex.no_history">Chưa có lịch sử</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.latex-preview-box {
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.symbol-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+    gap: 0.5rem;
+}
+
+.symbol-btn {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    background: white;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 1.2rem;
+}
+
+.symbol-btn:hover {
+    background: #f0f4f8;
+    border-color: #0F62FE;
+    transform: translateY(-2px);
+}
+
+.insert-symbol {
+    cursor: pointer;
+}
+
+.latex-history-item {
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+    background: white;
+    transition: all 0.2s;
+}
+
+.latex-history-item:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}
+
+body.dark-mode .latex-preview-box,
+body.dark-mode .symbol-btn,
+body.dark-mode .latex-history-item {
+    background: #2a2a2a;
+    border-color: #444;
+    color: #e6e1e5;
+}
+
+body.dark-mode .symbol-btn:hover {
+    background: #3a3a3a;
+}
+</style>
