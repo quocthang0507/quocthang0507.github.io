@@ -12,10 +12,14 @@ document.addEventListener('DOMContentLoaded', function() {
     updateSizeValue();
     
     // Get QR settings
-    function getQRSettings() {
+    function getQRSettings(forPreview = true) {
+        const userSize = parseInt(document.getElementById('qr-size').value);
+        // Use smaller size for preview (max 256px) for fast rendering
+        const size = forPreview ? Math.min(userSize, 256) : userSize;
+        
         return {
-            width: parseInt(document.getElementById('qr-size').value),
-            height: parseInt(document.getElementById('qr-size').value),
+            width: size,
+            height: size,
             colorDark: document.getElementById('qr-color').value,
             colorLight: document.getElementById('qr-bgcolor').value,
             correctLevel: document.getElementById('qr-error-level').value
@@ -294,35 +298,77 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Download as PNG
+    // Download as PNG - Generate high quality version
     function downloadPNG() {
-        if (currentQRStyling && typeof currentQRStyling.download === 'function') {
-            currentQRStyling.download({
-                name: `qrcode-${Date.now()}`,
-                extension: 'png'
-            });
-            showAlert('Đã tải xuống PNG!', 'success');
-            return;
-        }
-
-        const canvas = document.querySelector('#qr-code-display canvas');
-        if (!canvas) {
+        if (!currentQRData) {
             showAlert('Chưa có mã QR để tải!', 'warning');
             return;
         }
 
-        canvas.toBlob(function(blob) {
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.download = `qrcode-${Date.now()}.png`;
-            link.href = url;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
+        // Generate high-quality version (512px) for download
+        const highQualitySize = 512;
+        const settings = getQRSettings();
+        const styleSettings = getQRStyleSettings();
+        
+        if (typeof QRCodeStyling !== 'undefined') {
+            const qrCode = new QRCodeStyling({
+                width: highQualitySize,
+                height: highQualitySize,
+                type: 'canvas',
+                data: currentQRData.content,
+                qrOptions: {
+                    errorCorrectionLevel: settings.correctLevel
+                },
+                dotsOptions: {
+                    color: settings.colorDark,
+                    type: styleSettings.dotsType
+                },
+                backgroundOptions: {
+                    color: settings.colorLight
+                },
+                cornersSquareOptions: {
+                    color: settings.colorDark,
+                    type: styleSettings.cornerSquareType
+                },
+                cornersDotOptions: {
+                    color: settings.colorDark,
+                    type: styleSettings.cornerDotType
+                },
+                image: logoDataUrl || undefined,
+                imageOptions: {
+                    crossOrigin: 'anonymous',
+                    margin: 5,
+                    imageSize: 0.2,
+                    hideBackgroundDots: true
+                }
+            });
 
-            showAlert('Đã tải xuống PNG!', 'success');
-        });
+            qrCode.download({
+                name: `qrcode-${Date.now()}`,
+                extension: 'png'
+            });
+            showAlert('Đã tải xuống PNG chất lượng cao!', 'success');
+        } else {
+            // Fallback to preview canvas
+            const canvas = document.querySelector('#qr-code-display canvas');
+            if (!canvas) {
+                showAlert('Chưa có mã QR để tải!', 'warning');
+                return;
+            }
+
+            canvas.toBlob(function(blob) {
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.download = `qrcode-${Date.now()}.png`;
+                link.href = url;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+
+                showAlert('Đã tải xuống PNG!', 'success');
+            });
+        }
     }
     
     // Download as SVG
@@ -757,11 +803,35 @@ document.addEventListener('DOMContentLoaded', function() {
             reader.onload = function(event) {
                 const img = new Image();
                 img.onload = function() {
-                    logoImage = img;
-                    logoDataUrl = event.target.result;
-                    if (currentQRCode) {
-                        generateQRCode();
+                    // Resize logo to fixed maximum dimensions
+                    const maxLogoSize = 200; // Fixed max size for logo
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    
+                    let width = img.width;
+                    let height = img.height;
+                    
+                    // Scale down if larger than max
+                    if (width > maxLogoSize || height > maxLogoSize) {
+                        const ratio = Math.min(maxLogoSize / width, maxLogoSize / height);
+                        width = Math.round(width * ratio);
+                        height = Math.round(height * ratio);
                     }
+                    
+                    canvas.width = width;
+                    canvas.height = height;
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    // Create new image from resized canvas
+                    const resizedImg = new Image();
+                    resizedImg.onload = function() {
+                        logoImage = resizedImg;
+                        logoDataUrl = canvas.toDataURL('image/png');
+                        if (currentQRCode) {
+                            generateQRCode();
+                        }
+                    };
+                    resizedImg.src = canvas.toDataURL('image/png');
                 };
                 img.src = event.target.result;
             };
