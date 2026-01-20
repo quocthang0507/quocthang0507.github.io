@@ -4,6 +4,17 @@ document.addEventListener('DOMContentLoaded', function() {
     const RENDER_DEBOUNCE_MS = 500; // Debounce delay for auto-render
     const HISTORY_SAVE_DELAY_MS = 1000; // Delay before saving to history
     const MAX_HISTORY_ITEMS = 20; // Maximum number of history items
+
+    const t = (key, fallback) => {
+        try {
+            if (window.translationSystem && typeof window.translationSystem.t === 'function') {
+                return window.translationSystem.t(key, fallback ?? key);
+            }
+        } catch (e) {
+            // ignore i18n errors
+        }
+        return fallback ?? key;
+    };
     
     let latexHistory = loadFromLocalStorage('latexHistory') || [];
     const latexInput = document.getElementById('latex-input');
@@ -36,12 +47,12 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('copy-latex-btn').addEventListener('click', function() {
         const latex = latexInput.value;
         if (!latex.trim()) {
-            showAlert('Chưa có mã LaTeX để sao chép!', 'warning');
+            showAlert(t('latex.alert.no_code', 'Chưa có mã LaTeX để sao chép!'), 'warning');
             return;
         }
         
         navigator.clipboard.writeText(latex).then(function() {
-            showAlert('Đã sao chép mã LaTeX!', 'success');
+            showAlert(t('latex.alert.copied', 'Đã sao chép mã LaTeX!'), 'success');
             
             // Track copy event
             if (typeof gtag !== 'undefined') {
@@ -50,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             }
         }).catch(function(err) {
-            showAlert('Lỗi khi sao chép: ' + err, 'error');
+            showAlert(t('latex.alert.copy_error', 'Lỗi khi sao chép: ') + err, 'error');
         });
     });
     
@@ -60,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const latex = latexInput.value.trim();
         
         if (!latex) {
-            showAlert('Chưa có nội dung để lưu!', 'warning');
+            showAlert(t('latex.alert.no_content', 'Chưa có nội dung để lưu!'), 'warning');
             return;
         }
         
@@ -88,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.body.removeChild(link);
                 URL.revokeObjectURL(url);
                 
-                showAlert('Đã lưu hình ảnh!', 'success');
+                showAlert(t('latex.alert.saved', 'Đã lưu hình ảnh!'), 'success');
                 
                 // Track save event
                 if (typeof gtag !== 'undefined') {
@@ -98,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         } catch (error) {
-            showAlert('Lỗi khi lưu hình: ' + error.message, 'error');
+            showAlert(t('latex.alert.save_error', 'Lỗi khi lưu hình: ') + error.message, 'error');
         }
     });
     
@@ -111,11 +122,11 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Clear history
     document.getElementById('clear-history-btn').addEventListener('click', function() {
-        if (confirm('Bạn có chắc muốn xóa toàn bộ lịch sử?')) {
+        if (confirm(t('latex.alert.clear_history_confirm', 'Bạn có chắc muốn xóa toàn bộ lịch sử?'))) {
             latexHistory = [];
             saveToLocalStorage('latexHistory', latexHistory);
             renderHistory();
-            showAlert('Đã xóa lịch sử!', 'success');
+            showAlert(t('latex.alert.history_cleared', 'Đã xóa lịch sử!'), 'success');
         }
     });
     
@@ -124,7 +135,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const latex = latexInput.value.trim();
         
         if (!latex) {
-            latexOutput.innerHTML = '<span class="text-muted">Nhập mã LaTeX để xem trước...</span>';
+            latexOutput.innerHTML = `<span class="text-muted">${t('latex.preview_placeholder', 'Nhập mã LaTeX để xem trước...')}</span>`;
             return;
         }
         
@@ -135,7 +146,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (typeof MathJax !== 'undefined') {
             MathJax.typesetClear([latexOutput]);
             MathJax.typesetPromise([latexOutput]).catch(function(err) {
-                latexOutput.innerHTML = `<span class="text-danger">Lỗi cú pháp: ${err.message}</span>`;
+                latexOutput.innerHTML = `<span class="text-danger">${t('latex.error_syntax', 'Lỗi cú pháp')}: ${err.message}</span>`;
             });
         }
     }
@@ -184,7 +195,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const container = document.getElementById('latex-history');
         
         if (latexHistory.length === 0) {
-            container.innerHTML = '<p class="text-muted text-center" data-i18n="latex.no_history">Chưa có lịch sử</p>';
+            container.innerHTML = `<p class="text-muted text-center" data-i18n="latex.no_history">${t('latex.no_history', 'Chưa có lịch sử')}</p>`;
             return;
         }
         
@@ -211,7 +222,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const useBtn = document.createElement('button');
             useBtn.className = 'btn btn-sm btn-primary';
             useBtn.innerHTML = '<i class="fas fa-arrow-up"></i>';
-            useBtn.title = 'Sử dụng';
+            useBtn.title = t('latex.history.use', 'Sử dụng');
             useBtn.onclick = function() {
                 latexInput.value = item.latex;
                 renderLatex();
@@ -221,7 +232,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const deleteBtn = document.createElement('button');
             deleteBtn.className = 'btn btn-sm btn-danger';
             deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
-            deleteBtn.title = 'Xóa';
+            deleteBtn.title = t('latex.history.delete', 'Xóa');
             deleteBtn.onclick = function() {
                 latexHistory.splice(index, 1);
                 saveToLocalStorage('latexHistory', latexHistory);
@@ -267,6 +278,12 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             document.getElementById('save-image-btn').click();
         }
+    });
+
+    // Update translatable UI when language changes
+    window.addEventListener('languageChanged', function() {
+        renderHistory();
+        renderLatex();
     });
     
     // Helper functions

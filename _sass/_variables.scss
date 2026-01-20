@@ -52,4 +52,9 @@
   /* Simple transitions */
   --transition-fast: 150ms ease-in-out;
   --transition-normal: 250ms ease-in-out;
+
+  /* Pantone Color of the Year 2026 (approx) */
+  --pantone-2026-cloud-dancer: #F2F2F0;
+  --nav-bg: var(--pantone-2026-cloud-dancer);
+  --nav-hover-bg: rgba(28, 27, 31, 0.08);
 }
