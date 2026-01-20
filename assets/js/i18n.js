@@ -3,6 +3,7 @@ if (typeof window.TranslationSystem === 'undefined') {
 class TranslationSystem {
     constructor() {
         this.currentLanguage = 'vi'; // Default to Vietnamese
+        this.defaultLanguage = 'vi';
         this.translations = {};
         this.supportedLanguages = {
             'vi': { name: 'Tiếng Việt', flag: '🇻🇳' },
@@ -160,7 +161,16 @@ class TranslationSystem {
     // Get translation for a key
     t(key, fallback = key) {
         const translation = this.translations[this.currentLanguage];
-        return translation && translation[key] ? translation[key] : fallback;
+        if (translation && translation[key]) {
+            return translation[key];
+        }
+
+        const defaultTranslation = this.translations[this.defaultLanguage];
+        if (defaultTranslation && defaultTranslation[key]) {
+            return defaultTranslation[key];
+        }
+
+        return fallback;
     }
     
     // Translate the entire page
@@ -168,13 +178,24 @@ class TranslationSystem {
         // Translate elements with data-i18n attribute
         document.querySelectorAll('[data-i18n]').forEach(element => {
             const key = element.getAttribute('data-i18n');
-            const translation = this.t(key);
+            const isInput = element.tagName === 'INPUT' && (element.type === 'text' || element.type === 'number');
             
-            if (element.tagName === 'INPUT' && (element.type === 'text' || element.type === 'number')) {
+            if (isInput || element.tagName === 'TEXTAREA') {
+                if (!element.dataset.i18nPlaceholder) {
+                    element.dataset.i18nPlaceholder = element.getAttribute('placeholder') || '';
+                }
+                const translation = this.t(key, element.dataset.i18nPlaceholder);
                 element.placeholder = translation;
-            } else if (element.tagName === 'TEXTAREA') {
-                element.placeholder = translation;
-            } else if (element.hasAttribute('data-i18n-html') || translation.includes('<strong>') || translation.includes('<')) {
+                return;
+            }
+
+            if (!element.dataset.i18nDefault) {
+                element.dataset.i18nDefault = element.innerHTML;
+            }
+
+            const translation = this.t(key, element.dataset.i18nDefault);
+            
+            if (element.hasAttribute('data-i18n-html') || translation.includes('<strong>') || translation.includes('<')) {
                 // Use innerHTML for elements with HTML content
                 element.innerHTML = translation;
             } else {
