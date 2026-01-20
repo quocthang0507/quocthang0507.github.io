@@ -3,6 +3,7 @@ if (typeof window.TranslationSystem === 'undefined') {
 class TranslationSystem {
     constructor() {
         this.currentLanguage = 'vi'; // Default to Vietnamese
+        this.defaultLanguage = 'vi';
         this.translations = {};
         this.supportedLanguages = {
             'vi': { name: 'Tiếng Việt', flag: '🇻🇳' },
@@ -164,7 +165,7 @@ class TranslationSystem {
             return translation[key];
         }
 
-        const defaultTranslation = this.translations.vi;
+        const defaultTranslation = this.translations[this.defaultLanguage];
         if (defaultTranslation && defaultTranslation[key]) {
             return defaultTranslation[key];
         }
@@ -181,7 +182,7 @@ class TranslationSystem {
             
             if (isInput || element.tagName === 'TEXTAREA') {
                 if (!element.dataset.i18nPlaceholder) {
-                    element.dataset.i18nPlaceholder = element.placeholder || '';
+                    element.dataset.i18nPlaceholder = element.getAttribute('placeholder') || '';
                 }
                 const translation = this.t(key, element.dataset.i18nPlaceholder);
                 element.placeholder = translation;
