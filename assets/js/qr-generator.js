@@ -1,5 +1,10 @@
 // QR Code Generator functionality
 document.addEventListener('DOMContentLoaded', function() {
+    // Configuration constants
+    const MAX_LOGO_SIZE = 200; // Maximum logo dimensions in pixels
+    const PREVIEW_MAX_SIZE = 256; // Preview QR size for fast rendering
+    const DOWNLOAD_SIZE = 512; // High-quality download size
+    
     let qrHistory = loadFromLocalStorage('qrHistory') || [];
     let currentQRCode = null;
     let currentQRData = null;
@@ -12,10 +17,14 @@ document.addEventListener('DOMContentLoaded', function() {
     updateSizeValue();
     
     // Get QR settings
-    function getQRSettings() {
+    function getQRSettings(usePreviewSize = false) {
+        const userSize = parseInt(document.getElementById('qr-size').value);
+        // Use preview size when explicitly requested for preview rendering
+        const size = usePreviewSize ? Math.min(userSize, PREVIEW_MAX_SIZE) : userSize;
+        
         return {
-            width: parseInt(document.getElementById('qr-size').value),
-            height: parseInt(document.getElementById('qr-size').value),
+            width: size,
+            height: size,
             colorDark: document.getElementById('qr-color').value,
             colorLight: document.getElementById('qr-bgcolor').value,
             correctLevel: document.getElementById('qr-error-level').value
@@ -112,7 +121,7 @@ document.addEventListener('DOMContentLoaded', function() {
         container.innerHTML = '';
         
         try {
-            const settings = getQRSettings();
+            const settings = getQRSettings(true); // Use preview size for display
 
             const styleSettings = getQRStyleSettings();
             
@@ -294,35 +303,76 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Download as PNG
+    // Download as PNG - Generate high quality version
     function downloadPNG() {
-        if (currentQRStyling && typeof currentQRStyling.download === 'function') {
-            currentQRStyling.download({
-                name: `qrcode-${Date.now()}`,
-                extension: 'png'
-            });
-            showAlert('Đã tải xuống PNG!', 'success');
-            return;
-        }
-
-        const canvas = document.querySelector('#qr-code-display canvas');
-        if (!canvas) {
+        if (!currentQRData) {
             showAlert('Chưa có mã QR để tải!', 'warning');
             return;
         }
 
-        canvas.toBlob(function(blob) {
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.download = `qrcode-${Date.now()}.png`;
-            link.href = url;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
+        // Generate high-quality version for download
+        const settings = getQRSettings(false); // Use full size, not preview
+        const styleSettings = getQRStyleSettings();
+        
+        if (typeof QRCodeStyling !== 'undefined') {
+            const qrCode = new QRCodeStyling({
+                width: DOWNLOAD_SIZE,
+                height: DOWNLOAD_SIZE,
+                type: 'canvas',
+                data: currentQRData.content,
+                qrOptions: {
+                    errorCorrectionLevel: settings.correctLevel
+                },
+                dotsOptions: {
+                    color: settings.colorDark,
+                    type: styleSettings.dotsType
+                },
+                backgroundOptions: {
+                    color: settings.colorLight
+                },
+                cornersSquareOptions: {
+                    color: settings.colorDark,
+                    type: styleSettings.cornerSquareType
+                },
+                cornersDotOptions: {
+                    color: settings.colorDark,
+                    type: styleSettings.cornerDotType
+                },
+                image: logoDataUrl || undefined,
+                imageOptions: {
+                    crossOrigin: 'anonymous',
+                    margin: 5,
+                    imageSize: 0.2,
+                    hideBackgroundDots: true
+                }
+            });
 
-            showAlert('Đã tải xuống PNG!', 'success');
-        });
+            qrCode.download({
+                name: `qrcode-${Date.now()}`,
+                extension: 'png'
+            });
+            showAlert('Đã tải xuống PNG chất lượng cao!', 'success');
+        } else {
+            // Fallback to preview canvas
+            const canvas = document.querySelector('#qr-code-display canvas');
+            if (!canvas) {
+                showAlert('Chưa có mã QR để tải!', 'warning');
+                return;
+            }
+
+            canvas.toBlob(function(blob) {
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.download = `qrcode-${Date.now()}.png`;
+                link.href = url;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+
+                showAlert('Đã tải xuống PNG!', 'success');
+            });
+        }
     }
     
     // Download as SVG
@@ -757,11 +807,34 @@ document.addEventListener('DOMContentLoaded', function() {
             reader.onload = function(event) {
                 const img = new Image();
                 img.onload = function() {
-                    logoImage = img;
-                    logoDataUrl = event.target.result;
-                    if (currentQRCode) {
-                        generateQRCode();
+                    // Resize logo to fixed maximum dimensions
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    
+                    let width = img.width;
+                    let height = img.height;
+                    
+                    // Scale down if larger than max
+                    if (width > MAX_LOGO_SIZE || height > MAX_LOGO_SIZE) {
+                        const ratio = Math.min(MAX_LOGO_SIZE / width, MAX_LOGO_SIZE / height);
+                        width = Math.round(width * ratio);
+                        height = Math.round(height * ratio);
                     }
+                    
+                    canvas.width = width;
+                    canvas.height = height;
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    // Create new image from resized canvas
+                    const resizedImg = new Image();
+                    resizedImg.onload = function() {
+                        logoImage = resizedImg;
+                        logoDataUrl = canvas.toDataURL('image/png');
+                        if (currentQRCode) {
+                            generateQRCode();
+                        }
+                    };
+                    resizedImg.src = canvas.toDataURL('image/png');
                 };
                 img.src = event.target.result;
             };

@@ -19,7 +19,11 @@
     font-weight: 600;
 }
 /* Ensure card headers with Bootstrap color classes have appropriate text color */
-.card-header.bg-primary,
+.card-header.bg-primary {
+    background-color: var(--bs-focus-color) !important;
+    color: white !important;
+}
+
 .card-header.bg-success,
 .card-header.bg-info,
 .card-header.bg-dark,
@@ -66,12 +70,23 @@
 .form-control {
     border-radius: var(--md-radius-sm);
     transition: all var(--transition-fast);
+    font-size: 1.1rem;
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--bs-border-color);
 }
 
 .form-control:focus {
-    border-color: var(--bs-primary);
-    box-shadow: var(--md-focus-ring);
+    border-color: var(--bs-focus-color);
+    box-shadow: 0 0 0 0.25rem rgba(15, 98, 254, 0.25);
     outline: none;
+}
+
+/* Make number inputs more prominent */
+input[type="number"].form-control {
+    font-size: 1.25rem;
+    font-weight: 600;
+    padding: 0.875rem 1.125rem;
+    text-align: center;
 }
 
 .form-label {
