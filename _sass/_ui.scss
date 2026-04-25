@@ -1,68 +1,151 @@
-// UI enhancements: settings floating button, quick settings panel, theme badge, toast fade transitions
+// ============================================================
+// UI Enhancements — Neumorphism
+// ============================================================
+// Settings FAB, quick settings panel, theme badge, toast animations
 
 .settings-fab {
   position: fixed;
   bottom: 1.25rem;
   right: 1.25rem;
-  width: 48px; height:48px;
-  border-radius:50%;
-  background: var(--primary-color);
-  color:#fff;
-  display:flex; align-items:center; justify-content:center;
-  border:none;
-  box-shadow: var(--shadow-medium);
-  cursor:pointer;
-  z-index:1085;
-  transition:background .3s, transform .2s;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--nm-bg);
+  color: var(--bs-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  box-shadow: var(--nm-shadow-flat);
+  cursor: pointer;
+  z-index: 1085;
+  transition: all 0.3s ease;
+  font-size: 1.1rem;
 }
-.settings-fab:hover { background: var(--primary-color-hover); transform: translateY(-3px); }
-.settings-fab:focus { outline:2px solid rgba(var(--primary-rgb), .6); outline-offset:2px; }
+
+.settings-fab:hover {
+  box-shadow: var(--nm-shadow-flat-lg);
+  transform: translateY(-3px);
+  color: var(--bs-primary);
+}
+
+.settings-fab:active {
+  box-shadow: var(--nm-shadow-pressed);
+  transform: translateY(0);
+}
+
+.settings-fab:focus {
+  outline: 2px solid rgba(var(--bs-primary-rgb), 0.4);
+  outline-offset: 2px;
+}
 
 .quick-settings-panel {
   position: fixed;
   bottom: 80px;
   right: 20px;
   width: 240px;
-  background: var(--card-bg);
-  border:1px solid var(--border-color);
-  border-radius:12px;
-  box-shadow: var(--shadow-heavy);
-  transform: translateY(10px) scale(.95);
-  opacity:0;
-  pointer-events:none;
-  transition: opacity .25s ease, transform .25s ease;
-  z-index:1086;
-  backdrop-filter: blur(8px);
+  background: var(--nm-bg);
+  border: none;
+  border-radius: var(--nm-radius-lg);
+  box-shadow: var(--nm-shadow-flat-lg);
+  transform: translateY(10px) scale(0.95);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  z-index: 1086;
 }
-.quick-settings-panel.open { opacity:1; transform: translateY(0) scale(1); pointer-events:auto; }
-.quick-settings-panel .qs-header { display:flex; justify-content:space-between; align-items:center; padding:.5rem .75rem; border-bottom:1px solid var(--border-color); }
-.quick-settings-panel .qs-body { padding:.75rem; }
+
+.quick-settings-panel.open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.quick-settings-panel .qs-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid rgba(163, 177, 198, 0.2);
+}
+
+.quick-settings-panel .qs-body {
+  padding: 0.75rem;
+}
 
 .theme-badge {
-  display:inline-block;
-  padding:.35rem .75rem;
-  border-radius: 999px;
-  background: rgba(var(--primary-rgb), .1);
-  color: var(--primary-color);
-  font-size:.75rem;
-  font-weight:600;
-  letter-spacing:.5px;
-  cursor:pointer;
-  user-select:none;
-  transition: background .3s, color .3s;
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--nm-radius-pill);
+  background: var(--nm-bg);
+  color: var(--bs-primary);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  user-select: none;
+  box-shadow: var(--nm-shadow-flat-sm);
+  transition: all 0.3s ease;
 }
-.theme-badge[aria-pressed="true"] { background: var(--primary-color); color:#fff; }
-.theme-badge:focus { outline:2px solid rgba(var(--primary-rgb), .5); outline-offset:2px; }
-.theme-badge:hover { background: var(--primary-color); color:#fff; }
 
-/* Toast fade animation (reuse existing cookie-status class) */
-.cookie-status { transition: opacity .4s ease, transform .4s ease; opacity:0; transform: translateY(10px); }
-.cookie-status.show { opacity:1; transform: translateY(0); }
-.cookie-status.fade:not(.show) { opacity:0; }
+.theme-badge[aria-pressed="true"] {
+  background: var(--bs-primary);
+  color: #fff;
+  box-shadow: inset 2px 2px 4px rgba(0,0,0,0.15);
+}
+
+.theme-badge:focus {
+  outline: 2px solid rgba(var(--bs-primary-rgb), 0.4);
+  outline-offset: 2px;
+}
+
+.theme-badge:hover {
+  box-shadow: var(--nm-shadow-flat);
+}
+
+/* Toast fade animation */
+.cookie-status {
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.cookie-status.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.cookie-status.fade:not(.show) {
+  opacity: 0;
+}
 
 /* Dark mode variants */
-[data-theme="dark"] .quick-settings-panel { background: var(--card-bg); }
-[data-theme="dark"] .settings-fab { background: var(--primary-color); }
-[data-theme="dark"] .settings-fab:hover { background: var(--primary-color-hover); }
-[data-theme="dark"] .theme-badge { background: rgba(var(--primary-rgb), .15); color: var(--primary-color); }
-[data-theme="dark"] .theme-badge[aria-pressed="true"] { background: var(--primary-color); color:#fff; }
+[data-theme="dark"] .quick-settings-panel {
+  background: var(--nm-dark-card);
+  box-shadow: 8px 8px 16px var(--nm-dark-shadow-dark),
+              -8px -8px 16px var(--nm-dark-shadow-light);
+}
+
+[data-theme="dark"] .settings-fab {
+  background: var(--nm-dark-card);
+  color: var(--bs-primary);
+  box-shadow: 4px 4px 8px var(--nm-dark-shadow-dark),
+              -4px -4px 8px var(--nm-dark-shadow-light);
+}
+
+[data-theme="dark"] .settings-fab:hover {
+  box-shadow: 6px 6px 12px var(--nm-dark-shadow-dark),
+              -6px -6px 12px var(--nm-dark-shadow-light);
+}
+
+[data-theme="dark"] .theme-badge {
+  background: var(--nm-dark-card);
+  color: var(--bs-primary);
+  box-shadow: 3px 3px 6px var(--nm-dark-shadow-dark),
+              -3px -3px 6px var(--nm-dark-shadow-light);
+}
+
+[data-theme="dark"] .theme-badge[aria-pressed="true"] {
+  background: var(--bs-primary);
+  color: #fff;
+}

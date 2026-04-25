@@ -1,8 +1,19 @@
-// Theme variables
-// This project uses Bootstrap via CDN; we theme it by overriding CSS variables.
-// Palette is Material-inspired (Material 3 / Material You feel) while keeping the site structure intact.
+// ============================================================
+// Neumorphism Design System — Variables
+// ============================================================
+// Soft UI / Neumorphism uses a neutral background with dual
+// shadows (light highlight + dark shade) to create the illusion
+// of extruded or inset surfaces.
+
 :root {
-  /* Material-inspired palette */
+  /* ─── Neumorphism Base Surfaces ─── */
+  --nm-bg: #E0E5EC;
+  --nm-bg-rgb: 224, 229, 236;
+  --nm-shadow-light: #FFFFFF;
+  --nm-shadow-dark: #A3B1C6;
+  --nm-bg-secondary: #D1D9E6;
+
+  /* ─── Accent Palette (Material-inspired, kept from original) ─── */
   --bs-primary: #6750A4;
   --bs-primary-rgb: 103, 80, 164;
   --bs-secondary: #625B71;
@@ -15,46 +26,84 @@
   --bs-warning-rgb: 237, 108, 2;
   --bs-danger: #D32F2F;
   --bs-danger-rgb: 211, 47, 47;
-  --bs-light: #F5F5F5;
-  --bs-dark: #1C1B1F;
+  --bs-light: #EDF0F5;
+  --bs-dark: #2D2D36;
 
-  /* Surfaces & text */
-  --bs-body-bg: #FFFBFE;
-  --bs-body-color: #1C1B1F;
-  --bs-border-color: #E7E0EC;
+  /* ─── Body & Text ─── */
+  --bs-body-bg: var(--nm-bg);
+  --bs-body-color: #2D2D36;
+  --bs-border-color: rgba(163, 177, 198, 0.35);
   --bs-link-color: var(--bs-primary);
   --bs-link-hover-color: #4F378B;
 
-  /* Bootstrap 'subtle' tokens (override so they follow our palette) */
-  --bs-primary-bg-subtle: rgba(var(--bs-primary-rgb), 0.10);
+  /* ─── Subtle / Emphasis Tokens ─── */
+  --bs-primary-bg-subtle: rgba(var(--bs-primary-rgb), 0.12);
   --bs-primary-border-subtle: rgba(var(--bs-primary-rgb), 0.30);
   --bs-primary-text-emphasis: #4F378B;
 
-  /* Material-like shape + elevation */
-  --md-radius-sm: 0.75rem;
-  --md-radius-md: 1rem;
-  --md-radius-lg: 1.25rem;
-  --md-radius-pill: 999px;
+  --bs-success-bg-subtle: rgba(var(--bs-success-rgb), 0.12);
+  --bs-danger-bg-subtle: rgba(var(--bs-danger-rgb), 0.12);
+  --bs-info-bg-subtle: rgba(var(--bs-info-rgb), 0.12);
+  --bs-warning-bg-subtle: rgba(var(--bs-warning-rgb), 0.12);
+  --bs-secondary-bg-subtle: rgba(var(--bs-secondary-rgb), 0.12);
+  --bs-dark-bg-subtle: rgba(45, 45, 54, 0.12);
 
-  --md-elevation-1: 0 1px 2px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.06);
-  --md-elevation-2: 0 2px 4px rgba(0, 0, 0, 0.08), 0 6px 16px rgba(0, 0, 0, 0.08);
-  --md-elevation-3: 0 4px 10px rgba(0, 0, 0, 0.10), 0 14px 34px rgba(0, 0, 0, 0.10);
+  --bs-primary-text-emphasis: #4F378B;
+  --bs-success-text-emphasis: #1B5E20;
+  --bs-danger-text-emphasis: #B71C1C;
+  --bs-info-text-emphasis: #01579B;
+  --bs-warning-text-emphasis: #E65100;
+  --bs-secondary-text-emphasis: #49454F;
 
-  --md-focus-ring: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.25);
+  /* ─── Neumorphic Shadows (core) ─── */
+  --nm-distance: 6px;
+  --nm-blur: 12px;
+  --nm-distance-sm: 3px;
+  --nm-blur-sm: 6px;
+  --nm-distance-lg: 10px;
+  --nm-blur-lg: 20px;
 
-  /* Dark-mode helper vars (also used as fallbacks) */
-  --custom-bg-dark: #1C1B1F;
-  --custom-text-dark: #E6E1E5;
-  --custom-border-dark: rgba(231, 224, 236, 0.18);
-  --custom-card-dark: #2B2930;
-  --custom-input-dark: #2B2930;
+  /* Precomposed shadow values */
+  --nm-shadow-flat:   var(--nm-distance) var(--nm-distance) var(--nm-blur) var(--nm-shadow-dark),
+                      calc(-1 * var(--nm-distance)) calc(-1 * var(--nm-distance)) var(--nm-blur) var(--nm-shadow-light);
+  --nm-shadow-flat-sm: var(--nm-distance-sm) var(--nm-distance-sm) var(--nm-blur-sm) var(--nm-shadow-dark),
+                       calc(-1 * var(--nm-distance-sm)) calc(-1 * var(--nm-distance-sm)) var(--nm-blur-sm) var(--nm-shadow-light);
+  --nm-shadow-flat-lg: var(--nm-distance-lg) var(--nm-distance-lg) var(--nm-blur-lg) var(--nm-shadow-dark),
+                       calc(-1 * var(--nm-distance-lg)) calc(-1 * var(--nm-distance-lg)) var(--nm-blur-lg) var(--nm-shadow-light);
+  --nm-shadow-pressed: inset var(--nm-distance-sm) var(--nm-distance-sm) var(--nm-blur-sm) var(--nm-shadow-dark),
+                       inset calc(-1 * var(--nm-distance-sm)) calc(-1 * var(--nm-distance-sm)) var(--nm-blur-sm) var(--nm-shadow-light);
 
-  /* Simple transitions */
+  /* ─── Shape ─── */
+  --nm-radius-sm: 12px;
+  --nm-radius-md: 16px;
+  --nm-radius-lg: 20px;
+  --nm-radius-xl: 28px;
+  --nm-radius-pill: 999px;
+
+  /* ─── Focus Ring ─── */
+  --nm-focus-ring: 0 0 0 3px rgba(var(--bs-primary-rgb), 0.30);
+
+  /* ─── Transitions ─── */
   --transition-fast: 150ms ease-in-out;
   --transition-normal: 250ms ease-in-out;
+  --transition-slow: 400ms ease-in-out;
 
-  /* Pantone Color of the Year 2026 (approx) */
-  --pantone-2026-cloud-dancer: #F2F2F0;
-  --nav-bg: var(--pantone-2026-cloud-dancer);
-  --nav-hover-bg: rgba(28, 27, 31, 0.08);
+  /* ─── Typography ─── */
+  --bs-font-sans-serif: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --bs-font-monospace: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+
+  /* ─── Navigation ─── */
+  --nav-bg: var(--nm-bg);
+  --nav-hover-bg: rgba(163, 177, 198, 0.25);
+
+  /* ─── Dark Neumorphism Variables ─── */
+  --nm-dark-bg: #2D2D36;
+  --nm-dark-bg-rgb: 45, 45, 54;
+  --nm-dark-shadow-light: #383842;
+  --nm-dark-shadow-dark: #222228;
+  --nm-dark-text: #E6E1E5;
+  --nm-dark-text-muted: rgba(230, 225, 229, 0.65);
+  --nm-dark-border: rgba(255, 255, 255, 0.08);
+  --nm-dark-card: #33333D;
+  --nm-dark-input: #2A2A33;
 }

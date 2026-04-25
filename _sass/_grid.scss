@@ -1,0 +1,140 @@
+// ============================================================
+// Custom Grid System (replaces Bootstrap grid)
+// ============================================================
+// Flexbox-based 12-column grid matching Bootstrap 5 breakpoints.
+
+// ─── Container ───
+.container {
+  width: 100%;
+  padding-right: 0.75rem;
+  padding-left: 0.75rem;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+@media (min-width: 576px)  { .container { max-width: 540px; } }
+@media (min-width: 768px)  { .container { max-width: 720px; } }
+@media (min-width: 992px)  { .container { max-width: 960px; } }
+@media (min-width: 1200px) { .container { max-width: 1140px; } }
+@media (min-width: 1400px) { .container { max-width: 1320px; } }
+
+// ─── Row ───
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-right: -0.75rem;
+  margin-left: -0.75rem;
+
+  // Gutter support: g-* classes
+  &.g-0 { margin-right: 0; margin-left: 0; > [class*="col"] { padding-right: 0; padding-left: 0; } }
+  &.g-1 { margin-right: -0.125rem; margin-left: -0.125rem; > [class*="col"] { padding-right: 0.125rem; padding-left: 0.125rem; } }
+  &.g-2 { margin-right: -0.25rem; margin-left: -0.25rem; > [class*="col"] { padding-right: 0.25rem; padding-left: 0.25rem; } }
+  &.g-3 { margin-right: -0.5rem; margin-left: -0.5rem; > [class*="col"] { padding-right: 0.5rem; padding-left: 0.5rem; } }
+}
+
+// ─── Column base ───
+[class*="col"] {
+  position: relative;
+  width: 100%;
+  padding-right: 0.75rem;
+  padding-left: 0.75rem;
+}
+
+// ─── Default (xs) columns ───
+.col    { flex: 1 0 0%; }
+.col-1  { flex: 0 0 auto; width: 8.333333%; }
+.col-2  { flex: 0 0 auto; width: 16.666667%; }
+.col-3  { flex: 0 0 auto; width: 25%; }
+.col-4  { flex: 0 0 auto; width: 33.333333%; }
+.col-5  { flex: 0 0 auto; width: 41.666667%; }
+.col-6  { flex: 0 0 auto; width: 50%; }
+.col-7  { flex: 0 0 auto; width: 58.333333%; }
+.col-8  { flex: 0 0 auto; width: 66.666667%; }
+.col-9  { flex: 0 0 auto; width: 75%; }
+.col-10 { flex: 0 0 auto; width: 83.333333%; }
+.col-11 { flex: 0 0 auto; width: 91.666667%; }
+.col-12 { flex: 0 0 auto; width: 100%; }
+
+// ─── md breakpoint (≥768px) ───
+@media (min-width: 768px) {
+  .col-md-1  { flex: 0 0 auto; width: 8.333333%; }
+  .col-md-2  { flex: 0 0 auto; width: 16.666667%; }
+  .col-md-3  { flex: 0 0 auto; width: 25%; }
+  .col-md-4  { flex: 0 0 auto; width: 33.333333%; }
+  .col-md-5  { flex: 0 0 auto; width: 41.666667%; }
+  .col-md-6  { flex: 0 0 auto; width: 50%; }
+  .col-md-7  { flex: 0 0 auto; width: 58.333333%; }
+  .col-md-8  { flex: 0 0 auto; width: 66.666667%; }
+  .col-md-9  { flex: 0 0 auto; width: 75%; }
+  .col-md-10 { flex: 0 0 auto; width: 83.333333%; }
+  .col-md-11 { flex: 0 0 auto; width: 91.666667%; }
+  .col-md-12 { flex: 0 0 auto; width: 100%; }
+}
+
+// ─── lg breakpoint (≥992px) ───
+@media (min-width: 992px) {
+  .col-lg-1  { flex: 0 0 auto; width: 8.333333%; }
+  .col-lg-2  { flex: 0 0 auto; width: 16.666667%; }
+  .col-lg-3  { flex: 0 0 auto; width: 25%; }
+  .col-lg-4  { flex: 0 0 auto; width: 33.333333%; }
+  .col-lg-5  { flex: 0 0 auto; width: 41.666667%; }
+  .col-lg-6  { flex: 0 0 auto; width: 50%; }
+  .col-lg-7  { flex: 0 0 auto; width: 58.333333%; }
+  .col-lg-8  { flex: 0 0 auto; width: 66.666667%; }
+  .col-lg-9  { flex: 0 0 auto; width: 75%; }
+  .col-lg-10 { flex: 0 0 auto; width: 83.333333%; }
+  .col-lg-11 { flex: 0 0 auto; width: 91.666667%; }
+  .col-lg-12 { flex: 0 0 auto; width: 100%; }
+}
+
+// ─── xl breakpoint (≥1200px) ───
+@media (min-width: 1200px) {
+  .col-xl-1  { flex: 0 0 auto; width: 8.333333%; }
+  .col-xl-2  { flex: 0 0 auto; width: 16.666667%; }
+  .col-xl-3  { flex: 0 0 auto; width: 25%; }
+  .col-xl-4  { flex: 0 0 auto; width: 33.333333%; }
+  .col-xl-5  { flex: 0 0 auto; width: 41.666667%; }
+  .col-xl-6  { flex: 0 0 auto; width: 50%; }
+}
+
+// ─── Auto-width & offset ───
+.col-auto { flex: 0 0 auto; width: auto; }
+.mx-auto  { margin-left: auto !important; margin-right: auto !important; }
+
+// ─── Justify & Align (used in row context) ───
+.justify-content-center  { justify-content: center !important; }
+.justify-content-between { justify-content: space-between !important; }
+.justify-content-end     { justify-content: flex-end !important; }
+.justify-content-start   { justify-content: flex-start !important; }
+.justify-content-around  { justify-content: space-around !important; }
+
+.align-items-center  { align-items: center !important; }
+.align-items-start   { align-items: flex-start !important; }
+.align-items-end     { align-items: flex-end !important; }
+.align-items-stretch { align-items: stretch !important; }
+
+.align-self-center { align-self: center !important; }
+.align-self-end    { align-self: flex-end !important; }
+
+// Responsive justify
+@media (min-width: 768px) {
+  .justify-content-md-center { justify-content: center !important; }
+}
+
+// ─── Flex utilities ───
+.flex-wrap   { flex-wrap: wrap !important; }
+.flex-nowrap { flex-wrap: nowrap !important; }
+.flex-column { flex-direction: column !important; }
+.flex-row    { flex-direction: row !important; }
+.flex-grow-1 { flex-grow: 1 !important; }
+.flex-shrink-0 { flex-shrink: 0 !important; }
+
+// ─── Order ───
+.order-1 { order: 1 !important; }
+.order-2 { order: 2 !important; }
+
+// ─── Gap ───
+.gap-1 { gap: 0.25rem !important; }
+.gap-2 { gap: 0.5rem !important; }
+.gap-3 { gap: 1rem !important; }
+.gap-4 { gap: 1.5rem !important; }

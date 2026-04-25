@@ -1,0 +1,125 @@
+// ============================================================
+// Neumorphism Mixins
+// ============================================================
+// Reusable SASS mixins for the neumorphic "soft UI" look.
+// Each mixin applies dual-shadow styling that simulates
+// raised, pressed, or inset surfaces.
+
+// ─── Flat / Raised ───
+// Default neumorphic raised element — looks like it's extruded from the surface
+@mixin nm-flat {
+  background: var(--nm-bg);
+  box-shadow: var(--nm-shadow-flat);
+  border: none;
+}
+
+@mixin nm-flat-sm {
+  background: var(--nm-bg);
+  box-shadow: var(--nm-shadow-flat-sm);
+  border: none;
+}
+
+@mixin nm-flat-lg {
+  background: var(--nm-bg);
+  box-shadow: var(--nm-shadow-flat-lg);
+  border: none;
+}
+
+// ─── Pressed / Inset ───
+// Element looks pushed into the surface (concave)
+@mixin nm-pressed {
+  background: var(--nm-bg);
+  box-shadow: var(--nm-shadow-pressed);
+  border: none;
+}
+
+// ─── Convex ───
+// Subtly curved surface with gradient overlay
+@mixin nm-convex {
+  background: linear-gradient(145deg, var(--nm-shadow-light), var(--nm-bg-secondary));
+  box-shadow: var(--nm-shadow-flat);
+  border: none;
+}
+
+// ─── Concave ───
+// Subtly curved inward surface
+@mixin nm-concave {
+  background: linear-gradient(145deg, var(--nm-bg-secondary), var(--nm-shadow-light));
+  box-shadow: var(--nm-shadow-pressed);
+  border: none;
+}
+
+// ─── Interactive States ───
+@mixin nm-hover {
+  box-shadow: var(--nm-shadow-flat-lg);
+  transform: translateY(-1px);
+}
+
+@mixin nm-active {
+  box-shadow: var(--nm-shadow-pressed);
+  transform: translateY(0);
+}
+
+// ─── Transition helper ───
+@mixin nm-transition($props: all) {
+  transition: #{$props} var(--transition-normal);
+}
+
+// ─── Focus Ring ───
+@mixin nm-focus {
+  outline: none;
+  box-shadow: var(--nm-shadow-flat), var(--nm-focus-ring);
+}
+
+@mixin nm-focus-pressed {
+  outline: none;
+  box-shadow: var(--nm-shadow-pressed), var(--nm-focus-ring);
+}
+
+// ─── Colored Neumorphic Surface ───
+// For accent-colored elements (e.g. .bg-primary card headers)
+// Uses color-specific shadows for a tinted neumorphic effect
+@mixin nm-colored($color-var, $color-rgb-var) {
+  background: var(#{$color-var});
+  color: #fff;
+  box-shadow: 3px 3px 8px rgba(var(#{$color-rgb-var}), 0.45),
+              -2px -2px 6px rgba(255, 255, 255, 0.15);
+  border: none;
+}
+
+// ─── Inset Input ───
+// For form controls that look recessed into the surface
+@mixin nm-input {
+  background: var(--nm-bg);
+  box-shadow: inset 2px 2px 5px var(--nm-shadow-dark),
+              inset -2px -2px 5px var(--nm-shadow-light);
+  border: 1px solid transparent;
+}
+
+@mixin nm-input-focus {
+  box-shadow: inset 2px 2px 5px var(--nm-shadow-dark),
+              inset -2px -2px 5px var(--nm-shadow-light),
+              0 0 0 3px rgba(var(--bs-primary-rgb), 0.25);
+  border-color: rgba(var(--bs-primary-rgb), 0.3);
+}
+
+// ─── Dark mode overrides ───
+@mixin nm-dark-flat {
+  background: var(--nm-dark-card);
+  box-shadow: 6px 6px 12px var(--nm-dark-shadow-dark),
+              -6px -6px 12px var(--nm-dark-shadow-light);
+}
+
+@mixin nm-dark-pressed {
+  background: var(--nm-dark-card);
+  box-shadow: inset 3px 3px 6px var(--nm-dark-shadow-dark),
+              inset -3px -3px 6px var(--nm-dark-shadow-light);
+}
+
+@mixin nm-dark-input {
+  background: var(--nm-dark-input);
+  box-shadow: inset 2px 2px 5px var(--nm-dark-shadow-dark),
+              inset -2px -2px 5px var(--nm-dark-shadow-light);
+  border: 1px solid var(--nm-dark-border);
+  color: var(--nm-dark-text);
+}

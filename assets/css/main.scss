@@ -1,13 +1,17 @@
 ---
 ---
-/* Main Sass bundler importing modular partials. (Processed by Jekyll into main.css) */
-// Order matters: variables first, then base styles, components, utilities, dark theme, legacy extras.
+/* Main Sass bundler — Neumorphism Design System
+   Processed by Jekyll into main.css. */
+// Order: variables → mixins → grid → compat → base → buttons → nav → components → utilities → dark → ui → legacy
 @use "variables";
+@use "neumorphism";
+@use "grid";
+@use "bootstrap-compat";
 @use "base";
 @use "buttons";
 @use "navigation";
 @use "components";
 @use "utilities";
 @use "dark";
-@use "ui"; // New UI utilities (settings panel, fab, theme badge, toasts)
-@use "legacy"; // Contains extended / legacy rules pending further refactor
+@use "ui";
+@use "legacy";

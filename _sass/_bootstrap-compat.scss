@@ -1,0 +1,254 @@
+// ============================================================
+// Bootstrap JS Compatibility Layer
+// ============================================================
+// Minimal CSS required for Bootstrap JS components to function
+// correctly without Bootstrap CSS. These classes are toggled
+// dynamically by bootstrap.bundle.min.js.
+
+// ─── Collapse ───
+.collapse:not(.show) {
+  display: none;
+}
+
+.collapsing {
+  height: 0;
+  overflow: hidden;
+  transition: height 0.35s ease;
+}
+
+.collapse.show {
+  display: block;
+}
+
+// Navbar-specific collapse
+.navbar-collapse.collapse:not(.show) {
+  display: none;
+}
+
+@media (min-width: 992px) {
+  .navbar-expand-lg > .container .navbar-collapse,
+  .navbar-expand-lg .navbar-collapse {
+    display: flex !important;
+    flex-basis: auto;
+  }
+}
+
+// ─── Fade / Show ───
+.fade {
+  transition: opacity 0.15s linear;
+}
+
+.fade:not(.show) {
+  opacity: 0;
+}
+
+.fade.show {
+  opacity: 1;
+}
+
+// ─── Modal ───
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1060;
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  outline: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.modal.show {
+  display: block;
+}
+
+.modal.fade .modal-dialog {
+  transition: transform 0.3s ease-out;
+  transform: translateY(-50px);
+}
+
+.modal.show .modal-dialog {
+  transform: none;
+}
+
+.modal-dialog {
+  position: relative;
+  width: auto;
+  margin: 1.75rem auto;
+  max-width: 500px;
+  pointer-events: none;
+}
+
+.modal-dialog-centered {
+  display: flex;
+  align-items: center;
+  min-height: calc(100% - 3.5rem);
+}
+
+.modal-lg {
+  max-width: 800px;
+}
+
+.modal-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  pointer-events: auto;
+  background: var(--nm-bg);
+  border: none;
+  border-radius: var(--nm-radius-xl);
+  box-shadow: var(--nm-shadow-flat-lg);
+  outline: 0;
+}
+
+.modal-header {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid rgba(163, 177, 198, 0.2);
+  border-top-left-radius: var(--nm-radius-xl);
+  border-top-right-radius: var(--nm-radius-xl);
+}
+
+.modal-title {
+  margin-bottom: 0;
+  line-height: 1.5;
+  font-weight: 700;
+}
+
+.modal-body {
+  position: relative;
+  flex: 1 1 auto;
+  padding: 1.5rem;
+}
+
+.modal-footer {
+  display: flex;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0.75rem 1.5rem;
+  border-top: 1px solid rgba(163, 177, 198, 0.2);
+  border-bottom-left-radius: var(--nm-radius-xl);
+  border-bottom-right-radius: var(--nm-radius-xl);
+  gap: 0.5rem;
+}
+
+// Modal backdrop — Bootstrap JS creates this element
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1055;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-backdrop.fade {
+  opacity: 0;
+}
+
+.modal-backdrop.show {
+  opacity: 1;
+}
+
+// ─── Tooltip ───
+.tooltip {
+  position: absolute;
+  z-index: 1080;
+  display: block;
+  margin: 0;
+  font-size: 0.8rem;
+  word-wrap: break-word;
+  opacity: 0;
+}
+
+.tooltip.show {
+  opacity: 0.95;
+}
+
+.tooltip-inner {
+  max-width: 200px;
+  padding: 0.4rem 0.65rem;
+  color: #fff;
+  text-align: center;
+  background: var(--bs-dark);
+  border-radius: var(--nm-radius-sm);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
+.tooltip .tooltip-arrow {
+  position: absolute;
+  display: block;
+  width: 0.8rem;
+  height: 0.4rem;
+}
+
+.tooltip .tooltip-arrow::before {
+  position: absolute;
+  content: "";
+  border-color: transparent;
+  border-style: solid;
+}
+
+// Top tooltip
+.bs-tooltip-top .tooltip-arrow,
+.bs-tooltip-auto[data-popper-placement^="top"] .tooltip-arrow {
+  bottom: 0;
+}
+.bs-tooltip-top .tooltip-arrow::before,
+.bs-tooltip-auto[data-popper-placement^="top"] .tooltip-arrow::before {
+  top: -1px;
+  border-width: 0.4rem 0.4rem 0;
+  border-top-color: var(--bs-dark);
+}
+
+// ─── Tab / Pill Nav (for QR generator tabs) ───
+.nav-tabs,
+.nav-pills {
+  display: flex;
+  flex-wrap: wrap;
+  padding-left: 0;
+  margin-bottom: 0;
+  list-style: none;
+}
+
+.nav-tabs .nav-link {
+  margin-bottom: -1px;
+  border: none;
+  border-radius: var(--nm-radius-sm) var(--nm-radius-sm) 0 0;
+  background: transparent;
+
+  &.active {
+    background: var(--nm-bg);
+    box-shadow: var(--nm-shadow-flat-sm);
+    color: var(--bs-primary) !important;
+    font-weight: 600;
+  }
+}
+
+.tab-content > .tab-pane {
+  display: none;
+}
+
+.tab-content > .tab-pane.active {
+  display: block;
+}
+
+// ─── Popover ───
+.popover {
+  z-index: 1070;
+}
+
+// ─── Toast ───
+.toast {
+  z-index: 1070;
+}

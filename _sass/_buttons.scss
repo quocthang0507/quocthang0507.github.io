@@ -1,69 +1,350 @@
-// Button styles - Using Bootstrap defaults with minimal customizations
+// ============================================================
+// Button Styles — Neumorphism
+// ============================================================
+@use "neumorphism" as nm;
 
+// ─── Base Button ───
 .btn {
-  border-radius: var(--md-radius-pill);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1.25rem;
   font-weight: 600;
-  transition: all var(--transition-fast);
+  font-size: 1rem;
+  line-height: 1.5;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;
+  cursor: pointer;
+  user-select: none;
+  border: none;
+  border-radius: var(--nm-radius-pill);
+  background: var(--nm-bg);
+  color: var(--bs-body-color);
+  box-shadow: var(--nm-shadow-flat-sm);
+  @include nm.nm-transition;
+
+  &:hover {
+    box-shadow: var(--nm-shadow-flat);
+    transform: translateY(-1px);
+    text-decoration: none;
+  }
+
+  &:active,
+  &.active {
+    box-shadow: var(--nm-shadow-pressed);
+    transform: translateY(0);
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: var(--nm-shadow-flat-sm), var(--nm-focus-ring);
+  }
+
+  &:focus:not(:focus-visible) {
+    box-shadow: var(--nm-shadow-flat-sm);
+  }
+
+  &:focus-visible {
+    box-shadow: var(--nm-shadow-flat-sm), var(--nm-focus-ring);
+  }
+
+  &:disabled,
+  &.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+    box-shadow: var(--nm-shadow-flat-sm);
+  }
 }
 
-.btn:focus {
-  box-shadow: var(--md-focus-ring);
-  outline: none;
+// ─── Filled Variants ───
+.btn-primary {
+  background: var(--bs-primary);
+  color: #fff;
+  box-shadow: 3px 3px 8px rgba(var(--bs-primary-rgb), 0.4),
+              -2px -2px 6px rgba(255, 255, 255, 0.15);
+
+  &:hover {
+    background: #5940A0;
+    color: #fff;
+    box-shadow: 4px 4px 10px rgba(var(--bs-primary-rgb), 0.5),
+                -3px -3px 8px rgba(255, 255, 255, 0.2);
+  }
+
+  &:active {
+    background: #4F378B;
+    box-shadow: inset 2px 2px 5px rgba(0,0,0,0.25);
+  }
 }
 
-.btn:focus:not(:focus-visible) {
-  box-shadow: none;
+.btn-success {
+  background: var(--bs-success);
+  color: #fff;
+  box-shadow: 3px 3px 8px rgba(var(--bs-success-rgb), 0.4),
+              -2px -2px 6px rgba(255, 255, 255, 0.15);
+
+  &:hover {
+    background: #256D29;
+    color: #fff;
+    box-shadow: 4px 4px 10px rgba(var(--bs-success-rgb), 0.5),
+                -3px -3px 8px rgba(255, 255, 255, 0.2);
+  }
+
+  &:active {
+    box-shadow: inset 2px 2px 5px rgba(0,0,0,0.25);
+  }
 }
 
-.btn:focus-visible {
-  box-shadow: var(--md-focus-ring);
+.btn-danger {
+  background: var(--bs-danger);
+  color: #fff;
+  box-shadow: 3px 3px 8px rgba(var(--bs-danger-rgb), 0.4),
+              -2px -2px 6px rgba(255, 255, 255, 0.15);
+
+  &:hover {
+    background: #B71C1C;
+    color: #fff;
+    box-shadow: 4px 4px 10px rgba(var(--bs-danger-rgb), 0.5),
+                -3px -3px 8px rgba(255, 255, 255, 0.2);
+  }
+
+  &:active {
+    box-shadow: inset 2px 2px 5px rgba(0,0,0,0.25);
+  }
 }
 
+.btn-warning {
+  background: var(--bs-warning);
+  color: #000;
+  box-shadow: 3px 3px 8px rgba(var(--bs-warning-rgb), 0.4),
+              -2px -2px 6px rgba(255, 255, 255, 0.15);
+
+  &:hover {
+    background: #D45E00;
+    color: #000;
+    box-shadow: 4px 4px 10px rgba(var(--bs-warning-rgb), 0.5),
+                -3px -3px 8px rgba(255, 255, 255, 0.2);
+  }
+
+  &:active {
+    box-shadow: inset 2px 2px 5px rgba(0,0,0,0.2);
+  }
+}
+
+.btn-info {
+  background: var(--bs-info);
+  color: #fff;
+  box-shadow: 3px 3px 8px rgba(var(--bs-info-rgb), 0.4),
+              -2px -2px 6px rgba(255, 255, 255, 0.15);
+
+  &:hover {
+    background: #0277BD;
+    color: #fff;
+    box-shadow: 4px 4px 10px rgba(var(--bs-info-rgb), 0.5),
+                -3px -3px 8px rgba(255, 255, 255, 0.2);
+  }
+
+  &:active {
+    box-shadow: inset 2px 2px 5px rgba(0,0,0,0.25);
+  }
+}
+
+.btn-secondary {
+  background: var(--bs-secondary);
+  color: #fff;
+  box-shadow: 3px 3px 8px rgba(var(--bs-secondary-rgb), 0.4),
+              -2px -2px 6px rgba(255, 255, 255, 0.15);
+
+  &:hover {
+    background: #504865;
+    color: #fff;
+  }
+
+  &:active {
+    box-shadow: inset 2px 2px 5px rgba(0,0,0,0.25);
+  }
+}
+
+.btn-dark {
+  background: var(--bs-dark);
+  color: #fff;
+  box-shadow: 3px 3px 8px rgba(45,45,54, 0.4),
+              -2px -2px 6px rgba(255, 255, 255, 0.15);
+
+  &:hover {
+    background: #1A1A22;
+    color: #fff;
+  }
+
+  &:active {
+    box-shadow: inset 2px 2px 5px rgba(0,0,0,0.25);
+  }
+}
+
+.btn-light {
+  background: var(--bs-light);
+  color: var(--bs-body-color);
+  box-shadow: var(--nm-shadow-flat-sm);
+
+  &:hover {
+    background: #D8DCE3;
+  }
+}
+
+// ─── Outline Variants — Neumorphic ───
 .btn-outline-primary {
   color: var(--bs-primary);
-  border-color: var(--bs-primary);
-  background: transparent;
-}
+  background: var(--nm-bg);
+  border: 2px solid rgba(var(--bs-primary-rgb), 0.3);
+  box-shadow: var(--nm-shadow-flat-sm);
 
-.btn-outline-primary:hover {
-  background: var(--bs-primary);
-  border-color: var(--bs-primary);
-  color: white;
-  transform: translateY(-1px);
+  &:hover {
+    background: var(--bs-primary);
+    border-color: var(--bs-primary);
+    color: white;
+    box-shadow: 3px 3px 8px rgba(var(--bs-primary-rgb), 0.4),
+                -2px -2px 6px rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    box-shadow: inset 2px 2px 5px rgba(0,0,0,0.2);
+  }
 }
 
 .btn-outline-success {
   color: var(--bs-success);
-  border-color: var(--bs-success);
-  background: transparent;
-}
+  background: var(--nm-bg);
+  border: 2px solid rgba(var(--bs-success-rgb), 0.3);
+  box-shadow: var(--nm-shadow-flat-sm);
 
-.btn-outline-success:hover {
-  background: var(--bs-success);
-  border-color: var(--bs-success);
-  color: white;
+  &:hover {
+    background: var(--bs-success);
+    border-color: var(--bs-success);
+    color: white;
+    box-shadow: 3px 3px 8px rgba(var(--bs-success-rgb), 0.4),
+                -2px -2px 6px rgba(255, 255, 255, 0.15);
+  }
+
+  &:active {
+    box-shadow: inset 2px 2px 5px rgba(0,0,0,0.2);
+  }
 }
 
 .btn-outline-danger {
   color: var(--bs-danger);
-  border-color: var(--bs-danger);
-  background: transparent;
-}
+  background: var(--nm-bg);
+  border: 2px solid rgba(var(--bs-danger-rgb), 0.3);
+  box-shadow: var(--nm-shadow-flat-sm);
 
-.btn-outline-danger:hover {
-  background: var(--bs-danger);
-  border-color: var(--bs-danger);
-  color: white;
+  &:hover {
+    background: var(--bs-danger);
+    border-color: var(--bs-danger);
+    color: white;
+    box-shadow: 3px 3px 8px rgba(var(--bs-danger-rgb), 0.4),
+                -2px -2px 6px rgba(255, 255, 255, 0.15);
+  }
+
+  &:active {
+    box-shadow: inset 2px 2px 5px rgba(0,0,0,0.2);
+  }
 }
 
 .btn-outline-secondary {
   color: var(--bs-secondary);
-  border-color: var(--bs-secondary);
-  background: transparent;
+  background: var(--nm-bg);
+  border: 2px solid rgba(var(--bs-secondary-rgb), 0.3);
+  box-shadow: var(--nm-shadow-flat-sm);
+
+  &:hover {
+    background: var(--bs-secondary);
+    border-color: var(--bs-secondary);
+    color: white;
+  }
+
+  &:active {
+    box-shadow: inset 2px 2px 5px rgba(0,0,0,0.2);
+  }
 }
 
-.btn-outline-secondary:hover {
-  background: var(--bs-secondary);
-  border-color: var(--bs-secondary);
-  color: white;
+.btn-outline-light {
+  color: #fff;
+  background: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.6);
+  }
+}
+
+// ─── Size Variants ───
+.btn-sm {
+  padding: 0.3rem 0.85rem;
+  font-size: 0.875rem;
+  border-radius: var(--nm-radius-pill);
+}
+
+.btn-lg {
+  padding: 0.65rem 1.75rem;
+  font-size: 1.125rem;
+  border-radius: var(--nm-radius-pill);
+}
+
+// ─── Button Group ───
+.btn-group {
+  display: inline-flex;
+  vertical-align: middle;
+
+  > .btn {
+    position: relative;
+    flex: 1 1 auto;
+    border-radius: 0;
+    margin-left: -1px;
+
+    &:first-child {
+      margin-left: 0;
+      border-radius: var(--nm-radius-pill) 0 0 var(--nm-radius-pill);
+    }
+
+    &:last-child {
+      border-radius: 0 var(--nm-radius-pill) var(--nm-radius-pill) 0;
+    }
+
+    &:only-child {
+      border-radius: var(--nm-radius-pill);
+    }
+  }
+}
+
+// ─── Close Button ───
+.btn-close {
+  box-sizing: content-box;
+  width: 1em;
+  height: 1em;
+  padding: 0.25em;
+  color: var(--bs-body-color);
+  background: transparent url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%232D2D36'%3e%3cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3e%3c/svg%3e") center/1em auto no-repeat;
+  border: 0;
+  border-radius: var(--nm-radius-pill);
+  opacity: 0.6;
+  cursor: pointer;
+  @include nm.nm-transition;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  &:focus {
+    outline: 0;
+    box-shadow: var(--nm-focus-ring);
+    opacity: 1;
+  }
+}
+
+// White variant (for dark headers / modals)
+.btn-close-white {
+  filter: invert(1) grayscale(100%) brightness(200%);
 }
