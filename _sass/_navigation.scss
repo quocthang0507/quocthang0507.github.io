@@ -14,11 +14,18 @@
 }
 
 .navbar-brand {
+  display: inline-flex;
+  align-items: center;
   color: var(--bs-body-color) !important;
   font-weight: 700;
   font-size: 1.2rem;
   text-decoration: none;
-  padding: 0.5rem 0;
+  padding: 0.25rem 0;
+  line-height: 1.2;
+
+  &:hover {
+    text-decoration: none;
+  }
 }
 
 .navbar-nav {
@@ -51,6 +58,7 @@
     background: rgba(163, 177, 198, 0.2);
     box-shadow: inset 2px 2px 4px var(--nm-shadow-dark),
                 inset -2px -2px 4px var(--nm-shadow-light);
+    text-decoration: none;
   }
 
   &.active {
@@ -198,6 +206,7 @@
     color: var(--bs-body-color);
     box-shadow: inset 1px 1px 3px var(--nm-shadow-dark),
                 inset -1px -1px 3px var(--nm-shadow-light);
+    text-decoration: none;
   }
 
   &.active,

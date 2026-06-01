@@ -488,5 +488,24 @@ const chineseTranslations = {
     "error.title": "找不到页面",
     "error.message": "抱歉，您要找的页面不存在或已被移动。",
     "error.home": "返回主页",
-    "error.back": "返回"
+    "error.back": "返回",
+    
+    // Currency Converter
+    "nav.currency_converter": "货币转换器",
+    "currency.title": "在线货币转换器",
+    "currency.amount": "金额：",
+    "currency.from": "从：",
+    "currency.to": "到：",
+    "currency.result": "转换结果：",
+    "currency.rates_table": "Vietcombank 汇率表",
+    "currency.search_placeholder": "搜索货币...",
+    "currency.last_updated": "最后更新：",
+    "currency.buy_cash": "现金买入",
+    "currency.buy_transfer": "现汇买入",
+    "currency.sell": "卖出",
+    "currency.fetch_error": "无法获取汇率数据。请稍后再试。",
+    "currency.loading": "正在加载汇率数据...",
+    "currency.currency_name": "货币名称",
+    "currency.currency_code": "代号",
+    "currency.quick_info": "汇率信息"
 };

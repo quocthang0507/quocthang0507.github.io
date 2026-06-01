@@ -47,6 +47,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Event listeners
     lengthSlider.addEventListener('input', function() {
         lengthValue.textContent = this.value;
+        generatePassword();
+    });
+    
+    [includeUppercase, includeLowercase, includeNumbers, includeSymbols, excludeAmbiguous, noDuplicate].forEach(checkbox => {
+        if (checkbox) {
+            checkbox.addEventListener('change', generatePassword);
+        }
     });
     
     generateBtn.addEventListener('click', generatePassword);

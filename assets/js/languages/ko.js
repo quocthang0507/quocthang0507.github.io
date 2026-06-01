@@ -497,5 +497,24 @@ const koreanTranslations = {
     "error.title": "페이지를 찾을 수 없습니다",
     "error.message": "죄송합니다. 찾고 계신 페이지가 존재하지 않거나 이동되었습니다.",
     "error.home": "홈으로",
-    "error.back": "뒤로"
+    "error.back": "뒤로",
+    
+    // Currency Converter
+    "nav.currency_converter": "환율 변환기",
+    "currency.title": "온라인 환율 변환기",
+    "currency.amount": "금액:",
+    "currency.from": "보내는 통화:",
+    "currency.to": "받는 통화:",
+    "currency.result": "환전 결과:",
+    "currency.rates_table": "Vietcombank 고시 환율",
+    "currency.search_placeholder": "통화 검색...",
+    "currency.last_updated": "최근 업데이트:",
+    "currency.buy_cash": "현찰 살 때",
+    "currency.buy_transfer": "송금 보낼 때",
+    "currency.sell": "현찰 팔 때",
+    "currency.fetch_error": "환율 정보를 불러올 수 없습니다. 나중에 다시 시도해 주세요.",
+    "currency.loading": "환율 정보를 불러오는 중...",
+    "currency.currency_name": "통화명",
+    "currency.currency_code": "코드",
+    "currency.quick_info": "환율 정보"
 };

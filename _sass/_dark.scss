@@ -147,13 +147,15 @@
               inset -2px -2px 4px var(--nm-dark-shadow-light);
 }
 
-[data-theme="dark"] .form-range::-webkit-slider-track {
+[data-theme="dark"] .form-range::-webkit-slider-runnable-track,
+[data-theme="dark"] .form-range::-moz-range-track {
   background: var(--nm-dark-input);
   box-shadow: inset 2px 2px 4px var(--nm-dark-shadow-dark),
               inset -2px -2px 4px var(--nm-dark-shadow-light);
 }
 
-[data-theme="dark"] .form-range::-webkit-slider-thumb {
+[data-theme="dark"] .form-range::-webkit-slider-thumb,
+[data-theme="dark"] .form-range::-moz-range-thumb {
   background: var(--nm-dark-card);
   box-shadow: 3px 3px 6px var(--nm-dark-shadow-dark),
               -3px -3px 6px var(--nm-dark-shadow-light);

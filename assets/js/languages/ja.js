@@ -488,5 +488,24 @@ const japaneseTranslations = {
     "error.title": "ページが見つかりません",
     "error.message": "申し訳ございません。お探しのページは存在しないか、移動されました。",
     "error.home": "ホームへ",
-    "error.back": "戻る"
+    "error.back": "戻る",
+    
+    // Currency Converter
+    "nav.currency_converter": "通貨換算ツール",
+    "currency.title": "オンライン通貨換算ツール",
+    "currency.amount": "金額:",
+    "currency.from": "変換元:",
+    "currency.to": "変換先:",
+    "currency.result": "変換結果:",
+    "currency.rates_table": "Vietcombank 為替レート",
+    "currency.search_placeholder": "通貨を検索...",
+    "currency.last_updated": "最終更新:",
+    "currency.buy_cash": "現金買値",
+    "currency.buy_transfer": "電信買値",
+    "currency.sell": "売値",
+    "currency.fetch_error": "為替レートを取得できません。後ほどもう一度お試しください。",
+    "currency.loading": "為替レートを読み込んでいます...",
+    "currency.currency_name": "通貨名",
+    "currency.currency_code": "コード",
+    "currency.quick_info": "レート情報"
 };

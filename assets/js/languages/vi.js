@@ -616,5 +616,24 @@ const vietnameseTranslations = {
     "error.title": "Trang không tìm thấy",
     "error.message": "Xin lỗi, trang bạn đang tìm kiếm không tồn tại hoặc đã bị di chuyển.",
     "error.home": "Về trang chủ",
-    "error.back": "Quay lại"
+    "error.back": "Quay lại",
+    
+    // Currency Converter
+    "nav.currency_converter": "Chuyển đổi tiền tệ",
+    "currency.title": "Chuyển đổi tiền tệ trực tuyến",
+    "currency.amount": "Số tiền:",
+    "currency.from": "Từ:",
+    "currency.to": "Sang:",
+    "currency.result": "Kết quả chuyển đổi:",
+    "currency.rates_table": "Bảng tỷ giá Vietcombank",
+    "currency.search_placeholder": "Tìm kiếm tiền tệ...",
+    "currency.last_updated": "Cập nhật lần cuối: ",
+    "currency.buy_cash": "Mua tiền mặt",
+    "currency.buy_transfer": "Mua chuyển khoản",
+    "currency.sell": "Bán",
+    "currency.fetch_error": "Không thể tải dữ liệu tỷ giá. Vui lòng thử lại sau.",
+    "currency.loading": "Đang tải dữ liệu tỷ giá...",
+    "currency.currency_name": "Tên ngoại tệ",
+    "currency.currency_code": "Mã",
+    "currency.quick_info": "Thông tin tỷ giá"
 };

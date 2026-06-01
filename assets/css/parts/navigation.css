@@ -20,8 +20,13 @@
     font-weight: 500;
 }
 
+.navbar-brand:hover {
+    text-decoration: none;
+}
+
 .nav-link:hover {
     color: rgba(255, 255, 255, 0.8) !important;
+    text-decoration: none;
 }
 
 .nav-link.active {
@@ -68,4 +73,5 @@ li.nav-item.dropdown {
     background-color: var(--bs-primary);
     color: #ffffff !important;
     font-weight: 600;
+    text-decoration: none;
 }

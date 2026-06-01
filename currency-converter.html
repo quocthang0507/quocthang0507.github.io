@@ -1,0 +1,275 @@
+---
+layout: default
+title: "Chuyển đổi đơn vị tiền tệ"
+description: "Công cụ chuyển đổi tiền tệ trực tuyến trực quan. Cập nhật tỷ giá trực tiếp từ Vietcombank."
+keywords: "currency converter, exchange rates, vietcombank rates, tỷ giá ngoại tệ, đổi tiền, tỷ giá vietcombank"
+custom_js: ['currency-converter.js']
+permalink: /currency-converter/
+sitemap:
+  priority: 0.8
+  changefreq: weekly
+  lastmod: 2026-06-01
+---
+
+<div class="row">
+    <div class="col-12">
+        <div id="alert-container"></div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Left Column: Converter and Common Amounts -->
+    <div class="col-lg-6 mb-4">
+        <!-- Main Converter Card -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-calculator me-2"></i>
+                    <span data-i18n="currency.title">Chuyển đổi tiền tệ trực tuyến</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                <!-- Loader inside card during fetch -->
+                <div id="converter-loading" class="text-center py-5">
+                    <div class="spinner-border text-primary mb-3" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="text-muted" data-i18n="currency.loading">Đang tải dữ liệu tỷ giá...</p>
+                </div>
+
+                <div id="converter-content" style="display: none;">
+                    <!-- Amount Input & Transaction Type Selector in two columns -->
+                    <div class="row mb-3">
+                        <div class="col-md-6 mb-3 mb-md-0">
+                            <label for="currency-amount" class="form-label">
+                                <i class="fas fa-coins me-1"></i>
+                                <span data-i18n="currency.amount">Số tiền:</span>
+                            </label>
+                            <input type="number" id="currency-amount" class="form-control form-control-lg text-center font-weight-bold" value="1" step="any" min="0">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label d-block">
+                                <i class="fas fa-hand-holding-usd me-1"></i>
+                                <span id="label-transaction-type">Loại giao dịch:</span>
+                            </label>
+                            <div class="d-flex align-items-center h-100 py-1 gap-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="transaction-type" id="type-transfer" value="transfer" checked>
+                                    <label class="form-check-label" for="type-transfer" id="label-transfer">Chuyển khoản</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="transaction-type" id="type-cash" value="cash">
+                                    <label class="form-check-label" for="type-cash" id="label-cash">Tiền mặt</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- From/To Selectors -->
+                    <div class="row align-items-center mb-3">
+                        <div class="col-md-5">
+                            <label for="from-currency" class="form-label">
+                                <span data-i18n="currency.from">Từ:</span>
+                            </label>
+                            <select id="from-currency" class="form-select form-select-lg">
+                                <!-- Populated dynamically -->
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-2 text-center mt-3 mt-md-0">
+                            <button id="swap-currency-btn" class="btn btn-outline-primary rounded-circle swap-btn-custom" type="button" aria-label="Swap">
+                                <i class="fas fa-sync-alt fa-rotate-90"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="col-md-5">
+                            <label for="to-currency" class="form-label">
+                                <span data-i18n="currency.to">Sang:</span>
+                            </label>
+                            <select id="to-currency" class="form-select form-select-lg">
+                                <!-- Populated dynamically -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Presets Section -->
+                    <div class="mb-4 d-flex align-items-center flex-wrap gap-2">
+                        <span class="small text-muted" id="label-presets">Gợi ý nhanh:</span>
+                        <button type="button" class="btn btn-xs btn-outline-secondary py-1 px-2 preset-btn" data-from="USD" data-to="VND">🇺🇸 USD → 🇻🇳 VND</button>
+                        <button type="button" class="btn btn-xs btn-outline-secondary py-1 px-2 preset-btn" data-from="EUR" data-to="VND">🇪🇺 EUR → 🇻🇳 VND</button>
+                        <button type="button" class="btn btn-xs btn-outline-secondary py-1 px-2 preset-btn" data-from="JPY" data-to="VND">🇯🇵 JPY → 🇻🇳 VND</button>
+                        <button type="button" class="btn btn-xs btn-outline-secondary py-1 px-2 preset-btn" data-from="CNY" data-to="VND">🇨🇳 CNY → 🇻🇳 VND</button>
+                    </div>
+
+                    <!-- Conversion Result Card -->
+                    <div class="result-card p-4 mb-4 text-center position-relative">
+                        <button id="copy-result-btn" class="btn btn-outline-success btn-sm position-absolute top-0 end-0 m-2" type="button" title="Sao chép kết quả">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                        <div class="small text-muted mb-2" data-i18n="currency.result">Kết quả chuyển đổi:</div>
+                        <div class="h5 text-secondary mb-1" id="result-from-display">1 USD =</div>
+                        <div class="display-6 text-primary font-weight-bold" id="result-to-display">25.450 VND</div>
+                    </div>
+
+                    <!-- Quick exchange rate info -->
+                    <div class="alert alert-secondary mb-0 py-2 px-3 d-flex justify-content-between align-items-center flex-wrap">
+                        <span class="small text-muted">
+                            <i class="fas fa-info-circle me-1"></i>
+                            <span data-i18n="currency.quick_info">Thông tin tỷ giá:</span>
+                            <span id="rate-formula" class="font-weight-bold">1 USD = 25.450 VND</span>
+                        </span>
+                        <span class="small text-muted mt-1 mt-sm-0">
+                            <span data-i18n="currency.last_updated">Cập nhật lần cuối:</span>
+                            <span id="rates-timestamp">-</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Common Conversion Amounts Card -->
+        <div class="card" id="common-amounts-card" style="display: none;">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-list-ol me-2"></i>
+                    <span id="label-common-amounts">Bảng quy đổi phổ biến</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center-headers">
+                    <div class="col-md-6 mb-3 mb-md-0">
+                        <div class="table-responsive">
+                            <table class="table table-sm table-hover mb-0 align-middle">
+                                <thead>
+                                    <tr id="common-from-header" class="text-center bg-light">
+                                        <!-- Dynamic Header -->
+                                    </tr>
+                                </thead>
+                                <tbody id="common-from-body" class="font-monospace text-center">
+                                    <!-- Populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="table-responsive">
+                            <table class="table table-sm table-hover mb-0 align-middle">
+                                <thead>
+                                    <tr id="common-to-header" class="text-center bg-light">
+                                        <!-- Dynamic Header -->
+                                    </tr>
+                                </thead>
+                                <tbody id="common-to-body" class="font-monospace text-center">
+                                    <!-- Populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Exchange Rates Table Card -->
+    <div class="col-lg-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-table me-2"></i>
+                    <span data-i18n="currency.rates_table">Bảng tỷ giá Vietcombank</span>
+                </h5>
+            </div>
+            <div class="card-body d-flex flex-column">
+                <!-- Search Filter Input -->
+                <div class="mb-3">
+                    <div class="input-group text-muted-search">
+                        <span class="input-group-text bg-transparent border-end-0">
+                            <i class="fas fa-search text-muted"></i>
+                        </span>
+                        <input type="text" id="search-rates" class="form-control border-start-0" placeholder="Tìm kiếm tiền tệ..." data-i18n="currency.search_placeholder">
+                    </div>
+                </div>
+
+                <!-- Table Loading Loader -->
+                <div id="table-loading" class="text-center py-5 my-auto">
+                    <div class="spinner-border text-success mb-3" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="text-muted" data-i18n="currency.loading">Đang tải dữ liệu tỷ giá...</p>
+                </div>
+
+                <!-- Rates Table container -->
+                <div id="table-content" class="table-responsive flex-grow-1" style="display: none; max-height: 720px; overflow-y: auto;">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="sticky-top bg-light">
+                            <tr>
+                                <th scope="col" class="text-center" data-i18n="currency.currency_code">Mã</th>
+                                <th scope="col" data-i18n="currency.currency_name">Tên ngoại tệ</th>
+                                <th scope="col" class="text-end" data-i18n="currency.buy_cash">Mua tiền mặt</th>
+                                <th scope="col" class="text-end" data-i18n="currency.buy_transfer">Mua CK</th>
+                                <th scope="col" class="text-end" data-i18n="currency.sell">Bán</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rates-table-body">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.swap-btn-custom {
+    width: 45px;
+    height: 45px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+}
+.swap-btn-custom:hover {
+    transform: rotate(180deg);
+}
+.result-card {
+    background: var(--nm-bg);
+    border-radius: var(--nm-radius-lg);
+    box-shadow: var(--nm-shadow-pressed);
+    border: none;
+}
+.sticky-top {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+.text-muted-search .input-group-text {
+    border-color: var(--nm-border);
+}
+.btn-xs {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    border-radius: var(--nm-radius-sm);
+}
+body.dark-mode .result-card {
+    background: var(--nm-dark-card);
+    box-shadow: inset 3px 3px 6px var(--nm-dark-shadow-dark),
+                inset -3px -3px 6px var(--nm-dark-shadow-light);
+}
+body.dark-mode .sticky-top.bg-light {
+    background-color: var(--nm-dark-card) !important;
+    color: var(--nm-dark-text);
+}
+body.dark-mode .sticky-top th {
+    background-color: var(--nm-dark-card) !important;
+    color: var(--nm-dark-text);
+    border-bottom: 2px solid var(--nm-dark-border);
+}
+body.dark-mode .table-striped>tbody>tr:nth-of-type(odd) {
+    --bs-table-accent-bg: rgba(255, 255, 255, 0.05);
+    color: var(--nm-dark-text);
+}
+.text-center-headers th {
+    text-align: center;
+}
+</style>

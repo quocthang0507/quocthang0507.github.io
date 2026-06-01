@@ -602,5 +602,24 @@ const englishTranslations = {
     "error.title": "Page Not Found",
     "error.message": "Sorry, the page you are looking for does not exist or has been moved.",
     "error.home": "Go Home",
-    "error.back": "Go Back"
+    "error.back": "Go Back",
+    
+    // Currency Converter
+    "nav.currency_converter": "Currency Converter",
+    "currency.title": "Online Currency Converter",
+    "currency.amount": "Amount:",
+    "currency.from": "From:",
+    "currency.to": "To:",
+    "currency.result": "Conversion Result:",
+    "currency.rates_table": "Vietcombank Exchange Rates",
+    "currency.search_placeholder": "Search currency...",
+    "currency.last_updated": "Last updated: ",
+    "currency.buy_cash": "Buy Cash",
+    "currency.buy_transfer": "Buy Transfer",
+    "currency.sell": "Sell",
+    "currency.fetch_error": "Unable to fetch exchange rates. Please try again later.",
+    "currency.loading": "Loading exchange rates...",
+    "currency.currency_name": "Currency Name",
+    "currency.currency_code": "Code",
+    "currency.quick_info": "Exchange Rate Info"
 };

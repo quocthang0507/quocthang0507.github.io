@@ -57,6 +57,11 @@
                             </a>
                         </li>
                         <li>
+                            <a class="dropdown-item {% if page.url == '/currency-converter/' %}active{% endif %}" href="{{ '/currency-converter/' | relative_url }}">
+                                <span data-i18n="nav.currency_converter">Currency Converter</span>
+                            </a>
+                        </li>
+                        <li>
                             <a class="dropdown-item {% if page.url == '/qr-generator/' %}active{% endif %}" href="{{ '/qr-generator/' | relative_url }}">
                                 <span data-i18n="nav.qr_generator">QR Generator</span>
                             </a>
