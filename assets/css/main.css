@@ -1282,12 +1282,22 @@ label {
 }
 
 .navbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
   background: var(--nav-bg) !important;
   box-shadow: var(--nm-shadow-flat);
   border-bottom: none;
   position: relative;
   z-index: 1030;
   padding: 0.5rem 0;
+}
+.navbar > .container {
+  display: flex;
+  flex-wrap: inherit;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .navbar-brand {
