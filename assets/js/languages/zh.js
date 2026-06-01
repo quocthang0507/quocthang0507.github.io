@@ -507,5 +507,26 @@ const chineseTranslations = {
     "currency.loading": "正在加载汇率数据...",
     "currency.currency_name": "货币名称",
     "currency.currency_code": "代号",
-    "currency.quick_info": "汇率信息"
+    "currency.quick_info": "汇率信息",
+
+    // JSON Formatter & Command Palette
+    "nav.json_formatter": "JSON 格式化",
+    "json.title": "JSON 格式化与 CSV 转换器",
+    "json.input_label": "输入数据 (JSON 或 CSV):",
+    "json.output_label": "输出结果:",
+    "json.format": "美化 JSON",
+    "json.minify": "压缩 JSON",
+    "json.validate": "验证 JSON",
+    "json.to_csv": "JSON 转 CSV",
+    "json.to_json": "CSV 转 JSON",
+    "json.indent": "缩进空格:",
+    "json.placeholder": "在此处粘贴您的 JSON 或 CSV 数据...",
+    "json.valid": "有效的 JSON 数据！",
+    "json.invalid": "无效的 JSON 数据！",
+    "json.copied": "已复制输出结果到剪贴板！",
+    "json.clear": "清空",
+    "json.load_sample": "示例",
+    "palette.search_placeholder": "搜索工具... (使用方向键选择)",
+    "palette.no_results": "未找到匹配的工具。",
+    "palette.search": "搜索工具 (Cmd/Ctrl + K)"
 };

@@ -1,0 +1,148 @@
+---
+layout: default
+title: "Định dạng JSON & Chuyển đổi CSV"
+description: "Công cụ định dạng, nén gọn, kiểm tra tính hợp lệ của JSON và chuyển đổi qua lại giữa JSON và CSV trực quan, bảo mật."
+keywords: "json formatter, json validator, csv to json, json to csv, định dạng json, check json, convert csv"
+custom_js: ['json-formatter.js']
+permalink: /json-formatter/
+sitemap:
+  priority: 0.8
+  changefreq: weekly
+  lastmod: 2026-06-01
+---
+
+<div class="row">
+    <div class="col-12">
+        <div id="alert-container"></div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Options toolbar -->
+    <div class="col-12 mb-4">
+        <div class="card">
+            <div class="card-body py-2 px-3 d-flex flex-wrap align-items-center justify-content-between gap-3">
+                <div class="d-flex align-items-center gap-2">
+                    <label for="indent-select" class="form-label mb-0 small text-muted font-weight-bold" id="label-json-indent">Khoảng cách thụt lề:</label>
+                    <select id="indent-select" class="form-select form-select-sm" style="width: auto;">
+                        <option value="2">2 spaces</option>
+                        <option value="4" selected>4 spaces</option>
+                        <option value="tab">Tab</option>
+                    </select>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="load-json-sample-btn">
+                        <i class="fas fa-file-code me-1"></i> <span data-i18n="json.load_sample">Mẫu</span> JSON
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="load-csv-sample-btn">
+                        <i class="fas fa-file-csv me-1"></i> <span data-i18n="json.load_sample">Mẫu</span> CSV
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-danger" id="clear-btn">
+                        <i class="fas fa-trash me-1"></i> <span data-i18n="json.clear">Xóa</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Input Panel -->
+    <div class="col-lg-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="fas fa-edit me-2"></i>
+                    <span id="label-json-input">Dữ liệu đầu vào (JSON hoặc CSV):</span>
+                </h5>
+            </div>
+            <div class="card-body d-flex flex-column">
+                <textarea id="json-input" class="form-control font-monospace flex-grow-1" rows="18" placeholder="Dán dữ liệu JSON hoặc CSV của bạn vào đây..." data-i18n="json.placeholder" style="resize: vertical; min-height: 350px;"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <!-- Output Panel -->
+    <div class="col-lg-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="fas fa-terminal me-2"></i>
+                    <span id="label-json-output">Kết quả:</span>
+                </h5>
+                <button type="button" class="btn btn-sm btn-outline-light" id="copy-output-btn">
+                    <i class="fas fa-copy me-1"></i> <span data-i18n="json.clear" data-i18n-default="Sao chép">Sao chép</span>
+                </button>
+            </div>
+            <div class="card-body d-flex flex-column">
+                <!-- Validation status banner -->
+                <div id="json-validation-status" class="alert mb-3 py-2 px-3" style="display: none;"></div>
+                
+                <textarea id="json-output" class="form-control font-monospace flex-grow-1" rows="18" readonly style="resize: vertical; min-height: 350px;"></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Process buttons toolbar -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body text-center d-flex flex-wrap justify-content-center gap-2">
+                <button type="button" class="btn btn-outline-primary px-3 py-2" id="format-json-btn">
+                    <i class="fas fa-magic me-1"></i> <span data-i18n="json.format">Làm đẹp JSON</span>
+                </button>
+                <button type="button" class="btn btn-outline-info px-3 py-2" id="minify-json-btn">
+                    <i class="fas fa-compress-arrows-alt me-1"></i> <span data-i18n="json.minify">Nén gọn JSON</span>
+                </button>
+                <button type="button" class="btn btn-outline-success px-3 py-2" id="validate-json-btn">
+                    <i class="fas fa-check-circle me-1"></i> <span data-i18n="json.validate">Kiểm tra JSON</span>
+                </button>
+                <button type="button" class="btn btn-outline-warning text-dark px-3 py-2" id="json-to-csv-btn">
+                    <i class="fas fa-file-excel me-1"></i> <span data-i18n="json.to_csv">Chuyển JSON sang CSV</span>
+                </button>
+                <button type="button" class="btn btn-outline-secondary px-3 py-2" id="csv-to-json-btn">
+                    <i class="fas fa-file-code me-1"></i> <span data-i18n="json.to_json">Chuyển CSV sang JSON</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tips Section -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h6 class="mb-0">
+                    <i class="fas fa-lightbulb me-2"></i>
+                    <span data-i18n="password.tips_title" data-i18n-default="Mẹo sử dụng">Mẹo sử dụng</span>
+                </h6>
+            </div>
+            <div class="card-body py-3">
+                <ul class="mb-0 small text-muted">
+                    <li>Đảm bảo các chuỗi ký tự trong khóa JSON luôn được bao quanh bởi dấu ngoặc kép đôi (`""`), không dùng ngoặc kép đơn (`''`).</li>
+                    <li>Sử dụng chức năng "Kiểm tra JSON" để nhận biết vị trí lỗi cú pháp (dòng, cột) chính xác nếu việc phân tích cú pháp thất bại.</li>
+                    <li>Chuyển đổi CSV sang JSON hỗ trợ tự động nhận diện tiêu đề cột (header) ở dòng đầu tiên của tập tin CSV.</li>
+                    <li>Mọi xử lý dữ liệu đều được thực hiện trực tiếp trong trình duyệt của bạn (client-side), cam kết bảo mật tuyệt đối cho dữ liệu của bạn.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+#json-validation-status {
+    font-weight: 600;
+}
+body.dark-mode #json-validation-status.alert-success {
+    background-color: rgba(25, 135, 84, 0.2) !important;
+    border-color: rgba(25, 135, 84, 0.4) !important;
+    color: #75b798 !important;
+}
+body.dark-mode #json-validation-status.alert-danger {
+    background-color: rgba(220, 53, 69, 0.2) !important;
+    border-color: rgba(220, 53, 69, 0.4) !important;
+    color: #ea868f !important;
+}
+</style>

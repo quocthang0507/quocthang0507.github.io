@@ -516,5 +516,26 @@ const koreanTranslations = {
     "currency.loading": "환율 정보를 불러오는 중...",
     "currency.currency_name": "통화명",
     "currency.currency_code": "코드",
-    "currency.quick_info": "환율 정보"
+    "currency.quick_info": "환율 정보",
+
+    // JSON Formatter & Command Palette
+    "nav.json_formatter": "JSON 포맷터",
+    "json.title": "JSON 포맷터 & CSV 변환기",
+    "json.input_label": "입력 데이터 (JSON 또는 CSV):",
+    "json.output_label": "결과:",
+    "json.format": "JSON 예쁘게 하기",
+    "json.minify": "JSON 한줄로 압축",
+    "json.validate": "JSON 유효성 검사",
+    "json.to_csv": "JSON을 CSV로 변환",
+    "json.to_json": "CSV를 JSON으로 변환",
+    "json.indent": "들여쓰기 너비:",
+    "json.placeholder": "여기에 JSON 또는 CSV 데이터를 붙여넣으세요...",
+    "json.valid": "유효한 JSON입니다!",
+    "json.invalid": "유효하지 않은 JSON입니다!",
+    "json.copied": "클립보드에 결과가 복사되었습니다!",
+    "json.clear": "지우기",
+    "json.load_sample": "샘플",
+    "palette.search_placeholder": "도구 검색... (방향키로 이동)",
+    "palette.no_results": "검색 결과가 없습니다.",
+    "palette.search": "도구 검색 (Cmd/Ctrl + K)"
 };

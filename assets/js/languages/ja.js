@@ -507,5 +507,26 @@ const japaneseTranslations = {
     "currency.loading": "為替レートを読み込んでいます...",
     "currency.currency_name": "通貨名",
     "currency.currency_code": "コード",
-    "currency.quick_info": "レート情報"
+    "currency.quick_info": "レート情報",
+
+    // JSON Formatter & Command Palette
+    "nav.json_formatter": "JSON 整形ツール",
+    "json.title": "JSON 整形 & CSV 変換ツール",
+    "json.input_label": "入力データ (JSON または CSV):",
+    "json.output_label": "変換結果:",
+    "json.format": "JSON 整形",
+    "json.minify": "JSON 圧縮",
+    "json.validate": "JSON 検証",
+    "json.to_csv": "JSON から CSV 変換",
+    "json.to_json": "CSV から JSON 変換",
+    "json.indent": "インデント幅:",
+    "json.placeholder": "ここに JSON または CSV データを貼り付けてください...",
+    "json.valid": "有効な JSON データです！",
+    "json.invalid": "無効な JSON データです！",
+    "json.copied": "変換結果をクリップボードにコピーしました！",
+    "json.clear": "クリア",
+    "json.load_sample": "サンプル",
+    "palette.search_placeholder": "ツールを検索... (矢印キーで移動)",
+    "palette.no_results": "ツールが見つかりませんでした。",
+    "palette.search": "ツール検索 (Cmd/Ctrl + K)"
 };

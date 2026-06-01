@@ -635,5 +635,26 @@ const vietnameseTranslations = {
     "currency.loading": "Đang tải dữ liệu tỷ giá...",
     "currency.currency_name": "Tên ngoại tệ",
     "currency.currency_code": "Mã",
-    "currency.quick_info": "Thông tin tỷ giá"
+    "currency.quick_info": "Thông tin tỷ giá",
+
+    // JSON Formatter & Command Palette
+    "nav.json_formatter": "Định dạng JSON",
+    "json.title": "Định dạng JSON & Chuyển đổi CSV",
+    "json.input_label": "Dữ liệu đầu vào (JSON hoặc CSV):",
+    "json.output_label": "Kết quả:",
+    "json.format": "Làm đẹp JSON",
+    "json.minify": "Nén gọn JSON",
+    "json.validate": "Kiểm tra JSON",
+    "json.to_csv": "Chuyển JSON sang CSV",
+    "json.to_json": "Chuyển CSV sang JSON",
+    "json.indent": "Khoảng cách thụt lề:",
+    "json.placeholder": "Dán dữ liệu JSON hoặc CSV của bạn vào đây...",
+    "json.valid": "Dữ liệu JSON hợp lệ!",
+    "json.invalid": "Dữ liệu JSON không hợp lệ!",
+    "json.copied": "Đã sao chép kết quả vào clipboard!",
+    "json.clear": "Xóa",
+    "json.load_sample": "Mẫu",
+    "palette.search_placeholder": "Tìm kiếm công cụ... (Dùng phím mũi tên để di chuyển)",
+    "palette.no_results": "Không tìm thấy công cụ nào phù hợp.",
+    "palette.search": "Tìm kiếm công cụ (Cmd/Ctrl + K)"
 };

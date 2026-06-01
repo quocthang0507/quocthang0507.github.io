@@ -121,7 +121,7 @@ layout: compress
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="X-XSS-Protection" content="1; mode=block">
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; connect-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://api.allorigins.win;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; connect-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://api.allorigins.win https://corsproxy.io https://api.codetabs.com;">
     <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()">
     
     <!-- Google Analytics will be loaded conditionally by cookie consent -->
@@ -159,6 +159,37 @@ layout: compress
     <script src="{{ '/assets/js/main.js' | relative_url }}"></script>
     <script id="i18n-script" src="{{ '/assets/js/i18n.js' | relative_url }}"></script>
     {% endif %}
+
+    <!-- Command Palette Overlay -->
+    <div id="command-palette-overlay" class="command-palette-overlay" style="display: none;">
+        <div class="command-palette-modal">
+            <div class="command-palette-search-wrapper">
+                <i class="fas fa-search command-palette-search-icon"></i>
+                <input type="text" id="command-palette-input" placeholder="Tìm kiếm công cụ... (Esc để đóng)" data-i18n="palette.search_placeholder" autocomplete="off">
+            </div>
+            <div id="command-palette-results" class="command-palette-results"></div>
+        </div>
+    </div>
+
+    <!-- Command Palette Controller -->
+    {% if jekyll.environment == "production" %}
+    <script src="{{ '/assets/js/command-palette.min.js' | relative_url }}"></script>
+    {% else %}
+    <script src="{{ '/assets/js/command-palette.js' | relative_url }}"></script>
+    {% endif %}
+
+    <!-- Service Worker PWA registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('{{ "/sw.js" | relative_url }}').then(function(reg) {
+                    console.log('ServiceWorker registration successful with scope: ', reg.scope);
+                }).catch(function(err) {
+                    console.warn('ServiceWorker registration failed: ', err);
+                });
+            });
+        }
+    </script>
     
     <!-- Global tracking functions that work with or without gtag -->
     <script>

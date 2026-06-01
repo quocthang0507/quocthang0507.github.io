@@ -101,9 +101,17 @@
                                 <span data-i18n="nav.color_picker">Color Picker</span>
                             </a>
                         </li>
+                        <li>
+                            <a class="dropdown-item {% if page.url == '/json-formatter/' %}active{% endif %}" href="{{ '/json-formatter/' | relative_url }}">
+                                <span data-i18n="nav.json_formatter">JSON Formatter</span>
+                            </a>
+                        </li>
                     </ul>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item nav-actions-group d-flex align-items-center gap-2">
+                    <button class="navbar-search-btn" type="button" title="Tìm kiếm công cụ (Cmd/Ctrl + K)" data-i18n-title="palette.search" aria-label="Search Tools">
+                        <i class="fas fa-search"></i>
+                    </button>
                     <button id="dark-mode-toggle" class="dark-mode-toggle" type="button" title="Switch to Dark Mode" aria-label="Toggle Dark Mode">
                         <i class="fas fa-moon" id="dark-mode-icon"></i>
                     </button>

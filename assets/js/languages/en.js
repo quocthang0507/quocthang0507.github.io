@@ -621,5 +621,26 @@ const englishTranslations = {
     "currency.loading": "Loading exchange rates...",
     "currency.currency_name": "Currency Name",
     "currency.currency_code": "Code",
-    "currency.quick_info": "Exchange Rate Info"
+    "currency.quick_info": "Exchange Rate Info",
+
+    // JSON Formatter & Command Palette
+    "nav.json_formatter": "JSON Formatter",
+    "json.title": "JSON Formatter & CSV Converter",
+    "json.input_label": "Input Data (JSON or CSV):",
+    "json.output_label": "Result:",
+    "json.format": "Beautify JSON",
+    "json.minify": "Minify JSON",
+    "json.validate": "Validate JSON",
+    "json.to_csv": "JSON to CSV",
+    "json.to_json": "CSV to JSON",
+    "json.indent": "Indentation:",
+    "json.placeholder": "Paste your JSON or CSV data here...",
+    "json.valid": "Valid JSON!",
+    "json.invalid": "Invalid JSON!",
+    "json.copied": "Copied output to clipboard!",
+    "json.clear": "Clear",
+    "json.load_sample": "Sample",
+    "palette.search_placeholder": "Search tools... (Use arrows to navigate)",
+    "palette.no_results": "No tools found matching your search.",
+    "palette.search": "Search Tools (Cmd/Ctrl + K)"
 };

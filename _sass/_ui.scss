@@ -2,6 +2,7 @@
 // UI Enhancements — Neumorphism
 // ============================================================
 // Settings FAB, quick settings panel, theme badge, toast animations
+@use "neumorphism" as nm;
 
 .settings-fab {
   position: fixed;
@@ -148,4 +149,208 @@
 [data-theme="dark"] .theme-badge[aria-pressed="true"] {
   background: var(--bs-primary);
   color: #fff;
+}
+
+// ============================================================
+// Command Palette — Neumorphism
+// ============================================================
+.command-palette-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(240, 243, 246, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 1080;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 10vh;
+}
+
+[data-theme="dark"] .command-palette-overlay {
+  background: rgba(18, 18, 18, 0.5);
+}
+
+.command-palette-modal {
+  width: 100%;
+  max-width: 600px;
+  background: var(--nm-bg);
+  border-radius: var(--nm-radius-lg);
+  box-shadow: var(--nm-shadow-flat-lg);
+  overflow: hidden;
+  animation: cp-slide-down 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid rgba(163, 177, 198, 0.2);
+}
+
+[data-theme="dark"] .command-palette-modal {
+  background: var(--nm-dark-card);
+  border-color: var(--nm-dark-border);
+  box-shadow: 8px 8px 24px var(--nm-dark-shadow-dark),
+              -8px -8px 24px var(--nm-dark-shadow-light);
+}
+
+@keyframes cp-slide-down {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.command-palette-search-wrapper {
+  display: flex;
+  align-items: center;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid rgba(163, 177, 198, 0.25);
+  background: rgba(163, 177, 198, 0.05);
+}
+
+[data-theme="dark"] .command-palette-search-wrapper {
+  border-bottom-color: var(--nm-dark-border);
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.command-palette-search-icon {
+  font-size: 1.25rem;
+  color: var(--bs-primary);
+  margin-right: 1rem;
+}
+
+#command-palette-input {
+  flex-grow: 1;
+  border: none;
+  background: transparent;
+  font-size: 1.15rem;
+  color: var(--bs-body-color);
+  outline: none;
+  font-family: inherit;
+
+  &::placeholder {
+    color: var(--bs-secondary);
+    opacity: 0.6;
+  }
+}
+
+[data-theme="dark"] #command-palette-input {
+  color: var(--nm-dark-text);
+}
+
+.command-palette-results {
+  max-height: 400px;
+  overflow-y: auto;
+  padding: 0.75rem;
+}
+
+.command-palette-item {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border-radius: var(--nm-radius-md);
+  color: var(--bs-body-color);
+  text-decoration: none;
+  cursor: pointer;
+  margin-bottom: 0.25rem;
+  @include nm.nm-transition;
+
+  i {
+    font-size: 1.2rem;
+    color: var(--bs-primary);
+    width: 2rem;
+    text-align: center;
+    margin-right: 0.75rem;
+  }
+
+  .cp-item-details {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .cp-item-title {
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .cp-item-desc {
+    font-size: 0.8rem;
+    color: var(--bs-secondary);
+  }
+
+  &:hover, &.active {
+    background: var(--nm-bg);
+    box-shadow: var(--nm-shadow-pressed);
+    text-decoration: none;
+    color: var(--bs-primary);
+    transform: none;
+
+    .cp-item-desc {
+      color: var(--bs-primary);
+      opacity: 0.8;
+    }
+  }
+}
+
+[data-theme="dark"] .command-palette-item {
+  color: var(--nm-dark-text);
+
+  &:hover, &.active {
+    background: var(--nm-dark-card);
+    box-shadow: inset 3px 3px 6px var(--nm-dark-shadow-dark),
+                inset -3px -3px 6px var(--nm-dark-shadow-light);
+    color: var(--bs-primary);
+  }
+}
+
+// Search Button inside Navbar
+.navbar-search-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--nm-radius-sm);
+  background: var(--nm-bg);
+  box-shadow: var(--nm-shadow-flat-sm);
+  border: none;
+  color: var(--bs-body-color);
+  cursor: pointer;
+  margin-left: 0;
+  @include nm.nm-transition;
+
+  &:hover {
+    box-shadow: var(--nm-shadow-flat);
+    color: var(--bs-primary);
+  }
+
+  &:active {
+    box-shadow: var(--nm-shadow-pressed);
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: var(--nm-shadow-flat-sm), var(--nm-focus-ring);
+  }
+}
+
+[data-theme="dark"] .navbar-search-btn {
+  background: var(--nm-dark-card);
+  color: var(--nm-dark-text);
+  box-shadow: 3px 3px 6px var(--nm-dark-shadow-dark),
+              -3px -3px 6px var(--nm-dark-shadow-light);
+
+  &:hover {
+    box-shadow: 4px 4px 8px var(--nm-dark-shadow-dark),
+                -4px -4px 8px var(--nm-dark-shadow-light);
+    color: var(--bs-primary);
+  }
+
+  &:active {
+    box-shadow: inset 2px 2px 4px var(--nm-dark-shadow-dark),
+                inset -2px -2px 4px var(--nm-dark-shadow-light);
+  }
 }

@@ -160,18 +160,67 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize Page
     fetchExchangeRates();
 
-    // Fetch Vietcombank rates via proxy
+    // Fetch Vietcombank rates via proxy list
     async function fetchExchangeRates() {
-        try {
-            const response = await fetch(PROXY_URL);
-            if (!response.ok) throw new Error('Network response was not ok');
-            
-            const data = await response.json();
-            if (!data || !data.contents) throw new Error('Invalid proxy response');
-            
-            parseExchangeRates(data.contents);
-        } catch (error) {
-            console.error('Failed to fetch exchange rates:', error);
+        const proxies = [
+            // 1. CorsProxy.io (direct text return)
+            {
+                url: `https://corsproxy.io/?url=${encodeURIComponent(VCB_XML_URL)}`,
+                handler: async (res) => {
+                    if (!res.ok) throw new Error('CorsProxy response not OK');
+                    return await res.text();
+                }
+            },
+            // 2. Codetabs (direct text return)
+            {
+                url: `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(VCB_XML_URL)}`,
+                handler: async (res) => {
+                    if (!res.ok) throw new Error('Codetabs response not OK');
+                    return await res.text();
+                }
+            },
+            // 3. AllOrigins Raw (direct text return)
+            {
+                url: `https://api.allorigins.win/raw?url=${encodeURIComponent(VCB_XML_URL)}`,
+                handler: async (res) => {
+                    if (!res.ok) throw new Error('AllOrigins Raw response not OK');
+                    return await res.text();
+                }
+            },
+            // 4. AllOrigins JSON (wrapped JSON response)
+            {
+                url: `https://api.allorigins.win/get?url=${encodeURIComponent(VCB_XML_URL)}`,
+                handler: async (res) => {
+                    if (!res.ok) throw new Error('AllOrigins JSON response not OK');
+                    const json = await res.json();
+                    if (!json || !json.contents) throw new Error('AllOrigins JSON content empty');
+                    return json.contents;
+                }
+            }
+        ];
+
+        let xmlContent = null;
+        let lastError = null;
+
+        for (const proxy of proxies) {
+            try {
+                console.log(`Attempting to fetch exchange rates via: ${proxy.url}`);
+                const response = await fetch(proxy.url);
+                xmlContent = await proxy.handler(response);
+                if (xmlContent && xmlContent.includes('ExrateList')) {
+                    console.log(`Successfully fetched rates via proxy!`);
+                    break;
+                }
+            } catch (err) {
+                console.warn(`Proxy failed: ${proxy.url}`, err);
+                lastError = err;
+            }
+        }
+
+        if (xmlContent) {
+            parseExchangeRates(xmlContent);
+        } else {
+            console.error('All proxies failed to fetch rates. Last error:', lastError);
             showErrorState();
         }
     }
