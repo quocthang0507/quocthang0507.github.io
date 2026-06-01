@@ -538,5 +538,19 @@ const chineseTranslations = {
     "json.load_sample": "示例",
     "palette.search_placeholder": "搜索工具... (使用方向键选择)",
     "palette.no_results": "未找到匹配的工具。",
-    "palette.search": "搜索工具 (Cmd/Ctrl + K)"
+    "palette.search": "搜索工具 (Cmd/Ctrl + K)",
+
+    // Gold Price
+    "nav.gold_price": "金价",
+    "gold.title": "金价走势图",
+    "gold.gold_type": "黄金类型:",
+    "gold.rate_type": "价格类型:",
+    "gold.buy": "买入",
+    "gold.sell": "卖出",
+    "gold.period_7d": "7天",
+    "gold.period_30d": "30天",
+    "gold.period_90d": "90天",
+    "gold.period_1y": "1年",
+    "gold.loading": "正在加载金价数据...",
+    "gold.fetch_error": "无法加载金价数据，请稍后重试。"
 };

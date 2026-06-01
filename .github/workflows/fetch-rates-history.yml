@@ -11,21 +11,41 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Checkout Repository
+      - name: Checkout data branch
         uses: actions/checkout@v4
-        
+        with:
+          ref: data
+          fetch-depth: 1
+          
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          
-      - name: Fetch and Process History
-        run: node scripts/fetch-rates-history.js
+
+      - name: Checkout scripts from main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: main-branch
+          sparse-checkout: scripts
+          fetch-depth: 1
+
+      - name: Ensure data directory exists
+        run: mkdir -p assets/data
+
+      - name: Fetch and Process Exchange Rates
+        run: node main-branch/scripts/fetch-rates-history.js
+
+      - name: Fetch and Process Gold Prices
+        run: node main-branch/scripts/fetch-gold-history.js
+
+      - name: Cleanup main-branch checkout
+        run: rm -rf main-branch
         
-      - name: Commit and Push Rates History
+      - name: Commit and Push History Data
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add assets/data/rates-history.json
-          git diff-index --quiet HEAD || git commit -m "data: update daily exchange rates history [skip ci]"
-          git push
+          git add assets/data/rates-history.json assets/data/gold-history.json
+          git diff-index --quiet HEAD || git commit -m "data: update daily exchange rates and gold prices [skip ci]"
+          git push origin data

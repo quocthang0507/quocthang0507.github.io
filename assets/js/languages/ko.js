@@ -547,5 +547,19 @@ const koreanTranslations = {
     "json.load_sample": "샘플",
     "palette.search_placeholder": "도구 검색... (방향키로 이동)",
     "palette.no_results": "검색 결과가 없습니다.",
-    "palette.search": "도구 검색 (Cmd/Ctrl + K)"
+    "palette.search": "도구 검색 (Cmd/Ctrl + K)",
+
+    // Gold Price
+    "nav.gold_price": "금 시세",
+    "gold.title": "금 시세 차트",
+    "gold.gold_type": "금 종류:",
+    "gold.rate_type": "가격 유형:",
+    "gold.buy": "매입",
+    "gold.sell": "매도",
+    "gold.period_7d": "7일",
+    "gold.period_30d": "30일",
+    "gold.period_90d": "90일",
+    "gold.period_1y": "1년",
+    "gold.loading": "금 시세 데이터를 불러오는 중...",
+    "gold.fetch_error": "금 시세 데이터를 불러올 수 없습니다. 나중에 다시 시도해 주세요."
 };

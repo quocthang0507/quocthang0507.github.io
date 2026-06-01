@@ -652,5 +652,19 @@ const englishTranslations = {
     "json.load_sample": "Sample",
     "palette.search_placeholder": "Search tools... (Use arrows to navigate)",
     "palette.no_results": "No tools found matching your search.",
-    "palette.search": "Search Tools (Cmd/Ctrl + K)"
+    "palette.search": "Search Tools (Cmd/Ctrl + K)",
+
+    // Gold Price
+    "nav.gold_price": "Gold Price",
+    "gold.title": "Gold Price Chart",
+    "gold.gold_type": "Gold type:",
+    "gold.rate_type": "Rate type:",
+    "gold.buy": "Buy",
+    "gold.sell": "Sell",
+    "gold.period_7d": "7 Days",
+    "gold.period_30d": "30 Days",
+    "gold.period_90d": "90 Days",
+    "gold.period_1y": "1 Year",
+    "gold.loading": "Loading gold price data...",
+    "gold.fetch_error": "Unable to load gold price data. Please try again later."
 };

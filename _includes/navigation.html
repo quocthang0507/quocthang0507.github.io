@@ -62,6 +62,11 @@
                             </a>
                         </li>
                         <li>
+                            <a class="dropdown-item {% if page.url == '/gold-price/' %}active{% endif %}" href="{{ '/gold-price/' | relative_url }}">
+                                <span data-i18n="nav.gold_price">Gold Price</span>
+                            </a>
+                        </li>
+                        <li>
                             <a class="dropdown-item {% if page.url == '/qr-generator/' %}active{% endif %}" href="{{ '/qr-generator/' | relative_url }}">
                                 <span data-i18n="nav.qr_generator">QR Generator</span>
                             </a>

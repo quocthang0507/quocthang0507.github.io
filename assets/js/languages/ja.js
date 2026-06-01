@@ -538,5 +538,19 @@ const japaneseTranslations = {
     "json.load_sample": "サンプル",
     "palette.search_placeholder": "ツールを検索... (矢印キーで移動)",
     "palette.no_results": "ツールが見つかりませんでした。",
-    "palette.search": "ツール検索 (Cmd/Ctrl + K)"
+    "palette.search": "ツール検索 (Cmd/Ctrl + K)",
+
+    // Gold Price
+    "nav.gold_price": "金相場",
+    "gold.title": "金相場チャート",
+    "gold.gold_type": "金の種類:",
+    "gold.rate_type": "価格タイプ:",
+    "gold.buy": "買値",
+    "gold.sell": "売値",
+    "gold.period_7d": "7日間",
+    "gold.period_30d": "30日間",
+    "gold.period_90d": "90日間",
+    "gold.period_1y": "1年間",
+    "gold.loading": "金相場データを読み込み中...",
+    "gold.fetch_error": "金相場データを読み込めませんでした。後でもう一度お試しください。"
 };

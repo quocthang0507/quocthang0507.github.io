@@ -720,7 +720,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Load historical rates from JSON file
     async function loadHistoricalRates() {
         try {
-            const response = await fetch('/assets/data/rates-history.json');
+            const response = await fetch('https://raw.githubusercontent.com/quocthang0507/quocthang0507.github.io/data/assets/data/rates-history.json');
             if (!response.ok) throw new Error(`HTTP Status ${response.status}`);
             historicalRates = await response.json();
             

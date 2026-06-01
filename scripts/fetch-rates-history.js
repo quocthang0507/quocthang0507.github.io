@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const VCB_XML_URL = 'https://portal.vietcombank.com.vn/Usercontrols/TVPortal.TyGia/pXML.aspx';
-const HISTORY_FILE_PATH = path.join(__dirname, '..', 'assets', 'data', 'rates-history.json');
+const HISTORY_FILE_PATH = path.join(process.cwd(), 'assets', 'data', 'rates-history.json');
 
 // List of fallback CORS proxies + direct fetch
 const fetchSources = [

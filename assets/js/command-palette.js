@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
     { titleKey: 'nav.world_clocks', url: './world-clocks/', icon: 'fas fa-clock' },
     { titleKey: 'nav.unit_converter', url: './unit-converter/', icon: 'fas fa-exchange-alt' },
     { titleKey: 'nav.currency_converter', url: './currency-converter/', icon: 'fas fa-calculator' },
+    { titleKey: 'nav.gold_price', url: './gold-price/', icon: 'fas fa-coins' },
     { titleKey: 'nav.qr_generator', url: './qr-generator/', icon: 'fas fa-qrcode' },
     { titleKey: 'nav.encoder_decoder', url: './encoder-decoder/', icon: 'fas fa-terminal' },
     { titleKey: 'nav.hash_generator', url: './hash-generator/', icon: 'fas fa-hashtag' },

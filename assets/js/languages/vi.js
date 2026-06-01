@@ -666,5 +666,19 @@ const vietnameseTranslations = {
     "json.load_sample": "Mẫu",
     "palette.search_placeholder": "Tìm kiếm công cụ... (Dùng phím mũi tên để di chuyển)",
     "palette.no_results": "Không tìm thấy công cụ nào phù hợp.",
-    "palette.search": "Tìm kiếm công cụ (Cmd/Ctrl + K)"
+    "palette.search": "Tìm kiếm công cụ (Cmd/Ctrl + K)",
+
+    // Gold Price
+    "nav.gold_price": "Giá Vàng",
+    "gold.title": "Biểu Đồ Giá Vàng",
+    "gold.gold_type": "Loại vàng:",
+    "gold.rate_type": "Loại giá:",
+    "gold.buy": "Mua vào",
+    "gold.sell": "Bán ra",
+    "gold.period_7d": "7 Ngày",
+    "gold.period_30d": "30 Ngày",
+    "gold.period_90d": "90 Ngày",
+    "gold.period_1y": "1 Năm",
+    "gold.loading": "Đang tải dữ liệu giá vàng...",
+    "gold.fetch_error": "Không thể tải dữ liệu giá vàng. Vui lòng thử lại sau."
 };

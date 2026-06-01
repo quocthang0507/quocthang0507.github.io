@@ -35,3 +35,7 @@ Gemfile.lock
 # Uncomment the line below if you don't want to commit .min.js files
 # assets/js/**/*.min.js
 .DS_Store
+
+# Ignore auto-generated history data (lives in 'data' branch)
+assets/data/rates-history.json
+assets/data/gold-history.json
