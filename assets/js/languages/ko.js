@@ -517,6 +517,16 @@ const koreanTranslations = {
     "currency.currency_name": "통화명",
     "currency.currency_code": "코드",
     "currency.quick_info": "환율 정보",
+    "currency.chart_title": "환율 내역 차트 (외환거래소)",
+    "currency.chart_currency": "외화:",
+    "currency.chart_rate_type": "가격 유형:",
+    "currency.chart_sell": "매도",
+    "currency.chart_buy_transfer": "송금 매입",
+    "currency.chart_buy_cash": "현찰 매입",
+    "currency.chart_period_7d": "7일",
+    "currency.chart_period_30d": "30일",
+    "currency.chart_period_90d": "90일",
+    "currency.chart_period_1y": "1년",
 
     // JSON Formatter & Command Palette
     "nav.json_formatter": "JSON 포맷터",

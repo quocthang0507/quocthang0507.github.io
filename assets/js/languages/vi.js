@@ -636,6 +636,16 @@ const vietnameseTranslations = {
     "currency.currency_name": "Tên ngoại tệ",
     "currency.currency_code": "Mã",
     "currency.quick_info": "Thông tin tỷ giá",
+    "currency.chart_title": "Biểu đồ lịch sử tỷ giá (Vietcombank)",
+    "currency.chart_currency": "Ngoại tệ:",
+    "currency.chart_rate_type": "Loại tỷ giá:",
+    "currency.chart_sell": "Bán ra (Sell)",
+    "currency.chart_buy_transfer": "Mua chuyển khoản (Buy CK)",
+    "currency.chart_buy_cash": "Mua tiền mặt (Buy Cash)",
+    "currency.chart_period_7d": "7 Ngày",
+    "currency.chart_period_30d": "30 Ngày",
+    "currency.chart_period_90d": "90 Ngày",
+    "currency.chart_period_1y": "1 Năm",
 
     // JSON Formatter & Command Palette
     "nav.json_formatter": "Định dạng JSON",

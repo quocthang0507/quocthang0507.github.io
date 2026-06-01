@@ -508,6 +508,16 @@ const chineseTranslations = {
     "currency.currency_name": "货币名称",
     "currency.currency_code": "代号",
     "currency.quick_info": "汇率信息",
+    "currency.chart_title": "历史汇率走势图 (外汇交易所)",
+    "currency.chart_currency": "外币:",
+    "currency.chart_rate_type": "价格类型:",
+    "currency.chart_sell": "卖出价",
+    "currency.chart_buy_transfer": "现汇买入",
+    "currency.chart_buy_cash": "现钞买入",
+    "currency.chart_period_7d": "7天",
+    "currency.chart_period_30d": "30天",
+    "currency.chart_period_90d": "90天",
+    "currency.chart_period_1y": "1年",
 
     // JSON Formatter & Command Palette
     "nav.json_formatter": "JSON 格式化",

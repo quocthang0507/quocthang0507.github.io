@@ -508,6 +508,16 @@ const japaneseTranslations = {
     "currency.currency_name": "通貨名",
     "currency.currency_code": "コード",
     "currency.quick_info": "レート情報",
+    "currency.chart_title": "為替レート履歴チャート (為替取引所)",
+    "currency.chart_currency": "外貨:",
+    "currency.chart_rate_type": "取引種別:",
+    "currency.chart_sell": "売（Sell）",
+    "currency.chart_buy_transfer": "電信買（Buy CK）",
+    "currency.chart_buy_cash": "現金買（Buy Cash）",
+    "currency.chart_period_7d": "7日",
+    "currency.chart_period_30d": "30日",
+    "currency.chart_period_90d": "90日",
+    "currency.chart_period_1y": "1年",
 
     // JSON Formatter & Command Palette
     "nav.json_formatter": "JSON 整形ツール",

@@ -1,0 +1,31 @@
+name: Fetch Exchange Rates History Daily
+
+on:
+  schedule:
+    # Runs at 11:00 UTC (18:00 ICT) every day to gather the day's final rates
+    - cron: '0 11 * * *'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  fetch-and-store:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Fetch and Process History
+        run: node scripts/fetch-rates-history.js
+        
+      - name: Commit and Push Rates History
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/data/rates-history.json
+          git diff-index --quiet HEAD || git commit -m "data: update daily exchange rates history [skip ci]"
+          git push

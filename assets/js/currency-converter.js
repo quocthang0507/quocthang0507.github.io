@@ -146,6 +146,18 @@ document.addEventListener('DOMContentLoaded', function() {
     let exchangeRates = [];
     let lastUpdatedTime = '';
 
+    // Chart Elements
+    const chartSection = document.getElementById('chart-section');
+    const chartCurrencySelect = document.getElementById('chart-currency');
+    const chartRateTypeSelect = document.getElementById('chart-rate-type');
+    const durationButtons = document.querySelectorAll('#chart-section [data-period]');
+    const ratesChartCanvas = document.getElementById('ratesChart');
+
+    // Chart State
+    let ratesChartInstance = null;
+    let historicalRates = []; // Loaded from assets/data/rates-history.json
+    let currentPeriod = 30; // Default to 30 days
+
     // Translation helper wrapper
     function tr(key, fallback = key) {
         try {
@@ -159,6 +171,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initialize Page
     fetchExchangeRates();
+    loadHistoricalRates();
 
     // Fetch Vietcombank rates via proxy list
     async function fetchExchangeRates() {
@@ -704,11 +717,254 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Load historical rates from JSON file
+    async function loadHistoricalRates() {
+        try {
+            const response = await fetch('/assets/data/rates-history.json');
+            if (!response.ok) throw new Error(`HTTP Status ${response.status}`);
+            historicalRates = await response.json();
+            
+            if (historicalRates && historicalRates.length > 0) {
+                console.log(`Loaded ${historicalRates.length} history data points successfully.`);
+                initializeChartUI();
+            }
+        } catch (err) {
+            console.warn('Failed to load exchange rates history:', err.message);
+            if (chartSection) chartSection.style.display = 'none';
+        }
+    }
+
+    // Populate chart filters and show layout
+    function initializeChartUI() {
+        if (!chartSection || !chartCurrencySelect || !chartRateTypeSelect || !ratesChartCanvas) return;
+        
+        // Extract all unique currencies present in history (excluding VND)
+        const uniqueCurrencies = new Set();
+        historicalRates.forEach(day => {
+            if (day.rates) {
+                Object.keys(day.rates).forEach(code => {
+                    if (code !== 'VND') uniqueCurrencies.add(code);
+                });
+            }
+        });
+        
+        const sortedCurrencies = Array.from(uniqueCurrencies).sort();
+        
+        // Populate currency dropdown
+        const lang = window.translationSystem ? window.translationSystem.getCurrentLanguage() : 'vi';
+        chartCurrencySelect.innerHTML = sortedCurrencies.map(code => {
+            const fullName = CURRENCY_NAMES[lang]?.[code] || CURRENCY_NAMES['en']?.[code] || code;
+            const flag = CURRENCY_FLAGS[code] || '🏳️';
+            return `<option value="${code}">${flag} ${code} - ${fullName}</option>`;
+        }).join('');
+        
+        // Default select target currency from converter 'fromSelect' if possible, otherwise first
+        const defaultCurrency = sortedCurrencies.includes(fromSelect.value) ? fromSelect.value : (sortedCurrencies.includes('USD') ? 'USD' : sortedCurrencies[0]);
+        chartCurrencySelect.value = defaultCurrency;
+        
+        // Show chart section
+        chartSection.style.display = 'block';
+        
+        // Initial draw
+        updateChart();
+        
+        // Wire up change events
+        chartCurrencySelect.addEventListener('change', updateChart);
+        chartRateTypeSelect.addEventListener('change', updateChart);
+        
+        durationButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                durationButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentPeriod = parseInt(btn.dataset.period);
+                updateChart();
+            });
+        });
+
+        // Toggle observer on dark mode button to redraw chart with updated theme colors
+        const darkModeBtn = document.getElementById('dark-mode-toggle');
+        if (darkModeBtn) {
+            darkModeBtn.addEventListener('click', () => {
+                setTimeout(updateChart, 50); // slight delay to wait for html theme state update
+            });
+        }
+    }
+
+    // Render rates trend line chart
+    function updateChart() {
+        if (!ratesChartCanvas || !historicalRates || historicalRates.length === 0) return;
+        
+        const currency = chartCurrencySelect.value;
+        const rateType = chartRateTypeSelect.value;
+        
+        // Slice the history to match current period selection (last N entries)
+        const filteredHistory = historicalRates.slice(-currentPeriod);
+        
+        // Format labels and data points
+        const labels = filteredHistory.map(item => {
+            const dateObj = new Date(item.date);
+            return dateObj.toLocaleDateString(window.translationSystem?.getCurrentLanguage() || 'vi', {
+                day: '2-digit',
+                month: '2-digit'
+            });
+        });
+        
+        const dataPoints = filteredHistory.map(item => {
+            return item.rates?.[currency]?.[rateType] || null;
+        });
+        
+        const hasData = dataPoints.some(val => val !== null);
+        if (!hasData) {
+            console.warn(`No data points found for ${currency} - ${rateType} in specified range.`);
+            return;
+        }
+        
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        const primaryColor = '#6750A4';
+        const textColor = isDark ? '#E6E1E5' : '#2D2D36';
+        const gridColor = isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(163, 177, 198, 0.25)';
+        const tooltipBg = isDark ? '#33333D' : '#FFFFFF';
+        const tooltipBorder = isDark ? '#4F378B' : '#6750A4';
+        
+        const ctx = ratesChartCanvas.getContext('2d');
+        
+        // Destroy existing chart to prevent canvas ghosting
+        if (ratesChartInstance) {
+            ratesChartInstance.destroy();
+        }
+        
+        ratesChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: `${currency} - ${tr(`currency.chart_${rateType === 'sell' ? 'sell' : (rateType === 'buyTransfer' ? 'buy_transfer' : 'buy_cash')}`, rateType)}`,
+                    data: dataPoints,
+                    borderColor: primaryColor,
+                    backgroundColor: isDark ? 'rgba(103, 80, 164, 0.15)' : 'rgba(103, 80, 164, 0.05)',
+                    borderWidth: 2.5,
+                    pointRadius: currentPeriod > 90 ? 0 : 3,
+                    pointHoverRadius: 6,
+                    pointBackgroundColor: primaryColor,
+                    pointBorderColor: isDark ? '#2D2D36' : '#FFFFFF',
+                    pointBorderWidth: 1.5,
+                    tension: 0.25,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            color: textColor,
+                            font: {
+                                family: 'Inter, sans-serif',
+                                size: 12,
+                                weight: '500'
+                            }
+                        }
+                    },
+                    tooltip: {
+                        enabled: true,
+                        backgroundColor: tooltipBg,
+                        titleColor: textColor,
+                        bodyColor: textColor,
+                        borderColor: tooltipBorder,
+                        borderWidth: 1,
+                        padding: 10,
+                        cornerRadius: 8,
+                        titleFont: {
+                            family: 'Inter, sans-serif',
+                            weight: 'bold'
+                        },
+                        bodyFont: {
+                            family: 'Inter, sans-serif'
+                        },
+                        displayColors: false,
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) {
+                                    label += new Intl.NumberFormat().format(context.parsed.y) + ' VND';
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            color: gridColor,
+                            drawBorder: false
+                        },
+                        ticks: {
+                            color: textColor,
+                            font: {
+                                family: 'Inter, sans-serif',
+                                size: 10
+                            },
+                            maxTicksLimit: currentPeriod > 90 ? 12 : (currentPeriod > 30 ? 8 : 7)
+                        }
+                    },
+                    y: {
+                        grid: {
+                            color: gridColor,
+                            drawBorder: false
+                        },
+                        ticks: {
+                            color: textColor,
+                            font: {
+                                family: 'Inter, sans-serif',
+                                size: 10
+                            },
+                            callback: function(value) {
+                                return new Intl.NumberFormat().format(value);
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
     // Listen for language change events dispatched by i18n system
     window.addEventListener('languageChanged', function(event) {
         translateCustomLabels();
         populateSelectors();
         renderRatesTable(searchRates ? searchRates.value : '');
         calculateConversion();
+        
+        // Update currency options translation and chart label
+        if (historicalRates && historicalRates.length > 0) {
+            const currentSelected = chartCurrencySelect.value;
+            const lang = event.detail.language || 'vi';
+            
+            const uniqueCurrencies = new Set();
+            historicalRates.forEach(day => {
+                if (day.rates) {
+                    Object.keys(day.rates).forEach(code => {
+                        if (code !== 'VND') uniqueCurrencies.add(code);
+                    });
+                }
+            });
+            const sortedCurrencies = Array.from(uniqueCurrencies).sort();
+            
+            chartCurrencySelect.innerHTML = sortedCurrencies.map(code => {
+                const fullName = CURRENCY_NAMES[lang]?.[code] || CURRENCY_NAMES['en']?.[code] || code;
+                const flag = CURRENCY_FLAGS[code] || '🏳️';
+                return `<option value="${code}">${flag} ${code} - ${fullName}</option>`;
+            }).join('');
+            
+            chartCurrencySelect.value = currentSelected;
+            updateChart();
+        }
     });
 });

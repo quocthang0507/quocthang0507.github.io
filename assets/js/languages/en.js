@@ -622,6 +622,16 @@ const englishTranslations = {
     "currency.currency_name": "Currency Name",
     "currency.currency_code": "Code",
     "currency.quick_info": "Exchange Rate Info",
+    "currency.chart_title": "Exchange Rate History Chart (Vietcombank)",
+    "currency.chart_currency": "Currency:",
+    "currency.chart_rate_type": "Rate Type:",
+    "currency.chart_sell": "Sell",
+    "currency.chart_buy_transfer": "Buy Transfer",
+    "currency.chart_buy_cash": "Buy Cash",
+    "currency.chart_period_7d": "7D",
+    "currency.chart_period_30d": "30D",
+    "currency.chart_period_90d": "90D",
+    "currency.chart_period_1y": "1Y",
 
     // JSON Formatter & Command Palette
     "nav.json_formatter": "JSON Formatter",
