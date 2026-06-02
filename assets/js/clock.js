@@ -187,15 +187,26 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Timer functionality
     function updateTimer() {
+        const timerDisplay = document.getElementById('timer-display');
         if (timerRemaining > 0) {
             const minutes = Math.floor(timerRemaining / 60);
             const seconds = timerRemaining % 60;
-            document.getElementById('timer-display').textContent = 
+            timerDisplay.textContent = 
                 `${padZero(minutes)}:${padZero(seconds)}`;
+            
+            if (timerRemaining <= 10) {
+                timerDisplay.classList.add('warning-low');
+            } else {
+                timerDisplay.classList.remove('warning-low');
+            }
+            
             timerRemaining--;
         } else {
             clearInterval(timerInterval);
             timerRunning = false;
+            timerDisplay.textContent = "00:00";
+            timerDisplay.classList.remove('running');
+            timerDisplay.classList.remove('warning-low');
             document.getElementById('start-timer').disabled = false;
             document.getElementById('pause-timer').disabled = true;
             showAlert('Timer đã kết thúc!', 'warning');
@@ -269,6 +280,7 @@ document.addEventListener('DOMContentLoaded', function() {
             stopwatchInterval = setInterval(updateStopwatch, 10); // Update every 10ms for millisecond precision
             this.disabled = true;
             document.getElementById('pause-stopwatch').disabled = false;
+            document.getElementById('stopwatch-display').classList.add('running');
             
             // Track stopwatch start
             if (typeof gtag !== 'undefined') {
@@ -287,6 +299,7 @@ document.addEventListener('DOMContentLoaded', function() {
             clearInterval(stopwatchInterval);
             document.getElementById('start-stopwatch').disabled = false;
             this.disabled = true;
+            document.getElementById('stopwatch-display').classList.remove('running');
             
             // Track stopwatch pause
             if (typeof gtag !== 'undefined') {
@@ -306,6 +319,7 @@ document.addEventListener('DOMContentLoaded', function() {
         clearInterval(stopwatchInterval);
         document.getElementById('start-stopwatch').disabled = false;
         document.getElementById('pause-stopwatch').disabled = true;
+        document.getElementById('stopwatch-display').classList.remove('running');
         updateStopwatch();
         
         // Track stopwatch reset
@@ -331,6 +345,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 timerInterval = setInterval(updateTimer, 1000);
                 this.disabled = true;
                 document.getElementById('pause-timer').disabled = false;
+                document.getElementById('timer-display').classList.add('running');
                 
                 // Track timer start
                 if (typeof gtag !== 'undefined') {
@@ -352,6 +367,7 @@ document.addEventListener('DOMContentLoaded', function() {
             clearInterval(timerInterval);
             document.getElementById('start-timer').disabled = false;
             this.disabled = true;
+            document.getElementById('timer-display').classList.remove('running');
         }
     });
     
@@ -361,9 +377,32 @@ document.addEventListener('DOMContentLoaded', function() {
         const minutes = parseInt(document.getElementById('timer-minutes').value) || 5;
         const seconds = parseInt(document.getElementById('timer-seconds').value) || 0;
         timerRemaining = minutes * 60 + seconds;
+        const timerDisplay = document.getElementById('timer-display');
+        timerDisplay.classList.remove('running');
+        timerDisplay.classList.remove('warning-low');
         updateTimer();
         document.getElementById('start-timer').disabled = false;
         document.getElementById('pause-timer').disabled = true;
+    });
+    
+    // Timer presets
+    const presetButtons = document.querySelectorAll('#timer-presets button');
+    presetButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            if (timerRunning) return; // Don't allow changing presets while running
+            const mins = this.dataset.minutes;
+            const secs = this.dataset.seconds;
+            document.getElementById('timer-minutes').value = mins;
+            document.getElementById('timer-seconds').value = secs;
+            timerRemaining = parseInt(mins) * 60 + parseInt(secs);
+            
+            // Update display
+            const minutesDisplay = Math.floor(timerRemaining / 60);
+            const secondsDisplay = timerRemaining % 60;
+            const timerDisplay = document.getElementById('timer-display');
+            timerDisplay.textContent = `${padZero(minutesDisplay)}:${padZero(secondsDisplay)}`;
+            timerDisplay.classList.remove('warning-low');
+        });
     });
     
     // Initialize displays

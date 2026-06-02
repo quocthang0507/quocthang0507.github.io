@@ -101,3 +101,44 @@ input[type="number"].form-control {
     font-weight: 500;
     box-shadow: var(--md-elevation-1);
 }
+
+/* Running and warning styles for stopwatch & timer display */
+#stopwatch-display.running {
+  animation: pulse-glow 2s infinite alternate;
+}
+
+#timer-display.running {
+  animation: pulse-glow-warning 2s infinite alternate;
+}
+
+#timer-display.running.warning-low {
+  color: var(--bs-danger) !important;
+  animation: pulse-glow-danger 0.8s infinite alternate;
+}
+
+@keyframes pulse-glow {
+  0% {
+    text-shadow: 0 0 4px rgba(103, 80, 164, 0.2);
+  }
+  100% {
+    text-shadow: 0 0 12px rgba(103, 80, 164, 0.6);
+  }
+}
+
+@keyframes pulse-glow-warning {
+  0% {
+    text-shadow: 0 0 4px rgba(237, 108, 2, 0.2);
+  }
+  100% {
+    text-shadow: 0 0 12px rgba(237, 108, 2, 0.6);
+  }
+}
+
+@keyframes pulse-glow-danger {
+  0% {
+    text-shadow: 0 0 6px rgba(211, 47, 47, 0.3);
+  }
+  100% {
+    text-shadow: 0 0 18px rgba(211, 47, 47, 0.8);
+  }
+}

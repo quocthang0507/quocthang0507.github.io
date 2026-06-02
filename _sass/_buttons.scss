@@ -52,9 +52,9 @@
 
   &:disabled,
   &.disabled {
-    opacity: 0.5;
+    opacity: 0.45;
     pointer-events: none;
-    box-shadow: var(--nm-shadow-flat-sm);
+    box-shadow: var(--nm-shadow-pressed) !important;
   }
 }
 

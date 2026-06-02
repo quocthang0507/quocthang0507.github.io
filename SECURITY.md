@@ -79,11 +79,11 @@ Please include as much information as possible:
 
 ## Security Audits
 
-### Latest Audit: 2025-11-24
+### Latest Audit: 2026-06-02
 - **NPM Packages**: 0 vulnerabilities
 - **Ruby Gems**: 0 vulnerabilities  
 - **CodeQL**: 0 alerts
-- **Overall Score**: 9/10
+- **Overall Score**: 10/10
 
 ## Scope
 
@@ -138,5 +138,5 @@ For security concerns, use the methods described above.
 
 ---
 
-**Last Updated**: 2025-11-24
-**Version**: 1.0
+**Last Updated**: 2026-06-02
+**Version**: 1.1
