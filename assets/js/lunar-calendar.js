@@ -204,6 +204,142 @@ document.addEventListener('DOMContentLoaded', function() {
         let b11 = getLunarMonth11(yy + 1, timeZone);
         return (b11 - a11) > 365;
     }
+
+    // Get Good/Bad Day Info for a Solar Date
+    function getGoodBadDayInfo(dd, mm, yy, timeZone = 7) {
+        const jd = jdFromDate(dd, mm, yy);
+        const lunar = solarToLunar(dd, mm, yy, timeZone);
+        
+        // 1. Calculate Day Can Chi
+        const cans = ['Giáp', 'Ất', 'Bính', 'Đinh', 'Mậu', 'Kỷ', 'Canh', 'Tân', 'Nhâm', 'Quý'];
+        const chis = ['Tý', 'Sửu', 'Dần', 'Mão', 'Thìn', 'Tỵ', 'Ngọ', 'Mùi', 'Thân', 'Dậu', 'Tuất', 'Hợi'];
+        
+        const dayCanIndex = (jd + 9) % 10;
+        const dayChiIndex = (jd + 1) % 12;
+        const dayCanChi = `${cans[dayCanIndex]} ${chis[dayChiIndex]}`;
+        
+        // 2. Calculate Zodiac Stars (Hoàng đạo / Hắc đạo)
+        const stars = [
+            'Thanh Long (Hoàng Đạo)', 
+            'Minh Đường (Hoàng Đạo)', 
+            'Thiên Hình (Hắc Đạo)', 
+            'Chu Tước (Hắc Đạo)', 
+            'Kim Quỹ (Hoàng Đạo)', 
+            'Bảo Quang (Hoàng Đạo)', 
+            'Bạch Hổ (Hắc Đạo)', 
+            'Ngọc Đường (Hoàng Đạo)', 
+            'Thiên Lao (Hắc Đạo)', 
+            'Nguyên Vũ (Hắc Đạo)', 
+            'Tư Mệnh (Hoàng Đạo)', 
+            'Câu Trận (Hắc Đạo)'
+        ];
+        
+        const starsEn = [
+            'Thanh Long (Good)',
+            'Minh Duong (Good)',
+            'Thien Hinh (Bad)',
+            'Chu Tuoc (Bad)',
+            'Kim Quy (Good)',
+            'Bao Quang (Good)',
+            'Bach Ho (Bad)',
+            'Ngoc Duong (Good)',
+            'Thien Lao (Bad)',
+            'Nguyen Vu (Bad)',
+            'Tu Menh (Good)',
+            'Cau Tran (Bad)'
+        ];
+        
+        const m = lunar.month;
+        const startIndex = ((m - 1) % 6) * 2;
+        const offset = (dayChiIndex - startIndex + 12) % 12;
+        const starName = stars[offset];
+        const starNameEn = starsEn[offset];
+        
+        const isHoangDao = [0, 1, 4, 5, 7, 10].includes(offset);
+        
+        // 3. Check for traditional warnings
+        const warnings = [];
+        const warningsEn = [];
+        
+        // Tam Nương
+        const tamNuongDays = [3, 7, 13, 18, 22, 27];
+        if (tamNuongDays.includes(lunar.day)) {
+            warnings.push('Ngày Tam Nương (Xấu)');
+            warningsEn.push('Tam Nuong Day (Bad)');
+        }
+        
+        // Nguyệt Kỵ
+        const nguyetKyDays = [5, 14, 23];
+        if (nguyetKyDays.includes(lunar.day)) {
+            warnings.push('Ngày Nguyệt Kỵ (Xấu)');
+            warningsEn.push('Nguyet Ky Day (Bad)');
+        }
+        
+        // Sát Chủ
+        const satChuMap = {
+            1: 5,  // Tỵ
+            2: 0,  // Tý
+            3: 7,  // Mùi
+            4: 3,  // Mão
+            5: 8,  // Thân
+            6: 10, // Tuất
+            7: 11, // Hợi
+            8: 1,  // Sửu
+            9: 6,  // Ngọ
+            10: 9, // Dậu
+            11: 2, // Dần
+            12: 4  // Thìn
+        };
+        if (satChuMap[m] === dayChiIndex) {
+            warnings.push('Ngày Sát Chủ (Rất Xấu)');
+            warningsEn.push('Sat Chu Day (Very Bad)');
+        }
+        
+        // Thụ Tử
+        const thuTuMap = {
+            1: 10, // Tuất
+            2: 4,  // Thìn
+            3: 11, // Hợi
+            4: 5,  // Tỵ
+            5: 0,  // Tý
+            6: 6,  // Ngọ
+            7: 1,  // Sửu
+            8: 7,  // Mùi
+            9: 2,  // Dần
+            10: 8, // Thân
+            11: 3, // Mão
+            12: 9  // Dậu
+        };
+        if (thuTuMap[m] === dayChiIndex) {
+            warnings.push('Ngày Thụ Tử (Rất Xấu)');
+            warningsEn.push('Thu Tu Day (Very Bad)');
+        }
+        
+        // 4. Overall Day Assessment
+        let status = 'bình thường'; // 'tốt', 'xấu', 'bình thường'
+        let statusEn = 'neutral';    // 'good', 'bad', 'neutral'
+        
+        if (isHoangDao && warnings.length === 0) {
+            status = 'tốt';
+            statusEn = 'good';
+        } else if (warnings.length > 0 || !isHoangDao) {
+            status = 'xấu';
+            statusEn = 'bad';
+        }
+        
+        return {
+            isHoangDao,
+            starName,
+            starNameEn,
+            warnings,
+            warningsEn,
+            status,
+            statusEn,
+            dayCanChi,
+            dayCanIndex,
+            dayChiIndex
+        };
+    }
     
     // Public API
     window.LunarCalendar = {
@@ -212,6 +348,7 @@ document.addEventListener('DOMContentLoaded', function() {
         getZodiacAnimal,
         getCanChi,
         getLunarMonthName,
-        isLunarLeapYear
+        isLunarLeapYear,
+        getGoodBadDayInfo
     };
 });

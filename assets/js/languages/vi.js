@@ -106,6 +106,15 @@ const vietnameseTranslations = {
     "wheel.winner": "Người thắng",
     "wheel.color_theme": "Chủ đề màu sắc",
     "wheel.spinning": "Đang quay...",
+    "wheel.warn.enter_name": "Vui lòng nhập tên!",
+    "wheel.warn.name_too_long": "Tên không được dài quá 20 ký tự!",
+    "wheel.warn.name_exists": "Tên này đã tồn tại!",
+    "wheel.warn.limit_reached": "Chỉ có thể thêm tối đa 200 tên!",
+    "wheel.warn.clear_all_confirm": "Bạn có chắc muốn xóa tất cả tên?",
+    "wheel.warn.clear_history_confirm": "Bạn có chắc muốn xóa lịch sử?",
+    "wheel.warn.remove_winner_confirm": "Xóa \"{name}\" khỏi danh sách?",
+    "wheel.warn.winner_alert": "🎉 Người thắng: {name}!",
+    "wheel.warn.added_count": "Đã thêm {count} tên!",
     
     // Random Number
     "number.title": "Tạo Số Ngẫu Nhiên",
@@ -147,6 +156,21 @@ const vietnameseTranslations = {
     "lunar.month_normal": "Tháng thường",
     "lunar.month_leap": "Tháng nhuận",
     "lunar.close": "Đóng",
+    "lunar.day_status": "Đánh giá ngày",
+    "lunar.status_good": "Ngày Hoàng Đạo (Tốt)",
+    "lunar.status_bad": "Ngày Hắc Đạo (Xấu/Kiêng kỵ)",
+    "lunar.status_normal": "Ngày Bình Thường",
+    "lunar.zodiac_star": "Sao hoàng đạo",
+    "lunar.day_canchi": "Can Chi ngày",
+    "lunar.should_do": "Nên làm",
+    "lunar.should_avoid": "Kiêng kỵ",
+    "lunar.warnings": "Cảnh báo kỵ",
+    "lunar.copy": "Sao chép",
+    "lunar.copied": "Đã sao chép!",
+    "lunar.details_good_desc": "Thích hợp cho các công việc quan trọng như khởi công, cưới hỏi, khai trương, giao dịch.",
+    "lunar.details_bad_desc": "Hạn chế làm các việc lớn như xuất hành đi xa, ký kết đại sự, khởi công xây dựng.",
+    "lunar.details_normal_desc": "Thích hợp cho các công việc thường nhật, công việc lớn cần cân nhắc kỹ lưỡng.",
+    
     
     // Days of week
     "day.sunday": "Chủ nhật",

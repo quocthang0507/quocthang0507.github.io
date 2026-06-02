@@ -103,7 +103,17 @@ const japaneseTranslations = {
     "wheel.no_data": "まだデータがありません",
     "wheel.no_names": "まだ名前がありません",
     "wheel.winner": "勝者",
+    "wheel.color_theme": "カラーテーマ",
     "wheel.spinning": "回転中...",
+    "wheel.warn.enter_name": "名前を入力してください！",
+    "wheel.warn.name_too_long": "名前は20文字以内で入力してください！",
+    "wheel.warn.name_exists": "この名前は既に存在します！",
+    "wheel.warn.limit_reached": "名前は最大200個までしか追加できません！",
+    "wheel.warn.clear_all_confirm": "すべての名前を削除してもよろしいですか？",
+    "wheel.warn.clear_history_confirm": "履歴を削除してもよろしいですか？",
+    "wheel.warn.remove_winner_confirm": "リストから「{name}」を削除しますか？",
+    "wheel.warn.winner_alert": "🎉 勝者：{name}！",
+    "wheel.warn.added_count": "{count}個の名前を追加しました！",
     
     // Random Number
     "number.title": "ランダム数値ジェネレーター",

@@ -12,7 +12,7 @@
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
                     <a class="nav-link {% if page.url == '/' %}active{% endif %}" href="{{ '/' | relative_url }}">
-                        <span data-i18n="nav.home">Trang chủ</span>
+                        <i class="fas fa-home"></i> <span data-i18n="nav.home">Trang chủ</span>
                     </a>
                 </li>
                 <!-- Tools grouped dropdown -->
@@ -112,7 +112,6 @@
                             </a>
                         </li>
                     </ul>
-                </li>
                 </li>
                 <li class="nav-item nav-actions-group d-flex align-items-center gap-2">
                     <button class="navbar-search-btn" type="button" title="Tìm kiếm công cụ (Cmd/Ctrl + K)" data-i18n-title="palette.search" aria-label="Search Tools">

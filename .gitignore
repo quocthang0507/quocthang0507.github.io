@@ -15,10 +15,12 @@ node_modules/
 vendor/bundle/
 .bundle/
 
-# Ignore test reports
+# Ignore test reports and artifacts
 playwright-report/
 test-results/
 coverage/
+tests/screenshots/
+tests/**/*.png
 
 # Ignore logs
 *.log

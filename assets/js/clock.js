@@ -424,6 +424,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function showDateDetails(day, month, year) {
         // Helper translation function
         const t = window.t || ((key, fallback) => fallback || key);
+        const lang = (window.translationSystem && window.translationSystem.getCurrentLanguage()) || 'vi';
 
         const solarDate = new Date(year, month - 1, day);
         const dayKeys = ['day.sunday', 'day.monday', 'day.tuesday', 'day.wednesday', 'day.thursday', 'day.friday', 'day.saturday'];
@@ -439,6 +440,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const weekOfYear = Math.ceil((days + jan1.getDay() + 1) / 7);
 
         let lunar = null; let zodiac = ''; let canChi = ''; let lunarMonthName = ''; let lunarOk = false;
+        let goodBadInfo = null;
         if (window.LunarCalendar) {
             try {
                 lunar = window.LunarCalendar.solarToLunar(day, month, year);
@@ -447,6 +449,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     canChi = window.LunarCalendar.getCanChi(lunar.year) || '';
                     lunarMonthName = window.LunarCalendar.getLunarMonthName(lunar.month, lunar.isLeap) || '';
                     lunarOk = true;
+                    goodBadInfo = window.LunarCalendar.getGoodBadDayInfo(day, month, year);
                 }
             } catch(err) {
                 lunarOk = false;
@@ -510,6 +513,89 @@ document.addEventListener('DOMContentLoaded', function() {
             lunarSection = `<div class="col-md-6"><div class="alert alert-warning mb-0">${t('lunar.unavailable','Không có dữ liệu âm lịch')}</div></div>`;
         }
 
+        // Build good/bad day section
+        let goodBadSection = '';
+        if (lunarOk && goodBadInfo) {
+            const isVi = lang === 'vi';
+            const statusLabel = goodBadInfo.status === 'tốt' ? t('lunar.status_good', 'Ngày Hoàng Đạo (Tốt)') :
+                                (goodBadInfo.status === 'xấu' ? t('lunar.status_bad', 'Ngày Hắc Đạo (Xấu/Kiêng kỵ)') : t('lunar.status_normal', 'Ngày Bình Thường'));
+            const statusClass = goodBadInfo.status === 'tốt' ? 'success' : (goodBadInfo.status === 'xấu' ? 'danger' : 'secondary');
+            const starText = isVi ? goodBadInfo.starName : goodBadInfo.starNameEn;
+            const activeWarnings = isVi ? goodBadInfo.warnings : goodBadInfo.warningsEn;
+            
+            let warningsHtml = '';
+            if (activeWarnings.length > 0) {
+                warningsHtml = `
+                <div class="mt-3 text-danger small">
+                    <strong><i class="fas fa-exclamation-triangle"></i> ${t('lunar.warnings', 'Cảnh báo kỵ')}:</strong>
+                    <ul class="mb-0 ps-3 mt-1">
+                        ${activeWarnings.map(w => `<li>${w}</li>`).join('')}
+                    </ul>
+                </div>`;
+            }
+            
+            let descText = t('lunar.details_normal_desc', 'Thích hợp cho các công việc thường nhật, công việc lớn cần cân nhắc kỹ lưỡng.');
+            if (goodBadInfo.status === 'tốt') {
+                descText = t('lunar.details_good_desc', 'Thích hợp cho các công việc quan trọng như khởi công, cưới hỏi, khai trương, giao dịch.');
+            } else if (goodBadInfo.status === 'xấu') {
+                descText = t('lunar.details_bad_desc', 'Hạn chế làm các việc lớn như xuất hành đi xa, ký kết đại sự, khởi công xây dựng.');
+            }
+            
+            let shouldDo = '';
+            let shouldAvoid = '';
+            if (goodBadInfo.status === 'tốt') {
+                shouldDo = isVi ? 'Cưới hỏi, khai trương, mở cửa hàng, giao dịch ký kết, động thổ, xuất hành đi xa.' : 'Weddings, grand openings, business transactions, groundbreaking, long journeys.';
+                shouldAvoid = isVi ? 'Tranh chấp khiếu nại, kiện tụng.' : 'Disputes, lawsuits.';
+            } else if (goodBadInfo.status === 'xấu') {
+                shouldDo = isVi ? 'Dọn dẹp nhà cửa, quét dọn, nghỉ ngơi.' : 'House cleaning, resting, routine maintenance.';
+                shouldAvoid = isVi ? 'Khởi công xây nhà, cưới hỏi, khai trương, ký hợp đồng lớn, xuất hành hướng xấu.' : 'Starting construction, weddings, grand openings, signing major contracts, travelling.';
+            } else {
+                shouldDo = isVi ? 'Làm các việc thường nhật, đi chùa, làm việc thiện.' : 'Routine work, visiting temples, charity work.';
+                shouldAvoid = isVi ? 'Tránh quyết định vội vàng đối với các giao dịch có tính rủi ro cao.' : 'Avoid rushed decisions for high-risk transactions.';
+            }
+            
+            goodBadSection = `
+            <div class="col-12 mt-3">
+                <div class="date-card p-3">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+                        <h6 class="mb-0 text-primary"><i class="fas fa-balance-scale"></i> ${t('lunar.day_status', 'Đánh giá ngày')}</h6>
+                        <span class="badge bg-${statusClass}-subtle text-${statusClass}-emphasis border date-badge">${statusLabel}</span>
+                    </div>
+                    <p class="small text-secondary mb-3">${descText}</p>
+                    <div class="row g-2 mb-2">
+                        <div class="col-sm-6">
+                            <div class="p-2 border rounded bg-light-subtle h-100">
+                                <strong class="small text-secondary d-block mb-1">${t('lunar.day_canchi', 'Can Chi ngày')}</strong>
+                                <span class="fs-6 fw-bold text-dark">${goodBadInfo.dayCanChi}</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="p-2 border rounded bg-light-subtle h-100">
+                                <strong class="small text-secondary d-block mb-1">${t('lunar.zodiac_star', 'Sao hoàng đạo')}</strong>
+                                <span class="fs-6 fw-bold text-dark">${starText}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row g-2 mt-1">
+                        <div class="col-sm-6">
+                            <div class="p-2 rounded bg-success-subtle border-start border-success border-4 h-100">
+                                <strong class="small text-success-emphasis d-block mb-1"><i class="fas fa-check-circle"></i> ${t('lunar.should_do', 'Nên làm')}</strong>
+                                <span class="small text-dark-emphasis d-block mt-1">${shouldDo}</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="p-2 rounded bg-danger-subtle border-start border-danger border-4 h-100">
+                                <strong class="small text-danger-emphasis d-block mb-1"><i class="fas fa-times-circle"></i> ${t('lunar.should_avoid', 'Kiêng kỵ')}</strong>
+                                <span class="small text-dark-emphasis d-block mt-1">${shouldAvoid}</span>
+                            </div>
+                        </div>
+                    </div>
+                    ${warningsHtml}
+                </div>
+            </div>`;
+        }
+
         // Build holiday section
         let holidaySection = '';
         if (holiday) {
@@ -552,6 +638,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             </div>
             ${lunarSection}
+            ${goodBadSection}
             ${holidaySection}
         </div>`;
 
@@ -582,6 +669,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 `${t('lunar.solar','Dương lịch')}: ${day}/${month}/${year} (${dayOfWeek})`,
                 lunarOk ? `${t('lunar.lunar','Âm lịch')}: ${lunar.day} ${lunarMonthName} ${lunar.year} (${canChi})` : '',
                 lunarOk ? `${t('lunar.zodiac','Con giáp')}: ${zodiac}` : '',
+                lunarOk && goodBadInfo ? `${t('lunar.day_canchi', 'Can Chi ngày')}: ${goodBadInfo.dayCanChi}` : '',
+                lunarOk && goodBadInfo ? `${t('lunar.day_status', 'Đánh giá ngày')}: ${goodBadInfo.status === 'tốt' ? t('lunar.status_good') : (goodBadInfo.status === 'xấu' ? t('lunar.status_bad') : t('lunar.status_normal'))}` : '',
+                lunarOk && goodBadInfo ? `${t('lunar.zodiac_star', 'Sao hoàng đạo')}: ${lang === 'vi' ? goodBadInfo.starName : goodBadInfo.starNameEn}` : '',
+                lunarOk && goodBadInfo && goodBadInfo.warnings.length > 0 ? `${t('lunar.warnings', 'Cảnh báo kỵ')}: ${(lang === 'vi' ? goodBadInfo.warnings : goodBadInfo.warningsEn).join(', ')}` : '',
                 `${t('lunar.day_of_year','Ngày trong năm')}: ${dayOfYear}`,
                 `${t('lunar.week_of_year','Tuần')}: ${weekOfYear}`
             ].filter(Boolean).join('\n');

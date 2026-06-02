@@ -670,6 +670,25 @@ select.form-control,
   will-change: transform;
 }
 
+.names-list {
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: 5px;
+  
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: var(--bs-primary);
+    opacity: 0.3;
+    border-radius: 3px;
+  }
+}
+
+
 @media (max-width: 768px) {
   .wheel-container { padding: 28px 16px 16px 16px; }
   .wheel-pointer {

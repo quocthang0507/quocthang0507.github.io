@@ -42,7 +42,7 @@ test.describe('Homepage UI and Responsive Navigation Menu', () => {
     await expect(toggler).toBeVisible();
 
     // Take screenshot of collapsed mobile layout
-    await page.screenshot({ path: 'tests/collapsed-mobile.png' });
+    await page.screenshot({ path: 'tests/screenshots/mobile-collapsed.png' });
 
     // 3. Click the toggler to expand the menu
     await toggler.click();
@@ -52,7 +52,7 @@ test.describe('Homepage UI and Responsive Navigation Menu', () => {
     await expect(collapseMenu).toBeVisible();
 
     // Take screenshot of expanded mobile layout
-    await page.screenshot({ path: 'tests/expanded-mobile.png' });
+    await page.screenshot({ path: 'tests/screenshots/mobile-expanded.png' });
 
     // 4. Verify vertical layout on mobile (items should wrap/stack vertically)
     const navList = page.locator('.navbar-nav');
@@ -74,10 +74,33 @@ test.describe('Homepage UI and Responsive Navigation Menu', () => {
     await expect(dropdownMenu).toHaveCSS('position', 'static');
 
     // Take screenshot of expanded dropdown on mobile
-    await page.screenshot({ path: 'tests/expanded-dropdown-mobile.png' });
+    await page.screenshot({ path: 'tests/screenshots/mobile-expanded-dropdown.png' });
 
     // 6. Verify that it contains expected links, e.g., "Tạo số ngẫu nhiên"
     const randomNumberLink = page.locator('.dropdown-item >> text=Tạo số ngẫu nhiên');
     await expect(randomNumberLink).toBeVisible();
+  });
+
+  test('Clicking a day on the calendar opens the details modal with traditional good/bad day information', async ({ page }) => {
+    await page.setViewportSize({ width: 1200, height: 800 });
+    await page.goto('/');
+
+    // Wait for the calendar to render
+    const dayLink = page.locator('.calendar-day-link').first();
+    await expect(dayLink).toBeVisible();
+
+    // Click on the first day
+    await dayLink.click();
+
+    // Wait for the modal to open
+    const modal = page.locator('#dateDetailsModal');
+    await expect(modal).toBeVisible();
+
+    // Check if the Can Chi of the day and evaluations are rendered
+    const dayStatus = modal.locator('.date-card >> text=Đánh giá ngày');
+    await expect(dayStatus).toBeVisible();
+
+    // Take screenshot of the date details modal
+    await page.screenshot({ path: 'tests/screenshots/desktop-date-details-modal.png' });
   });
 });

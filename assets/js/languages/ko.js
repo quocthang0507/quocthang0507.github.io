@@ -132,6 +132,16 @@ const koreanTranslations = {
     "wheel.no_history": "아직 기록이 없습니다",
     "wheel.no_data": "아직 데이터가 없습니다",
     "wheel.no_names": "아직 이름이 없습니다",
+    "wheel.color_theme": "색상 테마",
+    "wheel.warn.enter_name": "이름을 입력하세요!",
+    "wheel.warn.name_too_long": "이름은 20자 이하이어야 합니다!",
+    "wheel.warn.name_exists": "이 이름은 이미 존재합니다!",
+    "wheel.warn.limit_reached": "이름은 최대 200개까지 추가할 수 있습니다!",
+    "wheel.warn.clear_all_confirm": "모든 이름을 지우시겠습니까?",
+    "wheel.warn.clear_history_confirm": "돌리기 기록을 지우시겠습니까?",
+    "wheel.warn.remove_winner_confirm": "목록에서 \"{name}\"을(를) 삭제하시겠습니까?",
+    "wheel.warn.winner_alert": "🎉 당첨자: {name}!",
+    "wheel.warn.added_count": "{count}개의 이름을 추가했습니다!",
     
     // Random Number
     "number.title": "랜덤 숫자 생성기",

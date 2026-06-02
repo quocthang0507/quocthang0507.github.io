@@ -273,22 +273,22 @@ document.addEventListener('DOMContentLoaded', function() {
     function addName(name) {
         name = name.trim();
         if (name === '') {
-            showAlert('Vui lòng nhập tên!', 'warning');
+            showAlert(window.t('wheel.warn.enter_name', 'Vui lòng nhập tên!'), 'warning');
             return;
         }
         
         if (name.length > 20) {
-            showAlert('Tên không được dài quá 20 ký tự!', 'warning');
+            showAlert(window.t('wheel.warn.name_too_long', 'Tên không được dài quá 20 ký tự!'), 'warning');
             return;
         }
         
         if (names.includes(name)) {
-            showAlert('Tên này đã tồn tại!', 'warning');
+            showAlert(window.t('wheel.warn.name_exists', 'Tên này đã tồn tại!'), 'warning');
             return;
         }
         
-        if (names.length >= 16) {
-            showAlert('Chỉ có thể thêm tối đa 16 tên!', 'warning');
+        if (names.length >= 200) {
+            showAlert(window.t('wheel.warn.limit_reached', 'Chỉ có thể thêm tối đa 200 tên!'), 'warning');
             return;
         }
         
@@ -396,7 +396,22 @@ document.addEventListener('DOMContentLoaded', function() {
         names.forEach((name, index) => {
             const startAngle = index * anglePerSection - Math.PI / 2; // Start from top
             const endAngle = (index + 1) * anglePerSection - Math.PI / 2;
-            const color = wheelColors[index % wheelColors.length];
+            
+            let colorIndex = index % wheelColors.length;
+            // Avoid color clash at the boundary (first and last slice)
+            if (index === names.length - 1 && names.length > 1) {
+                const prevColorIndex = (index - 1) % wheelColors.length;
+                const firstColorIndex = 0;
+                // If it matches either, find a different one
+                if (colorIndex === firstColorIndex || colorIndex === prevColorIndex) {
+                    colorIndex = (colorIndex + 1) % wheelColors.length;
+                    // If it still matches prev (e.g. C is very small), try another shift
+                    if (colorIndex === prevColorIndex || colorIndex === firstColorIndex) {
+                        colorIndex = (colorIndex + 2) % wheelColors.length;
+                    }
+                }
+            }
+            const color = wheelColors[colorIndex];
             
             // Draw segment
             ctx.beginPath();
@@ -414,40 +429,51 @@ document.addEventListener('DOMContentLoaded', function() {
             // Draw text
             ctx.save();
             
-            // Calculate text position
+            // Calculate text angle (bisector of the segment)
             const textAngle = startAngle + anglePerSection / 2;
-            const textRadius = radius * 0.65;
-            const textX = centerX + textRadius * Math.cos(textAngle);
-            const textY = centerY + textRadius * Math.sin(textAngle);
             
-            // Move to text position and rotate
-            ctx.translate(textX, textY);
-            ctx.rotate(textAngle + Math.PI / 2);
+            // Translate to center and rotate by textAngle
+            ctx.translate(centerX, centerY);
+            ctx.rotate(textAngle);
             
-            // Adjust font size based on number of names and name length
-            let fontSize = 16;
-            if (names.length > 12) {
-                fontSize = 12;
-            } else if (names.length > 8) {
-                fontSize = 14;
+            // Determine base font size based on the number of items
+            let baseFontSize = 16;
+            if (names.length > 120) {
+                baseFontSize = 7;
+            } else if (names.length > 80) {
+                baseFontSize = 8;
+            } else if (names.length > 50) {
+                baseFontSize = 10;
+            } else if (names.length > 30) {
+                baseFontSize = 12;
+            } else if (names.length > 16) {
+                baseFontSize = 14;
             }
             
-            if (name.length > 12) {
-                fontSize = Math.max(10, fontSize - 2);
-            } else if (name.length > 8) {
-                fontSize = Math.max(12, fontSize - 1);
-            }
+            // Scale font size based on current wheel radius (standardizing at radius=200)
+            let fontSize = Math.max(6, Math.floor(baseFontSize * (radius / 200)));
             
-            // Draw text with shadow
             ctx.font = `bold ${fontSize}px 'Segoe UI', Arial, sans-serif`;
             ctx.fillStyle = 'white';
-            ctx.textAlign = 'center';
+            ctx.textAlign = 'right';
             ctx.textBaseline = 'middle';
             ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
             ctx.shadowBlur = 3;
             ctx.shadowOffsetX = 0;
             ctx.shadowOffsetY = 1;
-            ctx.fillText(name, 0, 0);
+            
+            // Truncate name if it's too long to prevent it from overlapping near the center
+            const maxTextWidth = radius * 0.7;
+            let displayName = name;
+            if (ctx.measureText(displayName).width > maxTextWidth) {
+                while (displayName.length > 0 && ctx.measureText(displayName + '...').width > maxTextWidth) {
+                    displayName = displayName.slice(0, -1);
+                }
+                displayName += '...';
+            }
+            
+            // Draw text near the outer rim (e.g. at 88% of radius) flowing inwards
+            ctx.fillText(displayName, radius * 0.88, 0);
             
             ctx.restore();
         });
@@ -547,13 +573,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const removeWinnerElement = document.getElementById('remove-winner');
         if (removeWinnerElement && removeWinnerElement.checked) {
             setTimeout(() => {
-                if (confirm(`Xóa "${winner}" khỏi danh sách?`)) {
+                if (confirm(window.t('wheel.warn.remove_winner_confirm', 'Xóa "{name}" khỏi danh sách?').replace('{name}', winner))) {
                     removeName(winnerIndex);
                 }
             }, 1000);
         }
         
-        showAlert(`🎉 Người thắng: ${winner}!`, 'success');
+        showAlert(window.t('wheel.warn.winner_alert', '🎉 Người thắng: {name}!').replace('{name}', winner), 'success');
     }
     
     // Show confetti effect
@@ -685,7 +711,7 @@ document.addEventListener('DOMContentLoaded', function() {
         link.click();
         document.body.removeChild(link);
         
-        showAlert('Đã xuất dữ liệu thành công!', 'success');
+        showAlert(window.t('wheel.warn.export_success', 'Đã xuất dữ liệu thành công!'), 'success');
     }
     
     // Event listeners
@@ -707,7 +733,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let addedCount = 0;
         nameList.forEach(name => {
             name = name.trim();
-            if (name && !names.includes(name) && names.length < 16) {
+            if (name && !names.includes(name) && names.length < 200) {
                 names.push(name);
                 addedCount++;
             }
@@ -719,7 +745,7 @@ document.addEventListener('DOMContentLoaded', function() {
             updateWheelDisplay();
             updateStatistics();
             document.getElementById('bulk-names').value = '';
-            showAlert(`Đã thêm ${addedCount} tên!`, 'success');
+            showAlert(window.t('wheel.warn.added_count', 'Đã thêm {count} tên!').replace('{count}', addedCount), 'success');
         }
     });
     
@@ -731,7 +757,7 @@ document.addEventListener('DOMContentLoaded', function() {
         wheelNames.style.transform = 'rotate(0deg)';
         document.getElementById('wheel-result').textContent = 'Thêm tên và nhấn "Quay bánh xe"';
     });
-
+ 
     // Redraw on resize to keep canvas aligned with responsive wheel size
     let resizeTimer;
     window.addEventListener('resize', function() {
@@ -744,23 +770,23 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     document.getElementById('clear-names-btn').addEventListener('click', function() {
-        if (names.length > 0 && confirm('Bạn có chắc muốn xóa tất cả tên?')) {
+        if (names.length > 0 && confirm(window.t('wheel.warn.clear_all_confirm', 'Bạn có chắc muốn xóa tất cả tên?'))) {
             names = [];
             saveNames();
             updateNamesDisplay();
             updateWheelDisplay();
             updateStatistics();
-            showAlert('Đã xóa tất cả tên!', 'success');
+            showAlert(window.t('wheel.warn.clear_all_success', 'Đã xóa tất cả tên!'), 'success');
         }
     });
     
     document.getElementById('clear-history-wheel-btn').addEventListener('click', function() {
-        if (spinHistory.length > 0 && confirm('Bạn có chắc muốn xóa lịch sử?')) {
+        if (spinHistory.length > 0 && confirm(window.t('wheel.warn.clear_history_confirm', 'Bạn có chắc muốn xóa lịch sử?'))) {
             spinHistory = [];
             saveToLocalStorage('wheelSpinHistory', spinHistory);
             updateHistoryDisplay();
             updateStatistics();
-            showAlert('Đã xóa lịch sử!', 'success');
+            showAlert(window.t('wheel.warn.clear_history_success', 'Đã xóa lịch sử!'), 'success');
         }
     });
     
@@ -776,7 +802,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 updateNamesDisplay();
                 updateWheelDisplay();
                 updateStatistics();
-                showAlert(`Đã tải preset: ${presetName}!`, 'success');
+                showAlert(window.t('wheel.warn.preset_loaded', 'Đã tải preset: {name}!').replace('{name}', presetName), 'success');
                 
                 // Track preset usage
                 if (typeof gtag !== 'undefined') {

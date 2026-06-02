@@ -103,7 +103,17 @@ const chineseTranslations = {
     "wheel.no_data": "暂无数据",
     "wheel.no_names": "暂无名称",
     "wheel.winner": "获胜者",
+    "wheel.color_theme": "色彩主题",
     "wheel.spinning": "转动中...",
+    "wheel.warn.enter_name": "请输入名称！",
+    "wheel.warn.name_too_long": "名称不能超过20个字符！",
+    "wheel.warn.name_exists": "该名称已存在！",
+    "wheel.warn.limit_reached": "最多只能添加200个名称！",
+    "wheel.warn.clear_all_confirm": "您确定要清除所有名称吗？",
+    "wheel.warn.clear_history_confirm": "您确定要清除历史记录吗？",
+    "wheel.warn.remove_winner_confirm": "从列表中移除“{name}”？",
+    "wheel.warn.winner_alert": "🎉 获胜者：{name}！",
+    "wheel.warn.added_count": "已添加{count}个名称！",
     
     // Random Number
     "number.title": "随机数生成器",
