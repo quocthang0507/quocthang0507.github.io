@@ -64,7 +64,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const gradientCopyBtn = document.getElementById('gradient-copy');
 
     let currentColor = { r: 255, g: 87, b: 51 };
-    let savedColors = JSON.parse(localStorage.getItem('colorPalette') || '[]');
+    let savedColors = [];
+    try {
+        savedColors = JSON.parse(localStorage.getItem('colorPalette') || '[]');
+    } catch (e) {
+        console.warn('localStorage is blocked or unavailable:', e);
+    }
     let isUpdating = false;
 
     function tr(key, fallback) {
@@ -469,8 +474,7 @@ document.addEventListener('DOMContentLoaded', function() {
         brightnessValue.textContent = `${brightness} / 255 (${Math.round(luminance * 100)}%)`;
         luminanceValue.textContent = luminance.toFixed(3);
         
-        // Update color wheel marker
-        drawColorWheel();
+        // Update color wheel marker and harmony
         updateHarmony();
     }
 
@@ -672,6 +676,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Color Wheel Functions
+    // Color Wheel Functions
     function drawColorWheel() {
         const centerX = colorWheel.width / 2;
         const centerY = colorWheel.height / 2;
@@ -697,20 +702,199 @@ document.addEventListener('DOMContentLoaded', function() {
             ctx.fill();
         }
 
-        // Draw current color marker
+        // Get active harmony
+        const harmonyType = harmonySelect ? harmonySelect.value : 'none';
         const hsv = rgbToHsv(currentColor.r, currentColor.g, currentColor.b);
-        const angle = (hsv.h - 90) * Math.PI / 180;
-        const distance = (hsv.s / 100) * radius;
-        const markerX = centerX + distance * Math.cos(angle);
-        const markerY = centerY + distance * Math.sin(angle);
+        
+        const getCoord = (h, s) => {
+            const angle = (h - 90) * Math.PI / 180;
+            const distance = (s / 100) * radius;
+            return {
+                x: centerX + distance * Math.cos(angle),
+                y: centerY + distance * Math.sin(angle)
+            };
+        };
+
+        // Determine harmony points and how to connect them
+        let points = [];
+        let connectPoints = false;
+        let closePath = false;
+        let drawRadialLine = false;
+
+        if (harmonyType !== 'none') {
+            switch (harmonyType) {
+                case 'complementary':
+                    points = [
+                        hsv,
+                        { h: (hsv.h + 180) % 360, s: hsv.s, v: hsv.v }
+                    ];
+                    connectPoints = true;
+                    break;
+                case 'analogous':
+                    points = [
+                        { h: (hsv.h - 30 + 360) % 360, s: hsv.s, v: hsv.v },
+                        hsv,
+                        { h: (hsv.h + 30) % 360, s: hsv.s, v: hsv.v }
+                    ];
+                    connectPoints = true;
+                    break;
+                case 'triadic':
+                    points = [
+                        hsv,
+                        { h: (hsv.h + 120) % 360, s: hsv.s, v: hsv.v },
+                        { h: (hsv.h + 240) % 360, s: hsv.s, v: hsv.v }
+                    ];
+                    connectPoints = true;
+                    closePath = true;
+                    break;
+                case 'split-complementary':
+                    points = [
+                        hsv,
+                        { h: (hsv.h + 150) % 360, s: hsv.s, v: hsv.v },
+                        { h: (hsv.h + 210) % 360, s: hsv.s, v: hsv.v }
+                    ];
+                    connectPoints = true;
+                    closePath = true;
+                    break;
+                case 'square':
+                    points = [
+                        hsv,
+                        { h: (hsv.h + 90) % 360, s: hsv.s, v: hsv.v },
+                        { h: (hsv.h + 180) % 360, s: hsv.s, v: hsv.v },
+                        { h: (hsv.h + 270) % 360, s: hsv.s, v: hsv.v }
+                    ];
+                    connectPoints = true;
+                    closePath = true;
+                    break;
+                case 'tetradic':
+                    points = [
+                        hsv,
+                        { h: (hsv.h + 60) % 360, s: hsv.s, v: hsv.v },
+                        { h: (hsv.h + 180) % 360, s: hsv.s, v: hsv.v },
+                        { h: (hsv.h + 240) % 360, s: hsv.s, v: hsv.v }
+                    ];
+                    connectPoints = true;
+                    closePath = true;
+                    break;
+                case 'monochromatic':
+                    points = [
+                        { h: hsv.h, s: Math.max(10, hsv.s - 60), v: hsv.v },
+                        { h: hsv.h, s: Math.max(20, hsv.s - 30), v: hsv.v },
+                        hsv,
+                        { h: hsv.h, s: Math.min(100, hsv.s + 20), v: hsv.v },
+                        { h: hsv.h, s: Math.min(100, hsv.s + 40), v: hsv.v }
+                    ];
+                    drawRadialLine = true;
+                    break;
+                case 'shades':
+                    points = [
+                        { h: hsv.h, s: hsv.s, v: 20 },
+                        { h: hsv.h, s: hsv.s, v: 40 },
+                        { h: hsv.h, s: hsv.s, v: 60 },
+                        { h: hsv.h, s: hsv.s, v: 80 },
+                        { h: hsv.h, s: hsv.s, v: 100 }
+                    ];
+                    break;
+            }
+        }
+
+        // Draw connecting lines if applicable
+        if (connectPoints && points.length > 1) {
+            const coords = points.map(p => getCoord(p.h, p.s));
+            
+            // Draw background stroke (black)
+            ctx.beginPath();
+            ctx.moveTo(coords[0].x, coords[0].y);
+            for (let i = 1; i < coords.length; i++) {
+                ctx.lineTo(coords[i].x, coords[i].y);
+            }
+            if (closePath) ctx.closePath();
+            ctx.strokeStyle = 'rgba(0, 0, 0, 0.7)';
+            ctx.lineWidth = 4;
+            ctx.setLineDash([4, 4]); // Dashed line
+            ctx.stroke();
+
+            // Draw foreground stroke (white)
+            ctx.beginPath();
+            ctx.moveTo(coords[0].x, coords[0].y);
+            for (let i = 1; i < coords.length; i++) {
+                ctx.lineTo(coords[i].x, coords[i].y);
+            }
+            if (closePath) ctx.closePath();
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+            ctx.setLineDash([]); // Reset line dash
+        } else if (drawRadialLine) {
+            // Draw radial line from center to the highest saturation point
+            const maxSatPoint = points.reduce((max, p) => p.s > max.s ? p : max, points[0]);
+            const target = getCoord(maxSatPoint.h, maxSatPoint.s);
+
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.lineTo(target.x, target.y);
+            
+            ctx.strokeStyle = 'rgba(0, 0, 0, 0.7)';
+            ctx.lineWidth = 4;
+            ctx.setLineDash([4, 4]);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.lineTo(target.x, target.y);
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+            ctx.setLineDash([]); // Reset line dash
+        }
+
+        // Draw markers for all harmony points (except the main one, we'll draw it last so it's on top)
+        points.forEach(p => {
+            if (Math.abs(p.h - hsv.h) < 0.1 && Math.abs(p.s - hsv.s) < 0.1 && Math.abs(p.v - hsv.v) < 0.1) {
+                return; // Draw main marker last
+            }
+
+            const coord = getCoord(p.h, p.s);
+            const rgb = hsvToRgb(p.h, p.s, p.v);
+            const fillStyle = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+
+            // Draw marker shadow/outline
+            ctx.beginPath();
+            ctx.arc(coord.x, coord.y, 7, 0, 2 * Math.PI);
+            ctx.fillStyle = 'black';
+            ctx.fill();
+
+            // Draw white ring
+            ctx.beginPath();
+            ctx.arc(coord.x, coord.y, 6, 0, 2 * Math.PI);
+            ctx.fillStyle = 'white';
+            ctx.fill();
+
+            // Draw inner color dot
+            ctx.beginPath();
+            ctx.arc(coord.x, coord.y, 4, 0, 2 * Math.PI);
+            ctx.fillStyle = fillStyle;
+            ctx.fill();
+        });
+
+        // Draw current color marker (main marker)
+        const mainCoord = getCoord(hsv.h, hsv.s);
+        
+        ctx.beginPath();
+        ctx.arc(mainCoord.x, mainCoord.y, 10, 0, 2 * Math.PI);
+        ctx.fillStyle = 'black';
+        ctx.fill();
 
         ctx.beginPath();
-        ctx.arc(markerX, markerY, 8, 0, 2 * Math.PI);
+        ctx.arc(mainCoord.x, mainCoord.y, 8, 0, 2 * Math.PI);
         ctx.fillStyle = 'white';
         ctx.fill();
-        ctx.strokeStyle = 'black';
-        ctx.lineWidth = 2;
-        ctx.stroke();
+
+        // Draw inner dot for main color
+        ctx.beginPath();
+        ctx.arc(mainCoord.x, mainCoord.y, 5, 0, 2 * Math.PI);
+        ctx.fillStyle = `rgb(${currentColor.r}, ${currentColor.g}, ${currentColor.b})`;
+        ctx.fill();
     }
 
     function handleWheelClick(e) {
@@ -742,6 +926,9 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateHarmony() {
         const harmonyType = harmonySelect.value;
         harmonyColors.innerHTML = '';
+        
+        // Redraw color wheel to show active harmony markers and lines
+        drawColorWheel();
         
         if (harmonyType === 'none') return;
         
@@ -839,7 +1026,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const hex = rgbToHex(currentColor.r, currentColor.g, currentColor.b);
         if (!savedColors.includes(hex)) {
             savedColors.push(hex);
-            localStorage.setItem('colorPalette', JSON.stringify(savedColors));
+            try {
+                localStorage.setItem('colorPalette', JSON.stringify(savedColors));
+            } catch (e) {
+                console.warn('localStorage is blocked:', e);
+            }
             displaySavedColors();
             showAlert(tr('color.alert_added', 'Color added to palette!'), 'success');
         } else {
@@ -850,7 +1041,11 @@ document.addEventListener('DOMContentLoaded', function() {
     function clearPalette() {
         if (confirm(tr('color.confirm_clear_palette', 'Are you sure you want to clear all saved colors?'))) {
             savedColors = [];
-            localStorage.setItem('colorPalette', JSON.stringify(savedColors));
+            try {
+                localStorage.setItem('colorPalette', JSON.stringify(savedColors));
+            } catch (e) {
+                console.warn('localStorage is blocked:', e);
+            }
             displaySavedColors();
             showAlert(tr('color.alert_palette_cleared', 'Palette cleared'), 'success');
         }
@@ -880,7 +1075,11 @@ document.addEventListener('DOMContentLoaded', function() {
             deleteBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 savedColors.splice(index, 1);
-                localStorage.setItem('colorPalette', JSON.stringify(savedColors));
+                try {
+                    localStorage.setItem('colorPalette', JSON.stringify(savedColors));
+                } catch (err) {
+                    console.warn('localStorage is blocked:', err);
+                }
                 displaySavedColors();
             });
             
@@ -912,6 +1111,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function showAlert(message, type) {
+        if (typeof window.showAlert === 'function') {
+            window.showAlert(message, type);
+            return;
+        }
         const alertDiv = document.createElement('div');
         alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
         alertDiv.innerHTML = `

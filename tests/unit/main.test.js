@@ -24,27 +24,31 @@ afterEach(() => {
 
 describe('showAlert', () => {
   it('renders an alert and auto-dismisses it', () => {
-    document.body.innerHTML = '<div id="alert-container"></div>';
+    document.body.innerHTML = '';
 
     showAlert('Hello world', 'success');
 
-    const alertElement = document.querySelector('#alert-container .alert');
+    const alertElement = document.querySelector('#global-toast-container .global-toast');
     expect(alertElement).not.toBeNull();
-    expect(alertElement.classList.contains('alert-success')).toBe(true);
+    expect(alertElement.classList.contains('toast-success')).toBe(true);
     expect(alertElement.querySelector('span').textContent).toBe('Hello world');
 
     jest.advanceTimersByTime(5000);
-    expect(document.querySelector('#alert-container .alert')).toBeNull();
+    jest.advanceTimersByTime(350);
+    expect(document.querySelector('#global-toast-container .global-toast')).toBeNull();
   });
 
   it('gracefully handles missing container', () => {
+    document.body.innerHTML = '';
     expect(() => showAlert('No container')).not.toThrow();
+    const container = document.getElementById('global-toast-container');
+    expect(container).not.toBeNull();
   });
 });
 
 describe('copyToClipboard', () => {
   it('uses the Clipboard API when available', async () => {
-    document.body.innerHTML = '<div id="alert-container"></div>';
+    document.body.innerHTML = '';
     const writeText = jest.fn().mockResolvedValue();
     navigator.clipboard = { writeText };
     window.gtag = jest.fn();
@@ -53,7 +57,7 @@ describe('copyToClipboard', () => {
 
     expect(result).toBe(true);
     expect(writeText).toHaveBeenCalledWith('clipboard text');
-    expect(document.querySelector('#alert-container .alert')).not.toBeNull();
+    expect(document.querySelector('#global-toast-container .global-toast')).not.toBeNull();
     expect(window.gtag).toHaveBeenCalledWith(
       'event',
       'copy_to_clipboard',
@@ -62,26 +66,26 @@ describe('copyToClipboard', () => {
   });
 
   it('falls back to execCommand when Clipboard API is unavailable', async () => {
-    document.body.innerHTML = '<div id="alert-container"></div>';
+    document.body.innerHTML = '';
     document.execCommand = jest.fn().mockReturnValue(true);
 
     const result = await copyToClipboard('fallback text');
 
     expect(result).toBe(true);
     expect(document.execCommand).toHaveBeenCalledWith('copy');
-    expect(document.querySelector('#alert-container .alert')).not.toBeNull();
+    expect(document.querySelector('#global-toast-container .global-toast')).not.toBeNull();
   });
 
   it('reports a failure when fallback copy fails', async () => {
-    document.body.innerHTML = '<div id="alert-container"></div>';
+    document.body.innerHTML = '';
     document.execCommand = jest.fn().mockReturnValue(false);
     window.gtag = jest.fn();
 
     const result = await copyToClipboard('bad text');
 
     expect(result).toBe(false);
-    const alertElement = document.querySelector('#alert-container .alert');
-    expect(alertElement.classList.contains('alert-danger')).toBe(true);
+    const alertElement = document.querySelector('#global-toast-container .global-toast');
+    expect(alertElement.classList.contains('toast-danger')).toBe(true);
     expect(window.gtag).toHaveBeenCalledWith(
       'event',
       'copy_failed',

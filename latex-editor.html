@@ -196,20 +196,60 @@ sitemap:
                     </div>
                 </div>
 
-                <!-- Misc Symbols -->
+                <!-- Logic & Sets -->
                 <div class="mb-3">
-                    <h6 class="text-primary" data-i18n="latex.misc_symbols">Ký hiệu khác</h6>
+                    <h6 class="text-primary" data-i18n="latex.logic_sets">Logic & Tập hợp</h6>
                     <div class="symbol-grid">
-                        <button class="symbol-btn insert-symbol" data-symbol="\infty" title="\infty">\(\infty\)</button>
-                        <button class="symbol-btn insert-symbol" data-symbol="\forall" title="\forall">\(\forall\)</button>
-                        <button class="symbol-btn insert-symbol" data-symbol="\exists" title="\exists">\(\exists\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\land" title="\land">\(\land\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\lor" title="\lor">\(\lor\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\neg" title="\neg">\(\neg\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\implies" title="\implies">\(\implies\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\iff" title="\iff">\(\iff\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\cap" title="\cap">\(\cap\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\cup" title="\cup">\(\cup\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\setminus" title="\setminus">\(\setminus\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\subset" title="\subset">\(\subset\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\subseteq" title="\subseteq">\(\subseteq\)</button>
                         <button class="symbol-btn insert-symbol" data-symbol="\in" title="\in">\(\in\)</button>
                         <button class="symbol-btn insert-symbol" data-symbol="\notin" title="\notin">\(\notin\)</button>
-                        <button class="symbol-btn insert-symbol" data-symbol="\subset" title="\subset">\(\subset\)</button>
-                        <button class="symbol-btn insert-symbol" data-symbol="\supset" title="\supset">\(\supset\)</button>
                         <button class="symbol-btn insert-symbol" data-symbol="\emptyset" title="\emptyset">\(\emptyset\)</button>
-                        <button class="symbol-btn insert-symbol" data-symbol="\nabla" title="\nabla">\(\nabla\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\forall" title="\forall">\(\forall\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\exists" title="\exists">\(\exists\)</button>
+                    </div>
+                </div>
+
+                <!-- Calculus & Analysis -->
+                <div class="mb-3">
+                    <h6 class="text-primary" data-i18n="latex.calculus">Giải tích & Giới hạn</h6>
+                    <div class="symbol-grid">
+                        <button class="symbol-btn insert-symbol" data-symbol="\int" title="\int">\(\int\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\iint" title="\iint">\(\iint\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\iiint" title="\iiint">\(\iiint\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\oint" title="\oint">\(\oint\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\sum" title="\sum">\(\sum\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\prod" title="\prod">\(\prod\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\lim" title="\lim">\(\lim\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\to" title="\to">\(\to\)</button>
                         <button class="symbol-btn insert-symbol" data-symbol="\partial" title="\partial">\(\partial\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\nabla" title="\nabla">\(\nabla\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\infty" title="\infty">\(\infty\)</button>
+                    </div>
+                </div>
+
+                <!-- Geometry & Trigonometry -->
+                <div class="mb-3">
+                    <h6 class="text-primary" data-i18n="latex.geometry">Hình học & Lượng giác</h6>
+                    <div class="symbol-grid">
+                        <button class="symbol-btn insert-symbol" data-symbol="\angle" title="\angle">\(\angle\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\triangle" title="\triangle">\(\triangle\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\parallel" title="\parallel">\(\parallel\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\perp" title="\perp">\(\perp\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\cong" title="\cong">\(\cong\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\sim" title="\sim">\(\sim\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="^\circ" title="^\circ">\(^\circ\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\sin" title="\sin">\(\sin\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\cos" title="\cos">\(\cos\)</button>
+                        <button class="symbol-btn insert-symbol" data-symbol="\tan" title="\tan">\(\tan\)</button>
                     </div>
                 </div>
 
@@ -249,6 +289,43 @@ sitemap:
                         </button>
                         <button class="btn btn-sm btn-outline-primary insert-symbol text-start" data-symbol="\begin{cases} x, & \text{if } x > 0 \\ 0, & \text{otherwise} \end{cases}">
                             <code>\begin{cases}...</code> - <span data-i18n="latex.template_cases">Điều kiện</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Illustrative Equations -->
+                <div class="mb-3">
+                    <h6 class="text-primary" data-i18n="latex.equations_illustrative">Biểu thức mẫu minh họa</h6>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-sm btn-outline-success insert-symbol text-start" data-symbol="x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}">
+                            <code>x = \frac{-b...</code> - <span data-i18n="latex.eq_quadratic">Phương trình bậc hai</span>
+                        </button>
+                        <button class="btn btn-sm btn-outline-success insert-symbol text-start" data-symbol="e^{i\pi} + 1 = 0">
+                            <code>e^{i\pi} + 1 = 0</code> - <span data-i18n="latex.eq_euler">Hằng đẳng thức Euler</span>
+                        </button>
+                        <button class="btn btn-sm btn-outline-success insert-symbol text-start" data-symbol="E = mc^2">
+                            <code>E = mc^2</code> - <span data-i18n="latex.eq_einstein">Công thức Einstein</span>
+                        </button>
+                        <button class="btn btn-sm btn-outline-success insert-symbol text-start" data-symbol="a^2 + b^2 = c^2">
+                            <code>a^2 + b^2 = c^2</code> - <span data-i18n="latex.eq_pythagoras">Định lý Pythagoras</span>
+                        </button>
+                        <button class="btn btn-sm btn-outline-success insert-symbol text-start" data-symbol="\int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi}">
+                            <code>\int e^{-x^2}...</code> - <span data-i18n="latex.eq_gaussian">Tích phân Gaussian</span>
+                        </button>
+                        <button class="btn btn-sm btn-outline-success insert-symbol text-start" data-symbol="f(x) = \frac{1}{\sigma\sqrt{2\pi}} e^{-\frac{1}{2}\left(\frac{x-\mu}{\sigma}\right)^2}">
+                            <code>f(x) = \frac{1}{\sigma...</code> - <span data-i18n="latex.eq_normal_dist">Phân phối chuẩn</span>
+                        </button>
+                        <button class="btn btn-sm btn-outline-success insert-symbol text-start" data-symbol="f(x) = a_0 + \sum_{n=1}^{\infty} \left( a_n \cos\left(\frac{2\pi n x}{T}\right) + b_n \sin\left(\frac{2\pi n x}{T}\right) \right)">
+                            <code>f(x) = a_0 + \sum...</code> - <span data-i18n="latex.eq_fourier">Chuỗi Fourier</span>
+                        </button>
+                        <button class="btn btn-sm btn-outline-success insert-symbol text-start" data-symbol="F(s) = \int_{0}^{\infty} e^{-st} f(t) dt">
+                            <code>F(s) = \int e^{-st}...</code> - <span data-i18n="latex.eq_laplace">Biến đổi Laplace</span>
+                        </button>
+                        <button class="btn btn-sm btn-outline-success insert-symbol text-start" data-symbol="\nabla \times \mathbf{E} = -\frac{\partial \mathbf{B}}{\partial t}">
+                            <code>\nabla \times \mathbf{E}...</code> - <span data-i18n="latex.eq_maxwell">Định luật cảm ứng Faraday</span>
+                        </button>
+                        <button class="btn btn-sm btn-outline-success insert-symbol text-start" data-symbol="\oint_{\partial \Sigma} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Sigma} (\nabla \times \mathbf{F}) \cdot d\mathbf{\Sigma}">
+                            <code>\oint \mathbf{F}...</code> - <span data-i18n="latex.eq_stokes">Định lý Stokes</span>
                         </button>
                     </div>
                 </div>

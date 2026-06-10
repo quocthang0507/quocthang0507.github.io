@@ -306,6 +306,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function showAlert(message, type = 'info') {
+        if (typeof window.showAlert === 'function') {
+            window.showAlert(message, type);
+            return;
+        }
         const container = document.getElementById('alert-container');
         if (!container) return;
         

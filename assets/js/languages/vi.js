@@ -704,5 +704,21 @@ const vietnameseTranslations = {
     "gold.period_90d": "90 Ngày",
     "gold.period_1y": "1 Năm",
     "gold.loading": "Đang tải dữ liệu giá vàng...",
-    "gold.fetch_error": "Không thể tải dữ liệu giá vàng. Vui lòng thử lại sau."
+    "gold.fetch_error": "Không thể tải dữ liệu giá vàng. Vui lòng thử lại sau.",
+    "gold.api_source": "Dữ liệu được cập nhật từ SJC, PNJ và thị trường thế giới.",
+    "currency.api_source": "Dữ liệu tỷ giá được cung cấp bởi Ngân hàng Vietcombank.",
+    "latex.logic_sets": "Logic & Tập hợp",
+    "latex.calculus": "Giải tích & Giới hạn",
+    "latex.geometry": "Hình học & Lượng giác",
+    "latex.equations_illustrative": "Biểu thức mẫu minh họa",
+    "latex.eq_quadratic": "Phương trình bậc hai",
+    "latex.eq_euler": "Hằng đẳng thức Euler",
+    "latex.eq_einstein": "Công thức Einstein (E=mc²)",
+    "latex.eq_pythagoras": "Định lý Pythagoras",
+    "latex.eq_gaussian": "Tích phân Gaussian",
+    "latex.eq_normal_dist": "Phân phối chuẩn (Gauss)",
+    "latex.eq_fourier": "Chuỗi Fourier",
+    "latex.eq_laplace": "Biến đổi Laplace",
+    "latex.eq_maxwell": "Phương trình Maxwell",
+    "latex.eq_stokes": "Định lý Stokes"
 };

@@ -48,27 +48,51 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Utility functions
 function showAlert(message, type = 'info') {
-    const alertContainer = document.getElementById('alert-container');
-    if (!alertContainer) {
-        return;
+    let toastContainer = document.getElementById('global-toast-container');
+    if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.id = 'global-toast-container';
+        toastContainer.className = 'global-toast-container';
+        document.body.appendChild(toastContainer);
     }
-    const alertElement = document.createElement('div');
-    alertElement.className = `alert alert-${type} alert-dismissible fade show`;
+
+    const toastElement = document.createElement('div');
+    toastElement.className = `global-toast toast-${type}`;
+    
     const messageSpan = document.createElement('span');
-    messageSpan.textContent = message;
+    messageSpan.innerHTML = message;
+    
     const closeButton = document.createElement('button');
     closeButton.type = 'button';
-    closeButton.className = 'btn-close';
-    closeButton.setAttribute('data-bs-dismiss', 'alert');
+    closeButton.className = 'toast-close-btn';
+    closeButton.innerHTML = '&times;';
     closeButton.setAttribute('aria-label', 'Close');
-    alertElement.appendChild(messageSpan);
-    alertElement.appendChild(closeButton);
-    alertContainer.appendChild(alertElement);
+    closeButton.addEventListener('click', () => {
+        toastElement.classList.remove('show');
+        setTimeout(() => {
+            if (toastElement.parentNode) {
+                toastElement.remove();
+            }
+        }, 350);
+    });
+
+    toastElement.appendChild(messageSpan);
+    toastElement.appendChild(closeButton);
+    toastContainer.appendChild(toastElement);
+
+    // Trigger reflow to start transition
+    toastElement.offsetHeight;
+    toastElement.classList.add('show');
     
     // Auto-dismiss after 5 seconds
     setTimeout(() => {
-        if (alertElement.parentNode) {
-            alertElement.remove();
+        if (toastElement.parentNode) {
+            toastElement.classList.remove('show');
+            setTimeout(() => {
+                if (toastElement.parentNode) {
+                    toastElement.remove();
+                }
+            }, 350);
         }
     }, 5000);
 }

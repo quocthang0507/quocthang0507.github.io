@@ -159,6 +159,90 @@ sitemap:
     </div>
 </div>
 
+<!-- Embed Clock Generator Row -->
+<div class="row">
+    <div class="col-12 mb-4">
+        <div class="card">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0"><i class="fas fa-code"></i> <span data-i18n="worldclocks.embed.title">Nhúng đồng hồ vào trang web của bạn</span></h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <!-- Controls -->
+                    <div class="col-lg-4 col-md-6 mb-3">
+                        <h6 class="border-bottom pb-2 mb-3"><i class="fas fa-sliders-h"></i> <span data-i18n="worldclocks.embed.customize">Tùy chỉnh đồng hồ</span></h6>
+                        
+                        <div class="mb-3">
+                            <label for="embed-timezone" class="form-label" data-i18n="worldclocks.embed.timezone">Múi giờ</label>
+                            <select id="embed-timezone" class="form-select">
+                                <!-- Populated dynamically -->
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="embed-city-name" class="form-label" data-i18n="worldclocks.embed.city_name">Tên thành phố hiển thị</label>
+                            <input type="text" id="embed-city-name" class="form-control" placeholder="Hanoi" value="Hanoi">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="embed-theme" class="form-label" data-i18n="worldclocks.embed.theme">Chủ đề</label>
+                            <select id="embed-theme" class="form-select">
+                                <option value="light">Light</option>
+                                <option value="dark">Dark</option>
+                                <option value="colorful">Colorful</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="embed-show-seconds" checked>
+                            <label class="form-check-label" for="embed-show-seconds" data-i18n="worldclocks.embed.show_seconds">
+                                Hiển thị kim giây
+                            </label>
+                        </div>
+                        
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="embed-show-numbers" checked>
+                            <label class="form-check-label" for="embed-show-numbers" data-i18n="worldclocks.embed.show_numbers">
+                                Hiển thị số giờ
+                            </label>
+                        </div>
+                        
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="embed-show-digital" checked>
+                            <label class="form-check-label" for="embed-show-digital" data-i18n="worldclocks.embed.show_digital">
+                                Hiển thị đồng hồ số
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Preview -->
+                    <div class="col-lg-4 col-md-6 mb-3 d-flex flex-column align-items-center justify-content-start border-start border-end">
+                        <h6 class="w-100 border-bottom pb-2 mb-3 text-center"><i class="fas fa-eye"></i> <span data-i18n="worldclocks.embed.preview">Xem trước</span></h6>
+                        
+                        <div id="embed-preview-container" style="display: flex; justify-content: center; align-items: center; min-height: 300px; width: 100%;">
+                            <!-- Live rendering of clock here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Embed Code -->
+                    <div class="col-lg-4 col-md-12 mb-3">
+                        <h6 class="border-bottom pb-2 mb-3"><i class="fas fa-terminal"></i> <span data-i18n="worldclocks.embed.code">Mã nhúng HTML</span></h6>
+                        <p class="small text-muted" data-i18n="worldclocks.embed.instructions">Sao chép mã bên dưới và dán vào mã nguồn HTML của trang web của bạn:</p>
+                        
+                        <div class="mb-3">
+                            <textarea id="embed-code-output" class="form-control font-monospace" rows="8" readonly style="font-size: 0.8rem; background-color: #272822; color: #f8f8f2; border: 1px solid #333;"></textarea>
+                        </div>
+                        
+                        <button id="copy-embed-code-btn" class="btn btn-primary w-100">
+                            <i class="fas fa-copy"></i> <span data-i18n="worldclocks.embed.copy">Sao chép mã</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <style>
 .clock-item {
     text-align: center;

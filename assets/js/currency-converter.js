@@ -359,8 +359,17 @@ document.addEventListener('DOMContentLoaded', function() {
     function populateSelectors() {
         if (!fromSelect || !toSelect) return;
 
-        const previousFrom = fromSelect.value || localStorage.getItem('preferredFromCurrency') || 'USD';
-        const previousTo = toSelect.value || localStorage.getItem('preferredToCurrency') || 'VND';
+        let preferredFrom = 'USD';
+        let preferredTo = 'VND';
+        try {
+            preferredFrom = localStorage.getItem('preferredFromCurrency') || 'USD';
+            preferredTo = localStorage.getItem('preferredToCurrency') || 'VND';
+        } catch (e) {
+            console.warn('localStorage is blocked or unavailable:', e);
+        }
+
+        const previousFrom = fromSelect.value || preferredFrom;
+        const previousTo = toSelect.value || preferredTo;
 
         fromSelect.innerHTML = '';
         toSelect.innerHTML = '';
@@ -466,12 +475,20 @@ document.addEventListener('DOMContentLoaded', function() {
             row.addEventListener('click', () => {
                 if (fromSelect.value !== rate.code) {
                     fromSelect.value = rate.code;
-                    localStorage.setItem('preferredFromCurrency', rate.code);
+                    try {
+                        localStorage.setItem('preferredFromCurrency', rate.code);
+                    } catch (e) {
+                        console.warn('localStorage is blocked:', e);
+                    }
                     calculateConversion();
                     populateSelectors(); // updates text values
                 } else {
                     toSelect.value = rate.code;
-                    localStorage.setItem('preferredToCurrency', rate.code);
+                    try {
+                        localStorage.setItem('preferredToCurrency', rate.code);
+                    } catch (e) {
+                        console.warn('localStorage is blocked:', e);
+                    }
                     calculateConversion();
                     populateSelectors();
                 }
@@ -566,8 +583,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Save selected choices to local storage
-        localStorage.setItem('preferredFromCurrency', fromCode);
-        localStorage.setItem('preferredToCurrency', toCode);
+        try {
+            localStorage.setItem('preferredFromCurrency', fromCode);
+            localStorage.setItem('preferredToCurrency', toCode);
+        } catch (e) {
+            console.warn('localStorage is blocked:', e);
+        }
 
         // Render dynamic grid table
         renderCommonConversionTables(fromCode, toCode, transactionType);

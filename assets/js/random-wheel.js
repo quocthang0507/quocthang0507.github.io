@@ -4,7 +4,12 @@ document.addEventListener('DOMContentLoaded', function() {
     let spinHistory = loadFromLocalStorage('wheelSpinHistory') || [];
     let isSpinning = false;
     let currentRotation = 0;
-    let currentColorTheme = localStorage.getItem('wheelColorTheme') || 'classic';
+    let currentColorTheme = 'classic';
+    try {
+        currentColorTheme = localStorage.getItem('wheelColorTheme') || 'classic';
+    } catch (e) {
+        console.warn('localStorage is blocked or unavailable:', e);
+    }
     
     const presets = {
         colors: ['Đỏ', 'Xanh lá', 'Xanh dương', 'Vàng', 'Tím', 'Cam', 'Hồng', 'Nâu'],
@@ -226,7 +231,11 @@ document.addEventListener('DOMContentLoaded', function() {
     function changeColorTheme(theme) {
         if (colorThemes[theme]) {
             currentColorTheme = theme;
-            localStorage.setItem('wheelColorTheme', theme);
+            try {
+                localStorage.setItem('wheelColorTheme', theme);
+            } catch (e) {
+                console.warn('localStorage is blocked:', e);
+            }
             updateNamesDisplay();
             updateWheelDisplay();
             

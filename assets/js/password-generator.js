@@ -47,7 +47,15 @@ document.addEventListener('DOMContentLoaded', function() {
     // Event listeners
     lengthSlider.addEventListener('input', function() {
         lengthValue.textContent = this.value;
-        generatePassword();
+        const options = {
+            uppercase: includeUppercase.checked,
+            lowercase: includeLowercase.checked,
+            numbers: includeNumbers.checked,
+            symbols: includeSymbols.checked,
+            excludeAmbiguous: excludeAmbiguous.checked,
+            noDuplicate: noDuplicate.checked
+        };
+        updateStrength(parseInt(this.value), options);
     });
     
     [includeUppercase, includeLowercase, includeNumbers, includeSymbols, excludeAmbiguous, noDuplicate].forEach(checkbox => {
@@ -190,9 +198,38 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Calculate password strength
-    function updateStrength(password, options) {
+    function updateStrength(passwordOrLength, options) {
         let score = 0;
-        const length = password.length;
+        let length;
+        let uniqueChars;
+        
+        if (typeof passwordOrLength === 'string') {
+            length = passwordOrLength.length;
+            uniqueChars = new Set(passwordOrLength).size;
+        } else {
+            length = passwordOrLength;
+            // Estimate unique characters based on length and options
+            let charsetLength = 0;
+            if (options.uppercase) charsetLength += UPPERCASE.length;
+            if (options.lowercase) charsetLength += LOWERCASE.length;
+            if (options.numbers) charsetLength += NUMBERS.length;
+            if (options.symbols) charsetLength += SYMBOLS.length;
+            if (options.excludeAmbiguous) {
+                charsetLength = Math.max(1, charsetLength - AMBIGUOUS.length);
+            }
+            
+            if (options.noDuplicate) {
+                uniqueChars = Math.min(length, charsetLength);
+            } else {
+                // A reasonable approximation for random choice:
+                // unique = charsetLength * (1 - Math.exp(-length / charsetLength))
+                if (charsetLength > 0) {
+                    uniqueChars = Math.min(length, Math.round(charsetLength * (1 - Math.exp(-length / charsetLength))));
+                } else {
+                    uniqueChars = length;
+                }
+            }
+        }
         
         // Length score (max 40 points)
         if (length >= 16) score += 40;
@@ -210,9 +247,25 @@ document.addEventListener('DOMContentLoaded', function() {
         score += complexity;
         
         // Variety score (max 20 points)
-        const uniqueChars = new Set(password).size;
-        const variety = (uniqueChars / length) * 20;
-        score += variety;
+        if (length > 0) {
+            const variety = (uniqueChars / length) * 20;
+            score += variety;
+        }
+        
+        // Apply length-based caps to avoid misleadingly high strength for short passwords
+        if (length < 6) {
+            // Force Very Weak
+            score = Math.min(score, 15);
+        } else if (length < 8) {
+            // Force at most Weak
+            score = Math.min(score, 35);
+        } else if (length < 10) {
+            // Force at most Good
+            score = Math.min(score, 55);
+        } else if (length < 12) {
+            // Force at most Strong
+            score = Math.min(score, 75);
+        }
         
         // Determine strength level
         let strengthText, strengthClass, strengthWidth;

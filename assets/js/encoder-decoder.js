@@ -325,6 +325,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function showAlert(message, type) {
+        if (typeof window.showAlert === 'function') {
+            window.showAlert(message, type);
+            return;
+        }
         const alertDiv = document.createElement('div');
         alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
         

@@ -120,7 +120,8 @@ function subtractFromDate() {
 // Display Add/Subtract Result
 function displayAddResult(resultDate, startDate, operation) {
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    const locale = localStorage.getItem('language') || 'vi';
+    let locale = 'vi';
+    try { locale = localStorage.getItem('language') || 'vi'; } catch (e) {}
     
     document.getElementById('addResultDate').textContent = resultDate.toLocaleDateString(locale, options);
     
@@ -187,7 +188,8 @@ function calculateAge() {
     }
     
     const daysUntilBirthday = Math.floor((nextBirthday - today) / (1000 * 60 * 60 * 24));
-    const locale = localStorage.getItem('language') || 'vi';
+    let locale = 'vi';
+    try { locale = localStorage.getItem('language') || 'vi'; } catch (e) {}
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     
     const birthdayText = `${nextBirthday.toLocaleDateString(locale, options)} (${daysUntilBirthday} ${window.i18n?.translate('date_calc.days_left') || 'days left'})`;
@@ -206,7 +208,8 @@ function calculateWeekday() {
     }
     
     const date = new Date(dateStr);
-    const locale = localStorage.getItem('language') || 'vi';
+    let locale = 'vi';
+    try { locale = localStorage.getItem('language') || 'vi'; } catch (e) {}
     
     const weekdayLong = date.toLocaleDateString(locale, { weekday: 'long' });
     const fullDate = date.toLocaleDateString(locale, { 

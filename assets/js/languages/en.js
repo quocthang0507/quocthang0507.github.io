@@ -692,5 +692,21 @@ const englishTranslations = {
     "gold.period_90d": "90 Days",
     "gold.period_1y": "1 Year",
     "gold.loading": "Loading gold price data...",
-    "gold.fetch_error": "Unable to load gold price data. Please try again later."
+    "gold.fetch_error": "Unable to load gold price data. Please try again later.",
+    "gold.api_source": "Data compiled from SJC, PNJ, and world gold markets.",
+    "currency.api_source": "Exchange rate data is provided by Vietcombank.",
+    "latex.logic_sets": "Logic & Sets",
+    "latex.calculus": "Calculus & Limits",
+    "latex.geometry": "Geometry & Trig",
+    "latex.equations_illustrative": "Illustrative Expressions",
+    "latex.eq_quadratic": "Quadratic Formula",
+    "latex.eq_euler": "Euler's Identity",
+    "latex.eq_einstein": "Mass-Energy Equivalence (E=mc²)",
+    "latex.eq_pythagoras": "Pythagorean Theorem",
+    "latex.eq_gaussian": "Gaussian Integral",
+    "latex.eq_normal_dist": "Normal Distribution",
+    "latex.eq_fourier": "Fourier Series",
+    "latex.eq_laplace": "Laplace Transform",
+    "latex.eq_maxwell": "Maxwell's Equation",
+    "latex.eq_stokes": "Stokes' Theorem"
 };

@@ -730,3 +730,100 @@ select.form-control,
 .copy-password-btn {
   margin-top: 0.75rem;
 }
+
+// ═══════════════════════════════════════════
+// Global Toast Alerts
+// ═══════════════════════════════════════════
+.global-toast-container {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  pointer-events: none;
+  max-width: 380px;
+  width: calc(100% - 3rem);
+}
+
+.global-toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.25rem;
+  background: var(--nm-bg);
+  box-shadow: var(--nm-shadow-flat);
+  border-radius: var(--nm-radius-md);
+  border: 1px solid rgba(163, 177, 198, 0.25);
+  font-weight: 500;
+  font-size: 0.95rem;
+  opacity: 0;
+  transform: translateY(-20px) scale(0.95);
+  transition: opacity 0.35s cubic-bezier(0.23, 1, 0.32, 1),
+              transform 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+
+  &.show {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  // Type variants
+  &.toast-success {
+    border-left: 5px solid var(--bs-success);
+    color: var(--bs-success);
+    background: var(--nm-bg);
+  }
+  &.toast-danger, &.toast-error {
+    border-left: 5px solid var(--bs-danger);
+    color: var(--bs-danger);
+    background: var(--nm-bg);
+  }
+  &.toast-warning {
+    border-left: 5px solid var(--bs-warning);
+    color: var(--bs-warning);
+    background: var(--nm-bg);
+  }
+  &.toast-info {
+    border-left: 5px solid var(--bs-info);
+    color: var(--bs-info);
+    background: var(--nm-bg);
+  }
+
+  .toast-close-btn {
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    line-height: 1;
+    color: inherit;
+    opacity: 0.5;
+    padding: 0;
+    margin-left: 1rem;
+    cursor: pointer;
+    transition: opacity var(--transition-fast) ease;
+
+    &:hover {
+      opacity: 0.9;
+    }
+  }
+}
+
+// Dark Mode Toast variants
+body.dark-mode {
+  .global-toast {
+    background: var(--nm-dark-card);
+    box-shadow: var(--nm-dark-shadow-flat);
+    border-color: rgba(0, 0, 0, 0.3);
+  }
+}
+
+@media (max-width: 576px) {
+  .global-toast-container {
+    top: 1rem;
+    right: 50%;
+    transform: translateX(50%);
+    width: calc(100% - 2rem);
+  }
+}
+

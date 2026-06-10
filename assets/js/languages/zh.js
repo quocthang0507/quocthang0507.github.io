@@ -562,5 +562,21 @@ const chineseTranslations = {
     "gold.period_90d": "90天",
     "gold.period_1y": "1年",
     "gold.loading": "正在加载金价数据...",
-    "gold.fetch_error": "无法加载金价数据，请稍后重试。"
+    "gold.fetch_error": "无法加载金价数据，请稍后重试。",
+    "gold.api_source": "数据源自 SJC、PNJ 及国际金价市场。",
+    "currency.api_source": "汇率数据由越南外商股份商业银行 (Vietcombank) 提供。",
+    "latex.logic_sets": "逻辑与集合",
+    "latex.calculus": "微积分与极限",
+    "latex.geometry": "几何与三角学",
+    "latex.equations_illustrative": "经典公式示例",
+    "latex.eq_quadratic": "一元二次方程求根公式",
+    "latex.eq_euler": "欧拉恒等式",
+    "latex.eq_einstein": "质能等价公式 (E=mc²)",
+    "latex.eq_pythagoras": "勾股定理",
+    "latex.eq_gaussian": "高斯积分",
+    "latex.eq_normal_dist": "正态分布 (高斯分布)",
+    "latex.eq_fourier": "傅里叶级数",
+    "latex.eq_laplace": "拉普拉斯变换",
+    "latex.eq_maxwell": "麦克斯韦方程组",
+    "latex.eq_stokes": "斯托克斯定理"
 };

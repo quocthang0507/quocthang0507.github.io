@@ -571,5 +571,21 @@ const koreanTranslations = {
     "gold.period_90d": "90일",
     "gold.period_1y": "1년",
     "gold.loading": "금 시세 데이터를 불러오는 중...",
-    "gold.fetch_error": "금 시세 데이터를 불러올 수 없습니다. 나중에 다시 시도해 주세요."
+    "gold.fetch_error": "금 시세 데이터를 불러올 수 없습니다. 나중에 다시 시도해 주세요.",
+    "gold.api_source": "데이터는 SJC, PNJ 및 국제 금 시세 기준입니다.",
+    "currency.api_source": "환율 데이터는 Vietcombank에서 제공합니다.",
+    "latex.logic_sets": "논리 및 집합",
+    "latex.calculus": "미적분 및 극한",
+    "latex.geometry": "기하학 및 삼각법",
+    "latex.equations_illustrative": "수학 공식 예시",
+    "latex.eq_quadratic": "근의 공식",
+    "latex.eq_euler": "오일러 항등식",
+    "latex.eq_einstein": "질량-에너지 등가 공식 (E=mc²)",
+    "latex.eq_pythagoras": "피타고라스 정리",
+    "latex.eq_gaussian": "가우스 적분",
+    "latex.eq_normal_dist": "정규 분포",
+    "latex.eq_fourier": "푸리에 급수",
+    "latex.eq_laplace": "라플라스 변환",
+    "latex.eq_maxwell": "맥스웰 방정식",
+    "latex.eq_stokes": "스토크스 정리"
 };

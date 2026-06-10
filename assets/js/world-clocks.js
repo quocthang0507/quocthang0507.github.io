@@ -176,7 +176,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Draw analog clock on canvas
-    function drawAnalogClock(canvas, time) {
+    function drawAnalogClock(canvas, time, customSettings) {
+        const activeSettings = customSettings || settings;
         const ctx = canvas.getContext('2d');
         const radius = canvas.width / 2;
         const centerX = radius;
@@ -188,7 +189,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Apply theme
         let bgColor, faceColor, handColor, numberColor, tickColor;
         
-        switch(settings.theme) {
+        switch(activeSettings.theme) {
             case 'dark':
                 bgColor = '#1a1a1a';
                 faceColor = '#2a2a2a';
@@ -267,7 +268,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Draw numbers if enabled
-        if (settings.showNumbers) {
+        if (activeSettings.showNumbers) {
             ctx.fillStyle = numberColor;
             ctx.font = 'bold 20px Arial';
             ctx.textAlign = 'center';
@@ -297,7 +298,7 @@ document.addEventListener('DOMContentLoaded', function() {
         drawHand(ctx, centerX, centerY, minuteAngle, radius * 0.7, 4, handColor);
         
         // Draw second hand if enabled
-        if (settings.showSeconds) {
+        if (activeSettings.showSeconds) {
             const secondAngle = (seconds * 6 - 90) * Math.PI / 180;
             drawHand(ctx, centerX, centerY, secondAngle, radius * 0.75, 2, '#e74c3c');
         }
@@ -374,6 +375,63 @@ document.addEventListener('DOMContentLoaded', function() {
                 dateDisplay.textContent = dateString;
             }
         });
+
+        // Update Embed Preview Clock if it exists
+        const previewCanvas = document.getElementById('embed-preview-canvas');
+        if (previewCanvas) {
+            const embedTimezone = document.getElementById('embed-timezone').value;
+            const embedShowSeconds = document.getElementById('embed-show-seconds').checked;
+            const embedShowNumbers = document.getElementById('embed-show-numbers').checked;
+            const embedShowDigital = document.getElementById('embed-show-digital').checked;
+            const embedTheme = document.getElementById('embed-theme').value;
+            
+            const now = new Date();
+            let timeString = '';
+            let dateString = '';
+            try {
+                timeString = now.toLocaleString('en-US', { 
+                    timeZone: embedTimezone,
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: false
+                });
+                
+                dateString = now.toLocaleDateString('en-US', {
+                    timeZone: embedTimezone,
+                    weekday: 'short',
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                });
+            } catch (e) {
+                timeString = '00:00:00';
+                dateString = '';
+            }
+            
+            const [hours, minutes, seconds] = timeString.split(':').map(Number);
+            const timeDate = new Date();
+            timeDate.setHours(hours);
+            timeDate.setMinutes(minutes);
+            timeDate.setSeconds(seconds);
+            
+            drawAnalogClock(previewCanvas, timeDate, {
+                theme: embedTheme,
+                showSeconds: embedShowSeconds,
+                showNumbers: embedShowNumbers
+            });
+            
+            const digitalDisplay = document.getElementById('embed-preview-digital-time');
+            if (digitalDisplay) {
+                digitalDisplay.style.display = embedShowDigital ? 'block' : 'none';
+                digitalDisplay.textContent = timeString;
+            }
+            
+            const dateDisplay = document.getElementById('embed-preview-date');
+            if (dateDisplay) {
+                dateDisplay.textContent = dateString;
+            }
+        }
     }
     
     // Start clock updates
@@ -446,6 +504,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
+    // Initialize embed generator if elements exist
+    setupEmbedGenerator();
+    
     // Expose remove function globally for inline onclick
     window.worldClocksRemove = removeClock;
     
@@ -455,4 +516,163 @@ document.addEventListener('DOMContentLoaded', function() {
             clearInterval(updateInterval);
         }
     });
+
+    // Embed Generator Setup Function
+    function setupEmbedGenerator() {
+        const embedTimezoneSelect = document.getElementById('embed-timezone');
+        const embedCityNameInput = document.getElementById('embed-city-name');
+        const embedThemeSelect = document.getElementById('embed-theme');
+        const embedShowSecondsCheck = document.getElementById('embed-show-seconds');
+        const embedShowNumbersCheck = document.getElementById('embed-show-numbers');
+        const embedShowDigitalCheck = document.getElementById('embed-show-digital');
+        const embedCodeOutput = document.getElementById('embed-code-output');
+        const copyEmbedCodeBtn = document.getElementById('copy-embed-code-btn');
+        const embedPreviewContainer = document.getElementById('embed-preview-container');
+        
+        if (!embedTimezoneSelect) return;
+        
+        // Populate timezones from the main selector
+        const mainTimezoneSelector = document.getElementById('timezone-selector');
+        if (mainTimezoneSelector) {
+            embedTimezoneSelect.innerHTML = mainTimezoneSelector.innerHTML;
+            embedTimezoneSelect.value = mainTimezoneSelector.value;
+        }
+        
+        // Initial rendering of the preview elements inside preview container
+        function initPreviewElements() {
+            const selectedTheme = embedThemeSelect.value;
+            let bgColor, borderCol, textCol, digitalCol;
+            
+            if (selectedTheme === 'dark') {
+                bgColor = '#1e1e1e';
+                borderCol = '#333';
+                textCol = '#fff';
+                digitalCol = '#0d6efd';
+            } else if (selectedTheme === 'colorful') {
+                bgColor = '#f0f8ff';
+                borderCol = '#bee5eb';
+                textCol = '#333';
+                digitalCol = '#e83e8c';
+            } else {
+                bgColor = '#fff';
+                borderCol = '#ddd';
+                textCol = '#333';
+                digitalCol = '#007bff';
+            }
+            
+            embedPreviewContainer.innerHTML = `
+                <div id="embed-preview-wrapper" style="width: 250px; padding: 20px; border: 1px solid ${borderCol}; border-radius: 12px; background: ${bgColor}; box-shadow: 0 4px 12px rgba(0,0,0,0.08); font-family: sans-serif; transition: all 0.3s ease; box-sizing: border-box;">
+                    <canvas id="embed-preview-canvas" width="210" height="210" style="display: block; margin: 0 auto; max-width: 100%; height: auto;"></canvas>
+                    <div id="embed-preview-city-name" style="font-size: 1.2rem; font-weight: bold; margin: 10px 0 5px 0; text-align: center; color: ${textCol};">${embedCityNameInput.value}</div>
+                    <div id="embed-preview-digital-time" style="font-size: 1.4rem; font-weight: 500; text-align: center; color: ${digitalCol}; font-family: monospace;">00:00:00</div>
+                    <div id="embed-preview-date" style="font-size: 0.9rem; text-align: center; color: ${selectedTheme === 'dark' ? '#aaa' : '#666'}; margin-top: 5px;">Loading...</div>
+                </div>
+            `;
+        }
+        
+        // Generate HTML code string
+        function generateEmbedCode() {
+            const timezone = embedTimezoneSelect.value;
+            const cityName = embedCityNameInput.value || 'City';
+            const theme = embedThemeSelect.value;
+            const showSeconds = embedShowSecondsCheck.checked;
+            const showNumbers = embedShowNumbersCheck.checked;
+            const showDigital = embedShowDigitalCheck.checked;
+            
+            let containerBg, containerBorder, containerText, digitalColor, dateColor;
+            if (theme === 'dark') {
+                containerBg = '#1e1e1e';
+                containerBorder = '#333';
+                containerText = '#fff';
+                digitalColor = '#0d6efd';
+                dateColor = '#aaa';
+            } else if (theme === 'colorful') {
+                containerBg = '#f0f8ff';
+                containerBorder = '#bee5eb';
+                containerText = '#333';
+                digitalColor = '#e83e8c';
+                dateColor = '#666';
+            } else {
+                containerBg = '#fff';
+                containerBorder = '#ddd';
+                containerText = '#333';
+                digitalColor = '#007bff';
+                dateColor = '#666';
+            }
+            
+            const htmlString = `<div class="world-clock-embed" \n` +
+                `     data-timezone="${timezone}" \n` +
+                `     data-city="${cityName}" \n` +
+                `     data-theme="${theme}" \n` +
+                `     data-seconds="${showSeconds}" \n` +
+                `     data-numbers="${showNumbers}" \n` +
+                `     data-digital="${showDigital}"\n` +
+                `     style="width: 250px; padding: 20px; border: 1px solid ${containerBorder}; border-radius: 12px; background: ${containerBg}; box-shadow: 0 4px 12px rgba(0,0,0,0.08); font-family: sans-serif; box-sizing: border-box;">\n` +
+                `    <canvas class="clock-canvas" width="210" height="210" style="display: block; margin: 0 auto; max-width: 100%; height: auto;"></canvas>\n` +
+                `    <div class="clock-city-name" style="font-size: 1.2rem; font-weight: bold; margin: 10px 0 5px 0; text-align: center; color: ${containerText};">${cityName}</div>\n` +
+                `    <div class="clock-digital-time" style="font-size: 1.4rem; font-weight: 500; text-align: center; color: ${digitalColor}; font-family: monospace;${showDigital ? '' : ' display: none;'}">00:00:00</div>\n` +
+                `    <div class="clock-date" style="font-size: 0.9rem; text-align: center; color: ${dateColor}; margin-top: 5px;">Loading...</div>\n` +
+                `</div>\n` +
+                `<script src="https://quocthang0507.github.io/assets/js/world-clocks-embed.min.js" async></script>`;
+                
+            embedCodeOutput.value = htmlString;
+        }
+        
+        // Update name in preview
+        function updatePreviewCityName() {
+            const cityName = embedCityNameInput.value || 'City';
+            const previewCityNameEl = document.getElementById('embed-preview-city-name');
+            if (previewCityNameEl) {
+                previewCityNameEl.textContent = cityName;
+            }
+        }
+        
+        // Setup triggers
+        function onEmbedConfigChange() {
+            initPreviewElements();
+            generateEmbedCode();
+            updateAllClocks();
+        }
+        
+        embedTimezoneSelect.addEventListener('change', () => {
+            const tz = embedTimezoneSelect.value;
+            const inferredCity = tz.split('/').pop().replace(/_/g, ' ');
+            embedCityNameInput.value = inferredCity;
+            onEmbedConfigChange();
+        });
+        
+        embedCityNameInput.addEventListener('input', () => {
+            updatePreviewCityName();
+            generateEmbedCode();
+        });
+        
+        embedThemeSelect.addEventListener('change', onEmbedConfigChange);
+        embedShowSecondsCheck.addEventListener('change', generateEmbedCode);
+        embedShowNumbersCheck.addEventListener('change', generateEmbedCode);
+        embedShowDigitalCheck.addEventListener('change', () => {
+            const digitalEl = document.getElementById('embed-preview-digital-time');
+            if (digitalEl) {
+                digitalEl.style.display = embedShowDigitalCheck.checked ? 'block' : 'none';
+            }
+            generateEmbedCode();
+        });
+        
+        // Copy functionality
+        copyEmbedCodeBtn.addEventListener('click', () => {
+            const code = embedCodeOutput.value;
+            if (typeof copyToClipboard === 'function') {
+                copyToClipboard(code);
+                showAlert('Đã sao chép mã nhúng vào clipboard!', 'success');
+            } else {
+                navigator.clipboard.writeText(code).then(() => {
+                    showAlert('Đã sao chép mã nhúng vào clipboard!', 'success');
+                }).catch(() => {
+                    showAlert('Lỗi khi sao chép mã nhúng!', 'danger');
+                });
+            }
+        });
+        
+        // Init state
+        onEmbedConfigChange();
+    }
 });

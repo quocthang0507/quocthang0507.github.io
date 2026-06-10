@@ -562,5 +562,21 @@ const japaneseTranslations = {
     "gold.period_90d": "90日間",
     "gold.period_1y": "1年間",
     "gold.loading": "金相場データを読み込み中...",
-    "gold.fetch_error": "金相場データを読み込めませんでした。後でもう一度お試しください。"
+    "gold.fetch_error": "金相場データを読み込めませんでした。後でもう一度お試しください。",
+    "gold.api_source": "データはSJC、PNJおよび国際金相場に基づきます。",
+    "currency.api_source": "為替レートデータはVietcombankによって提供されています。",
+    "latex.logic_sets": "論理と集合",
+    "latex.calculus": "微積分と極限",
+    "latex.geometry": "幾何学と三角比",
+    "latex.equations_illustrative": "公式・数式サンプル",
+    "latex.eq_quadratic": "二次方程式の解の公式",
+    "latex.eq_euler": "オイラーの等式",
+    "latex.eq_einstein": "等価性公式 (E=mc²)",
+    "latex.eq_pythagoras": "三平方の定理 (ピタゴラス)",
+    "latex.eq_gaussian": "ガウス積分",
+    "latex.eq_normal_dist": "正規分布",
+    "latex.eq_fourier": "フーリエ級数",
+    "latex.eq_laplace": "ラプラス変換",
+    "latex.eq_maxwell": "マクスウェル方程式",
+    "latex.eq_stokes": "ストークスの定理"
 };
