@@ -1,14 +1,29 @@
 // Random Wheel functionality
 document.addEventListener('DOMContentLoaded', function() {
+    const SOUND_END_LEAD_MS = 500;
+    const SUSPENSE_SETTLE_MS = 1000;
+    const ALLOWED_SPIN_DURATIONS = [3000, 5000, 7000];
+
     let names = loadFromLocalStorage('wheelNames') || [];
     let spinHistory = loadFromLocalStorage('wheelSpinHistory') || [];
     let isSpinning = false;
     let currentRotation = 0;
     let currentColorTheme = 'classic';
+    let spinDurationMs = 3000;
+    let suspenseEffectEnabled = false;
     try {
         currentColorTheme = localStorage.getItem('wheelColorTheme') || 'classic';
     } catch (e) {
         console.warn('localStorage is blocked or unavailable:', e);
+    }
+    try {
+        const savedDuration = Number(JSON.parse(localStorage.getItem('wheelSpinDuration')));
+        if (ALLOWED_SPIN_DURATIONS.includes(savedDuration)) {
+            spinDurationMs = savedDuration;
+        }
+        suspenseEffectEnabled = JSON.parse(localStorage.getItem('wheelSuspenseEffect')) === true;
+    } catch (e) {
+        console.warn('Spin settings could not be restored:', e);
     }
     
     const presets = {
@@ -147,7 +162,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Play spinning sound
-    function playSpinSound() {
+    function playSpinSound(soundDurationMs) {
         if (!audioContext) {
             initAudio();
         }
@@ -159,10 +174,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 audioElement.currentTime = 0;
                 audioElement.play().catch(() => {
                     // Fallback to Web Audio API
-                    generateSpinSound();
+                    generateSpinSound(soundDurationMs);
                 });
             } else {
-                generateSpinSound();
+                generateSpinSound(soundDurationMs);
             }
         }
     }
@@ -190,8 +205,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Generate spinning sound using Web Audio API
-    function generateSpinSound() {
+    function generateSpinSound(soundDurationMs) {
         if (!audioContext) return;
+
+        const soundDurationSeconds = soundDurationMs / 1000;
         
         // Stop any existing sound
         if (oscillator) {
@@ -212,14 +229,14 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Configure sound
         oscillator.frequency.setValueAtTime(200, audioContext.currentTime);
-        oscillator.frequency.exponentialRampToValueAtTime(100, audioContext.currentTime + 3);
+        oscillator.frequency.exponentialRampToValueAtTime(100, audioContext.currentTime + soundDurationSeconds);
         
         envelope.gain.setValueAtTime(0.1, audioContext.currentTime);
-        envelope.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 3);
+        envelope.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + soundDurationSeconds);
         
         oscillator.type = 'sawtooth';
         oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + 3);
+        oscillator.stop(audioContext.currentTime + soundDurationSeconds);
     }
     
     // Get current wheel colors based on selected theme
@@ -270,9 +287,40 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     }
+
+    function initializeSpinSettings() {
+        const durationSelector = document.getElementById('spin-duration-selector');
+        const suspenseCheckbox = document.getElementById('suspense-effect');
+
+        if (durationSelector) {
+            durationSelector.value = String(spinDurationMs);
+            durationSelector.addEventListener('change', function() {
+                const selectedDuration = Number(this.value);
+                if (!ALLOWED_SPIN_DURATIONS.includes(selectedDuration)) return;
+                spinDurationMs = selectedDuration;
+                saveToLocalStorage('wheelSpinDuration', spinDurationMs);
+            });
+        }
+
+        if (suspenseCheckbox) {
+            suspenseCheckbox.checked = suspenseEffectEnabled;
+            suspenseCheckbox.addEventListener('change', function() {
+                suspenseEffectEnabled = this.checked;
+                saveToLocalStorage('wheelSuspenseEffect', suspenseEffectEnabled);
+            });
+        }
+    }
+
+    function setSpinControlsDisabled(disabled) {
+        ['spin-duration-selector', 'suspense-effect', 'reset-wheel-btn'].forEach(id => {
+            const control = document.getElementById(id);
+            if (control) control.disabled = disabled;
+        });
+    }
     
     // Initialize
     initializeColorThemeSelector();
+    initializeSpinSettings();
     updateNamesDisplay();
     updateWheelDisplay();
     updateHistoryDisplay();
@@ -505,27 +553,61 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
         
-        // Play spinning sound
-        playSpinSound();
-        
-        // Random rotation (multiple full rotations + random angle)
+        const activeSpinDurationMs = spinDurationMs;
+        const activeSuspenseEffect = suspenseEffectEnabled;
+        const soundDurationMs = Math.max(0, activeSpinDurationMs - SOUND_END_LEAD_MS);
+        setSpinControlsDisabled(true);
+
+        // Play spinning sound. It ends 0.5 second before the result.
+        playSpinSound(soundDurationMs);
+
+        // Select a fair random section, then calculate a matching rotation.
         const minSpins = 3;
         const maxSpins = 6;
-        const randomSpins = Math.random() * (maxSpins - minSpins) + minSpins;
-        const randomAngle = Math.random() * 360;
-        const totalRotation = randomSpins * 360 + randomAngle;
-        
+        const fullSpins = Math.floor(Math.random() * (maxSpins - minSpins + 1)) + minSpins;
+        const anglePerSection = 360 / names.length;
+        const selectedIndex = Math.floor(Math.random() * names.length);
+        const boundaryOffset = Math.min(3, Math.max(0.5, anglePerSection * 0.04));
+        const targetOffset = activeSuspenseEffect
+            ? boundaryOffset
+            : anglePerSection * (0.2 + Math.random() * 0.6);
+        const targetNormalizedAngle = (selectedIndex * anglePerSection + targetOffset) % 360;
+        const targetRotationModulo = (360 - targetNormalizedAngle) % 360;
+        const currentRotationModulo = ((currentRotation % 360) + 360) % 360;
+        const rotationToTarget = (targetRotationModulo - currentRotationModulo + 360) % 360;
+        const totalRotation = fullSpins * 360 + rotationToTarget;
+
         currentRotation += totalRotation;
-        
-        // Rotate only the wheel content, not the center button
+
+        // Rotate only the wheel content, not the center button.
         const wheelNames = document.getElementById('wheel-names');
+        const mainSpinDurationMs = activeSuspenseEffect
+            ? activeSpinDurationMs - SUSPENSE_SETTLE_MS
+            : activeSpinDurationMs;
+        wheelNames.style.transition = `transform ${mainSpinDurationMs}ms cubic-bezier(0.23, 1, 0.32, 1)`;
         wheelNames.style.transform = `rotate(${currentRotation}deg)`;
+
+        if (activeSuspenseEffect) {
+            const shouldCreepToPreviousSection = Math.random() < 0.5;
+            setTimeout(() => {
+                if (!shouldCreepToPreviousSection) return;
+
+                // Cross the nearby divider slowly, changing the final result.
+                const creepDegrees = Math.max(
+                    boundaryOffset * 2,
+                    Math.min(12, anglePerSection * 0.35)
+                );
+                currentRotation += creepDegrees;
+                wheelNames.style.transition = `transform ${SUSPENSE_SETTLE_MS}ms cubic-bezier(0.16, 0.72, 0.2, 1)`;
+                wheelNames.style.transform = `rotate(${currentRotation}deg)`;
+            }, mainSpinDurationMs);
+        }
+
+        // Let the wheel coast silently for the final 0.5 second.
+        setTimeout(stopSpinSound, soundDurationMs);
         
         // Calculate winner after animation
         setTimeout(() => {
-            // Stop the spinning sound
-            stopSpinSound();
-            
             const normalizedAngle = (360 - (currentRotation % 360)) % 360;
             const anglePerSection = 360 / names.length;
             const winnerIndex = Math.floor(normalizedAngle / anglePerSection);
@@ -544,9 +626,10 @@ document.addEventListener('DOMContentLoaded', function() {
             showWinner(winner, winnerIndex);
             
             isSpinning = false;
+            setSpinControlsDisabled(false);
             document.getElementById('spin-btn').disabled = false;
             document.getElementById('spin-btn').innerHTML = '<i class="fas fa-play"></i> Quay bánh xe';
-        }, 3000);
+        }, activeSpinDurationMs);
     }
     
     // Show winner
@@ -763,6 +846,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('reset-wheel-btn').addEventListener('click', function() {
         const wheelNames = document.getElementById('wheel-names');
         currentRotation = 0;
+        wheelNames.style.transition = 'none';
         wheelNames.style.transform = 'rotate(0deg)';
         document.getElementById('wheel-result').textContent = 'Thêm tên và nhấn "Quay bánh xe"';
     });

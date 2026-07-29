@@ -64,6 +64,27 @@ sitemap:
                             <!-- Options will be populated by JavaScript -->
                         </select>
                     </div>
+
+                    <div class="mb-3">
+                        <label for="spin-duration-selector" class="form-label">
+                            <i class="fas fa-stopwatch"></i> <span data-i18n="wheel.spin_duration">Thời gian quay</span>
+                        </label>
+                        <select id="spin-duration-selector" class="form-select">
+                            <option value="3000" data-i18n="wheel.speed_fast">Nhanh (3 giây)</option>
+                            <option value="5000" data-i18n="wheel.speed_medium">Vừa phải (5 giây)</option>
+                            <option value="7000" data-i18n="wheel.speed_slow">Chậm (7 giây)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="suspense-effect">
+                        <label class="form-check-label" for="suspense-effect" data-i18n="wheel.suspense_effect">
+                            Hiệu ứng hồi hộp
+                        </label>
+                        <small class="d-block text-muted" data-i18n="wheel.suspense_hint">
+                            Dừng sát vạch hoặc trôi chậm sang ô kế bên
+                        </small>
+                    </div>
                     
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="remove-winner">

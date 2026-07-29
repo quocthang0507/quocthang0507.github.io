@@ -125,6 +125,119 @@ sitemap:
                 <h6 class="mb-0"><i class="fas fa-book"></i> <span data-i18n="latex.symbol_reference">Tham khảo ký hiệu</span></h6>
             </div>
             <div class="card-body" style="max-height: 600px; overflow-y: auto;">
+                <!-- Preset library: keep the most useful templates visible first -->
+                <div class="latex-preset-library mb-4">
+                    <div class="latex-preset-library-heading">
+                        <span class="latex-preset-library-icon"><i class="fas fa-magic"></i></span>
+                        <div>
+                            <h6 class="mb-1" data-i18n="latex.templates">Mẫu phổ biến</h6>
+                            <small class="text-muted">Xem công thức, tên và mã trước khi chèn</small>
+                        </div>
+                    </div>
+
+                    <details class="latex-preset-group" open>
+                        <summary>
+                            <span><i class="fas fa-shapes"></i> <span data-i18n="latex.templates">Mẫu phổ biến</span></span>
+                            <i class="fas fa-chevron-down preset-chevron" aria-hidden="true"></i>
+                        </summary>
+                        <div class="latex-preset-grid">
+                            <button type="button" class="latex-preset-btn insert-symbol" data-symbol="\frac{a}{b}" title="Chèn phân số: \frac{a}{b}">
+                                <span class="latex-preset-formula" aria-hidden="true">\(\frac{a}{b}\)</span>
+                                <span class="latex-preset-info"><strong data-i18n="latex.template_fraction">Phân số</strong><code>\frac{a}{b}</code></span>
+                            </button>
+                            <button type="button" class="latex-preset-btn insert-symbol" data-symbol="\sqrt{x}" title="Chèn căn bậc hai: \sqrt{x}">
+                                <span class="latex-preset-formula" aria-hidden="true">\(\sqrt{x}\)</span>
+                                <span class="latex-preset-info"><strong data-i18n="latex.template_sqrt">Căn bậc hai</strong><code>\sqrt{x}</code></span>
+                            </button>
+                            <button type="button" class="latex-preset-btn insert-symbol" data-symbol="\sqrt[n]{x}" title="Chèn căn bậc n: \sqrt[n]{x}">
+                                <span class="latex-preset-formula" aria-hidden="true">\(\sqrt[n]{x}\)</span>
+                                <span class="latex-preset-info"><strong data-i18n="latex.template_nth_root">Căn bậc n</strong><code>\sqrt[n]{x}</code></span>
+                            </button>
+                            <button type="button" class="latex-preset-btn insert-symbol" data-symbol="x^{n}" title="Chèn lũy thừa: x^{n}">
+                                <span class="latex-preset-formula" aria-hidden="true">\(x^{n}\)</span>
+                                <span class="latex-preset-info"><strong data-i18n="latex.template_power">Lũy thừa</strong><code>x^{n}</code></span>
+                            </button>
+                            <button type="button" class="latex-preset-btn insert-symbol" data-symbol="x_{i}" title="Chèn chỉ số dưới: x_{i}">
+                                <span class="latex-preset-formula" aria-hidden="true">\(x_{i}\)</span>
+                                <span class="latex-preset-info"><strong data-i18n="latex.template_subscript">Chỉ số dưới</strong><code>x_{i}</code></span>
+                            </button>
+                            <button type="button" class="latex-preset-btn insert-symbol" data-symbol="\sum_{i=1}^{n}" title="Chèn ký hiệu tổng: \sum_{i=1}^{n}">
+                                <span class="latex-preset-formula" aria-hidden="true">\(\sum_{i=1}^{n}\)</span>
+                                <span class="latex-preset-info"><strong data-i18n="latex.template_sum">Tổng</strong><code>\sum_{i=1}^{n}</code></span>
+                            </button>
+                            <button type="button" class="latex-preset-btn insert-symbol" data-symbol="\prod_{i=1}^{n}" title="Chèn ký hiệu tích: \prod_{i=1}^{n}">
+                                <span class="latex-preset-formula" aria-hidden="true">\(\prod_{i=1}^{n}\)</span>
+                                <span class="latex-preset-info"><strong data-i18n="latex.template_product">Tích</strong><code>\prod_{i=1}^{n}</code></span>
+                            </button>
+                            <button type="button" class="latex-preset-btn insert-symbol" data-symbol="\int_{a}^{b}" title="Chèn tích phân: \int_{a}^{b}">
+                                <span class="latex-preset-formula" aria-hidden="true">\(\int_{a}^{b}\)</span>
+                                <span class="latex-preset-info"><strong data-i18n="latex.template_integral">Tích phân</strong><code>\int_{a}^{b}</code></span>
+                            </button>
+                            <button type="button" class="latex-preset-btn insert-symbol" data-symbol="\lim_{x \to \infty}" title="Chèn giới hạn: \lim_{x \to \infty}">
+                                <span class="latex-preset-formula" aria-hidden="true">\(\lim_{x \to \infty}\)</span>
+                                <span class="latex-preset-info"><strong data-i18n="latex.template_limit">Giới hạn</strong><code>\lim_{x \to \infty}</code></span>
+                            </button>
+                            <button type="button" class="latex-preset-btn insert-symbol" data-symbol="\begin{matrix} a &amp; b \\ c &amp; d \end{matrix}" title="Chèn ma trận 2×2">
+                                <span class="latex-preset-formula" aria-hidden="true">\(\begin{matrix}a &amp; b\\c &amp; d\end{matrix}\)</span>
+                                <span class="latex-preset-info"><strong data-i18n="latex.template_matrix">Ma trận</strong><code>\begin{matrix}…</code></span>
+                            </button>
+                            <button type="button" class="latex-preset-btn insert-symbol" data-symbol="\begin{cases} x, &amp; \text{if } x &gt; 0 \\ 0, &amp; \text{otherwise} \end{cases}" title="Chèn biểu thức từng trường hợp">
+                                <span class="latex-preset-formula" aria-hidden="true">\(\begin{cases}x,&amp;x&gt;0\\0,&amp;x\leq0\end{cases}\)</span>
+                                <span class="latex-preset-info"><strong data-i18n="latex.template_cases">Điều kiện</strong><code>\begin{cases}…</code></span>
+                            </button>
+                        </div>
+                    </details>
+
+                    <details class="latex-preset-group">
+                        <summary>
+                            <span><i class="fas fa-graduation-cap"></i> <span data-i18n="latex.equations_illustrative">Biểu thức mẫu minh họa</span></span>
+                            <i class="fas fa-chevron-down preset-chevron" aria-hidden="true"></i>
+                        </summary>
+                        <div class="latex-preset-grid latex-preset-grid-equations">
+                            <button type="button" class="latex-preset-btn insert-symbol" data-symbol="x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}" title="Chèn công thức nghiệm phương trình bậc hai">
+                                <span class="latex-preset-formula" aria-hidden="true">\(x=\frac{-b\pm\sqrt{b^2-4ac}}{2a}\)</span>
+                                <span class="latex-preset-info"><strong data-i18n="latex.eq_quadratic">Phương trình bậc hai</strong><code>x = \frac{-b \pm …}{2a}</code></span>
+                            </button>
+                            <button type="button" class="latex-preset-btn insert-symbol" data-symbol="e^{i\pi} + 1 = 0" title="Chèn hằng đẳng thức Euler">
+                                <span class="latex-preset-formula" aria-hidden="true">\(e^{i\pi}+1=0\)</span>
+                                <span class="latex-preset-info"><strong data-i18n="latex.eq_euler">Hằng đẳng thức Euler</strong><code>e^{i\pi} + 1 = 0</code></span>
+                            </button>
+                            <button type="button" class="latex-preset-btn insert-symbol" data-symbol="E = mc^2" title="Chèn công thức Einstein">
+                                <span class="latex-preset-formula" aria-hidden="true">\(E=mc^2\)</span>
+                                <span class="latex-preset-info"><strong data-i18n="latex.eq_einstein">Công thức Einstein</strong><code>E = mc^2</code></span>
+                            </button>
+                            <button type="button" class="latex-preset-btn insert-symbol" data-symbol="a^2 + b^2 = c^2" title="Chèn định lý Pythagoras">
+                                <span class="latex-preset-formula" aria-hidden="true">\(a^2+b^2=c^2\)</span>
+                                <span class="latex-preset-info"><strong data-i18n="latex.eq_pythagoras">Định lý Pythagoras</strong><code>a^2 + b^2 = c^2</code></span>
+                            </button>
+                            <button type="button" class="latex-preset-btn insert-symbol" data-symbol="\int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi}" title="Chèn tích phân Gaussian">
+                                <span class="latex-preset-formula" aria-hidden="true">\(\int_{-\infty}^{\infty}e^{-x^2}dx=\sqrt{\pi}\)</span>
+                                <span class="latex-preset-info"><strong data-i18n="latex.eq_gaussian">Tích phân Gaussian</strong><code>\int_{-\infty}^{\infty} …</code></span>
+                            </button>
+                            <button type="button" class="latex-preset-btn insert-symbol" data-symbol="f(x) = \frac{1}{\sigma\sqrt{2\pi}} e^{-\frac{1}{2}\left(\frac{x-\mu}{\sigma}\right)^2}" title="Chèn hàm phân phối chuẩn">
+                                <span class="latex-preset-formula" aria-hidden="true">\(f(x)=\frac{1}{\sigma\sqrt{2\pi}}e^{-\frac12(\frac{x-\mu}{\sigma})^2}\)</span>
+                                <span class="latex-preset-info"><strong data-i18n="latex.eq_normal_dist">Phân phối chuẩn</strong><code>f(x) = \frac{1}{\sigma…} …</code></span>
+                            </button>
+                            <button type="button" class="latex-preset-btn insert-symbol" data-symbol="f(x) = a_0 + \sum_{n=1}^{\infty} \left( a_n \cos\left(\frac{2\pi n x}{T}\right) + b_n \sin\left(\frac{2\pi n x}{T}\right) \right)" title="Chèn chuỗi Fourier">
+                                <span class="latex-preset-formula" aria-hidden="true">\(f(x)=a_0+\sum_{n=1}^{\infty}(a_n\cos\frac{2\pi nx}{T}+b_n\sin\frac{2\pi nx}{T})\)</span>
+                                <span class="latex-preset-info"><strong data-i18n="latex.eq_fourier">Chuỗi Fourier</strong><code>f(x) = a_0 + \sum …</code></span>
+                            </button>
+                            <button type="button" class="latex-preset-btn insert-symbol" data-symbol="F(s) = \int_{0}^{\infty} e^{-st} f(t) dt" title="Chèn biến đổi Laplace">
+                                <span class="latex-preset-formula" aria-hidden="true">\(F(s)=\int_0^{\infty}e^{-st}f(t)dt\)</span>
+                                <span class="latex-preset-info"><strong data-i18n="latex.eq_laplace">Biến đổi Laplace</strong><code>F(s) = \int_0^{\infty} …</code></span>
+                            </button>
+                            <button type="button" class="latex-preset-btn insert-symbol" data-symbol="\nabla \times \mathbf{E} = -\frac{\partial \mathbf{B}}{\partial t}" title="Chèn định luật cảm ứng Faraday">
+                                <span class="latex-preset-formula" aria-hidden="true">\(\nabla\times\mathbf E=-\frac{\partial\mathbf B}{\partial t}\)</span>
+                                <span class="latex-preset-info"><strong data-i18n="latex.eq_maxwell">Định luật cảm ứng Faraday</strong><code>\nabla \times \mathbf{E} = …</code></span>
+                            </button>
+                            <button type="button" class="latex-preset-btn insert-symbol" data-symbol="\oint_{\partial \Sigma} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Sigma} (\nabla \times \mathbf{F}) \cdot d\mathbf{\Sigma}" title="Chèn định lý Stokes">
+                                <span class="latex-preset-formula" aria-hidden="true">\(\oint_{\partial\Sigma}\mathbf F\cdot d\mathbf r=\iint_\Sigma(\nabla\times\mathbf F)\cdot d\mathbf\Sigma\)</span>
+                                <span class="latex-preset-info"><strong data-i18n="latex.eq_stokes">Định lý Stokes</strong><code>\oint_{\partial \Sigma} …</code></span>
+                            </button>
+                        </div>
+                    </details>
+                </div>
+
                 <!-- Greek Letters -->
                 <div class="mb-3">
                     <h6 class="text-primary" data-i18n="latex.greek_letters">Chữ cái Hy Lạp</h6>
@@ -253,82 +366,6 @@ sitemap:
                     </div>
                 </div>
 
-                <!-- Common Templates -->
-                <div class="mb-3">
-                    <h6 class="text-primary" data-i18n="latex.templates">Mẫu phổ biến</h6>
-                    <div class="d-grid gap-2">
-                        <button class="btn btn-sm btn-outline-primary insert-symbol text-start" data-symbol="\frac{a}{b}">
-                            <code>\frac{a}{b}</code> - <span data-i18n="latex.template_fraction">Phân số</span>
-                        </button>
-                        <button class="btn btn-sm btn-outline-primary insert-symbol text-start" data-symbol="\sqrt{x}">
-                            <code>\sqrt{x}</code> - <span data-i18n="latex.template_sqrt">Căn bậc hai</span>
-                        </button>
-                        <button class="btn btn-sm btn-outline-primary insert-symbol text-start" data-symbol="\sqrt[n]{x}">
-                            <code>\sqrt[n]{x}</code> - <span data-i18n="latex.template_nth_root">Căn bậc n</span>
-                        </button>
-                        <button class="btn btn-sm btn-outline-primary insert-symbol text-start" data-symbol="x^{n}">
-                            <code>x^{n}</code> - <span data-i18n="latex.template_power">Lũy thừa</span>
-                        </button>
-                        <button class="btn btn-sm btn-outline-primary insert-symbol text-start" data-symbol="x_{i}">
-                            <code>x_{i}</code> - <span data-i18n="latex.template_subscript">Chỉ số dưới</span>
-                        </button>
-                        <button class="btn btn-sm btn-outline-primary insert-symbol text-start" data-symbol="\sum_{i=1}^{n}">
-                            <code>\sum_{i=1}^{n}</code> - <span data-i18n="latex.template_sum">Tổng</span>
-                        </button>
-                        <button class="btn btn-sm btn-outline-primary insert-symbol text-start" data-symbol="\prod_{i=1}^{n}">
-                            <code>\prod_{i=1}^{n}</code> - <span data-i18n="latex.template_product">Tích</span>
-                        </button>
-                        <button class="btn btn-sm btn-outline-primary insert-symbol text-start" data-symbol="\int_{a}^{b}">
-                            <code>\int_{a}^{b}</code> - <span data-i18n="latex.template_integral">Tích phân</span>
-                        </button>
-                        <button class="btn btn-sm btn-outline-primary insert-symbol text-start" data-symbol="\lim_{x \to \infty}">
-                            <code>\lim_{x \to \infty}</code> - <span data-i18n="latex.template_limit">Giới hạn</span>
-                        </button>
-                        <button class="btn btn-sm btn-outline-primary insert-symbol text-start" data-symbol="\begin{matrix} a & b \\ c & d \end{matrix}">
-                            <code>\begin{matrix}...</code> - <span data-i18n="latex.template_matrix">Ma trận</span>
-                        </button>
-                        <button class="btn btn-sm btn-outline-primary insert-symbol text-start" data-symbol="\begin{cases} x, & \text{if } x > 0 \\ 0, & \text{otherwise} \end{cases}">
-                            <code>\begin{cases}...</code> - <span data-i18n="latex.template_cases">Điều kiện</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Illustrative Equations -->
-                <div class="mb-3">
-                    <h6 class="text-primary" data-i18n="latex.equations_illustrative">Biểu thức mẫu minh họa</h6>
-                    <div class="d-grid gap-2">
-                        <button class="btn btn-sm btn-outline-success insert-symbol text-start" data-symbol="x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}">
-                            <code>x = \frac{-b...</code> - <span data-i18n="latex.eq_quadratic">Phương trình bậc hai</span>
-                        </button>
-                        <button class="btn btn-sm btn-outline-success insert-symbol text-start" data-symbol="e^{i\pi} + 1 = 0">
-                            <code>e^{i\pi} + 1 = 0</code> - <span data-i18n="latex.eq_euler">Hằng đẳng thức Euler</span>
-                        </button>
-                        <button class="btn btn-sm btn-outline-success insert-symbol text-start" data-symbol="E = mc^2">
-                            <code>E = mc^2</code> - <span data-i18n="latex.eq_einstein">Công thức Einstein</span>
-                        </button>
-                        <button class="btn btn-sm btn-outline-success insert-symbol text-start" data-symbol="a^2 + b^2 = c^2">
-                            <code>a^2 + b^2 = c^2</code> - <span data-i18n="latex.eq_pythagoras">Định lý Pythagoras</span>
-                        </button>
-                        <button class="btn btn-sm btn-outline-success insert-symbol text-start" data-symbol="\int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi}">
-                            <code>\int e^{-x^2}...</code> - <span data-i18n="latex.eq_gaussian">Tích phân Gaussian</span>
-                        </button>
-                        <button class="btn btn-sm btn-outline-success insert-symbol text-start" data-symbol="f(x) = \frac{1}{\sigma\sqrt{2\pi}} e^{-\frac{1}{2}\left(\frac{x-\mu}{\sigma}\right)^2}">
-                            <code>f(x) = \frac{1}{\sigma...</code> - <span data-i18n="latex.eq_normal_dist">Phân phối chuẩn</span>
-                        </button>
-                        <button class="btn btn-sm btn-outline-success insert-symbol text-start" data-symbol="f(x) = a_0 + \sum_{n=1}^{\infty} \left( a_n \cos\left(\frac{2\pi n x}{T}\right) + b_n \sin\left(\frac{2\pi n x}{T}\right) \right)">
-                            <code>f(x) = a_0 + \sum...</code> - <span data-i18n="latex.eq_fourier">Chuỗi Fourier</span>
-                        </button>
-                        <button class="btn btn-sm btn-outline-success insert-symbol text-start" data-symbol="F(s) = \int_{0}^{\infty} e^{-st} f(t) dt">
-                            <code>F(s) = \int e^{-st}...</code> - <span data-i18n="latex.eq_laplace">Biến đổi Laplace</span>
-                        </button>
-                        <button class="btn btn-sm btn-outline-success insert-symbol text-start" data-symbol="\nabla \times \mathbf{E} = -\frac{\partial \mathbf{B}}{\partial t}">
-                            <code>\nabla \times \mathbf{E}...</code> - <span data-i18n="latex.eq_maxwell">Định luật cảm ứng Faraday</span>
-                        </button>
-                        <button class="btn btn-sm btn-outline-success insert-symbol text-start" data-symbol="\oint_{\partial \Sigma} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Sigma} (\nabla \times \mathbf{F}) \cdot d\mathbf{\Sigma}">
-                            <code>\oint \mathbf{F}...</code> - <span data-i18n="latex.eq_stokes">Định lý Stokes</span>
-                        </button>
-                    </div>
-                </div>
             </div>
         </div>
 
@@ -408,6 +445,160 @@ sitemap:
     cursor: pointer;
 }
 
+.latex-preset-library {
+    border: 1px solid rgba(15, 98, 254, 0.2);
+    border-radius: 0.75rem;
+    background: linear-gradient(180deg, rgba(15, 98, 254, 0.07), rgba(15, 98, 254, 0.015));
+    overflow: hidden;
+}
+
+.latex-preset-library-heading {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.9rem 1rem;
+    border-bottom: 1px solid rgba(15, 98, 254, 0.14);
+}
+
+.latex-preset-library-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 2.35rem;
+    width: 2.35rem;
+    height: 2.35rem;
+    border-radius: 0.65rem;
+    color: #fff;
+    background: linear-gradient(135deg, #0f62fe, #6f42c1);
+    box-shadow: 0 0.3rem 0.7rem rgba(15, 98, 254, 0.25);
+}
+
+.latex-preset-group {
+    border-bottom: 1px solid rgba(15, 98, 254, 0.12);
+}
+
+.latex-preset-group:last-child {
+    border-bottom: 0;
+}
+
+.latex-preset-group > summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    color: #174ea6;
+    background: rgba(255, 255, 255, 0.65);
+    cursor: pointer;
+    font-weight: 600;
+    list-style: none;
+    user-select: none;
+}
+
+.latex-preset-group > summary::-webkit-details-marker {
+    display: none;
+}
+
+.latex-preset-group > summary:hover {
+    background: rgba(15, 98, 254, 0.1);
+}
+
+.latex-preset-group > summary:focus-visible {
+    outline: 3px solid rgba(15, 98, 254, 0.35);
+    outline-offset: -3px;
+}
+
+.preset-chevron {
+    font-size: 0.75rem;
+    transition: transform 0.2s ease;
+}
+
+.latex-preset-group[open] .preset-chevron {
+    transform: rotate(180deg);
+}
+
+.latex-preset-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.55rem;
+    padding: 0.7rem;
+}
+
+.latex-preset-btn {
+    display: grid;
+    grid-template-columns: minmax(5.4rem, 0.8fr) minmax(0, 1.35fr);
+    align-items: stretch;
+    min-width: 0;
+    padding: 0;
+    overflow: hidden;
+    color: #1f2937;
+    text-align: left;
+    background: #fff;
+    border: 1px solid #d9e2f2;
+    border-radius: 0.55rem;
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+    transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+.latex-preset-btn:hover {
+    border-color: #0f62fe;
+    box-shadow: 0 0.35rem 0.9rem rgba(15, 98, 254, 0.15);
+    transform: translateY(-1px);
+}
+
+.latex-preset-btn:focus-visible {
+    outline: 3px solid rgba(15, 98, 254, 0.35);
+    outline-offset: 2px;
+}
+
+.latex-preset-btn:active {
+    transform: translateY(0);
+}
+
+.latex-preset-formula {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    min-height: 4.4rem;
+    padding: 0.55rem;
+    overflow-x: auto;
+    color: #102a56;
+    background: linear-gradient(135deg, #eef4ff, #f7f2ff);
+    border-right: 1px solid #d9e2f2;
+    font-size: 1.05rem;
+}
+
+.latex-preset-formula mjx-container {
+    margin: 0 !important;
+    max-width: 100%;
+}
+
+.latex-preset-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+    padding: 0.6rem 0.7rem;
+}
+
+.latex-preset-info strong {
+    color: inherit;
+    font-size: 0.84rem;
+    line-height: 1.25;
+}
+
+.latex-preset-info code {
+    display: block;
+    margin-top: 0.3rem;
+    overflow: hidden;
+    color: #5c6470;
+    font-size: 0.7rem;
+    line-height: 1.25;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .latex-history-item {
     padding: 1rem;
     border: 1px solid #ddd;
@@ -431,5 +622,54 @@ body.dark-mode .latex-history-item {
 
 body.dark-mode .symbol-btn:hover {
     background: #3a3a3a;
+}
+
+body.dark-mode .latex-preset-library {
+    border-color: #3f5578;
+    background: linear-gradient(180deg, rgba(63, 105, 180, 0.2), rgba(35, 35, 42, 0.65));
+}
+
+body.dark-mode .latex-preset-library-heading,
+body.dark-mode .latex-preset-group {
+    border-color: #3f4652;
+}
+
+body.dark-mode .latex-preset-group > summary {
+    color: #b8d1ff;
+    background: rgba(42, 42, 42, 0.72);
+}
+
+body.dark-mode .latex-preset-group > summary:hover {
+    background: rgba(72, 101, 150, 0.28);
+}
+
+body.dark-mode .latex-preset-btn {
+    color: #ececf1;
+    background: #292a2f;
+    border-color: #484b55;
+}
+
+body.dark-mode .latex-preset-btn:hover {
+    border-color: #78a9ff;
+}
+
+body.dark-mode .latex-preset-formula {
+    color: #e8efff;
+    background: linear-gradient(135deg, #263552, #352b48);
+    border-color: #484b55;
+}
+
+body.dark-mode .latex-preset-info code {
+    color: #b7c5dc;
+}
+
+@media (max-width: 575.98px) {
+    .latex-preset-btn {
+        grid-template-columns: minmax(5rem, 0.75fr) minmax(0, 1.25fr);
+    }
+
+    .latex-preset-formula {
+        font-size: 0.95rem;
+    }
 }
 </style>

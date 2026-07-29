@@ -1,5 +1,5 @@
 // Service Worker for Offline PWA support
-const CACHE_NAME = 'utility-hub-cache-v1.2';
+const CACHE_NAME = 'utility-hub-cache-v1.3';
 const PRECACHE_ASSETS = [
   './',
   './index.html',

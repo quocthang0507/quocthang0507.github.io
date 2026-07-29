@@ -5,13 +5,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const chartContent = document.getElementById('chart-content');
     const chartGoldTypeSelect = document.getElementById('chart-gold-type');
     const chartRateTypeSelect = document.getElementById('chart-rate-type');
-    const durationButtons = document.querySelectorAll('#chart-content [data-period]');
+    const durationButtons = document.querySelectorAll('#chart-duration-controls [data-period]');
     const goldChartCanvas = document.getElementById('goldChart');
 
     // Chart State
     let goldChartInstance = null;
     let historicalGold = [];
-    let currentPeriod = 30; // Default to 30 days
+    let currentPeriod = 7; // Matches the initially active duration button
 
     // Gold Names localization
     const GOLD_NAMES = {
