@@ -109,7 +109,7 @@ const chineseTranslations = {
     "wheel.speed_medium": "适中（5秒）",
     "wheel.speed_slow": "慢速（7秒）",
     "wheel.suspense_effect": "悬念效果",
-    "wheel.suspense_hint": "停在分界线附近，或缓慢滑向相邻结果",
+    "wheel.suspense_hint": "在分界线附近减速，然后缓慢停在同一结果内",
     "wheel.spinning": "转动中...",
     "wheel.warn.enter_name": "请输入名称！",
     "wheel.warn.name_too_long": "名称不能超过20个字符！",

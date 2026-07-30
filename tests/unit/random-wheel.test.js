@@ -60,6 +60,7 @@ describe('random wheel timing and suspense settings', () => {
     document.getElementById('spin-btn').click();
     const wheel = document.getElementById('wheel-names');
     const mainPhaseTransform = wheel.style.transform;
+    expect(audio.playbackRate).toBeCloseTo(2500 / 4500);
 
     jest.advanceTimersByTime(4000);
     expect(wheel.style.transform).not.toBe(mainPhaseTransform);
@@ -74,7 +75,7 @@ describe('random wheel timing and suspense settings', () => {
 
     jest.advanceTimersByTime(500);
     expect(document.getElementById('spin-btn').disabled).toBe(false);
-    expect(document.getElementById('wheel-result').textContent).not.toBe('');
+    expect(document.getElementById('wheel-result').textContent).toBe('A');
 
     jest.useRealTimers();
   });

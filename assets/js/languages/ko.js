@@ -138,7 +138,7 @@ const koreanTranslations = {
     "wheel.speed_medium": "보통 (5초)",
     "wheel.speed_slow": "느리게 (7초)",
     "wheel.suspense_effect": "긴장감 효과",
-    "wheel.suspense_hint": "경계선 근처에서 멈추거나 옆 결과로 천천히 이동",
+    "wheel.suspense_hint": "경계선 근처에서 감속한 뒤 같은 결과 안에서 천천히 정지",
     "wheel.warn.enter_name": "이름을 입력하세요!",
     "wheel.warn.name_too_long": "이름은 20자 이하이어야 합니다!",
     "wheel.warn.name_exists": "이 이름은 이미 존재합니다!",

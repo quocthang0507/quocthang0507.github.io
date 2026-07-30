@@ -110,7 +110,7 @@ const englishTranslations = {
     "wheel.speed_medium": "Moderate (5 seconds)",
     "wheel.speed_slow": "Slow (7 seconds)",
     "wheel.suspense_effect": "Suspense effect",
-    "wheel.suspense_hint": "Stop near the divider or slowly drift into the next result",
+    "wheel.suspense_hint": "Slow near the divider, then glide to a stop within the same result",
     "wheel.spinning": "Spinning...",
     "wheel.warn.enter_name": "Please enter a name!",
     "wheel.warn.name_too_long": "Name cannot exceed 20 characters!",

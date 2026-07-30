@@ -109,7 +109,7 @@ const japaneseTranslations = {
     "wheel.speed_medium": "普通（5秒）",
     "wheel.speed_slow": "遅い（7秒）",
     "wheel.suspense_effect": "サスペンス効果",
-    "wheel.suspense_hint": "境界付近で止まるか、隣の結果へゆっくり移動します",
+    "wheel.suspense_hint": "境界付近で減速し、同じ結果の中でゆっくり停止します",
     "wheel.spinning": "回転中...",
     "wheel.warn.enter_name": "名前を入力してください！",
     "wheel.warn.name_too_long": "名前は20文字以内で入力してください！",

@@ -2,6 +2,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     const SOUND_END_LEAD_MS = 500;
     const SUSPENSE_SETTLE_MS = 1000;
+    const BASE_SOUND_WINDOW_MS = 2500;
     const ALLOWED_SPIN_DURATIONS = [3000, 5000, 7000];
 
     let names = loadFromLocalStorage('wheelNames') || [];
@@ -172,6 +173,10 @@ document.addEventListener('DOMContentLoaded', function() {
             const audioElement = document.getElementById('wheel-spin-audio');
             if (audioElement && audioElement.canPlayType && audioElement.canPlayType('audio/mpeg') !== '') {
                 audioElement.currentTime = 0;
+                // Stretch the same sound profile to match each selected spin duration.
+                audioElement.playbackRate = BASE_SOUND_WINDOW_MS / soundDurationMs;
+                audioElement.preservesPitch = false;
+                audioElement.webkitPreservesPitch = false;
                 audioElement.play().catch(() => {
                     // Fallback to Web Audio API
                     generateSpinSound(soundDurationMs);
@@ -189,6 +194,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (audioElement) {
             audioElement.pause();
             audioElement.currentTime = 0;
+            audioElement.playbackRate = 1;
         }
         
         // Stop Web Audio API oscillator
@@ -568,9 +574,19 @@ document.addEventListener('DOMContentLoaded', function() {
         const anglePerSection = 360 / names.length;
         const selectedIndex = Math.floor(Math.random() * names.length);
         const boundaryOffset = Math.min(3, Math.max(0.5, anglePerSection * 0.04));
-        const targetOffset = activeSuspenseEffect
-            ? boundaryOffset
+        const suspenseSettleDegrees = Math.min(
+            anglePerSection - boundaryOffset * 1.25,
+            Math.max(
+                boundaryOffset * 1.25,
+                Math.min(12, anglePerSection * (0.12 + Math.random() * 0.1))
+            )
+        );
+        const finalOffsetWithinSection = activeSuspenseEffect
+            ? anglePerSection - boundaryOffset - suspenseSettleDegrees
             : anglePerSection * (0.2 + Math.random() * 0.6);
+        const targetOffset = activeSuspenseEffect
+            ? anglePerSection - boundaryOffset
+            : finalOffsetWithinSection;
         const targetNormalizedAngle = (selectedIndex * anglePerSection + targetOffset) % 360;
         const targetRotationModulo = (360 - targetNormalizedAngle) % 360;
         const currentRotationModulo = ((currentRotation % 360) + 360) % 360;
@@ -588,16 +604,10 @@ document.addEventListener('DOMContentLoaded', function() {
         wheelNames.style.transform = `rotate(${currentRotation}deg)`;
 
         if (activeSuspenseEffect) {
-            const shouldCreepToPreviousSection = Math.random() < 0.5;
             setTimeout(() => {
-                if (!shouldCreepToPreviousSection) return;
-
-                // Cross the nearby divider slowly, changing the final result.
-                const creepDegrees = Math.max(
-                    boundaryOffset * 2,
-                    Math.min(12, anglePerSection * 0.35)
-                );
-                currentRotation += creepDegrees;
+                // Continue slowly from the divider toward the final position,
+                // without crossing into another result.
+                currentRotation += suspenseSettleDegrees;
                 wheelNames.style.transition = `transform ${SUSPENSE_SETTLE_MS}ms cubic-bezier(0.16, 0.72, 0.2, 1)`;
                 wheelNames.style.transform = `rotate(${currentRotation}deg)`;
             }, mainSpinDurationMs);

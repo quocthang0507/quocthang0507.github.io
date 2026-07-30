@@ -110,7 +110,7 @@ const vietnameseTranslations = {
     "wheel.speed_medium": "Vừa phải (5 giây)",
     "wheel.speed_slow": "Chậm (7 giây)",
     "wheel.suspense_effect": "Hiệu ứng hồi hộp",
-    "wheel.suspense_hint": "Dừng sát vạch hoặc trôi chậm sang ô kế bên",
+    "wheel.suspense_hint": "Giảm tốc sát vạch rồi trôi chậm vào vị trí dừng trong cùng ô",
     "wheel.spinning": "Đang quay...",
     "wheel.warn.enter_name": "Vui lòng nhập tên!",
     "wheel.warn.name_too_long": "Tên không được dài quá 20 ký tự!",
