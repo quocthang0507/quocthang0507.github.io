@@ -1,6 +1,7 @@
 // Global Command Palette Switcher Controller
 document.addEventListener('DOMContentLoaded', function() {
   const SYSTEM_TOOLS = [
+    { titleKey: 'nav.delegate_nameplate', url: './delegate-nameplate/', icon: 'fas fa-id-card' },
     { titleKey: 'nav.home', url: './', icon: 'fas fa-home' },
     { titleKey: 'nav.random_number', url: './random-number/', icon: 'fas fa-random' },
     { titleKey: 'nav.random_wheel', url: './random-wheel/', icon: 'fas fa-dharmachakra' },
@@ -23,6 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   const TOOL_DESCRIPTIONS = {
       vi: {
+          'nav.delegate_nameplate': 'Thiết kế bảng tên đại biểu sự kiện, logo, xuất SVG PNG JPG',
           'nav.home': 'Đồng hồ & Lịch âm dương hiện tại',
           'nav.random_number': 'Tạo số ngẫu nhiên với nhiều tùy chọn',
           'nav.random_wheel': 'Vòng quay may mắn chọn ngẫu nhiên',

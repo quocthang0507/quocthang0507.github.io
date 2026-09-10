@@ -1,0 +1,70 @@
+---
+layout: default
+title: "Bảng tên đại biểu"
+description: "Thiết kế bảng tên đại biểu theo kích thước thực, tùy chỉnh logo, bố cục, màu sắc, viền và xuất SVG, PNG, JPG."
+custom_js: ['nameplate-zip.js', 'delegate-nameplate.js']
+permalink: /delegate-nameplate/
+sitemap:
+  priority: 0.8
+  lastmod: 2026-09-10
+---
+<link rel="stylesheet" href="{{ '/assets/css/delegate-nameplate.css' | relative_url }}">
+<meta name="i18n-title" content="nav.delegate_nameplate">
+<section class="nameplate-tool">
+  <header class="np-heading"><span class="np-eyebrow"><span data-i18n="np.eyebrow">CÔNG CỤ SỰ KIỆN</span></span><h1><span data-i18n="np.title">Bảng tên đại biểu</span></h1><p><span data-i18n="np.intro">Thiết kế bảng tên trang trọng, đúng kích thước. Xem trước và tải xuống ngay trên trình duyệt.</span></p></header>
+  <div class="np-workspace">
+    <form id="np-form" class="np-controls" autocomplete="off">
+      <fieldset><legend><span data-i18n="np.delegates">Danh sách đại biểu</span></legend>
+        <label for="np-mode"><span data-i18n="np.mode">Chế độ tạo</span></label><select id="np-mode"><option value="single" data-i18n="np.single">Một đại biểu</option><option value="batch" data-i18n="np.batch">Hàng loạt</option></select>
+        <div id="np-batch-controls" hidden="">
+          <label for="np-batch-input"><span data-i18n="np.list">Danh sách (mỗi dòng một đại biểu)</span></label>
+          <textarea id="np-batch-input" rows="7" spellcheck="false"></textarea>
+          <p class="np-help"><span data-i18n="np.batch_hint">Dán các cột từ Excel hoặc dùng dấu |: Họ tên | Chức vụ / Đơn vị | Tiêu đề mặt sau | Số ghế / Lưu ý. Không thêm dòng tiêu đề. Hai cột mặt sau có thể bỏ trống để dùng nội dung chung. Tối đa 200 đại biểu, tên 150 ký tự, chức vụ 200 ký tự.</span></p>
+          <button id="np-batch-example" type="button" class="np-secondary"><span data-i18n="np.example">Điền danh sách mẫu</span></button>
+          <label for="np-batch-select"><span data-i18n="np.preview_delegate">Đại biểu xem trước</span></label><select id="np-batch-select"></select>
+          <p id="np-batch-status" class="np-help" role="status"></p>
+        </div>
+      </fieldset>
+      <fieldset><legend><span data-i18n="np.size_section">01 · Kích thước &amp; bố cục</span></legend>
+        <label for="np-size"><span data-i18n="np.size">Kích thước mỗi mặt (cm)</span></label><select id="np-size"><option>15x7</option><option>20x6</option><option selected="">20x8</option><option>24x10</option><option>24x12</option><option>25x10</option><option>28x10</option><option>30x12</option><option value="custom" data-i18n="np.custom">Tùy chọn</option></select>
+        <div id="np-custom" class="np-grid" hidden=""><label><span data-i18n="np.width">Rộng (cm)</span><input id="np-width" type="number" min="5" max="60" step="0.1" value="20" required=""></label><label><span data-i18n="np.height">Cao (cm)</span><input id="np-height" type="number" min="3" max="40" step="0.1" value="8" required=""></label></div>
+        <label for="np-layout"><span data-i18n="np.layout">Bố cục</span></label><select id="np-layout"><option value="one" data-i18n="np.layout_one">1 dòng · Họ và tên</option><option value="two" selected="" data-i18n="np.layout_two">2 dòng · Tên &amp; chức vụ</option><option value="logo" data-i18n="np.layout_logo">Kèm logo / nhận diện</option><option value="band" data-i18n="np.layout_band">Dải màu / viền nổi bật</option><option value="duplex" data-i18n="np.layout_duplex">2 mặt · Nội dung khác nhau</option></select>
+        <p id="np-layout-help" class="np-help"></p>
+      </fieldset>
+      <fieldset><legend><span data-i18n="np.content_section">02 · Nội dung</span></legend>
+        <label for="np-name"><span data-i18n="np.name">Họ và tên</span></label><input id="np-name" value="NGUYỄN VĂN AN" maxlength="150">
+        <div id="np-role-controls"><label for="np-role"><span data-i18n="np.role">Chức vụ / Đơn vị công tác</span></label><input id="np-role" value="GIÁM ĐỐC · CÔNG TY ABC" maxlength="200"><label for="np-order"><span data-i18n="np.order">Vị trí chức vụ</span></label><select id="np-order"><option value="below" data-i18n="np.below">Dưới họ và tên</option><option value="above" data-i18n="np.above">Trên họ và tên</option></select></div>
+        <div id="np-back-controls" hidden=""><label for="np-back-title"><span data-i18n="np.back_title">Tiêu đề mặt sau</span></label><input id="np-back-title" value="ĐẠI BIỂU" maxlength="150"><label for="np-back-note"><span data-i18n="np.back_note">Số thứ tự / Lưu ý mặt sau</span></label><input id="np-back-note" value="SỐ 01 · XIN VUI LÒNG NGỒI ĐÚNG VỊ TRÍ" maxlength="200"></div>
+        <label for="np-logo"><span data-i18n="np.logo">Logo (PNG, JPG, WebP · tối đa 5 MB)</span></label><input id="np-logo" type="file" accept="image/png,image/jpeg,image/webp"><div class="np-grid"><label><span data-i18n="np.logo_position">Vị trí logo</span><select id="np-logo-position"><option value="left" data-i18n="np.left">Bên trái</option><option value="top" data-i18n="np.top">Phía trên</option></select></label><button id="np-remove-logo" type="button" class="np-secondary"><span data-i18n="np.remove_logo">Xóa logo</span></button></div>
+        <p class="np-help"><span data-i18n="np.logo_hint">Có thể thêm logo cho mọi bố cục. Ảnh được xử lý trên thiết bị của bạn.</span></p>
+      </fieldset>
+      <fieldset><legend><span data-i18n="np.colors_section">03 · Màu sắc &amp; đường viền</span></legend>
+        <label for="np-theme"><span data-i18n="np.theme">Phối màu</span></label><select id="np-theme"><option value="white" data-i18n="np.theme_white">Trắng · Tối giản</option><option value="red" data-i18n="np.theme_red">Đỏ · Trang trọng</option><option value="gold" data-i18n="np.theme_gold">Vàng đồng · Lãnh đạo / VIP</option><option value="blue" data-i18n="np.theme_blue">Xanh dương · Chuyên nghiệp</option><option value="split" data-i18n="np.theme_split">Phối màu · Nền chia khối</option></select>
+        <div class="np-grid np-colors"><label><span data-i18n="np.background">Nền</span><input id="np-bg" type="color" value="#ffffff"></label><label><span data-i18n="np.name">Họ và tên</span><input id="np-ink" type="color" value="#9b1725"></label><label><span data-i18n="np.role_color">Chức vụ</span><input id="np-role-color" type="color" value="#334155"></label><label><span data-i18n="np.accent">Viền / dải màu</span><input id="np-accent" type="color" value="#9b1725"></label><label><span data-i18n="np.band_ink">Chữ trên dải</span><input id="np-band-ink" type="color" value="#ffffff"></label></div>
+        <label for="np-border"><span data-i18n="np.border">Kiểu viền</span></label><select id="np-border"><option value="none" data-i18n="np.border_none">Không viền</option><option value="single" data-i18n="np.border_single">Viền chỉ đơn · Vuông</option><option value="rounded" data-i18n="np.border_rounded">Viền chỉ đơn · Bo góc</option><option value="double" selected="" data-i18n="np.border_double">Viền đôi · Đại hội</option><option value="ornament" data-i18n="np.border_ornament">Hoa văn · Góc đối xứng</option><option value="modern" data-i18n="np.border_modern">Cách điệu · Dải cạnh trái</option><option value="horizontal" data-i18n="np.border_horizontal">Cách điệu · Hai đường ngang</option></select>
+        <label><span data-i18n="np.stroke">Độ dày viền (mm)</span><input id="np-stroke" type="number" value="0.6" min="0.1" max="3" step="0.1" required=""></label>
+      </fieldset>
+      <fieldset><legend><span data-i18n="np.font_section">04 · Font chữ &amp; căn lề</span></legend>
+        <label for="np-fit"><span data-i18n="np.fit">Điều chỉnh chữ</span></label><select id="np-fit"><option value="smart" data-i18n="np.fit_smart">Thông minh · Tự động cỡ chữ</option><option value="shrink" data-i18n="np.fit_shrink">Giữ một dòng · Chỉ thu nhỏ</option></select>
+        <p class="np-help"><span data-i18n="np.fit_hint">Chế độ thông minh tự tăng/giảm cỡ chữ riêng cho tên và chức vụ để vừa vùng nội dung, giữ nguyên một dòng và tuân thủ lề đã cài đặt. Chế độ chỉ thu nhỏ dùng cỡ chữ nhập làm giới hạn tối đa.</span></p>
+        <label for="np-font"><span data-i18n="np.font">Font chữ</span></label><select id="np-font"><option value="Times New Roman">Times New Roman</option><option value="Arial">Arial</option><option value="Georgia">Georgia</option><option value="Verdana">Verdana</option><option value="Tahoma">Tahoma</option></select>
+        <div class="np-grid"><label><span data-i18n="np.name_size">Cỡ tên (pt)</span><input id="np-name-size" type="number" min="8" max="180" value="48" required=""></label><label><span data-i18n="np.role_size">Cỡ chức vụ (pt)</span><input id="np-role-size" type="number" min="6" max="100" value="22" required=""></label></div>
+        <div class="np-checks"><label><input id="np-bold" type="checkbox" checked=""><span data-i18n="np.bold">Tên in đậm</span></label><label><input id="np-italic" type="checkbox"><span data-i18n="np.italic">Tên in nghiêng</span></label><label><input id="np-uppercase" type="checkbox" checked=""><span data-i18n="np.uppercase">Viết hoa tên</span></label></div>
+        <label for="np-align"><span data-i18n="np.align">Căn ngang</span></label><select id="np-align"><option value="middle" data-i18n="np.center">Căn giữa</option><option value="start" data-i18n="np.align_left">Căn trái</option><option value="end" data-i18n="np.align_right">Căn phải</option></select>
+        <div class="np-grid"><label><span data-i18n="np.margin_x">Lề ngang (mm)</span><input id="np-margin-x" type="number" value="8" min="4" max="40" required=""></label><label><span data-i18n="np.margin_y">Lề dọc (mm)</span><input id="np-margin-y" type="number" value="6" min="4" max="30" required=""></label></div>
+        <p class="np-help"><span data-i18n="np.font_hint">Chữ dài tự giảm cỡ để nằm trong vùng nội dung. Cỡ chữ áp dụng cho cả hai mặt.</span></p>
+      </fieldset>
+    </form>
+    <aside class="np-preview-panel">
+      <div class="np-preview-header"><h2><span data-i18n="np.preview">Xem trước</span></h2><span id="np-dimensions"></span></div>
+      <div class="np-stage"><div><span class="np-face-label"><span data-i18n="np.front">MẶT TRƯỚC</span></span><div id="np-preview"></div></div><div id="np-back-wrap" hidden=""><span class="np-face-label"><span data-i18n="np.back">MẶT SAU</span></span><div id="np-back-preview"></div></div></div>
+      <p id="np-status" role="status" aria-live="polite"></p>
+      <div class="np-export"><h2><span data-i18n="np.export">Xuất bảng tên</span></h2><div class="np-grid"><label><span data-i18n="np.format">Định dạng</span><select id="np-format"><option value="svg" data-i18n="np.svg">SVG · Vector</option><option value="png" data-i18n="np.png">PNG · Ảnh chất lượng cao</option><option value="jpg" data-i18n="np.jpg">JPG · Ảnh gọn nhẹ</option></select></label><label><span data-i18n="np.dpi">Độ phân giải ảnh</span><select id="np-dpi"><option value="150">150 DPI</option><option value="300" selected="">300 DPI</option><option value="600">600 DPI</option></select></label></div>
+      <p id="np-export-info" class="np-help"></p><div class="np-grid"><button id="np-download" type="button"><span data-i18n="np.download_front">Tải mặt trước</span></button><button id="np-download-back" type="button" hidden=""><span data-i18n="np.download_back">Tải mặt sau</span></button></div><button id="np-print" type="button" class="np-secondary"><span data-i18n="np.print">In / Lưu PDF</span></button>
+      <div id="np-batch-actions" hidden=""><button id="np-download-batch" type="button"><span data-i18n="np.download_batch">Tải toàn bộ (ZIP)</span></button><button id="np-print-batch" type="button" class="np-secondary"><span data-i18n="np.print_batch">In toàn bộ / Lưu PDF</span></button></div>
+      <p id="np-fit-info" class="np-help"></p>
+      <p class="np-help"><span data-i18n="np.print_hint">Khi in, chọn tỷ lệ 100% (kích thước thực), tắt đầu/chân trang và bật in nền. Hai mặt xuất thành hai tệp riêng; bản in đặt mỗi mặt trên một trang. SVG giữ kích thước cm; khi in PNG/JPG, đặt kích thước theo thông số đã chọn. SVG dùng font trên máy mở tệp.</span></p></div>
+    </aside>
+  </div>
+</section>
+<div id="np-print-area" aria-hidden="true"></div>

@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 const pages = [
+  { name: 'Delegate Nameplate', path: '/delegate-nameplate/' },
   { name: 'Home', path: '/' },
   { name: 'Case Converter', path: '/case-converter/' },
   { name: 'Color Picker', path: '/color-picker/' },

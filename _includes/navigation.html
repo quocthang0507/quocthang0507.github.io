@@ -46,6 +46,7 @@
                         </li>
                         <li><hr class="dropdown-divider"></li>
                         <li><h6 class="dropdown-header" data-i18n="nav.cat.utilities">Utilities</h6></li>
+                        <li><a class="dropdown-item {% if page.url == '/delegate-nameplate/' %}active{% endif %}" href="{{ '/delegate-nameplate/' | relative_url }}"><span data-i18n="nav.delegate_nameplate">Bảng tên đại biểu</span></a></li>
                         <li>
                             <a class="dropdown-item {% if page.url == '/password-generator/' %}active{% endif %}" href="{{ '/password-generator/' | relative_url }}">
                                 <span data-i18n="nav.password_generator">Password generator</span>

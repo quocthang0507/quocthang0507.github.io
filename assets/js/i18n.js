@@ -39,6 +39,7 @@ class TranslationSystem {
             // Translate page immediately with current language
             this.initializeLanguageSelector();
             this.translatePage();
+            window.dispatchEvent(new CustomEvent('translationsReady', { detail: { language: this.currentLanguage } }));
             
             // Remove loading class - content is now translated
             document.body.classList.remove('i18n-loading');
