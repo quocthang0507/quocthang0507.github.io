@@ -2,10 +2,19 @@
 layout: compress
 ---
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ site.lang | default: 'vi' }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Apply theme (saved choice, else system preference) before first paint to avoid a light flash -->
+    <script>
+        (function () {
+            var theme = null;
+            try { theme = localStorage.getItem('theme'); } catch (e) {}
+            if (!theme && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) theme = 'dark';
+            if (theme === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+        })();
+    </script>
     
     <!-- Basic SEO Meta Tags -->
     <title>{% if page.title %}{{ page.title }} - {% endif %}{{ site.title }}</title>
@@ -28,16 +37,16 @@ layout: compress
     <meta property="og:locale:alternate" content="zh_CN">
     <meta property="og:locale:alternate" content="ko_KR">
     <meta property="og:locale:alternate" content="ja_JP">
-    <meta property="og:image" content="{{ site.url }}/assets/images/og-image.jpg">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
+    <meta property="og:image" content="{{ site.url }}/assets/images/icon-460x460.jpeg">
+    <meta property="og:image:width" content="460">
+    <meta property="og:image:height" content="460">
     <meta property="og:image:alt" content="{{ page.title | default: site.title }} - Useful online tools">
     
     <!-- Twitter Card Meta Tags -->
-    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="{% if page.title %}{{ page.title }} - {% endif %}{{ site.title }}">
     <meta name="twitter:description" content="{{ page.description | default: site.description }}">
-    <meta name="twitter:image" content="{{ site.url }}/assets/images/twitter-card.jpg">
+    <meta name="twitter:image" content="{{ site.url }}/assets/images/icon-460x460.jpeg">
     <meta name="twitter:image:alt" content="{{ page.title | default: site.title }} - Useful online tools">
     <meta name="twitter:site" content="@quocthang0507">
     <meta name="twitter:creator" content="@quocthang0507">
@@ -53,12 +62,7 @@ layout: compress
     <!-- Canonical URL -->
     <link rel="canonical" href="{{ site.url }}{{ page.url }}">
     
-    <!-- Alternate Language Links -->
-    <link rel="alternate" hreflang="vi" href="{{ site.url }}{{ page.url }}">
-    <link rel="alternate" hreflang="en" href="{{ site.url }}{{ page.url }}">
-    <link rel="alternate" hreflang="zh" href="{{ site.url }}{{ page.url }}">
-    <link rel="alternate" hreflang="ko" href="{{ site.url }}{{ page.url }}">
-    <link rel="alternate" hreflang="ja" href="{{ site.url }}{{ page.url }}">
+    <!-- Alternate Language Links (languages are switched client-side on the same URL) -->
     <link rel="alternate" hreflang="x-default" href="{{ site.url }}{{ page.url }}">
     
     <!-- Favicon and Icons -->
@@ -86,11 +90,6 @@ layout: compress
             "name": "{{ site.author | default: 'quocthang0507' }}",
             "url": "{{ site.url }}"
         },
-        "potentialAction": {
-            "@type": "SearchAction",
-            "target": "{{ site.url }}/search?q={search_term_string}",
-            "query-input": "required name=search_term_string"
-        },
         "sameAs": [
             "https://github.com/quocthang0507"
         ],
@@ -115,7 +114,6 @@ layout: compress
     
     <!-- Feed Links -->
     <link rel="alternate" type="application/rss+xml" title="{{ site.title }} RSS Feed" href="{{ '/feed.xml' | relative_url }}">
-    <link rel="alternate" type="application/atom+xml" title="{{ site.title }} Atom Feed" href="{{ '/atom.xml' | relative_url }}">
     
     <!-- Security Headers -->
     <meta http-equiv="X-Content-Type-Options" content="nosniff">

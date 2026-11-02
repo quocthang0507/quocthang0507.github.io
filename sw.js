@@ -1,5 +1,5 @@
 // Service Worker for Offline PWA support
-const CACHE_NAME = 'utility-hub-cache-v1.3';
+const CACHE_NAME = 'utility-hub-cache-v1.4';
 const PRECACHE_ASSETS = [
   './',
   './index.html',
@@ -55,12 +55,15 @@ self.addEventListener('activate', event => {
 
 // Fetch Interceptor
 self.addEventListener('fetch', event => {
+  // Only GET requests can be cached
+  if (event.request.method !== 'GET') return;
+
   const requestUrl = new URL(event.request.url);
 
   // Skip cross-origin external API fetches like CORS proxy or google analytics
   if (requestUrl.origin !== self.location.origin) {
     // Fonts and FontAwesome CSS can be cached
-    if (event.request.url.includes('cdnjs.cloudflare.com') || event.request.url.includes('fonts.gstatic.com') || event.request.url.includes('fonts.googleapis.com')) {
+    if (requestUrl.hostname === 'cdnjs.cloudflare.com' || requestUrl.hostname === 'fonts.gstatic.com' || requestUrl.hostname === 'fonts.googleapis.com') {
       event.respondWith(
         caches.match(event.request).then(cachedResponse => {
           if (cachedResponse) return cachedResponse;
@@ -70,19 +73,37 @@ self.addEventListener('fetch', event => {
               caches.open(CACHE_NAME).then(cache => cache.put(event.request, cacheCopy));
             }
             return networkResponse;
-          }).catch(() => null);
+          });
         })
       );
     }
     return;
   }
 
-  // Same-origin request: Stale-While-Revalidate caching strategy
+  // Pages: Network-first so new deployments show up immediately, cache as offline fallback
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request).then(networkResponse => {
+        if (networkResponse && networkResponse.status === 200) {
+          const cacheCopy = networkResponse.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(event.request, cacheCopy));
+        }
+        return networkResponse;
+      }).catch(() =>
+        caches.match(event.request)
+          .then(cachedResponse => cachedResponse || caches.match('./'))
+          .then(cachedResponse => cachedResponse || Response.error())
+      )
+    );
+    return;
+  }
+
+  // Other same-origin assets: Stale-While-Revalidate caching strategy
   event.respondWith(
     caches.match(event.request).then(cachedResponse => {
       const networkFetch = fetch(event.request).then(networkResponse => {
         // Cache success responses
-        if (networkResponse && networkResponse.status === 200 && event.request.method === 'GET') {
+        if (networkResponse && networkResponse.status === 200) {
           const cacheCopy = networkResponse.clone();
           caches.open(CACHE_NAME).then(cache => {
             cache.put(event.request, cacheCopy);
@@ -91,7 +112,7 @@ self.addEventListener('fetch', event => {
         return networkResponse;
       }).catch(err => {
         console.warn('[Service Worker] Network fetch failed, falling back to cache:', err);
-        return cachedResponse; // Fallback to cache if network fails completely (offline mode)
+        return cachedResponse || Response.error(); // Fallback to cache if network fails completely (offline mode)
       });
 
       // Return cached immediately if found, otherwise wait for network fetch

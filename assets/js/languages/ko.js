@@ -1,5 +1,17 @@
 // Korean Language File
 const koreanTranslations = {
+    "home.all_tools": "모든 도구",
+    "date_calc.days": "일",
+    "date_calc.weeks": "주",
+    "date_calc.days_after": "일 후",
+    "date_calc.days_before": "일 전",
+    "date_calc.days_left": "일 남음",
+    "date_calc.day_of_year": "연중 일차",
+    "date_calc.week_of_year": "연중 주차",
+    "date_calc.error.select_dates": "두 날짜를 모두 선택하세요",
+    "date_calc.error.select_date": "날짜를 선택하세요",
+    "date_calc.error.select_birth_date": "생년월일을 선택하세요",
+    "date_calc.error.future_date": "생년월일은 미래일 수 없습니다",
     "np.open_tool": "명패 만들기",
     "np.home_description": "로고, 색상, 크기를 설정해 행사 명패를 디자인하세요.",
     "np.help_one": "큰 이름을 가운데 배치합니다. 내부 회의나 간결한 행사에 적합합니다.",

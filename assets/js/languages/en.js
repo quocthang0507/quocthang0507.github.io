@@ -1,5 +1,17 @@
 // English Language File
 const englishTranslations = {
+    "home.all_tools": "All tools",
+    "date_calc.days": "days",
+    "date_calc.weeks": "weeks",
+    "date_calc.days_after": "days after",
+    "date_calc.days_before": "days before",
+    "date_calc.days_left": "days left",
+    "date_calc.day_of_year": "Day of year",
+    "date_calc.week_of_year": "Week of year",
+    "date_calc.error.select_dates": "Please select both dates",
+    "date_calc.error.select_date": "Please select a date",
+    "date_calc.error.select_birth_date": "Please select your birth date",
+    "date_calc.error.future_date": "Birth date cannot be in the future",
     "np.open_tool": "Create nameplates",
     "np.home_description": "Design event nameplates with custom logos, colors and dimensions.",
     "np.help_one": "Large centered name. Suitable for internal meetings and minimal events.",

@@ -1,5 +1,17 @@
 // Japanese Language File
 const japaneseTranslations = {
+    "home.all_tools": "すべてのツール",
+    "date_calc.days": "日",
+    "date_calc.weeks": "週",
+    "date_calc.days_after": "日後",
+    "date_calc.days_before": "日前",
+    "date_calc.days_left": "日後",
+    "date_calc.day_of_year": "年間通算日",
+    "date_calc.week_of_year": "年間通算週",
+    "date_calc.error.select_dates": "両方の日付を選択してください",
+    "date_calc.error.select_date": "日付を選択してください",
+    "date_calc.error.select_birth_date": "生年月日を選択してください",
+    "date_calc.error.future_date": "生年月日に未来の日付は指定できません",
     "np.open_tool": "名札を作成",
     "np.home_description": "ロゴ、色、サイズをカスタマイズしてイベント用名札を作成。",
     "np.help_one": "大きな氏名を中央に配置。社内会議やシンプルなイベントに適しています。",

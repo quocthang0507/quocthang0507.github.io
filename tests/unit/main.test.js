@@ -140,6 +140,20 @@ describe('theme utilities', () => {
     expect(localStorage.getItem('theme')).toBe('light');
   });
 
+  it('follows the system dark preference when no theme is saved', () => {
+    document.body.innerHTML = `
+      <button id="dark-mode-toggle" title="">
+        <i id="dark-mode-icon"></i>
+      </button>
+    `;
+    window.matchMedia = jest.fn().mockReturnValue({ matches: true, addEventListener: jest.fn() });
+
+    initializeDarkMode();
+
+    expect(document.documentElement.getAttribute('data-theme')).toBe('dark');
+    expect(localStorage.getItem('theme')).toBeNull();
+  });
+
   it('handles missing matchMedia without errors', () => {
     document.body.innerHTML = `
       <button id="dark-mode-toggle" title="">

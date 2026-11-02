@@ -632,9 +632,9 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="col-lg-2 col-md-3 col-sm-4 col-6">
                 <div class="qr-history-item">
                     <img src="${item.imageData}" alt="QR Code">
-                    <div class="small text-muted">${item.type.toUpperCase()}</div>
-                    <div class="small text-truncate" title="${item.content}">
-                        ${item.content.length > 20 ? item.content.substring(0, 20) + '...' : item.content}
+                    <div class="small text-muted">${escapeHtml(item.type.toUpperCase())}</div>
+                    <div class="small text-truncate" title="${escapeHtml(item.content)}">
+                        ${escapeHtml(item.content.length > 20 ? item.content.substring(0, 20) + '...' : item.content)}
                     </div>
                     <div class="btn-group btn-group-sm">
                         <button class="btn btn-outline-primary" onclick="window.reloadQR(${index})">

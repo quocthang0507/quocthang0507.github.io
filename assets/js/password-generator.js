@@ -366,10 +366,10 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="history-item">
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="flex-grow-1">
-                        <code class="history-password">${item.password}</code>
+                        <code class="history-password">${escapeHtml(item.password)}</code>
                         <small class="text-muted d-block">${item.timestamp} • ${item.length} ${tr('password.characters', 'ký tự')}</small>
                     </div>
-                    <button class="btn btn-sm btn-outline-primary copy-history-btn" data-password="${item.password}">
+                    <button class="btn btn-sm btn-outline-primary copy-history-btn" data-index="${index}">
                         <i class="fas fa-copy"></i>
                     </button>
                 </div>
@@ -379,7 +379,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // Add event listeners to copy buttons
         document.querySelectorAll('.copy-history-btn').forEach(btn => {
             btn.addEventListener('click', function() {
-                const password = this.dataset.password;
+                const entry = passwordHistory[parseInt(this.dataset.index, 10)];
+                if (!entry) return;
+                const password = entry.password;
                 navigator.clipboard.writeText(password).then(() => {
                     showAlert(
                         tr('password.copied', 'Đã sao chép mật khẩu!'),

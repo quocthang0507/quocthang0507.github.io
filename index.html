@@ -3,7 +3,7 @@ layout: default
 title: "Trang chủ"
 description: "Trang chủ với đồng hồ số, lịch âm dương, đồng hồ bấm giờ và hẹn giờ. Hỗ trợ đa ngôn ngữ và giao diện tối."
 keywords: "đồng hồ số, lịch âm, lịch dương, đồng hồ bấm giờ, hẹn giờ, timer, stopwatch, lunar calendar, multi-language"
-custom_js: ['i18n.js', 'lunar-calendar.js', 'vietnam-holidays.js', 'clock.js']
+custom_js: ['lunar-calendar.js', 'vietnam-holidays.js', 'clock.js']
 permalink: /
 sitemap:
   priority: 1.0
@@ -153,6 +153,146 @@ sitemap:
                     </div>
                     <div class="col-md-4">
                         <strong data-i18n="system_info.week_of_year">Tuần trong năm:</strong> <span id="week-of-year">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12 mt-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-th-large"></i> <span data-i18n="home.all_tools">Tất cả công cụ</span></h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <a class="card h-100 text-decoration-none" href="{{ '/random-number/' | relative_url }}">
+                            <div class="card-body d-flex align-items-center gap-2">
+                                <i class="fas fa-random text-primary"></i> <span data-i18n="nav.random_number">Random number</span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <a class="card h-100 text-decoration-none" href="{{ '/random-wheel/' | relative_url }}">
+                            <div class="card-body d-flex align-items-center gap-2">
+                                <i class="fas fa-dharmachakra text-primary"></i> <span data-i18n="nav.random_wheel">Random wheel</span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <a class="card h-100 text-decoration-none" href="{{ '/world-clocks/' | relative_url }}">
+                            <div class="card-body d-flex align-items-center gap-2">
+                                <i class="fas fa-globe text-primary"></i> <span data-i18n="nav.world_clocks">World clocks</span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <a class="card h-100 text-decoration-none" href="{{ '/date-calculator/' | relative_url }}">
+                            <div class="card-body d-flex align-items-center gap-2">
+                                <i class="fas fa-calendar-alt text-primary"></i> <span data-i18n="nav.date_calculator">Date calculator</span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <a class="card h-100 text-decoration-none" href="{{ '/delegate-nameplate/' | relative_url }}">
+                            <div class="card-body d-flex align-items-center gap-2">
+                                <i class="fas fa-id-card text-primary"></i> <span data-i18n="nav.delegate_nameplate">Bảng tên đại biểu</span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <a class="card h-100 text-decoration-none" href="{{ '/password-generator/' | relative_url }}">
+                            <div class="card-body d-flex align-items-center gap-2">
+                                <i class="fas fa-key text-primary"></i> <span data-i18n="nav.password_generator">Password generator</span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <a class="card h-100 text-decoration-none" href="{{ '/unit-converter/' | relative_url }}">
+                            <div class="card-body d-flex align-items-center gap-2">
+                                <i class="fas fa-exchange-alt text-primary"></i> <span data-i18n="nav.unit_converter">Unit converter</span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <a class="card h-100 text-decoration-none" href="{{ '/currency-converter/' | relative_url }}">
+                            <div class="card-body d-flex align-items-center gap-2">
+                                <i class="fas fa-money-bill-wave text-primary"></i> <span data-i18n="nav.currency_converter">Currency converter</span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <a class="card h-100 text-decoration-none" href="{{ '/gold-price/' | relative_url }}">
+                            <div class="card-body d-flex align-items-center gap-2">
+                                <i class="fas fa-coins text-primary"></i> <span data-i18n="nav.gold_price">Gold price</span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <a class="card h-100 text-decoration-none" href="{{ '/qr-generator/' | relative_url }}">
+                            <div class="card-body d-flex align-items-center gap-2">
+                                <i class="fas fa-qrcode text-primary"></i> <span data-i18n="nav.qr_generator">QR generator</span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <a class="card h-100 text-decoration-none" href="{{ '/encoder-decoder/' | relative_url }}">
+                            <div class="card-body d-flex align-items-center gap-2">
+                                <i class="fas fa-terminal text-primary"></i> <span data-i18n="nav.encoder_decoder">Encoder/decoder</span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <a class="card h-100 text-decoration-none" href="{{ '/hash-generator/' | relative_url }}">
+                            <div class="card-body d-flex align-items-center gap-2">
+                                <i class="fas fa-hashtag text-primary"></i> <span data-i18n="nav.hash_generator">Hash generator</span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <a class="card h-100 text-decoration-none" href="{{ '/case-converter/' | relative_url }}">
+                            <div class="card-body d-flex align-items-center gap-2">
+                                <i class="fas fa-text-height text-primary"></i> <span data-i18n="nav.case_converter">Case converter</span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <a class="card h-100 text-decoration-none" href="{{ '/regex-tester/' | relative_url }}">
+                            <div class="card-body d-flex align-items-center gap-2">
+                                <i class="fas fa-search text-primary"></i> <span data-i18n="nav.regex_tester">Regex tester</span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <a class="card h-100 text-decoration-none" href="{{ '/markdown-preview/' | relative_url }}">
+                            <div class="card-body d-flex align-items-center gap-2">
+                                <i class="fab fa-markdown text-primary"></i> <span data-i18n="nav.markdown_preview">Markdown preview</span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <a class="card h-100 text-decoration-none" href="{{ '/latex-editor/' | relative_url }}">
+                            <div class="card-body d-flex align-items-center gap-2">
+                                <i class="fas fa-square-root-alt text-primary"></i> <span data-i18n="nav.latex_editor">LaTeX editor</span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <a class="card h-100 text-decoration-none" href="{{ '/color-picker/' | relative_url }}">
+                            <div class="card-body d-flex align-items-center gap-2">
+                                <i class="fas fa-palette text-primary"></i> <span data-i18n="nav.color_picker">Color picker</span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <a class="card h-100 text-decoration-none" href="{{ '/json-formatter/' | relative_url }}">
+                            <div class="card-body d-flex align-items-center gap-2">
+                                <i class="fas fa-code text-primary"></i> <span data-i18n="nav.json_formatter">JSON formatter</span>
+                            </div>
+                        </a>
                     </div>
                 </div>
             </div>

@@ -395,7 +395,7 @@ document.addEventListener('DOMContentLoaded', function() {
         namesList.innerHTML = names.map((name, index) => `
             <div class="d-flex justify-content-between align-items-center mb-2 p-2 border rounded">
                 <span class="name-item" style="color: ${wheelColors[index % wheelColors.length]}">
-                    <i class="fas fa-circle"></i> ${name}
+                    <i class="fas fa-circle"></i> ${escapeHtml(name)}
                 </span>
                 <button class="btn btn-outline-danger btn-sm remove-name-btn" data-index="${index}">
                     <i class="fas fa-times"></i>
@@ -740,8 +740,8 @@ document.addEventListener('DOMContentLoaded', function() {
         historyDiv.innerHTML = spinHistory.map((item, index) => `
             <div class="d-flex justify-content-between align-items-center mb-2 p-2 border-start border-4 border-primary bg-light rounded">
                 <div>
-                    <strong>${item.winner}</strong>
-                    <small class="text-muted d-block">${item.timestamp}</small>
+                    <strong>${escapeHtml(item.winner)}</strong>
+                    <small class="text-muted d-block">${escapeHtml(item.timestamp)}</small>
                     <small class="text-muted">Từ ${item.totalNames} tên</small>
                 </div>
                 <button class="btn btn-outline-danger btn-sm delete-history-item-btn" data-index="${index}">
@@ -786,7 +786,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             const topWinnersHTML = sortedWinners.map(([name, count]) => 
                 `<div class="d-flex justify-content-between">
-                    <span>${name}</span>
+                    <span>${escapeHtml(name)}</span>
                     <span class="badge bg-primary">${count}</span>
                 </div>`
             ).join('');

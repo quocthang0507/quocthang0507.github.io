@@ -176,9 +176,9 @@ function initializeDarkMode() {
     // Check for saved theme preference or default to light mode
     let savedTheme = null;
     try { savedTheme = localStorage.getItem('theme'); } catch (e) { savedTheme = null; }
-    // Only use browser preference if user hasn't set a preference yet
-    // Default to light mode to prevent automatic dark mode on page load
-    const currentTheme = savedTheme || 'light';
+    // Fall back to the system preference when the user hasn't chosen a theme yet
+    const prefersDark = !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    const currentTheme = savedTheme || (prefersDark ? 'dark' : 'light');
     
     // Apply the theme
     document.documentElement.setAttribute('data-theme', currentTheme);

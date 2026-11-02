@@ -140,13 +140,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Wrap in display math mode
-        latexOutput.innerHTML = `$$${latex}$$`;
+        // textContent keeps characters like '<' from being parsed as HTML
+        latexOutput.textContent = `$$${latex}$$`;
         
         // Trigger MathJax rendering
         if (typeof MathJax !== 'undefined') {
             MathJax.typesetClear([latexOutput]);
             MathJax.typesetPromise([latexOutput]).catch(function(err) {
-                latexOutput.innerHTML = `<span class="text-danger">${t('latex.error_syntax', 'Lỗi cú pháp')}: ${err.message}</span>`;
+                latexOutput.innerHTML = `<span class="text-danger">${t('latex.error_syntax', 'Lỗi cú pháp')}: ${escapeHtml(err.message)}</span>`;
             });
         }
     }
@@ -210,7 +211,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             const preview = document.createElement('div');
             preview.className = 'mb-2 text-center';
-            preview.innerHTML = `$$${item.latex}$$`;
+            preview.textContent = `$$${item.latex}$$`;
             
             const code = document.createElement('code');
             code.className = 'small d-block mb-2';

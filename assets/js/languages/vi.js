@@ -1,5 +1,17 @@
 // Vietnamese Language File
 const vietnameseTranslations = {
+    "home.all_tools": "Tất cả công cụ",
+    "date_calc.days": "ngày",
+    "date_calc.weeks": "tuần",
+    "date_calc.days_after": "ngày sau",
+    "date_calc.days_before": "ngày trước",
+    "date_calc.days_left": "ngày nữa",
+    "date_calc.day_of_year": "Ngày thứ trong năm",
+    "date_calc.week_of_year": "Tuần trong năm",
+    "date_calc.error.select_dates": "Vui lòng chọn cả hai ngày",
+    "date_calc.error.select_date": "Vui lòng chọn một ngày",
+    "date_calc.error.select_birth_date": "Vui lòng chọn ngày sinh",
+    "date_calc.error.future_date": "Ngày sinh không thể ở tương lai",
     "np.open_tool": "Tạo bảng tên",
     "np.home_description": "Thiết kế bảng tên sự kiện với logo, màu sắc và kích thước tùy chọn.",
     "np.help_one": "Tên lớn, căn giữa toàn bộ bảng. Phù hợp họp nội bộ và sự kiện tối giản.",

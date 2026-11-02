@@ -6,7 +6,7 @@ baseurl: ""
 author: "quocthang0507"
 
 # SEO Configuration
-logo: "/assets/images/logo.png"
+logo: "/assets/images/icon-460x460.jpeg"
 social:
   name: "quocthang0507"
   links:
@@ -40,6 +40,21 @@ exclude:
   - node_modules
   - vendor
   - assets/css/main.scss
+  # Dev tooling, tests and prototypes should not be published
+  - package.json
+  - package-lock.json
+  - jest.config.js
+  - playwright.config.js
+  - scripts
+  - tests
+  - playwright-report
+  - test-results
+  - coverage
+  - index-static.html
+  - random-number-static.html
+  - random-wheel-static.html
+  - nav-test.html
+  - assets/css/parts
 
 # Collections
 collections:

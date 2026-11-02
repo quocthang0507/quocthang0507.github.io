@@ -81,6 +81,10 @@ The hub is grouped into three main categories, offering **18 ready-to-use tools*
    ```
 
 ### Development Commands
+- **Compile SCSS** (`_sass/` → `assets/css/main.css`; Jekyll skips `main.scss`, so the compiled file is what gets deployed):
+  ```bash
+  npm run build:css
+  ```
 - **Minify Javascript files:**
   ```bash
   npm run minify:js

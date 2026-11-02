@@ -9,11 +9,15 @@
  * @returns {string} - The escaped string
  */
 function escapeHtml(str) {
-    if (!str) return '';
-    
-    const div = document.createElement('div');
-    div.textContent = str;
-    return div.innerHTML;
+    if (str === null || str === undefined) return '';
+
+    // Also escape quotes so the result is safe inside attribute values
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
 }
 
 /**

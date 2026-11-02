@@ -1,3 +1,6 @@
+// Page scripts rely on globals from security.js (loaded by the layout)
+global.escapeHtml = require('../assets/js/security.js').escapeHtml;
+
 beforeEach(() => {
   document.body.innerHTML = '';
   document.documentElement.removeAttribute('data-theme');

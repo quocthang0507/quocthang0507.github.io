@@ -1,5 +1,17 @@
 // Chinese Language File (Simplified)
 const chineseTranslations = {
+    "home.all_tools": "全部工具",
+    "date_calc.days": "天",
+    "date_calc.weeks": "周",
+    "date_calc.days_after": "天后",
+    "date_calc.days_before": "天前",
+    "date_calc.days_left": "天后到来",
+    "date_calc.day_of_year": "一年中的第几天",
+    "date_calc.week_of_year": "一年中的第几周",
+    "date_calc.error.select_dates": "请选择两个日期",
+    "date_calc.error.select_date": "请选择一个日期",
+    "date_calc.error.select_birth_date": "请选择出生日期",
+    "date_calc.error.future_date": "出生日期不能是未来的日期",
     "np.open_tool": "创建姓名牌",
     "np.home_description": "自定义标志、颜色和尺寸，设计活动姓名牌。",
     "np.help_one": "大号居中姓名，适合内部会议及简约活动。",

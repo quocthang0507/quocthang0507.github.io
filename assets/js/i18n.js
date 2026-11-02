@@ -73,17 +73,19 @@ class TranslationSystem {
     loadLanguageFile(lang) {
         return new Promise((resolve, reject) => {
             // Check if already loaded
-            const existingScript = document.querySelector(`script[src*="/languages/${lang}.js"]`);
+            const existingScript = document.querySelector(`script[src*="/languages/${lang}."]`);
             if (existingScript) {
                 resolve();
                 return;
             }
             
             const script = document.createElement('script');
-            // Get the base path from the current i18n.js script tag
-            const currentScript = document.querySelector('script[src*="i18n.js"]');
-            const basePath = currentScript ? currentScript.src.replace(/\/i18n\.js.*$/, '') : '/assets/js';
-            script.src = `${basePath}/languages/${lang}.js`;
+            // Get the base path (and minified suffix in production) from the i18n script tag
+            const currentScript = document.getElementById('i18n-script') || document.querySelector('script[src*="i18n."]');
+            const match = currentScript ? currentScript.src.match(/^(.*)\/i18n(\.min)?\.js/) : null;
+            const basePath = match ? match[1] : '/assets/js';
+            const suffix = match && match[2] ? '.min.js' : '.js';
+            script.src = `${basePath}/languages/${lang}${suffix}`;
             script.onload = resolve;
             script.onerror = reject;
             document.head.appendChild(script);
@@ -116,7 +118,7 @@ class TranslationSystem {
         languageDropdown.querySelectorAll('.dropdown-item').forEach(item => {
             item.addEventListener('click', (e) => {
                 e.preventDefault();
-                const newLang = e.target.dataset.lang;
+                const newLang = e.currentTarget.dataset.lang;
                 if (newLang && newLang !== this.currentLanguage) {
                     this.changeLanguage(newLang);
                 }
@@ -148,8 +150,8 @@ class TranslationSystem {
             dropdownToggle.innerHTML = `<i class="fas fa-language"></i> ${this.supportedLanguages[newLanguage].name}`;
         }
         
-        // Update active state
-        document.querySelectorAll('.dropdown-item').forEach(item => {
+        // Update active state (only within the language menu)
+        document.querySelectorAll('.dropdown-item[data-lang]').forEach(item => {
             item.classList.toggle('active', item.dataset.lang === newLanguage);
         });
         
@@ -176,6 +178,8 @@ class TranslationSystem {
     
     // Translate the entire page
     translatePage() {
+        document.documentElement.lang = this.currentLanguage;
+
         // Translate elements with data-i18n attribute
         document.querySelectorAll('[data-i18n]').forEach(element => {
             const key = element.getAttribute('data-i18n');

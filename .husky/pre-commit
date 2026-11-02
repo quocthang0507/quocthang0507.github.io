@@ -16,4 +16,13 @@ else
     echo "ℹ️  No JS files changed, skipping minification"
 fi
 
+# Recompile CSS when Sass sources change (Jekyll skips main.scss; main.css is deployed as-is)
+SCSS_FILES=$(git diff --cached --name-only --diff-filter=ACMD | grep -E '^(_sass/.*\.scss|assets/css/main\.scss)$' || true)
+
+if [ -n "$SCSS_FILES" ]; then
+    echo "🎨 Sass files changed, compiling CSS..."
+    npm run build:css
+    git add assets/css/main.css assets/css/main.css.map
+fi
+
 echo "✅ Pre-commit checks passed!"

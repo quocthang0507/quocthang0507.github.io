@@ -32,6 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
           'nav.world_clocks': 'Đồng hồ xem giờ các thành phố thế giới',
           'nav.unit_converter': 'Chuyển đổi các đơn vị đo lường cơ bản',
           'nav.currency_converter': 'Chuyển đổi tiền tệ tỷ giá trực tuyến Vietcombank',
+          'nav.gold_price': 'Biểu đồ lịch sử giá vàng SJC, PNJ và thế giới',
           'nav.qr_generator': 'Tạo mã QR có logo và đổi kiểu dáng',
           'nav.encoder_decoder': 'Mã hóa và giải mã Base64, URL, HTML',
           'nav.hash_generator': 'Tạo mã băm MD5, SHA-1, SHA-256',
@@ -51,6 +52,8 @@ document.addEventListener('DOMContentLoaded', function() {
           'nav.world_clocks': 'Time zones viewer',
           'nav.unit_converter': 'Multi-category measurement converter',
           'nav.currency_converter': 'Live exchange rates from Vietcombank',
+          'nav.gold_price': 'Gold price history charts (SJC, PNJ, world)',
+          'nav.delegate_nameplate': 'Design event delegate nameplates, export SVG PNG JPG',
           'nav.qr_generator': 'Styled QR code builder with logo support',
           'nav.encoder_decoder': 'Base64, URL, HTML encoder/decoder',
           'nav.hash_generator': 'MD5, SHA-1, SHA-256 builder',
@@ -70,6 +73,8 @@ document.addEventListener('DOMContentLoaded', function() {
           'nav.world_clocks': '世界各地城市时区查看器',
           'nav.unit_converter': '多种类物理量单位换算',
           'nav.currency_converter': 'Vietcombank 实时汇率换算',
+          'nav.gold_price': '黄金价格历史走势图 (SJC、PNJ、国际)',
+          'nav.delegate_nameplate': '设计会议代表席卡，导出 SVG PNG JPG',
           'nav.qr_generator': '生成带标志和样式的二维码',
           'nav.encoder_decoder': 'Base64、URL 和 HTML 编码解码',
           'nav.hash_generator': '计算 MD5、SHA-1 和 SHA-256 哈希值',
@@ -89,6 +94,8 @@ document.addEventListener('DOMContentLoaded', function() {
           'nav.world_clocks': '세계 주요 도시 시간대 시계',
           'nav.unit_converter': '멀티 카테고리 측정 단위 변환',
           'nav.currency_converter': '실시간 외환 환율 변환기 (Vietcombank 고시)',
+          'nav.gold_price': '금 시세 추이 차트 (SJC, PNJ, 국제)',
+          'nav.delegate_nameplate': '행사 대표 명패 디자인, SVG PNG JPG 내보내기',
           'nav.qr_generator': '로고 및 스타일 커스텀 QR 코드 생성',
           'nav.encoder_decoder': 'Base64, URL, HTML 인코더/디코더',
           'nav.hash_generator': 'MD5, SHA-1, SHA-256 해시값 생성',
@@ -108,6 +115,8 @@ document.addEventListener('DOMContentLoaded', function() {
           'nav.world_clocks': '世界各国の主要都市タイムゾーン時計',
           'nav.unit_converter': '長さ・重さ・温度などの単位換算',
           'nav.currency_converter': 'リアルタイム為替レート換算 (Vietcombank公表)',
+          'nav.gold_price': '金価格の推移チャート (SJC・PNJ・国際)',
+          'nav.delegate_nameplate': 'イベント用代表者名札のデザイン、SVG PNG JPG出力',
           'nav.qr_generator': 'ロゴ挿入・スタイル変更対応のQRコード作成',
           'nav.encoder_decoder': 'Base64、URL、HTMLエンコーダ・デコーダ',
           'nav.hash_generator': 'MD5、SHA-1、SHA-256ハッシュ生成',
@@ -156,7 +165,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (shouldOpen) {
       overlay.style.display = 'flex';
       input.value = '';
-      activeIndex = -1;
+      activeIndex = 0;
       filterTools('');
       setTimeout(() => input.focus(), 50);
     } else {
@@ -235,7 +244,9 @@ document.addEventListener('DOMContentLoaded', function() {
   function handleKeyDown(e) {
     if (overlay.style.display === 'none') return;
 
-    if (e.key === 'ArrowDown') {
+    if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && filteredTools.length === 0) {
+      e.preventDefault();
+    } else if (e.key === 'ArrowDown') {
       e.preventDefault();
       activeIndex = (activeIndex + 1) % filteredTools.length;
       renderResults();
@@ -266,7 +277,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   if (input) {
     input.addEventListener('input', (e) => {
-      activeIndex = filteredTools.length > 0 ? 0 : -1;
+      activeIndex = 0;
       filterTools(e.target.value);
     });
     input.addEventListener('keydown', handleKeyDown);
