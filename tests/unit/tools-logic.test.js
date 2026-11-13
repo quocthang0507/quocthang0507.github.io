@@ -257,3 +257,156 @@ describe('encoder-decoder.js whitespace preservation', () => {
     expect(document.getElementById('output-text').value).toBe(Buffer.from('  hello  ', 'utf8').toString('base64'));
   });
 });
+
+describe('sw.js ExtendableEvent waitUntil lifecycle', () => {
+  it('registers waitUntil synchronously during fetch dispatch so cached responses never trigger InvalidStateError', async () => {
+    const listeners = {};
+    const putMock = jest.fn().mockResolvedValue(undefined);
+    const cachedResp = { ok: true, status: 200, clone: () => ({}) };
+    let resolveNetwork;
+    const networkPromise = new Promise(resolve => {
+      resolveNetwork = resolve;
+    });
+
+    const mockSelf = {
+      location: { origin: 'https://quocthang0507.github.io' },
+      addEventListener: (type, handler) => {
+        listeners[type] = handler;
+      },
+      skipWaiting: jest.fn(),
+      clients: { claim: jest.fn() }
+    };
+    const mockCaches = {
+      match: jest.fn().mockResolvedValue(cachedResp),
+      open: jest.fn().mockResolvedValue({ put: putMock, addAll: jest.fn() }),
+      keys: jest.fn().mockResolvedValue([]),
+      delete: jest.fn()
+    };
+    const mockFetch = jest.fn().mockReturnValue(networkPromise);
+
+    const swCode = fs.readFileSync(path.resolve(__dirname, '../../sw.js'), 'utf8');
+    new Function('self', 'caches', 'fetch', swCode)(mockSelf, mockCaches, mockFetch);
+
+    let dispatching = true;
+    const extendLifetimePromises = [];
+    let respondWithPromise = null;
+
+    const fakeEvent = {
+      request: {
+        method: 'GET',
+        mode: 'cors',
+        url: 'https://quocthang0507.github.io/assets/js/main.min.js'
+      },
+      waitUntil: jest.fn(p => {
+        if (!dispatching && extendLifetimePromises.length === 0) {
+          throw new Error("InvalidStateError: Failed to execute 'waitUntil' on 'ExtendableEvent'");
+        }
+        extendLifetimePromises.push(p);
+      }),
+      respondWith: jest.fn(p => {
+        respondWithPromise = p;
+      })
+    };
+
+    listeners.fetch(fakeEvent);
+    dispatching = false;
+
+    const returnedResp = await respondWithPromise;
+    expect(returnedResp).toBe(cachedResp);
+    expect(fakeEvent.waitUntil).toHaveBeenCalledTimes(1);
+
+    // Resolve network response after respondWith has already settled
+    const netResp = { ok: true, type: 'basic', clone: () => ({ cloned: true }) };
+    resolveNetwork(netResp);
+    await Promise.all(extendLifetimePromises);
+
+    expect(putMock).toHaveBeenCalledWith(fakeEvent.request, { cloned: true });
+  });
+});
+
+describe('currency-converter.js direct VCB JSON API & history fallback', () => {
+  const origFetch = global.fetch;
+
+  afterEach(() => {
+    global.fetch = origFetch;
+  });
+
+  beforeEach(() => {
+    document.body.innerHTML = `
+      <div id="converter-loading"></div>
+      <div id="converter-content" style="display:none"></div>
+      <div id="table-loading"></div>
+      <div id="table-content" style="display:none"></div>
+      <div id="common-amounts-card" style="display:none"></div>
+      <input id="currency-amount" value="100" />
+      <select id="from-currency"></select>
+      <select id="to-currency"></select>
+      <button id="swap-currency-btn"><i></i></button>
+      <div id="result-from-display"></div>
+      <div id="result-to-display"></div>
+      <div id="rate-formula"></div>
+      <div id="rates-timestamp"></div>
+      <input id="search-rates" />
+      <table><tbody id="rates-table-body"></tbody></table>
+      <button id="copy-result-btn"><i></i></button>
+      <input id="type-transfer" type="radio" name="tx" checked />
+      <input id="type-cash" type="radio" name="tx" />
+      <table><thead id="common-from-header"></thead><tbody id="common-from-body"></tbody></table>
+      <table><thead id="common-to-header"></thead><tbody id="common-to-body"></tbody></table>
+    `;
+  });
+
+  it('loads rates from direct VCB JSON endpoint without requiring CORS proxies', async () => {
+    global.fetch = jest.fn(async (url) => {
+      if (String(url).includes('vietcombank.com.vn/api/exchangerates')) {
+        return {
+          ok: true,
+          status: 200,
+          json: async () => ({
+            UpdatedDate: '2026-11-13T11:30:00+07:00',
+            Data: [
+              { currencyCode: 'USD', currencyName: 'US DOLLAR', cash: '25450.00', transfer: '25480.00', sell: '25860.00' },
+              { currencyCode: 'EUR', currencyName: 'EURO', cash: '27650.00', transfer: '27930.00', sell: '29110.00' }
+            ]
+          })
+        };
+      }
+      return { ok: true, status: 200, json: async () => [] };
+    });
+
+    runDomScript('assets/js/currency-converter.js');
+    await new Promise(r => setTimeout(r, 30));
+
+    expect(document.getElementById('converter-content').style.display).toBe('block');
+    expect(document.getElementById('rates-table-body').children.length).toBe(2);
+    expect(document.getElementById('result-to-display').textContent).toContain('VND');
+  });
+
+  it('falls back to rates-history.json snapshot when live API and proxies all fail', async () => {
+    global.fetch = jest.fn(async (url) => {
+      if (String(url).includes('rates-history.json')) {
+        return {
+          ok: true,
+          status: 200,
+          json: async () => ([
+            {
+              date: '2026-06-01',
+              rates: {
+                USD: { buyCash: 26000, buyTransfer: 26100, sell: 26400 },
+                JPY: { buyCash: 160, buyTransfer: 162, sell: 170 }
+              }
+            }
+          ])
+        };
+      }
+      throw new Error('Network or CORS proxy blocked');
+    });
+
+    runDomScript('assets/js/currency-converter.js');
+    await new Promise(r => setTimeout(r, 50));
+
+    expect(document.getElementById('converter-content').style.display).toBe('block');
+    expect(document.getElementById('rates-timestamp').textContent).toBe('2026-06-01');
+    expect(document.getElementById('rates-table-body').children.length).toBe(2);
+  });
+});

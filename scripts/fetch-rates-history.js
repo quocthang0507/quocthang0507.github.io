@@ -2,28 +2,57 @@ const fs = require('fs');
 const path = require('path');
 
 const VCB_XML_URL = 'https://portal.vietcombank.com.vn/Usercontrols/TVPortal.TyGia/pXML.aspx';
+const VCB_JSON_URL = 'https://www.vietcombank.com.vn/api/exchangerates?date=';
 const HISTORY_FILE_PATH = path.join(process.cwd(), 'assets', 'data', 'rates-history.json');
 
 // List of fallback CORS proxies + direct fetch
 const fetchSources = [
-    { name: 'Direct VCB', url: VCB_XML_URL },
-    { name: 'Corsproxy.io', url: `https://corsproxy.io/?url=${encodeURIComponent(VCB_XML_URL)}` },
-    { name: 'Codetabs', url: `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(VCB_XML_URL)}` },
-    { name: 'Allorigins Raw', url: `https://api.allorigins.win/raw?url=${encodeURIComponent(VCB_XML_URL)}` }
+    { name: 'Direct VCB XML', url: VCB_XML_URL, type: 'xml' },
+    { name: 'Direct VCB JSON', url: VCB_JSON_URL, type: 'json' },
+    { name: 'Allorigins Raw', url: `https://api.allorigins.win/raw?url=${encodeURIComponent(VCB_XML_URL)}`, type: 'xml' },
+    { name: 'Codetabs', url: `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(VCB_XML_URL)}`, type: 'xml' }
 ];
 
-async function fetchRatesXML() {
+const parseVal = (val) => {
+    if (val === null || val === undefined) return null;
+    const str = String(val).trim();
+    if (!str || str === '-' || str === '0') return null;
+    const parsed = parseFloat(str.replace(/,/g, ''));
+    return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
+};
+
+async function fetchCurrentRates() {
     let lastError = null;
     for (const source of fetchSources) {
         try {
             console.log(`Fetching from source: ${source.name} (${source.url})`);
             const response = await fetch(source.url, { signal: AbortSignal.timeout(10000) });
             if (!response.ok) throw new Error(`HTTP Status ${response.status}`);
-            
-            const text = await response.text();
-            if (text && text.includes('ExrateList')) {
-                console.log(`Successfully fetched XML from: ${source.name}`);
-                return text;
+
+            if (source.type === 'json') {
+                const json = await response.json();
+                if (json && Array.isArray(json.Data) && json.Data.length > 0) {
+                    const rates = {};
+                    json.Data.forEach(item => {
+                        const code = (item.currencyCode || '').trim().toUpperCase();
+                        if (!code) return;
+                        rates[code] = {
+                            buyCash: parseVal(item.cash),
+                            buyTransfer: parseVal(item.transfer),
+                            sell: parseVal(item.sell)
+                        };
+                    });
+                    if (Object.keys(rates).length > 0) {
+                        console.log(`Successfully fetched JSON from: ${source.name}`);
+                        return rates;
+                    }
+                }
+            } else {
+                const text = await response.text();
+                if (text && text.includes('ExrateList')) {
+                    console.log(`Successfully fetched XML from: ${source.name}`);
+                    return parseRatesXML(text);
+                }
             }
         } catch (err) {
             console.warn(`Source ${source.name} failed:`, err.message);
@@ -43,11 +72,6 @@ function parseRatesXML(xmlString) {
     
     // Parse Exrate elements
     const exrateBlocks = xmlString.match(/<Exrate[^>]+>/g) || [];
-    
-    const parseVal = (val) => {
-        if (!val || val.trim() === '-' || val.trim() === '0') return null;
-        return parseFloat(val.replace(/,/g, ''));
-    };
 
     exrateBlocks.forEach(block => {
         const codeMatch = block.match(/CurrencyCode="([^"]*)"/);
@@ -111,11 +135,10 @@ function generateMockHistory(baseRates) {
 
 async function main() {
     try {
-        const xmlString = await fetchRatesXML();
-        const currentRates = parseRatesXML(xmlString);
+        const currentRates = await fetchCurrentRates();
         
         if (Object.keys(currentRates).length === 0) {
-            throw new Error('Failed to parse any rates from XML');
+            throw new Error('Failed to parse any rates');
         }
         
         console.log(`Parsed ${Object.keys(currentRates).length} currencies successfully.`);

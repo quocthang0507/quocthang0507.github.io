@@ -2,7 +2,8 @@
 document.addEventListener('DOMContentLoaded', function() {
     // API Configurations
     const VCB_XML_URL = 'https://portal.vietcombank.com.vn/Usercontrols/TVPortal.TyGia/pXML.aspx';
-    const PROXY_URL = `https://api.allorigins.win/get?url=${encodeURIComponent(VCB_XML_URL)}`;
+    const VCB_JSON_URL = 'https://www.vietcombank.com.vn/api/exchangerates?date=';
+    const HISTORY_JSON_URL = 'https://raw.githubusercontent.com/quocthang0507/quocthang0507.github.io/data/assets/data/rates-history.json';
 
     // Text translations inside script (covers 5 supported languages)
     const LOCALIZED_TEXTS = {
@@ -156,6 +157,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Chart State
     let ratesChartInstance = null;
     let historicalRates = []; // Loaded from assets/data/rates-history.json
+    let historyFetchPromise = null;
     let currentPeriod = 30; // Default to 30 days
 
     // Translation helper wrapper
@@ -169,53 +171,23 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    function fetchHistoryData() {
+        if (!historyFetchPromise) {
+            historyFetchPromise = fetch(HISTORY_JSON_URL).then(response => {
+                if (!response.ok) throw new Error(`HTTP Status ${response.status}`);
+                return response.json();
+            });
+        }
+        return historyFetchPromise;
+    }
+
     // Initialize Page
-    fetchExchangeRates();
     loadHistoricalRates();
+    fetchExchangeRates();
 
-    // Fetch Vietcombank rates via proxy list
+    // Fetch Vietcombank rates (direct CORS JSON API -> XML proxies -> repository history snapshot)
     async function fetchExchangeRates() {
-        const proxies = [
-            // 1. CorsProxy.io (direct text return)
-            {
-                url: `https://corsproxy.io/?url=${encodeURIComponent(VCB_XML_URL)}`,
-                handler: async (res) => {
-                    if (!res.ok) throw new Error('CorsProxy response not OK');
-                    return await res.text();
-                }
-            },
-            // 2. Codetabs (direct text return)
-            {
-                url: `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(VCB_XML_URL)}`,
-                handler: async (res) => {
-                    if (!res.ok) throw new Error('Codetabs response not OK');
-                    return await res.text();
-                }
-            },
-            // 3. AllOrigins Raw (direct text return)
-            {
-                url: `https://api.allorigins.win/raw?url=${encodeURIComponent(VCB_XML_URL)}`,
-                handler: async (res) => {
-                    if (!res.ok) throw new Error('AllOrigins Raw response not OK');
-                    return await res.text();
-                }
-            },
-            // 4. AllOrigins JSON (wrapped JSON response)
-            {
-                url: `https://api.allorigins.win/get?url=${encodeURIComponent(VCB_XML_URL)}`,
-                handler: async (res) => {
-                    if (!res.ok) throw new Error('AllOrigins JSON response not OK');
-                    const json = await res.json();
-                    if (!json || !json.contents) throw new Error('AllOrigins JSON content empty');
-                    return json.contents;
-                }
-            }
-        ];
-
-        let xmlContent = null;
-        let lastError = null;
-
-        const fetchWithTimeout = async (url, timeoutMs = 8000) => {
+        const fetchWithTimeout = async (url, timeoutMs = 4000) => {
             const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
             const timer = controller ? setTimeout(() => controller.abort(), timeoutMs) : null;
             try {
@@ -225,27 +197,77 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         };
 
+        let lastError = null;
+
+        // 1. Primary: Official Vietcombank JSON API (supports CORS directly)
+        try {
+            const response = await fetchWithTimeout(VCB_JSON_URL, 5000);
+            if (!response.ok) throw new Error(`VCB JSON HTTP ${response.status}`);
+            const json = await response.json();
+            if (json && Array.isArray(json.Data) && json.Data.length > 0) {
+                parseExchangeRatesJSON(json);
+                return;
+            }
+        } catch (err) {
+            console.warn('Direct VCB JSON API failed, trying fallbacks:', err.message || err);
+            lastError = err;
+        }
+
+        // 2. Secondary: CORS proxies for VCB XML endpoint
+        const proxies = [
+            {
+                url: `https://api.allorigins.win/raw?url=${encodeURIComponent(VCB_XML_URL)}`,
+                handler: async (res) => {
+                    if (!res.ok) throw new Error('AllOrigins Raw response not OK');
+                    return await res.text();
+                }
+            },
+            {
+                url: `https://api.allorigins.win/get?url=${encodeURIComponent(VCB_XML_URL)}`,
+                handler: async (res) => {
+                    if (!res.ok) throw new Error('AllOrigins JSON response not OK');
+                    const json = await res.json();
+                    if (!json || !json.contents) throw new Error('AllOrigins JSON content empty');
+                    return json.contents;
+                }
+            },
+            {
+                url: `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(VCB_XML_URL)}`,
+                handler: async (res) => {
+                    if (!res.ok) throw new Error('Codetabs response not OK');
+                    return await res.text();
+                }
+            }
+        ];
+
         for (const proxy of proxies) {
             try {
-                console.log(`Attempting to fetch exchange rates via: ${proxy.url}`);
-                const response = await fetchWithTimeout(proxy.url, 8000);
-                xmlContent = await proxy.handler(response);
+                const response = await fetchWithTimeout(proxy.url, 4000);
+                const xmlContent = await proxy.handler(response);
                 if (xmlContent && xmlContent.includes('ExrateList')) {
-                    console.log(`Successfully fetched rates via proxy!`);
-                    break;
+                    parseExchangeRates(xmlContent);
+                    return;
                 }
             } catch (err) {
-                console.warn(`Proxy failed: ${proxy.url}`, err);
+                console.warn(`Proxy failed: ${proxy.url}`, err.message || err);
                 lastError = err;
             }
         }
 
-        if (xmlContent) {
-            parseExchangeRates(xmlContent);
-        } else {
-            console.error('All proxies failed to fetch rates. Last error:', lastError);
-            showErrorState();
+        // 3. Tertiary: Fallback to latest snapshot from GitHub data branch history
+        try {
+            const historyData = historicalRates.length > 0 ? historicalRates : await fetchHistoryData();
+            if (Array.isArray(historyData) && historyData.length > 0) {
+                console.info('Using latest exchange rates snapshot from history data.');
+                parseExchangeRatesFromHistory(historyData);
+                return;
+            }
+        } catch (err) {
+            lastError = err;
         }
+
+        console.error('All exchange rate sources failed. Last error:', lastError);
+        showErrorState();
     }
 
     const esc = typeof escapeHtml === 'function'
@@ -259,6 +281,90 @@ document.addEventListener('DOMContentLoaded', function() {
         return new Date(parts[0], parts[1] - 1, parts[2]);
     }
 
+    function cleanRate(val) {
+        if (val === null || val === undefined) return null;
+        if (typeof val === 'number') return Number.isFinite(val) && val > 0 ? val : null;
+        const str = String(val).trim();
+        if (!str || str === '-' || str === '0') return null;
+        const parsed = parseFloat(str.replace(/,/g, ''));
+        return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
+    }
+
+    function applyExchangeRates(ratesList, updatedTime) {
+        lastUpdatedTime = updatedTime || new Date().toLocaleString();
+        exchangeRates = [
+            {
+                code: 'VND',
+                name: 'VIETNAMESE DONG',
+                buyCash: 1.0,
+                buyTransfer: 1.0,
+                sell: 1.0
+            },
+            ...ratesList
+        ];
+
+        hideLoaders();
+        translateCustomLabels();
+        populateSelectors();
+        renderRatesTable();
+        calculateConversion();
+
+        if (timestampDisplay) timestampDisplay.textContent = lastUpdatedTime;
+    }
+
+    function parseExchangeRatesJSON(json) {
+        try {
+            if (!json || !Array.isArray(json.Data) || json.Data.length === 0) {
+                throw new Error('Malformed VCB JSON payload');
+            }
+            const updatedTime = json.UpdatedDate
+                ? new Date(json.UpdatedDate).toLocaleString()
+                : (json.Date || new Date().toLocaleString());
+            const ratesList = [];
+
+            json.Data.forEach(item => {
+                const code = (item.currencyCode || '').trim().toUpperCase();
+                const name = (item.currencyName || code).trim();
+                if (!code || code === 'VND') return;
+
+                ratesList.push({
+                    code: code,
+                    name: name,
+                    buyCash: cleanRate(item.cash),
+                    buyTransfer: cleanRate(item.transfer),
+                    sell: cleanRate(item.sell)
+                });
+            });
+
+            if (ratesList.length === 0) throw new Error('No currencies in VCB JSON payload');
+            applyExchangeRates(ratesList, updatedTime);
+        } catch (error) {
+            console.error('Error parsing exchange rates JSON:', error);
+            showErrorState();
+        }
+    }
+
+    function parseExchangeRatesFromHistory(historyArray) {
+        const latest = historyArray[historyArray.length - 1];
+        if (!latest || !latest.rates || typeof latest.rates !== 'object') {
+            throw new Error('Malformed history entry');
+        }
+        const ratesList = [];
+        Object.entries(latest.rates).forEach(([rawCode, info]) => {
+            const code = (rawCode || '').trim().toUpperCase();
+            if (!code || code === 'VND' || !info) return;
+            ratesList.push({
+                code: code,
+                name: CURRENCY_NAMES.en[code] ? CURRENCY_NAMES.en[code].toUpperCase() : code,
+                buyCash: cleanRate(info.buyCash),
+                buyTransfer: cleanRate(info.buyTransfer),
+                sell: cleanRate(info.sell)
+            });
+        });
+        if (ratesList.length === 0) throw new Error('No currencies in history entry');
+        applyExchangeRates(ratesList, latest.date || new Date().toLocaleDateString());
+    }
+
     // Parse XML data into exchangeRates array
     function parseExchangeRates(xmlString) {
         try {
@@ -267,61 +373,29 @@ document.addEventListener('DOMContentLoaded', function() {
             if (xmlDoc.querySelector('parsererror')) {
                 throw new Error('Malformed XML payload');
             }
-            
-            // Check parsing errors
-            const parserError = xmlDoc.querySelector('parsererror');
-            if (parserError) throw new Error('XML parsing error');
 
             const dateElement = xmlDoc.querySelector('DateTime');
-            lastUpdatedTime = dateElement ? dateElement.textContent : new Date().toLocaleString();
+            const updatedTime = dateElement ? dateElement.textContent : new Date().toLocaleString();
 
             const rates = xmlDoc.querySelectorAll('Exrate');
-            exchangeRates = [];
-
-            // Explicitly push VND as the base currency
-            exchangeRates.push({
-                code: 'VND',
-                name: 'VIETNAMESE DONG',
-                buyCash: 1.0,
-                buyTransfer: 1.0,
-                sell: 1.0
-            });
+            const ratesList = [];
 
             rates.forEach(rate => {
                 const code = (rate.getAttribute('CurrencyCode') || '').trim().toUpperCase();
                 const name = (rate.getAttribute('CurrencyName') || code).trim();
-                if (!code) return;
-                
-                // Parse rate values and clean up commas
-                const cleanRate = (val) => {
-                    if (!val || val.trim() === '-' || val.trim() === '0') return null;
-                    const parsed = parseFloat(val.replace(/,/g, ''));
-                    return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
-                };
+                if (!code || code === 'VND') return;
 
-                const buyCash = cleanRate(rate.getAttribute('Buy'));
-                const buyTransfer = cleanRate(rate.getAttribute('Transfer'));
-                const sell = cleanRate(rate.getAttribute('Sell'));
-
-                exchangeRates.push({
+                ratesList.push({
                     code: code,
                     name: name,
-                    buyCash: buyCash,
-                    buyTransfer: buyTransfer,
-                    sell: sell
+                    buyCash: cleanRate(rate.getAttribute('Buy')),
+                    buyTransfer: cleanRate(rate.getAttribute('Transfer')),
+                    sell: cleanRate(rate.getAttribute('Sell'))
                 });
             });
 
-            // Set UI values
-            hideLoaders();
-            translateCustomLabels();
-            populateSelectors();
-            renderRatesTable();
-            calculateConversion();
-            
-            // Save state updates
-            if (timestampDisplay) timestampDisplay.textContent = lastUpdatedTime;
-
+            if (ratesList.length === 0) throw new Error('No currencies in XML payload');
+            applyExchangeRates(ratesList, updatedTime);
         } catch (error) {
             console.error('Error parsing exchange rates XML:', error);
             showErrorState();
@@ -772,9 +846,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Load historical rates from JSON file
     async function loadHistoricalRates() {
         try {
-            const response = await fetch('https://raw.githubusercontent.com/quocthang0507/quocthang0507.github.io/data/assets/data/rates-history.json');
-            if (!response.ok) throw new Error(`HTTP Status ${response.status}`);
-            historicalRates = await response.json();
+            historicalRates = await fetchHistoryData();
             
             if (historicalRates && historicalRates.length > 0) {
                 console.log(`Loaded ${historicalRates.length} history data points successfully.`);
@@ -999,7 +1071,7 @@ document.addEventListener('DOMContentLoaded', function() {
         calculateConversion();
         
         // Update currency options translation and chart label
-        if (historicalRates && historicalRates.length > 0) {
+        if (historicalRates && historicalRates.length > 0 && chartCurrencySelect) {
             const currentSelected = chartCurrencySelect.value;
             const lang = event.detail.language || 'vi';
             
@@ -1016,7 +1088,7 @@ document.addEventListener('DOMContentLoaded', function() {
             chartCurrencySelect.innerHTML = sortedCurrencies.map(code => {
                 const fullName = CURRENCY_NAMES[lang]?.[code] || CURRENCY_NAMES['en']?.[code] || code;
                 const flag = CURRENCY_FLAGS[code] || '🏳️';
-                return `<option value="${code}">${flag} ${code} - ${fullName}</option>`;
+                return `<option value="${esc(code)}">${esc(flag)} ${esc(code)} - ${esc(fullName)}</option>`;
             }).join('');
             
             chartCurrencySelect.value = currentSelected;

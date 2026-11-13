@@ -1,5 +1,5 @@
 // Service Worker for Offline PWA support
-const CACHE_NAME = 'utility-hub-cache-v1.5';
+const CACHE_NAME = 'utility-hub-cache-v1.6';
 const PRECACHE_ASSETS = [
   './',
   './index.html',
@@ -55,6 +55,9 @@ self.addEventListener('fetch', event => {
 
   const requestUrl = new URL(event.request.url);
 
+  // Never intercept requests for the Service Worker script itself
+  if (requestUrl.origin === self.location.origin && requestUrl.pathname.endsWith('/sw.js')) return;
+
   // Skip cross-origin external API fetches like CORS proxy or google analytics
   if (requestUrl.origin !== self.location.origin) {
     // Fonts and FontAwesome CSS can be cached
@@ -65,9 +68,9 @@ self.addEventListener('fetch', event => {
           return fetch(event.request).then(networkResponse => {
             if (networkResponse && networkResponse.ok) {
               const cacheCopy = networkResponse.clone();
-              event.waitUntil(
-                caches.open(CACHE_NAME).then(cache => cache.put(event.request, cacheCopy))
-              );
+              caches.open(CACHE_NAME)
+                .then(cache => cache.put(event.request, cacheCopy))
+                .catch(() => {});
             }
             return networkResponse;
           });
@@ -83,9 +86,9 @@ self.addEventListener('fetch', event => {
       fetch(event.request).then(networkResponse => {
         if (networkResponse && networkResponse.ok && networkResponse.type === 'basic') {
           const cacheCopy = networkResponse.clone();
-          event.waitUntil(
-            caches.open(CACHE_NAME).then(cache => cache.put(event.request, cacheCopy))
-          );
+          caches.open(CACHE_NAME)
+            .then(cache => cache.put(event.request, cacheCopy))
+            .catch(() => {});
         }
         return networkResponse;
       }).catch(() =>
@@ -98,24 +101,28 @@ self.addEventListener('fetch', event => {
   }
 
   // Other same-origin assets: Stale-While-Revalidate caching strategy
-  event.respondWith(
-    caches.match(event.request).then(cachedResponse => {
-      const networkFetch = fetch(event.request).then(networkResponse => {
-        // Cache success responses
-        if (networkResponse && networkResponse.ok && networkResponse.type === 'basic') {
-          const cacheCopy = networkResponse.clone();
-          event.waitUntil(
-            caches.open(CACHE_NAME).then(cache => cache.put(event.request, cacheCopy))
-          );
-        }
-        return networkResponse;
-      }).catch(err => {
-        console.warn('[Service Worker] Network fetch failed, falling back to cache:', err);
-        return cachedResponse || Response.error(); // Fallback to cache if network fails completely (offline mode)
-      });
+  // Register waitUntil synchronously during event dispatch so background cache updates
+  // never throw InvalidStateError after respondWith resolves from cache.
+  const cachedResponsePromise = caches.match(event.request);
+  const networkFetch = fetch(event.request).then(networkResponse => {
+    if (networkResponse && networkResponse.ok && networkResponse.type === 'basic') {
+      const cacheCopy = networkResponse.clone();
+      return caches.open(CACHE_NAME)
+        .then(cache => cache.put(event.request, cacheCopy))
+        .then(() => networkResponse);
+    }
+    return networkResponse;
+  });
 
-      // Return cached immediately if found, otherwise wait for network fetch
-      return cachedResponse || networkFetch;
+  event.waitUntil(networkFetch.catch(() => {}));
+
+  event.respondWith(
+    cachedResponsePromise.then(cachedResponse => {
+      if (cachedResponse) return cachedResponse;
+      return networkFetch.catch(err => {
+        console.warn('[Service Worker] Network fetch failed, falling back to cache:', err);
+        return Response.error();
+      });
     })
   );
 });
