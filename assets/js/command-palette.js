@@ -136,6 +136,15 @@ document.addEventListener('DOMContentLoaded', function() {
   const resultsContainer = document.getElementById('command-palette-results');
   let activeIndex = -1;
   let filteredTools = [];
+  let previousFocusedElement = null;
+
+  if (overlay) {
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+  }
+  if (resultsContainer) {
+    resultsContainer.setAttribute('role', 'listbox');
+  }
 
   // Translation helpers
   function tr(key, fallback = key) {
@@ -150,11 +159,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Determine site base path relative url helper
   function getRelativeUrl(path) {
-    const currentScript = document.querySelector('script[src*="command-palette"]');
-    const base = currentScript ? currentScript.src.split('/assets/js/')[0] : '';
-    // Strip domain details if it is a absolute browser URL
-    const pathname = base ? new URL(base).pathname : '';
-    return pathname.endsWith('/') ? `${pathname}${path.replace(/^\.\//, '')}` : `${pathname}/${path.replace(/^\.\//, '')}`;
+    try {
+      const currentScript = document.querySelector('script[src*="command-palette"]');
+      const base = currentScript ? currentScript.src.split('/assets/js/')[0] : '';
+      const pathname = base ? new URL(base, window.location.origin).pathname : '';
+      return pathname.endsWith('/') ? `${pathname}${path.replace(/^\.\//, '')}` : `${pathname}/${path.replace(/^\.\//, '')}`;
+    } catch (_) {
+      return '/' + path.replace(/^(\.\/|\/)/, '');
+    }
   }
 
   // Toggle Command Palette
@@ -163,6 +175,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const shouldOpen = (forceState !== undefined) ? forceState : (overlay.style.display === 'none');
     
     if (shouldOpen) {
+      previousFocusedElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
       overlay.style.display = 'flex';
       input.value = '';
       activeIndex = 0;
@@ -170,6 +183,10 @@ document.addEventListener('DOMContentLoaded', function() {
       setTimeout(() => input.focus(), 50);
     } else {
       overlay.style.display = 'none';
+      if (previousFocusedElement && typeof previousFocusedElement.focus === 'function') {
+        previousFocusedElement.focus();
+      }
+      previousFocusedElement = null;
     }
   }
 
@@ -194,11 +211,10 @@ document.addEventListener('DOMContentLoaded', function() {
     resultsContainer.innerHTML = '';
     
     if (filteredTools.length === 0) {
-      resultsContainer.innerHTML = `
-        <div class="text-center text-muted py-4 small">
-          ${tr('palette.no_results', 'Không tìm thấy công cụ phù hợp')}
-        </div>
-      `;
+      const emptyEl = document.createElement('div');
+      emptyEl.className = 'text-center text-muted py-4 small';
+      emptyEl.textContent = tr('palette.no_results', 'Không tìm thấy công cụ phù hợp');
+      resultsContainer.appendChild(emptyEl);
       return;
     }
 
@@ -213,17 +229,28 @@ document.addEventListener('DOMContentLoaded', function() {
       const item = document.createElement('a');
       item.href = url;
       item.className = 'command-palette-item';
-      if (index === activeIndex) {
+      item.setAttribute('role', 'option');
+      const isActive = index === activeIndex;
+      item.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      if (isActive) {
         item.classList.add('active');
       }
 
-      item.innerHTML = `
-        <i class="${tool.icon}"></i>
-        <div class="cp-item-details">
-          <span class="cp-item-title">${title}</span>
-          <span class="cp-item-desc">${desc}</span>
-        </div>
-      `;
+      const iconEl = document.createElement('i');
+      iconEl.className = tool.icon;
+      const detailsEl = document.createElement('div');
+      detailsEl.className = 'cp-item-details';
+      const titleEl = document.createElement('span');
+      titleEl.className = 'cp-item-title';
+      titleEl.textContent = title;
+      const descEl = document.createElement('span');
+      descEl.className = 'cp-item-desc';
+      descEl.textContent = desc;
+
+      detailsEl.appendChild(titleEl);
+      detailsEl.appendChild(descEl);
+      item.appendChild(iconEl);
+      item.appendChild(detailsEl);
 
       item.addEventListener('click', (e) => {
         e.preventDefault();

@@ -183,7 +183,7 @@ class TranslationSystem {
         // Translate elements with data-i18n attribute
         document.querySelectorAll('[data-i18n]').forEach(element => {
             const key = element.getAttribute('data-i18n');
-            const isInput = element.tagName === 'INPUT' && (element.type === 'text' || element.type === 'number');
+            const isInput = element.tagName === 'INPUT' && ['text', 'number', 'search', 'url', 'email', 'tel'].includes(element.type);
             
             if (isInput || element.tagName === 'TEXTAREA') {
                 if (!element.dataset.i18nPlaceholder) {
@@ -200,9 +200,19 @@ class TranslationSystem {
 
             const translation = this.t(key, element.dataset.i18nDefault);
             
-            if (element.hasAttribute('data-i18n-html') || translation.includes('<strong>') || translation.includes('<')) {
-                // Use innerHTML for elements with HTML content
-                element.innerHTML = translation;
+            if (element.hasAttribute('data-i18n-html') || /<\s*\/?(strong|em|b|i|code|br)\b/i.test(translation)) {
+                if (typeof DOMPurify !== 'undefined' && typeof DOMPurify.sanitize === 'function') {
+                    element.innerHTML = DOMPurify.sanitize(translation);
+                } else {
+                    // Safely permit only inline formatting tags (strong, b, em, i, code, br)
+                    const escape = typeof escapeHtml === 'function'
+                        ? escapeHtml
+                        : (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                    element.innerHTML = escape(translation).replace(
+                        /&lt;(\/?(?:strong|b|em|i|code))&gt;|&lt;(br\s*\/?)&gt;/gi,
+                        (_, tag, br) => br ? '<br>' : `<${tag.toLowerCase()}>`
+                    );
+                }
             } else {
                 element.textContent = translation;
             }

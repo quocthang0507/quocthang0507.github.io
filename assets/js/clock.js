@@ -50,18 +50,34 @@ document.addEventListener('DOMContentLoaded', function() {
         
         document.getElementById('digital-clock').textContent = timeString;
         
-        // Update date
+        // Update date using current i18n locale
+        const lang = (window.translationSystem && window.translationSystem.getCurrentLanguage()) || 'vi';
+        const localeMap = { vi: 'vi-VN', en: 'en-US', zh: 'zh-CN', ko: 'ko-KR', ja: 'ja-JP' };
         const options = { 
             weekday: 'long', 
             year: 'numeric', 
             month: 'long', 
             day: 'numeric' 
         };
-        document.getElementById('current-date').textContent = now.toLocaleDateString('vi-VN', options);
+        document.getElementById('current-date').textContent = now.toLocaleDateString(localeMap[lang] || 'vi-VN', options);
     }
     
     function padZero(num) {
         return num.toString().padStart(2, '0');
+    }
+
+    function computeDayOfYear(date) {
+        const utcDate = Date.UTC(date.getFullYear(), date.getMonth(), date.getDate());
+        const utcStart = Date.UTC(date.getFullYear(), 0, 0);
+        return Math.round((utcDate - utcStart) / 86400000);
+    }
+
+    function computeISOWeek(date) {
+        const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+        const dayNum = d.getUTCDay() || 7;
+        d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+        const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+        return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
     }
     
     // Calendar functionality
@@ -155,18 +171,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // Timezone
         document.getElementById('timezone').textContent = Intl.DateTimeFormat().resolvedOptions().timeZone;
         
-        // Day of year
-        const start = new Date(now.getFullYear(), 0, 0);
-        const diff = now - start;
-        const oneDay = 1000 * 60 * 60 * 24;
-        const dayOfYear = Math.floor(diff / oneDay);
-        document.getElementById('day-of-year').textContent = dayOfYear;
-        
-        // Week of year
-        const startOfYear = new Date(now.getFullYear(), 0, 1);
-        const days = Math.floor((now - startOfYear) / oneDay);
-        const weekOfYear = Math.ceil((days + startOfYear.getDay() + 1) / 7);
-        document.getElementById('week-of-year').textContent = weekOfYear;
+        // Day of year and ISO week of year (DST-safe UTC calculation)
+        document.getElementById('day-of-year').textContent = computeDayOfYear(now);
+        document.getElementById('week-of-year').textContent = computeISOWeek(now);
     }
     
     // Stopwatch functionality
@@ -186,25 +193,30 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Timer functionality
+    function renderTimerDisplay(secondsLeft) {
+        const timerDisplay = document.getElementById('timer-display');
+        if (!timerDisplay) return;
+        const clamped = Math.max(0, secondsLeft);
+        const minutes = Math.floor(clamped / 60);
+        const seconds = clamped % 60;
+        timerDisplay.textContent = `${padZero(minutes)}:${padZero(seconds)}`;
+        if (clamped > 0 && clamped <= 10) {
+            timerDisplay.classList.add('warning-low');
+        } else {
+            timerDisplay.classList.remove('warning-low');
+        }
+    }
+
     function updateTimer() {
         const timerDisplay = document.getElementById('timer-display');
-        if (timerRemaining > 0) {
-            const minutes = Math.floor(timerRemaining / 60);
-            const seconds = timerRemaining % 60;
-            timerDisplay.textContent = 
-                `${padZero(minutes)}:${padZero(seconds)}`;
-            
-            if (timerRemaining <= 10) {
-                timerDisplay.classList.add('warning-low');
-            } else {
-                timerDisplay.classList.remove('warning-low');
-            }
-            
+        if (timerRemaining > 1) {
             timerRemaining--;
+            renderTimerDisplay(timerRemaining);
         } else {
+            timerRemaining = 0;
             clearInterval(timerInterval);
             timerRunning = false;
-            timerDisplay.textContent = "00:00";
+            renderTimerDisplay(0);
             timerDisplay.classList.remove('running');
             timerDisplay.classList.remove('warning-low');
             document.getElementById('start-timer').disabled = false;
@@ -213,9 +225,11 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Play notification sound (if supported)
             if ('speechSynthesis' in window) {
-                const utterance = new SpeechSynthesisUtterance('Timer đã kết thúc');
-                utterance.lang = 'vi-VN';
-                speechSynthesis.speak(utterance);
+                try {
+                    const utterance = new SpeechSynthesisUtterance('Timer đã kết thúc');
+                    utterance.lang = 'vi-VN';
+                    speechSynthesis.speak(utterance);
+                } catch (_) {}
             }
         }
     }
@@ -342,6 +356,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (timerRemaining > 0) {
                 timerRunning = true;
+                renderTimerDisplay(timerRemaining);
                 timerInterval = setInterval(updateTimer, 1000);
                 this.disabled = true;
                 document.getElementById('pause-timer').disabled = false;
@@ -374,13 +389,14 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('reset-timer').addEventListener('click', function() {
         timerRunning = false;
         clearInterval(timerInterval);
-        const minutes = parseInt(document.getElementById('timer-minutes').value) || 5;
-        const seconds = parseInt(document.getElementById('timer-seconds').value) || 0;
+        const parsedMin = parseInt(document.getElementById('timer-minutes').value, 10);
+        const parsedSec = parseInt(document.getElementById('timer-seconds').value, 10);
+        const minutes = Number.isNaN(parsedMin) ? 5 : Math.max(0, parsedMin);
+        const seconds = Number.isNaN(parsedSec) ? 0 : Math.max(0, parsedSec);
         timerRemaining = minutes * 60 + seconds;
         const timerDisplay = document.getElementById('timer-display');
         timerDisplay.classList.remove('running');
-        timerDisplay.classList.remove('warning-low');
-        updateTimer();
+        renderTimerDisplay(timerRemaining);
         document.getElementById('start-timer').disabled = false;
         document.getElementById('pause-timer').disabled = true;
     });
@@ -407,10 +423,12 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize displays
     updateStopwatch();
-    const initialMinutes = parseInt(document.getElementById('timer-minutes').value) || 5;
-    const initialSeconds = parseInt(document.getElementById('timer-seconds').value) || 0;
+    const parsedInitMin = parseInt(document.getElementById('timer-minutes').value, 10);
+    const parsedInitSec = parseInt(document.getElementById('timer-seconds').value, 10);
+    const initialMinutes = Number.isNaN(parsedInitMin) ? 5 : Math.max(0, parsedInitMin);
+    const initialSeconds = Number.isNaN(parsedInitSec) ? 0 : Math.max(0, parsedInitSec);
     timerRemaining = initialMinutes * 60 + initialSeconds;
-    updateTimer();
+    renderTimerDisplay(timerRemaining);
     
     // Listen for language changes to update calendar
     window.addEventListener('languageChanged', function() {
@@ -430,14 +448,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const dayKeys = ['day.sunday', 'day.monday', 'day.tuesday', 'day.wednesday', 'day.thursday', 'day.friday', 'day.saturday'];
         const dayOfWeek = t(dayKeys[solarDate.getDay()], dayKeys[solarDate.getDay()]);
 
-        // Compute day-of-year and ISO week for extra context
-        const start = new Date(year, 0, 0);
-        const diff = solarDate - start;
-        const oneDay = 1000 * 60 * 60 * 24;
-        const dayOfYear = Math.floor(diff / oneDay);
-        const jan1 = new Date(year, 0, 1);
-        const days = Math.floor((solarDate - jan1) / oneDay);
-        const weekOfYear = Math.ceil((days + jan1.getDay() + 1) / 7);
+        // Compute day-of-year and ISO week for extra context (DST-safe UTC calculation)
+        const dayOfYear = computeDayOfYear(solarDate);
+        const weekOfYear = computeISOWeek(solarDate);
+        const esc = typeof escapeHtml === 'function'
+            ? escapeHtml
+            : (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
         let lunar = null; let zodiac = ''; let canChi = ''; let lunarMonthName = ''; let lunarOk = false;
         let goodBadInfo = null;
@@ -480,13 +496,22 @@ document.addEventListener('DOMContentLoaded', function() {
                       <button type="button" class="btn btn-outline-secondary" id="dateTodayBtn"><i class="fas fa-calendar-day"></i></button>
                       <button type="button" class="btn btn-outline-primary" id="dateNextBtn"><i class="fas fa-chevron-right"></i></button>
                     </div>
-                    <button type="button" class="btn btn-outline-success" id="dateCopyBtn"><i class="fas fa-copy"></i> ${t('lunar.copy','Sao chép')}</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">${t('lunar.close','Đóng')}</button>
+                    <button type="button" class="btn btn-outline-success" id="dateCopyBtn"><i class="fas fa-copy"></i> ${esc(t('lunar.copy','Sao chép'))}</button>
+                    <button type="button" class="btn btn-secondary" id="dateCloseBtn" data-bs-dismiss="modal">${esc(t('lunar.close','Đóng'))}</button>
                   </div>
                 </div>
               </div>
             </div>`);
             modal = document.getElementById('dateDetailsModal');
+        }
+
+        const copyBtnEl = modal.querySelector('#dateCopyBtn');
+        if (copyBtnEl) {
+            copyBtnEl.innerHTML = `<i class="fas fa-copy"></i> ${esc(t('lunar.copy','Sao chép'))}`;
+        }
+        const closeBtnEl = modal.querySelector('#dateCloseBtn');
+        if (closeBtnEl) {
+            closeBtnEl.textContent = t('lunar.close','Đóng');
         }
 
         // Fill content
@@ -499,18 +524,18 @@ document.addEventListener('DOMContentLoaded', function() {
             lunarSection = `
             <div class="col-md-6">
                 <div class="date-card lunar-card p-3 h-100">
-                    <h6 class="text-muted mb-2"><i class="fas fa-moon"></i> ${t('lunar.lunar','Âm lịch')}</h6>
-                    <div class="display-6 fw-bold mb-1">${lunar.day}</div>
-                    <div class="fs-6">${lunarMonthName}</div>
-                    <div class="small text-secondary mt-1">${t('lunar.year','Năm')}: ${lunar.year} (${canChi})</div>
+                    <h6 class="text-muted mb-2"><i class="fas fa-moon"></i> ${esc(t('lunar.lunar','Âm lịch'))}</h6>
+                    <div class="display-6 fw-bold mb-1">${esc(lunar.day)}</div>
+                    <div class="fs-6">${esc(lunarMonthName)}</div>
+                    <div class="small text-secondary mt-1">${esc(t('lunar.year','Năm'))}: ${esc(lunar.year)} (${esc(canChi)})</div>
                     <div class="d-flex flex-wrap gap-2 mt-3">
-                        <span class="badge bg-info-subtle text-info-emphasis border date-badge">${zodiac}</span>
-                        <span class="badge bg-warning-subtle text-warning-emphasis border date-badge">${lunar.isLeap ? t('lunar.month_leap','Tháng nhuận') : t('lunar.month_normal','Tháng thường')}</span>
+                        <span class="badge bg-info-subtle text-info-emphasis border date-badge">${esc(zodiac)}</span>
+                        <span class="badge bg-warning-subtle text-warning-emphasis border date-badge">${esc(lunar.isLeap ? t('lunar.month_leap','Tháng nhuận') : t('lunar.month_normal','Tháng thường'))}</span>
                     </div>
                 </div>
             </div>`;
         } else {
-            lunarSection = `<div class="col-md-6"><div class="alert alert-warning mb-0">${t('lunar.unavailable','Không có dữ liệu âm lịch')}</div></div>`;
+            lunarSection = `<div class="col-md-6"><div class="alert alert-warning mb-0">${esc(t('lunar.unavailable','Không có dữ liệu âm lịch'))}</div></div>`;
         }
 
         // Build good/bad day section
@@ -527,9 +552,9 @@ document.addEventListener('DOMContentLoaded', function() {
             if (activeWarnings.length > 0) {
                 warningsHtml = `
                 <div class="mt-3 text-danger small">
-                    <strong><i class="fas fa-exclamation-triangle"></i> ${t('lunar.warnings', 'Cảnh báo kỵ')}:</strong>
+                    <strong><i class="fas fa-exclamation-triangle"></i> ${esc(t('lunar.warnings', 'Cảnh báo kỵ'))}:</strong>
                     <ul class="mb-0 ps-3 mt-1">
-                        ${activeWarnings.map(w => `<li>${w}</li>`).join('')}
+                        ${activeWarnings.map(w => `<li>${esc(w)}</li>`).join('')}
                     </ul>
                 </div>`;
             }
@@ -558,21 +583,21 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="col-12 mt-3">
                 <div class="date-card p-3">
                     <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-                        <h6 class="mb-0 text-primary"><i class="fas fa-balance-scale"></i> ${t('lunar.day_status', 'Đánh giá ngày')}</h6>
-                        <span class="badge bg-${statusClass}-subtle text-${statusClass}-emphasis border date-badge">${statusLabel}</span>
+                        <h6 class="mb-0 text-primary"><i class="fas fa-balance-scale"></i> ${esc(t('lunar.day_status', 'Đánh giá ngày'))}</h6>
+                        <span class="badge bg-${statusClass}-subtle text-${statusClass}-emphasis border date-badge">${esc(statusLabel)}</span>
                     </div>
-                    <p class="small text-secondary mb-3">${descText}</p>
+                    <p class="small text-secondary mb-3">${esc(descText)}</p>
                     <div class="row g-2 mb-2">
                         <div class="col-sm-6">
                             <div class="p-2 border rounded bg-light-subtle h-100">
-                                <strong class="small text-secondary d-block mb-1">${t('lunar.day_canchi', 'Can Chi ngày')}</strong>
-                                <span class="fs-6 fw-bold text-dark">${goodBadInfo.dayCanChi}</span>
+                                <strong class="small text-secondary d-block mb-1">${esc(t('lunar.day_canchi', 'Can Chi ngày'))}</strong>
+                                <span class="fs-6 fw-bold text-dark">${esc(goodBadInfo.dayCanChi)}</span>
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="p-2 border rounded bg-light-subtle h-100">
-                                <strong class="small text-secondary d-block mb-1">${t('lunar.zodiac_star', 'Sao hoàng đạo')}</strong>
-                                <span class="fs-6 fw-bold text-dark">${starText}</span>
+                                <strong class="small text-secondary d-block mb-1">${esc(t('lunar.zodiac_star', 'Sao hoàng đạo'))}</strong>
+                                <span class="fs-6 fw-bold text-dark">${esc(starText)}</span>
                             </div>
                         </div>
                     </div>
@@ -580,14 +605,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="row g-2 mt-1">
                         <div class="col-sm-6">
                             <div class="p-2 rounded bg-success-subtle border-start border-success border-4 h-100">
-                                <strong class="small text-success-emphasis d-block mb-1"><i class="fas fa-check-circle"></i> ${t('lunar.should_do', 'Nên làm')}</strong>
-                                <span class="small text-dark-emphasis d-block mt-1">${shouldDo}</span>
+                                <strong class="small text-success-emphasis d-block mb-1"><i class="fas fa-check-circle"></i> ${esc(t('lunar.should_do', 'Nên làm'))}</strong>
+                                <span class="small text-dark-emphasis d-block mt-1">${esc(shouldDo)}</span>
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="p-2 rounded bg-danger-subtle border-start border-danger border-4 h-100">
-                                <strong class="small text-danger-emphasis d-block mb-1"><i class="fas fa-times-circle"></i> ${t('lunar.should_avoid', 'Kiêng kỵ')}</strong>
-                                <span class="small text-dark-emphasis d-block mt-1">${shouldAvoid}</span>
+                                <strong class="small text-danger-emphasis d-block mb-1"><i class="fas fa-times-circle"></i> ${esc(t('lunar.should_avoid', 'Kiêng kỵ'))}</strong>
+                                <span class="small text-dark-emphasis d-block mt-1">${esc(shouldAvoid)}</span>
                             </div>
                         </div>
                     </div>
@@ -611,13 +636,13 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="col-12 mt-3">
                 <div class="alert alert-${holiday.is_public_holiday ? 'danger' : 'info'} mb-0">
                     <h6 class="alert-heading mb-2">${holidayIcon} Ngày lễ</h6>
-                    <p class="mb-2 fw-bold">${holiday.name}</p>
-                    ${holiday.name_en ? `<p class="mb-2 small text-muted">${holiday.name_en}</p>` : ''}
-                    ${holiday.description ? `<p class="mb-2 small">${holiday.description}</p>` : ''}
+                    <p class="mb-2 fw-bold">${esc(holiday.name)}</p>
+                    ${holiday.name_en ? `<p class="mb-2 small text-muted">${esc(holiday.name_en)}</p>` : ''}
+                    ${holiday.description ? `<p class="mb-2 small">${esc(holiday.description)}</p>` : ''}
                     <div class="d-flex flex-wrap gap-2 mt-2">
                         ${holidayBadge}
                         ${holidayType}
-                        ${holiday.duration_days ? `<span class="badge bg-success-subtle text-success-emphasis border date-badge">Nghỉ: ${holiday.duration_days} ngày</span>` : ''}
+                        ${holiday.duration_days ? `<span class="badge bg-success-subtle text-success-emphasis border date-badge">Nghỉ: ${esc(holiday.duration_days)} ngày</span>` : ''}
                     </div>
                 </div>
             </div>`;
@@ -627,13 +652,13 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="row g-3 align-items-stretch">
             <div class="col-md-6">
                 <div class="date-card solar-card p-3 h-100">
-                    <h6 class="text-muted mb-2"><i class="fas fa-sun"></i> ${t('lunar.solar','Dương lịch')}</h6>
-                    <div class="display-6 fw-bold mb-1">${day}</div>
-                    <div class="fs-5">${dayOfWeek}</div>
-                    <div class="small text-secondary mt-1">${t('lunar.full_date','Ngày')} ${day} / ${month} / ${year}</div>
+                    <h6 class="text-muted mb-2"><i class="fas fa-sun"></i> ${esc(t('lunar.solar','Dương lịch'))}</h6>
+                    <div class="display-6 fw-bold mb-1">${esc(day)}</div>
+                    <div class="fs-5">${esc(dayOfWeek)}</div>
+                    <div class="small text-secondary mt-1">${esc(t('lunar.full_date','Ngày'))} ${esc(day)} / ${esc(month)} / ${esc(year)}</div>
                     <div class="d-flex flex-wrap gap-2 mt-3">
-                        <span class="badge bg-primary-subtle text-primary-emphasis border date-badge">${t('lunar.day_of_year','Ngày trong năm')}: ${dayOfYear}</span>
-                        <span class="badge bg-secondary-subtle text-secondary-emphasis border date-badge">${t('lunar.week_of_year','Tuần')}: ${weekOfYear}</span>
+                        <span class="badge bg-primary-subtle text-primary-emphasis border date-badge">${esc(t('lunar.day_of_year','Ngày trong năm'))}: ${esc(dayOfYear)}</span>
+                        <span class="badge bg-secondary-subtle text-secondary-emphasis border date-badge">${esc(t('lunar.week_of_year','Tuần'))}: ${esc(weekOfYear)}</span>
                     </div>
                 </div>
             </div>
@@ -679,7 +704,11 @@ document.addEventListener('DOMContentLoaded', function() {
             if (navigator.clipboard) {
                 navigator.clipboard.writeText(parts).then(() => {
                     showAlert(t('lunar.copied','Đã sao chép!'), 'success');
+                }).catch(() => {
+                    if (typeof copyToClipboard === 'function') copyToClipboard(parts);
                 });
+            } else if (typeof copyToClipboard === 'function') {
+                copyToClipboard(parts);
             }
         };
 

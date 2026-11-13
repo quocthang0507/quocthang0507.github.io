@@ -361,6 +361,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             canvas.toBlob(function(blob) {
+                if (!blob) return;
                 const url = URL.createObjectURL(blob);
                 const link = document.createElement('a');
                 link.download = `qrcode-${Date.now()}.png`;
@@ -368,7 +369,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
-                URL.revokeObjectURL(url);
+                setTimeout(() => URL.revokeObjectURL(url), 1000);
 
                 showAlert('Đã tải xuống PNG!', 'success');
             });
@@ -386,43 +387,56 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Fallback: old SVG generation
+        // Fallback: extract QR module matrix from QRCode instance when available
         const canvas = document.querySelector('#qr-code-display canvas');
-        if (!canvas) {
+        if (!canvas || !currentQRData) {
             showAlert('Chưa có mã QR để tải!', 'warning');
             return;
         }
 
         const settings = getQRSettings();
         const size = settings.width;
-        const content = currentQRData.content;
+        const safeColorLight = /^#[0-9A-Fa-f]{3,8}$/.test(settings.colorLight) ? settings.colorLight : '#ffffff';
+        const safeColorDark = /^#[0-9A-Fa-f]{3,8}$/.test(settings.colorDark) ? settings.colorDark : '#000000';
 
-        const qr = qrcode(0, document.getElementById('qr-error-level').value);
-        qr.addData(content);
-        qr.make();
+        let moduleCount = 0;
+        let isDarkFn = null;
 
-        const moduleCount = qr.getModuleCount();
+        if (currentQRCode && currentQRCode._oQRCode && Array.isArray(currentQRCode._oQRCode.modules)) {
+            const qrModel = currentQRCode._oQRCode;
+            moduleCount = qrModel.getModuleCount();
+            isDarkFn = (r, c) => qrModel.isDark(r, c);
+        } else if (typeof qrcode === 'function') {
+            const qr = qrcode(0, document.getElementById('qr-error-level').value);
+            qr.addData(currentQRData.content);
+            qr.make();
+            moduleCount = qr.getModuleCount();
+            isDarkFn = (r, c) => qr.isDark(r, c);
+        } else {
+            showAlert('Trình tạo SVG hiện chưa khả dụng. Vui lòng tải PNG.', 'warning');
+            return;
+        }
+
         const cellSize = size / moduleCount;
-
         let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}">`;
-        svg += `<rect width="100%" height="100%" fill="${settings.colorLight}"/>`;
+        svg += `<rect width="100%" height="100%" fill="${safeColorLight}"/>`;
 
         for (let row = 0; row < moduleCount; row++) {
             for (let col = 0; col < moduleCount; col++) {
-                if (qr.isDark(row, col)) {
+                if (isDarkFn(row, col)) {
                     const x = col * cellSize;
                     const y = row * cellSize;
-                    svg += `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" fill="${settings.colorDark}"/>`;
+                    svg += `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" fill="${safeColorDark}"/>`;
                 }
             }
         }
 
-        if (logoDataUrl) {
+        if (logoDataUrl && /^data:image\/(?:png|jpe?g|webp|gif);base64,[A-Za-z0-9+/=]+$/i.test(logoDataUrl)) {
             const logoSize = size * 0.2;
             const padding = Math.max(4, size * 0.02);
             const x = (size - logoSize) / 2;
             const y = (size - logoSize) / 2;
-            svg += `<rect x="${x - padding}" y="${y - padding}" width="${logoSize + padding * 2}" height="${logoSize + padding * 2}" fill="${settings.colorLight}"/>`;
+            svg += `<rect x="${x - padding}" y="${y - padding}" width="${logoSize + padding * 2}" height="${logoSize + padding * 2}" fill="${safeColorLight}"/>`;
             svg += `<image x="${x}" y="${y}" width="${logoSize}" height="${logoSize}" href="${logoDataUrl}" preserveAspectRatio="xMidYMid meet"/>`;
         }
 
@@ -436,7 +450,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-        URL.revokeObjectURL(url);
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
 
         showAlert('Đã tải xuống SVG!', 'success');
     }
@@ -476,13 +490,17 @@ document.addEventListener('DOMContentLoaded', function() {
             qrContainer.id = `batch-qr-${index}`;
             
             try {
+                const resolvedCorrectLevel = (typeof QRCode !== 'undefined' && QRCode.CorrectLevel && QRCode.CorrectLevel[settings.correctLevel] !== undefined)
+                    ? QRCode.CorrectLevel[settings.correctLevel]
+                    : (typeof QRCode !== 'undefined' && QRCode.CorrectLevel ? QRCode.CorrectLevel.M : 0);
+
                 new QRCode(qrContainer, {
                     text: item,
                     width: 200,
                     height: 200,
                     colorDark: settings.colorDark,
                     colorLight: settings.colorLight,
-                    correctLevel: settings.correctLevel
+                    correctLevel: resolvedCorrectLevel
                 });
                 
                 card.appendChild(qrContainer);
@@ -497,13 +515,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 downloadBtn.innerHTML = '<i class="fas fa-download"></i> PNG';
                 downloadBtn.onclick = function() {
                     const canvas = qrContainer.querySelector('canvas');
+                    if (!canvas) return;
                     canvas.toBlob(function(blob) {
+                        if (!blob) return;
                         const url = URL.createObjectURL(blob);
                         const link = document.createElement('a');
                         link.download = `qrcode-${index + 1}.png`;
                         link.href = url;
+                        document.body.appendChild(link);
                         link.click();
-                        URL.revokeObjectURL(url);
+                        document.body.removeChild(link);
+                        setTimeout(() => URL.revokeObjectURL(url), 1000);
                     });
                 };
                 card.appendChild(downloadBtn);
@@ -542,6 +564,7 @@ document.addEventListener('DOMContentLoaded', function() {
         qrContainers.forEach((canvas, index) => {
             setTimeout(() => {
                 canvas.toBlob(function(blob) {
+                    if (!blob) return;
                     const url = URL.createObjectURL(blob);
                     const link = document.createElement('a');
                     link.download = `qrcode-batch-${index + 1}.png`;
@@ -549,7 +572,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     document.body.appendChild(link);
                     link.click();
                     document.body.removeChild(link);
-                    URL.revokeObjectURL(url);
+                    setTimeout(() => URL.revokeObjectURL(url), 1000);
                 });
             }, index * 200); // Stagger downloads
         });
@@ -619,37 +642,60 @@ document.addEventListener('DOMContentLoaded', function() {
         renderHistory();
     }
     
+    function isSafeImageData(dataUrl) {
+        if (typeof isSafeDataImageUrl === 'function') {
+            return isSafeDataImageUrl(dataUrl);
+        }
+        return typeof dataUrl === 'string' && /^data:image\/(?:png|jpe?g|webp|gif);base64,[A-Za-z0-9+/=]+$/i.test(dataUrl.trim());
+    }
+
     // Render history
     function renderHistory() {
         const container = document.getElementById('qr-history');
+        if (!container) return;
         
-        if (qrHistory.length === 0) {
+        if (!Array.isArray(qrHistory) || qrHistory.length === 0) {
             container.innerHTML = '<p class="text-muted text-center col-12">Chưa có lịch sử tạo mã QR</p>';
             return;
         }
         
-        container.innerHTML = qrHistory.map((item, index) => `
+        container.innerHTML = qrHistory.map((item, index) => {
+            const safeImg = isSafeImageData(item.imageData) ? item.imageData : '';
+            const typeStr = String(item.type || 'text');
+            const contentStr = String(item.content || '');
+            return `
             <div class="col-lg-2 col-md-3 col-sm-4 col-6">
                 <div class="qr-history-item">
-                    <img src="${item.imageData}" alt="QR Code">
-                    <div class="small text-muted">${escapeHtml(item.type.toUpperCase())}</div>
-                    <div class="small text-truncate" title="${escapeHtml(item.content)}">
-                        ${escapeHtml(item.content.length > 20 ? item.content.substring(0, 20) + '...' : item.content)}
+                    ${safeImg ? `<img src="${safeImg}" alt="QR Code">` : '<div class="text-muted small py-3">QR</div>'}
+                    <div class="small text-muted">${escapeHtml(typeStr.toUpperCase())}</div>
+                    <div class="small text-truncate" title="${escapeHtml(contentStr)}">
+                        ${escapeHtml(contentStr.length > 20 ? contentStr.substring(0, 20) + '...' : contentStr)}
                     </div>
                     <div class="btn-group btn-group-sm">
-                        <button class="btn btn-outline-primary" onclick="window.reloadQR(${index})">
+                        <button type="button" class="btn btn-outline-primary qr-reload-btn" data-index="${index}">
                             <i class="fas fa-redo"></i>
                         </button>
-                        <button class="btn btn-outline-success" onclick="window.downloadHistoryQR(${index})">
+                        <button type="button" class="btn btn-outline-success qr-download-history-btn" data-index="${index}">
                             <i class="fas fa-download"></i>
                         </button>
-                        <button class="btn btn-outline-danger" onclick="window.deleteHistoryQR(${index})">
+                        <button type="button" class="btn btn-outline-danger qr-delete-history-btn" data-index="${index}">
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>
                 </div>
             </div>
-        `).join('');
+            `;
+        }).join('');
+
+        container.querySelectorAll('.qr-reload-btn').forEach(btn => {
+            btn.addEventListener('click', () => window.reloadQR(parseInt(btn.dataset.index, 10)));
+        });
+        container.querySelectorAll('.qr-download-history-btn').forEach(btn => {
+            btn.addEventListener('click', () => window.downloadHistoryQR(parseInt(btn.dataset.index, 10)));
+        });
+        container.querySelectorAll('.qr-delete-history-btn').forEach(btn => {
+            btn.addEventListener('click', () => window.deleteHistoryQR(parseInt(btn.dataset.index, 10)));
+        });
     }
     
     // Reload QR from history
@@ -658,20 +704,33 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!item) return;
         
         // Set type
-        document.querySelector(`input[name="qr-type"][value="${item.type}"]`).checked = true;
-        switchQRType();
+        const typeRadio = document.querySelector(`input[name="qr-type"][value="${CSS.escape(item.type)}"]`);
+        if (typeRadio) {
+            typeRadio.checked = true;
+            switchQRType();
+        }
         
         // Set content based on type
         if (item.type === 'url') {
             document.getElementById('url-input').value = item.content;
         } else if (item.type === 'text') {
             document.getElementById('text-input').value = item.content;
+        } else if (item.type === 'email') {
+            const raw = String(item.content || '').replace(/^mailto:/i, '');
+            const emailInput = document.getElementById('email-address');
+            if (emailInput) emailInput.value = raw.split('?')[0];
+        } else if (item.type === 'phone') {
+            const telInput = document.getElementById('phone-number');
+            if (telInput) telInput.value = String(item.content || '').replace(/^tel:/i, '');
         }
         
         // Set customization
-        document.getElementById('qr-size').value = item.settings.width;
-        document.getElementById('qr-color').value = item.settings.colorDark;
-        document.getElementById('qr-bgcolor').value = item.settings.colorLight;
+        if (item.settings) {
+            if (item.settings.width) document.getElementById('qr-size').value = item.settings.width;
+            if (item.settings.colorDark) document.getElementById('qr-color').value = item.settings.colorDark;
+            if (item.settings.colorLight) document.getElementById('qr-bgcolor').value = item.settings.colorLight;
+            if (item.settings.correctLevel) document.getElementById('qr-error-level').value = item.settings.correctLevel;
+        }
         updateSizeValue();
         
         // Generate
@@ -684,12 +743,17 @@ document.addEventListener('DOMContentLoaded', function() {
     // Download QR from history
     window.downloadHistoryQR = function(index) {
         const item = qrHistory[index];
-        if (!item) return;
+        if (!item || !isSafeImageData(item.imageData)) {
+            showAlert('Dữ liệu hình ảnh không hợp lệ!', 'danger');
+            return;
+        }
         
         const link = document.createElement('a');
         link.download = `qrcode-history-${Date.now()}.png`;
         link.href = item.imageData;
+        document.body.appendChild(link);
         link.click();
+        document.body.removeChild(link);
         
         showAlert('Đã tải xuống!', 'success');
     };
@@ -803,9 +867,23 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('qr-logo').addEventListener('change', function(e) {
         const file = e.target.files[0];
         if (file) {
+            const allowedTypes = ['image/png', 'image/jpeg', 'image/webp', 'image/gif'];
+            if (!allowedTypes.includes(file.type)) {
+                showAlert('Chỉ hỗ trợ ảnh PNG, JPG, WebP hoặc GIF.', 'warning');
+                this.value = '';
+                return;
+            }
+            if (file.size > 5 * 1024 * 1024) {
+                showAlert('Kích thước logo không được vượt quá 5MB.', 'warning');
+                this.value = '';
+                return;
+            }
+
             const reader = new FileReader();
+            reader.onerror = () => showAlert('Không thể đọc tệp logo.', 'danger');
             reader.onload = function(event) {
                 const img = new Image();
+                img.onerror = () => showAlert('Tệp ảnh logo không hợp lệ.', 'danger');
                 img.onload = function() {
                     // Resize logo to fixed maximum dimensions
                     const canvas = document.createElement('canvas');

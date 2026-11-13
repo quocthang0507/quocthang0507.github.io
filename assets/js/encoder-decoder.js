@@ -125,9 +125,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 return arrayBufferToHex(uint8Array);
             }
         } else {
-            // Encode text
-            const text = inputText.value.trim();
-            if (!text) {
+            // Encode text without stripping intentional leading/trailing whitespace
+            const text = inputText.value;
+            if (text.length === 0) {
                 throw new Error('Please enter text or select a file to encode');
             }
 
@@ -148,7 +148,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function decode() {
-        const text = inputText.value.trim();
+        const text = currentFormat === 'url' ? inputText.value : inputText.value.trim();
         if (!text) {
             throw new Error('Please enter text to decode');
         }
@@ -181,12 +181,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function arrayBufferToBase64(uint8Array) {
-        let binary = '';
-        const len = uint8Array.byteLength;
-        for (let i = 0; i < len; i++) {
-            binary += String.fromCharCode(uint8Array[i]);
+        const CHUNK_SIZE = 0x8000;
+        const chunks = [];
+        for (let i = 0; i < uint8Array.byteLength; i += CHUNK_SIZE) {
+            const sub = uint8Array.subarray(i, i + CHUNK_SIZE);
+            chunks.push(String.fromCharCode.apply(null, sub));
         }
-        return btoa(binary);
+        return btoa(chunks.join(''));
     }
 
     function base64ToArrayBuffer(base64) {
@@ -275,13 +276,18 @@ document.addEventListener('DOMContentLoaded', function() {
         const a = document.createElement('a');
         a.href = url;
         
-        const extension = currentFormat === 'base64' ? 'base64.txt' : 'hex.txt';
+        const extMap = {
+            base64: 'base64.txt',
+            hex: 'hex.txt',
+            url: 'url.txt'
+        };
+        const extension = extMap[currentFormat] || 'txt';
         a.download = fileName ? `${fileName}.${extension}` : `output.${extension}`;
         
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
         
         showAlert('File downloaded!', 'success');
     }
@@ -354,9 +360,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function getTranslation(key) {
-        // Try to get translation from i18n if available
-        if (typeof window.translations !== 'undefined' && window.translations[key]) {
-            return window.translations[key];
+        if (typeof window.t === 'function') {
+            const val = window.t(key);
+            return (val && val !== key) ? val : null;
         }
         return null;
     }

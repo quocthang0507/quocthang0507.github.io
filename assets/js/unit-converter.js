@@ -320,26 +320,48 @@ document.addEventListener('DOMContentLoaded', function() {
     // Render conversion history
     function renderHistory() {
         const historyContainer = document.getElementById('conversion-history');
+        if (!historyContainer) return;
         
-        if (conversionHistory.length === 0) {
+        if (!Array.isArray(conversionHistory) || conversionHistory.length === 0) {
             historyContainer.innerHTML = '<p class="text-muted text-center">Chưa có lịch sử chuyển đổi</p>';
             return;
         }
+
+        const esc = typeof escapeHtml === 'function'
+            ? escapeHtml
+            : (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
         
         historyContainer.innerHTML = conversionHistory.slice(0, 10).map((item, index) => `
-            <div class="history-item" onclick="window.applyHistoryItem(${index})">
+            <div class="history-item" role="button" tabindex="0" data-history-index="${index}">
                 <div>
-                    <strong>${formatNumber(item.fromValue)}</strong> ${item.fromUnitName.split('(')[0].trim()}
-                    → <strong>${formatNumber(item.toValue)}</strong> ${item.toUnitName.split('(')[0].trim()}
+                    <strong>${esc(formatNumber(Number(item.fromValue)))}</strong> ${esc(String(item.fromUnitName || '').split('(')[0].trim())}
+                    → <strong>${esc(formatNumber(Number(item.toValue)))}</strong> ${esc(String(item.toUnitName || '').split('(')[0].trim())}
                 </div>
-                <small>${item.categoryName} • ${item.timestamp}</small>
+                <small>${esc(item.categoryName)} • ${esc(item.timestamp)}</small>
             </div>
         `).join('');
+
+        historyContainer.querySelectorAll('.history-item[data-history-index]').forEach(el => {
+            const apply = () => {
+                const idx = parseInt(el.dataset.historyIndex, 10);
+                if (!isNaN(idx)) window.applyHistoryItem(idx);
+            };
+            el.addEventListener('click', apply);
+            el.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    apply();
+                }
+            });
+        });
     }
     
     // Apply history item to converter
     window.applyHistoryItem = function(index) {
         const item = conversionHistory[index];
+        if (!item || !units[item.category] || !units[item.category][item.fromUnit] || !units[item.category][item.toUnit]) {
+            return;
+        }
         
         // Change category if needed
         if (item.category !== currentCategory) {

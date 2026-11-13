@@ -150,8 +150,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     fileSizeInfo.textContent = `${formatBytes(fileSize)}`;
                 }
             } else {
-                const text = inputText.value.trim();
-                if (!text) {
+                const text = inputText.value;
+                if (text.length === 0) {
                     throw new Error('Please enter text or select a file to hash');
                 }
                 const encoder = new TextEncoder();
@@ -167,30 +167,36 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (output) output.value = '';
             });
 
-            // Generate only selected hashes
-            const hashPromises = [];
-            const hashOrder = [];
+            // Generate only selected hashes with progress tracking for large files
+            const hashOrder = selectedAlgorithms.slice();
+            const totalSelected = hashOrder.length || 1;
+            let completedCount = 0;
 
-            if (selectedAlgorithms.includes('md5')) {
-                hashPromises.push(generateMD5(data));
-                hashOrder.push('md5');
-            }
-            if (selectedAlgorithms.includes('sha1')) {
-                hashPromises.push(generateSHA('SHA-1', data));
-                hashOrder.push('sha1');
-            }
-            if (selectedAlgorithms.includes('sha256')) {
-                hashPromises.push(generateSHA('SHA-256', data));
-                hashOrder.push('sha256');
-            }
-            if (selectedAlgorithms.includes('sha384')) {
-                hashPromises.push(generateSHA('SHA-384', data));
-                hashOrder.push('sha384');
-            }
-            if (selectedAlgorithms.includes('sha512')) {
-                hashPromises.push(generateSHA('SHA-512', data));
-                hashOrder.push('sha512');
-            }
+            const updateProgressBar = () => {
+                if (!isLargeFile || !progressBar) return;
+                const percent = Math.round((completedCount / totalSelected) * 100);
+                progressBar.style.width = percent + '%';
+                progressBar.textContent = percent + '%';
+                if (progressText) progressText.textContent = percent + '%';
+                progressBar.setAttribute('aria-valuenow', percent);
+            };
+            updateProgressBar();
+
+            const algoMap = {
+                md5: () => generateMD5(data),
+                sha1: () => generateSHA('SHA-1', data),
+                sha256: () => generateSHA('SHA-256', data),
+                sha384: () => generateSHA('SHA-384', data),
+                sha512: () => generateSHA('SHA-512', data)
+            };
+
+            const hashPromises = hashOrder.map(algo =>
+                Promise.resolve().then(() => algoMap[algo]()).then(res => {
+                    completedCount++;
+                    updateProgressBar();
+                    return res;
+                })
+            );
 
             const hashes = await Promise.all(hashPromises);
 
@@ -350,15 +356,17 @@ document.addEventListener('DOMContentLoaded', function() {
         };
 
         const msgLength = bytes.length;
-        const wordArray = [];
-        
+        const numWords = (((msgLength + 8) >>> 6) + 1) * 16;
+        const wordArray = new Int32Array(numWords);
+
         for (let i = 0; i < msgLength; i++) {
-            wordArray[i >> 2] |= bytes[i] << ((i % 4) * 8);
+            wordArray[i >>> 2] |= (bytes[i] & 0xFF) << ((i & 3) * 8);
         }
 
-        const bitLength = msgLength * 8;
-        wordArray[msgLength >> 2] |= 0x80 << ((msgLength % 4) * 8);
-        wordArray[((msgLength + 8 >> 6) * 16) + 14] = bitLength;
+        wordArray[msgLength >>> 2] |= 0x80 << ((msgLength & 3) * 8);
+        // Append 64-bit little-endian bit length
+        wordArray[numWords - 2] = (msgLength * 8) >>> 0;
+        wordArray[numWords - 1] = Math.floor(msgLength / 0x20000000) | 0;
 
         let a = 0x67452301;
         let b = 0xEFCDAB89;
@@ -456,6 +464,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // SHA hashes using SubtleCrypto API
     async function generateSHA(algorithm, data) {
+        if (!window.crypto || !window.crypto.subtle) {
+            throw new Error('Web Crypto API (SubtleCrypto) requires a secure context (HTTPS or localhost).');
+        }
         const hashBuffer = await crypto.subtle.digest(algorithm, data);
         const hashArray = Array.from(new Uint8Array(hashBuffer));
         return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
@@ -557,13 +568,25 @@ document.addEventListener('DOMContentLoaded', function() {
             window.showAlert(message, type);
             return;
         }
+        if (!alertContainer) return;
+        const allowedTypes = new Set(['info', 'success', 'warning', 'danger']);
+        const safeType = allowedTypes.has(type) ? type : 'info';
+
         const alertDiv = document.createElement('div');
-        alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
-        alertDiv.innerHTML = `
-            ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `;
-        
+        alertDiv.className = `alert alert-${safeType} alert-dismissible fade show`;
+
+        const messageSpan = document.createElement('span');
+        messageSpan.textContent = message == null ? '' : String(message);
+
+        const closeBtn = document.createElement('button');
+        closeBtn.type = 'button';
+        closeBtn.className = 'btn-close';
+        closeBtn.setAttribute('data-bs-dismiss', 'alert');
+        closeBtn.setAttribute('aria-label', 'Close');
+
+        alertDiv.appendChild(messageSpan);
+        alertDiv.appendChild(closeBtn);
+
         alertContainer.innerHTML = '';
         alertContainer.appendChild(alertDiv);
         
@@ -573,9 +596,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function getTranslation(key) {
-        // Try to get translation from i18n if available
-        if (typeof window.translations !== 'undefined' && window.translations[key]) {
-            return window.translations[key];
+        if (typeof window.t === 'function') {
+            const val = window.t(key);
+            return (val && val !== key) ? val : null;
         }
         return null;
     }

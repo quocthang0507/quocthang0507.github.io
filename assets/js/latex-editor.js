@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const latexInput = document.getElementById('latex-input');
     const latexOutput = document.getElementById('latex-output');
     let renderTimeout = null;
+    let historyTimeout = null;
     
     // Initialize
     renderHistory();
@@ -90,6 +91,10 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Convert to blob and download
             canvas.toBlob(function(blob) {
+                if (!blob) {
+                    showAlert(t('latex.alert.save_error', 'Lỗi khi lưu hình: Không thể tạo ảnh PNG'), 'error');
+                    return;
+                }
                 const url = URL.createObjectURL(blob);
                 const link = document.createElement('a');
                 link.download = `latex-${Date.now()}.png`;
@@ -97,7 +102,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
-                URL.revokeObjectURL(url);
+                setTimeout(() => URL.revokeObjectURL(url), 1000);
                 
                 showAlert(t('latex.alert.saved', 'Đã lưu hình ảnh!'), 'success');
                 
@@ -260,9 +265,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Render LaTeX and save to history
     function renderLatexAndSaveHistory() {
         renderLatex();
+        clearTimeout(historyTimeout);
         const latex = latexInput.value.trim();
         if (latex) {
-            setTimeout(() => addToHistory(latex), HISTORY_SAVE_DELAY_MS);
+            historyTimeout = setTimeout(() => addToHistory(latex), HISTORY_SAVE_DELAY_MS);
         }
     }
     
@@ -313,13 +319,21 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         const container = document.getElementById('alert-container');
         if (!container) return;
+
+        const allowedTypes = new Set(['info', 'success', 'warning', 'danger', 'error']);
+        const safeType = type === 'error' ? 'danger' : (allowedTypes.has(type) ? type : 'info');
         
         const alertDiv = document.createElement('div');
-        alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
-        alertDiv.innerHTML = `
-            ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `;
+        alertDiv.className = `alert alert-${safeType} alert-dismissible fade show`;
+        const messageSpan = document.createElement('span');
+        messageSpan.textContent = message == null ? '' : String(message);
+        const closeBtn = document.createElement('button');
+        closeBtn.type = 'button';
+        closeBtn.className = 'btn-close';
+        closeBtn.setAttribute('data-bs-dismiss', 'alert');
+        closeBtn.setAttribute('aria-label', 'Close');
+        alertDiv.appendChild(messageSpan);
+        alertDiv.appendChild(closeBtn);
         
         container.appendChild(alertDiv);
         

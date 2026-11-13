@@ -8,10 +8,28 @@ document.addEventListener('DOMContentLoaded', function() {
     updateHistoryDisplay();
     updateStatistics();
     
+    function randIntInRange(min, max) {
+        const span = max - min + 1;
+        return Math.floor(Math.random() * span) + min;
+    }
+
+    function getHistorySetInRange(min, max) {
+        const set = new Set();
+        history.forEach(item => {
+            if (Array.isArray(item.numbers)) {
+                item.numbers.forEach(n => {
+                    if (n >= min && n <= max) set.add(n);
+                });
+            }
+        });
+        return set;
+    }
+
     // Generate single random number
     function generateRandomNumber() {
-        const min = parseInt(document.getElementById('min-number').value);
-        const max = parseInt(document.getElementById('max-number').value);
+        const min = parseInt(document.getElementById('min-number').value, 10);
+        const max = parseInt(document.getElementById('max-number').value, 10);
+        const excludeHistory = document.getElementById('exclude-history')?.checked === true;
         
         if (isNaN(min) || isNaN(max)) {
             showAlert('Vui lòng nhập số hợp lệ!', 'danger');
@@ -22,8 +40,29 @@ document.addEventListener('DOMContentLoaded', function() {
             showAlert('Số nhỏ nhất phải nhỏ hơn số lớn nhất!', 'danger');
             return;
         }
-        
-        const randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
+
+        let randomNum;
+        if (excludeHistory) {
+            const excluded = getHistorySetInRange(min, max);
+            const totalSpan = max - min + 1;
+            if (excluded.size >= totalSpan) {
+                showAlert('Không thể tạo thêm số vì phạm vi còn lại đã hết!', 'danger');
+                return;
+            }
+            if (totalSpan <= 10000) {
+                const available = [];
+                for (let i = min; i <= max; i++) {
+                    if (!excluded.has(i)) available.push(i);
+                }
+                randomNum = available[Math.floor(Math.random() * available.length)];
+            } else {
+                do {
+                    randomNum = randIntInRange(min, max);
+                } while (excluded.has(randomNum));
+            }
+        } else {
+            randomNum = randIntInRange(min, max);
+        }
         displayResult([randomNum], min, max);
         saveToHistory([randomNum], min, max);
         sessionCount++;
@@ -91,24 +130,40 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         let numbers = [];
+        const totalSpan = max - min + 1;
         
         if (unique || excludeHistory) {
-            // Generate unique numbers
-            let availableNumbers = [];
-            for (let i = min; i <= max; i++) {
-                if (!excludeHistory || !historyNumbersSet.has(i)) {
-                    availableNumbers.push(i);
+            const excluded = excludeHistory && historyNumbersSet ? historyNumbersSet : new Set();
+            if (totalSpan <= 10000) {
+                const availableNumbers = [];
+                for (let i = min; i <= max; i++) {
+                    if (!excluded.has(i)) {
+                        availableNumbers.push(i);
+                    }
                 }
-            }
-            
-            for (let i = 0; i < count; i++) {
-                const randomIndex = Math.floor(Math.random() * availableNumbers.length);
-                numbers.push(availableNumbers.splice(randomIndex, 1)[0]);
+                // Partial Fisher-Yates shuffle (unbiased and avoids splice shift cost)
+                for (let i = 0; i < count; i++) {
+                    const j = i + Math.floor(Math.random() * (availableNumbers.length - i));
+                    [availableNumbers[i], availableNumbers[j]] = [availableNumbers[j], availableNumbers[i]];
+                    numbers.push(availableNumbers[i]);
+                }
+            } else {
+                // Sparse rejection sampling avoids OOM when max - min is millions+
+                const chosen = unique ? new Set() : null;
+                while (numbers.length < count) {
+                    const candidate = randIntInRange(min, max);
+                    if (excluded.has(candidate)) continue;
+                    if (chosen) {
+                        if (chosen.has(candidate)) continue;
+                        chosen.add(candidate);
+                    }
+                    numbers.push(candidate);
+                }
             }
         } else {
             // Generate non-unique numbers
             for (let i = 0; i < count; i++) {
-                numbers.push(Math.floor(Math.random() * (max - min + 1)) + min);
+                numbers.push(randIntInRange(min, max));
             }
         }
         
@@ -209,25 +264,32 @@ document.addEventListener('DOMContentLoaded', function() {
         
         document.getElementById('export-history-btn').disabled = false;
         
-        historyList.innerHTML = history.map((item, index) => `
+        const esc = typeof escapeHtml === 'function'
+            ? escapeHtml
+            : (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+        historyList.innerHTML = history.map((item, index) => {
+            const nums = Array.isArray(item.numbers) ? item.numbers : [];
+            const displayNums = nums.length === 1 ? String(nums[0]) : nums.join(', ');
+            return `
             <div class="history-item">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
-                        <strong>${item.numbers.length === 1 ? item.numbers[0] : item.numbers.join(', ')}</strong>
-                        <small class="text-muted d-block">Phạm vi: ${item.range}</small>
-                        <small class="text-muted">${item.timestamp}</small>
+                        <strong>${esc(displayNums)}</strong>
+                        <small class="text-muted d-block">Phạm vi: ${esc(item.range)}</small>
+                        <small class="text-muted">${esc(item.timestamp)}</small>
                     </div>
                     <div class="btn-group btn-group-sm">
-                        <button class="btn btn-outline-primary btn-sm copy-history-btn" data-numbers="${item.numbers.join(',')}">
+                        <button type="button" class="btn btn-outline-primary btn-sm copy-history-btn" data-numbers="${esc(nums.join(','))}">
                             <i class="fas fa-copy"></i>
                         </button>
-                        <button class="btn btn-outline-danger btn-sm delete-history-btn" data-index="${index}">
+                        <button type="button" class="btn btn-outline-danger btn-sm delete-history-btn" data-index="${index}">
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>
                 </div>
-            </div>
-        `).join('');
+            </div>`;
+        }).join('');
         
         // Add event listeners for history item buttons
         document.querySelectorAll('.copy-history-btn').forEach(btn => {
@@ -268,18 +330,22 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Most common number
         if (history.length > 0) {
-            const allNumbers = history.flatMap(item => item.numbers);
-            const numberCounts = {};
+            const allNumbers = history.flatMap(item => Array.isArray(item.numbers) ? item.numbers : []);
+            const numberCounts = Object.create(null);
             
             allNumbers.forEach(num => {
                 numberCounts[num] = (numberCounts[num] || 0) + 1;
             });
             
-            const mostCommon = Object.keys(numberCounts).reduce((a, b) => 
-                numberCounts[a] > numberCounts[b] ? a : b
-            );
-            
-            document.getElementById('most-common').textContent = `${mostCommon} (${numberCounts[mostCommon]}x)`;
+            const keys = Object.keys(numberCounts);
+            if (keys.length > 0) {
+                const mostCommon = keys.reduce((a, b) => 
+                    numberCounts[a] > numberCounts[b] ? a : b
+                );
+                document.getElementById('most-common').textContent = `${mostCommon} (${numberCounts[mostCommon]}x)`;
+            } else {
+                document.getElementById('most-common').textContent = '-';
+            }
         } else {
             document.getElementById('most-common').textContent = '-';
         }
@@ -292,19 +358,21 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        const csvContent = 'data:text/csv;charset=utf-8,' + 
-            'Số,Phạm vi,Thời gian,Số lượng\n' +
-            history.map(item => 
-                `"${item.numbers.join(', ')}","${item.range}","${item.timestamp}",${item.count}`
-            ).join('\n');
-        
-        const encodedUri = encodeURI(csvContent);
+        const csvLines = ['Số,Phạm vi,Thời gian,Số lượng'];
+        history.forEach(item => {
+            const nums = Array.isArray(item.numbers) ? item.numbers.join(', ') : '';
+            const escapeCell = (v) => `"${String(v ?? '').replace(/"/g, '""')}"`;
+            csvLines.push(`${escapeCell(nums)},${escapeCell(item.range)},${escapeCell(item.timestamp)},${Number(item.count) || 0}`);
+        });
+        const blob = new Blob(['\uFEFF' + csvLines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
-        link.setAttribute('href', encodedUri);
-        link.setAttribute('download', `random-numbers-history-${new Date().toISOString().split('T')[0]}.csv`);
+        link.href = url;
+        link.download = `random-numbers-history-${new Date().toISOString().split('T')[0]}.csv`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
         
         showAlert('Đã xuất lịch sử thành công!', 'success');
     }
@@ -368,10 +436,13 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Enter key support
+    // Enter key support (ignore command palette, buttons, links, selects)
     document.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            generateRandomNumber();
+        if (e.key !== 'Enter') return;
+        const target = e.target;
+        if (target && (target.closest('#command-palette-overlay') || ['A', 'BUTTON', 'TEXTAREA', 'SELECT'].includes(target.tagName))) {
+            return;
         }
+        generateRandomNumber();
     });
 });

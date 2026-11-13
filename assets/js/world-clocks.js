@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         const clock = {
-            id: Date.now(),
+            id: `${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
             timezone: timezone,
             cityName: cityName || cityNames[timezone] || timezone
         };
@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Remove clock
     function removeClock(id) {
-        clocks = clocks.filter(clock => clock.id !== id);
+        clocks = clocks.filter(clock => String(clock.id) !== String(id));
         saveClocks();
         renderClocks();
         showAlert('Đã xóa đồng hồ!', 'success');
@@ -156,20 +156,31 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
+        const esc = typeof escapeHtml === 'function'
+            ? escapeHtml
+            : (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
         container.innerHTML = clocks.map(clock => `
             <div class="col-lg-3 col-md-4 col-sm-6">
                 <div class="clock-item">
-                    <canvas class="clock-canvas" id="clock-${clock.id}" width="250" height="250"></canvas>
-                    <div class="clock-city-name">${clock.cityName}</div>
-                    <div class="clock-digital-time" id="digital-${clock.id}">00:00:00</div>
-                    <div class="clock-date" id="date-${clock.id}">Loading...</div>
-                    <div class="clock-timezone">${clock.timezone}</div>
-                    <button class="btn btn-sm btn-outline-danger clock-remove-btn" onclick="window.worldClocksRemove(${clock.id})">
+                    <canvas class="clock-canvas" id="clock-${esc(clock.id)}" width="250" height="250"></canvas>
+                    <div class="clock-city-name">${esc(clock.cityName)}</div>
+                    <div class="clock-digital-time" id="digital-${esc(clock.id)}">00:00:00</div>
+                    <div class="clock-date" id="date-${esc(clock.id)}">Loading...</div>
+                    <div class="clock-timezone">${esc(clock.timezone)}</div>
+                    <button type="button" class="btn btn-sm btn-outline-danger clock-remove-btn" data-remove-clock-id="${esc(clock.id)}">
                         <i class="fas fa-trash"></i> Remove
                     </button>
                 </div>
             </div>
         `).join('');
+
+        container.querySelectorAll('.clock-remove-btn[data-remove-clock-id]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetId = btn.dataset.removeClockId;
+                removeClock(targetId);
+            });
+        });
         
         // Update all clocks immediately
         updateAllClocks();
@@ -338,13 +349,17 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Get time in timezone
             const now = new Date();
-            const timeString = now.toLocaleString('en-US', { 
+            let timeString = now.toLocaleString('en-US', { 
                 timeZone: clock.timezone,
                 hour: '2-digit',
                 minute: '2-digit',
                 second: '2-digit',
-                hour12: false
+                hour12: false,
+                hourCycle: 'h23'
             });
+            if (timeString.startsWith('24:')) {
+                timeString = '00:' + timeString.slice(3);
+            }
             
             const dateString = now.toLocaleDateString('en-US', {
                 timeZone: clock.timezone,
@@ -394,8 +409,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     hour: '2-digit',
                     minute: '2-digit',
                     second: '2-digit',
-                    hour12: false
+                    hour12: false,
+                    hourCycle: 'h23'
                 });
+                if (timeString.startsWith('24:')) {
+                    timeString = '00:' + timeString.slice(3);
+                }
                 
                 dateString = now.toLocaleDateString('en-US', {
                     timeZone: embedTimezone,
@@ -560,10 +579,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 digitalCol = '#007bff';
             }
             
+            const esc = typeof escapeHtml === 'function'
+                ? escapeHtml
+                : (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
             embedPreviewContainer.innerHTML = `
                 <div id="embed-preview-wrapper" style="width: 250px; padding: 20px; border: 1px solid ${borderCol}; border-radius: 12px; background: ${bgColor}; box-shadow: 0 4px 12px rgba(0,0,0,0.08); font-family: sans-serif; transition: all 0.3s ease; box-sizing: border-box;">
                     <canvas id="embed-preview-canvas" width="210" height="210" style="display: block; margin: 0 auto; max-width: 100%; height: auto;"></canvas>
-                    <div id="embed-preview-city-name" style="font-size: 1.2rem; font-weight: bold; margin: 10px 0 5px 0; text-align: center; color: ${textCol};">${embedCityNameInput.value}</div>
+                    <div id="embed-preview-city-name" style="font-size: 1.2rem; font-weight: bold; margin: 10px 0 5px 0; text-align: center; color: ${textCol};">${esc(embedCityNameInput.value || 'City')}</div>
                     <div id="embed-preview-digital-time" style="font-size: 1.4rem; font-weight: 500; text-align: center; color: ${digitalCol}; font-family: monospace;">00:00:00</div>
                     <div id="embed-preview-date" style="font-size: 0.9rem; text-align: center; color: ${selectedTheme === 'dark' ? '#aaa' : '#666'}; margin-top: 5px;">Loading...</div>
                 </div>
@@ -572,6 +595,9 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Generate HTML code string
         function generateEmbedCode() {
+            const esc = typeof escapeHtml === 'function'
+                ? escapeHtml
+                : (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
             const timezone = embedTimezoneSelect.value;
             const cityName = embedCityNameInput.value || 'City';
             const theme = embedThemeSelect.value;
@@ -601,15 +627,15 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             const htmlString = `<div class="world-clock-embed" \n` +
-                `     data-timezone="${timezone}" \n` +
-                `     data-city="${cityName}" \n` +
-                `     data-theme="${theme}" \n` +
+                `     data-timezone="${esc(timezone)}" \n` +
+                `     data-city="${esc(cityName)}" \n` +
+                `     data-theme="${esc(theme)}" \n` +
                 `     data-seconds="${showSeconds}" \n` +
                 `     data-numbers="${showNumbers}" \n` +
                 `     data-digital="${showDigital}"\n` +
                 `     style="width: 250px; padding: 20px; border: 1px solid ${containerBorder}; border-radius: 12px; background: ${containerBg}; box-shadow: 0 4px 12px rgba(0,0,0,0.08); font-family: sans-serif; box-sizing: border-box;">\n` +
                 `    <canvas class="clock-canvas" width="210" height="210" style="display: block; margin: 0 auto; max-width: 100%; height: auto;"></canvas>\n` +
-                `    <div class="clock-city-name" style="font-size: 1.2rem; font-weight: bold; margin: 10px 0 5px 0; text-align: center; color: ${containerText};">${cityName}</div>\n` +
+                `    <div class="clock-city-name" style="font-size: 1.2rem; font-weight: bold; margin: 10px 0 5px 0; text-align: center; color: ${containerText};">${esc(cityName)}</div>\n` +
                 `    <div class="clock-digital-time" style="font-size: 1.4rem; font-weight: 500; text-align: center; color: ${digitalColor}; font-family: monospace;${showDigital ? '' : ' display: none;'}">00:00:00</div>\n` +
                 `    <div class="clock-date" style="font-size: 0.9rem; text-align: center; color: ${dateColor}; margin-top: 5px;">Loading...</div>\n` +
                 `</div>\n` +
@@ -662,7 +688,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const code = embedCodeOutput.value;
             if (typeof copyToClipboard === 'function') {
                 copyToClipboard(code);
-                showAlert('Đã sao chép mã nhúng vào clipboard!', 'success');
             } else {
                 navigator.clipboard.writeText(code).then(() => {
                     showAlert('Đã sao chép mã nhúng vào clipboard!', 'success');
@@ -671,6 +696,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             }
         });
+
+        // Set initial city name if empty
+        if (!embedCityNameInput.value && embedTimezoneSelect.value) {
+            embedCityNameInput.value = embedTimezoneSelect.value.split('/').pop().replace(/_/g, ' ');
+        }
         
         // Init state
         onEmbedConfigChange();

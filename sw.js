@@ -1,5 +1,5 @@
 // Service Worker for Offline PWA support
-const CACHE_NAME = 'utility-hub-cache-v1.4';
+const CACHE_NAME = 'utility-hub-cache-v1.5';
 const PRECACHE_ASSETS = [
   './',
   './index.html',
@@ -8,15 +8,10 @@ const PRECACHE_ASSETS = [
   './favicon.ico',
   './site.webmanifest',
   './assets/css/main.css',
-  './assets/js/main.js',
+  './assets/js/security.min.js',
   './assets/js/main.min.js',
-  './assets/js/i18n.js',
   './assets/js/i18n.min.js',
-  './assets/js/languages/vi.js',
-  './assets/js/languages/en.js',
-  './assets/js/languages/zh.js',
-  './assets/js/languages/ko.js',
-  './assets/js/languages/ja.js',
+  './assets/js/command-palette.min.js',
   './assets/js/languages/vi.min.js',
   './assets/js/languages/en.min.js',
   './assets/js/languages/zh.min.js',
@@ -68,9 +63,11 @@ self.addEventListener('fetch', event => {
         caches.match(event.request).then(cachedResponse => {
           if (cachedResponse) return cachedResponse;
           return fetch(event.request).then(networkResponse => {
-            if (networkResponse && networkResponse.status === 200) {
+            if (networkResponse && networkResponse.ok) {
               const cacheCopy = networkResponse.clone();
-              caches.open(CACHE_NAME).then(cache => cache.put(event.request, cacheCopy));
+              event.waitUntil(
+                caches.open(CACHE_NAME).then(cache => cache.put(event.request, cacheCopy))
+              );
             }
             return networkResponse;
           });
@@ -84,9 +81,11 @@ self.addEventListener('fetch', event => {
   if (event.request.mode === 'navigate') {
     event.respondWith(
       fetch(event.request).then(networkResponse => {
-        if (networkResponse && networkResponse.status === 200) {
+        if (networkResponse && networkResponse.ok && networkResponse.type === 'basic') {
           const cacheCopy = networkResponse.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(event.request, cacheCopy));
+          event.waitUntil(
+            caches.open(CACHE_NAME).then(cache => cache.put(event.request, cacheCopy))
+          );
         }
         return networkResponse;
       }).catch(() =>
@@ -103,11 +102,11 @@ self.addEventListener('fetch', event => {
     caches.match(event.request).then(cachedResponse => {
       const networkFetch = fetch(event.request).then(networkResponse => {
         // Cache success responses
-        if (networkResponse && networkResponse.status === 200) {
+        if (networkResponse && networkResponse.ok && networkResponse.type === 'basic') {
           const cacheCopy = networkResponse.clone();
-          caches.open(CACHE_NAME).then(cache => {
-            cache.put(event.request, cacheCopy);
-          });
+          event.waitUntil(
+            caches.open(CACHE_NAME).then(cache => cache.put(event.request, cacheCopy))
+          );
         }
         return networkResponse;
       }).catch(err => {

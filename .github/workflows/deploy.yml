@@ -11,6 +11,9 @@ concurrency:
   group: "pages"
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -28,11 +31,16 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
           cache: 'npm'
       
       - name: Install Node dependencies
-        run: npm ci || npm install
+        run: npm ci
+
+      - name: Check CSS and Run Unit Tests
+        run: |
+          npm run check:css
+          npm test -- --ci
       
       - name: Compile SCSS
         run: npm run build:css

@@ -93,30 +93,34 @@ document.addEventListener('DOMContentLoaded', function () {
       return;
     }
 
-    // For highlighting, ensure we can iterate all matches
-    const flags = re.flags.includes('g') ? re.flags : (re.flags + 'g');
-    let all;
-    try {
-      all = new RegExp(re.source, flags);
-    } catch {
-      all = re;
-    }
-
+    // For highlighting, ensure we can iterate all matches safely
+    const MAX_MATCHES = 2000;
     const matches = [];
     if (text.length) {
-      for (const m of text.matchAll(all)) {
-        if (m.index == null) continue;
-        // Avoid infinite loops on zero-length matches
-        if (m[0] === '') {
-          matches.push({ start: m.index, end: m.index, value: '' });
-          if (all.lastIndex === m.index) all.lastIndex++;
-          continue;
+      let flags = re.flags.replace(/y/g, '');
+      if (!flags.includes('g')) flags += 'g';
+      try {
+        const all = new RegExp(re.source, flags);
+        let m;
+        while ((m = all.exec(text)) !== null) {
+          if (m[0] === '') {
+            matches.push({ start: m.index, end: m.index, value: '' });
+            all.lastIndex++;
+          } else {
+            matches.push({ start: m.index, end: m.index + m[0].length, value: m[0] });
+          }
+          if (matches.length >= MAX_MATCHES) break;
         }
-        matches.push({ start: m.index, end: m.index + m[0].length, value: m[0] });
+      } catch {
+        const single = re.exec(text);
+        if (single) {
+          matches.push({ start: single.index, end: single.index + single[0].length, value: single[0] });
+        }
       }
     }
 
-    matchCountEl.textContent = String(matches.filter(m => m.end > m.start).length);
+    const nonEmptyCount = matches.filter(m => m.end > m.start).length;
+    matchCountEl.textContent = matches.length >= MAX_MATCHES ? `${nonEmptyCount}+` : String(nonEmptyCount);
 
     // Build highlighted HTML
     let out = '';

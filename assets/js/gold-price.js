@@ -87,12 +87,28 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    function parseLocalYMD(str) {
+        if (!str || typeof str !== 'string') return new Date(NaN);
+        const parts = str.split('-').map(Number);
+        if (parts.length !== 3 || parts.some(n => !Number.isFinite(n))) return new Date(str);
+        return new Date(parts[0], parts[1] - 1, parts[2]);
+    }
+
+    const esc = typeof escapeHtml === 'function'
+        ? escapeHtml
+        : (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
     // Load history
     loadHistoricalGold();
 
     async function loadHistoricalGold() {
+        const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+        const timer = controller ? setTimeout(() => controller.abort(), 8000) : null;
         try {
-            const response = await fetch('https://raw.githubusercontent.com/quocthang0507/quocthang0507.github.io/data/assets/data/gold-history.json');
+            const response = await fetch(
+                'https://raw.githubusercontent.com/quocthang0507/quocthang0507.github.io/data/assets/data/gold-history.json',
+                controller ? { signal: controller.signal } : undefined
+            );
             if (!response.ok) throw new Error(`HTTP Status ${response.status}`);
             historicalGold = await response.json();
             
@@ -105,6 +121,8 @@ document.addEventListener('DOMContentLoaded', function() {
         } catch (err) {
             console.error('Failed to load gold history:', err.message);
             showErrorState();
+        } finally {
+            if (timer) clearTimeout(timer);
         }
     }
 
@@ -151,7 +169,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const currentSelected = chartGoldTypeSelect.value;
         chartGoldTypeSelect.innerHTML = codes.map(code => {
             const label = GOLD_NAMES[lang]?.[code] || GOLD_NAMES['en']?.[code] || lastEntry.rates[code].label || code;
-            return `<option value="${code}">${label}</option>`;
+            return `<option value="${esc(code)}">${esc(label)}</option>`;
         }).join('');
 
         if (currentSelected && codes.includes(currentSelected)) {
@@ -169,9 +187,9 @@ document.addEventListener('DOMContentLoaded', function() {
         if (chartLoading) {
             chartLoading.innerHTML = `
                 <div class="text-danger mb-3"><i class="fas fa-exclamation-triangle fa-3x"></i></div>
-                <p class="text-danger font-weight-bold">${errorMsg}</p>
+                <p class="text-danger font-weight-bold">${esc(errorMsg)}</p>
                 <button class="btn btn-primary btn-sm mt-2" onclick="location.reload()">
-                    <i class="fas fa-redo me-1"></i> ${tr('error.back', 'Thử lại')}
+                    <i class="fas fa-redo me-1"></i> ${esc(tr('error.back', 'Thử lại'))}
                 </button>
             `;
         }
@@ -187,9 +205,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // Slice history
         const filteredHistory = historicalGold.slice(-currentPeriod);
 
-        // Labels
+        // Labels (parse YYYY-MM-DD as local date so UTC-negative timezones don't shift by a day)
         const labels = filteredHistory.map(item => {
-            const dateObj = new Date(item.date);
+            const dateObj = parseLocalYMD(item.date);
             return dateObj.toLocaleDateString(lang, {
                 day: '2-digit',
                 month: '2-digit'
@@ -198,11 +216,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Values
         const dataPoints = filteredHistory.map(item => {
-            return item.rates?.[goldType]?.[rateType] || null;
+            return item.rates?.[goldType]?.[rateType] ?? null;
         });
 
         const hasData = dataPoints.some(val => val !== null);
         if (!hasData) {
+            if (goldChartInstance) {
+                goldChartInstance.destroy();
+                goldChartInstance = null;
+            }
             console.warn(`No data points found for ${goldType} - ${rateType}`);
             return;
         }

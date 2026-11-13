@@ -5,8 +5,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const BASE_SOUND_WINDOW_MS = 2500;
     const ALLOWED_SPIN_DURATIONS = [3000, 5000, 7000];
 
-    let names = loadFromLocalStorage('wheelNames') || [];
-    let spinHistory = loadFromLocalStorage('wheelSpinHistory') || [];
+    const tr = (key, fallback) => (typeof window.t === 'function' ? window.t(key, fallback) : fallback);
+
+    const rawNames = loadFromLocalStorage('wheelNames');
+    let names = Array.isArray(rawNames) ? rawNames.filter(n => typeof n === 'string' && n.trim()) : [];
+    const rawSpinHistory = loadFromLocalStorage('wheelSpinHistory');
+    let spinHistory = Array.isArray(rawSpinHistory) ? rawSpinHistory : [];
     let isSpinning = false;
     let currentRotation = 0;
     let currentColorTheme = 'classic';
@@ -334,24 +338,25 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Add name
     function addName(name) {
+        if (isSpinning) return;
         name = name.trim();
         if (name === '') {
-            showAlert(window.t('wheel.warn.enter_name', 'Vui lòng nhập tên!'), 'warning');
+            showAlert(tr('wheel.warn.enter_name', 'Vui lòng nhập tên!'), 'warning');
             return;
         }
         
         if (name.length > 20) {
-            showAlert(window.t('wheel.warn.name_too_long', 'Tên không được dài quá 20 ký tự!'), 'warning');
+            showAlert(tr('wheel.warn.name_too_long', 'Tên không được dài quá 20 ký tự!'), 'warning');
             return;
         }
         
         if (names.includes(name)) {
-            showAlert(window.t('wheel.warn.name_exists', 'Tên này đã tồn tại!'), 'warning');
+            showAlert(tr('wheel.warn.name_exists', 'Tên này đã tồn tại!'), 'warning');
             return;
         }
         
         if (names.length >= 200) {
-            showAlert(window.t('wheel.warn.limit_reached', 'Chỉ có thể thêm tối đa 200 tên!'), 'warning');
+            showAlert(tr('wheel.warn.limit_reached', 'Chỉ có thể thêm tối đa 200 tên!'), 'warning');
             return;
         }
         
@@ -366,7 +371,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Remove name
-    function removeName(index) {
+    function removeName(index, allowDuringSpin = false) {
+        if (isSpinning && !allowDuringSpin) return;
+        if (index < 0 || index >= names.length) return;
         names.splice(index, 1);
         saveNames();
         updateNamesDisplay();
@@ -618,9 +625,14 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Calculate winner after animation
         setTimeout(() => {
-            const normalizedAngle = (360 - (currentRotation % 360)) % 360;
+            if (names.length === 0) {
+                isSpinning = false;
+                setSpinControlsDisabled(false);
+                return;
+            }
+            const normalizedAngle = ((360 - (currentRotation % 360)) + 360) % 360;
             const anglePerSection = 360 / names.length;
-            const winnerIndex = Math.floor(normalizedAngle / anglePerSection);
+            const winnerIndex = Math.floor(normalizedAngle / anglePerSection) % names.length;
             const winner = names[winnerIndex];
             
             // Track wheel spin result
@@ -637,7 +649,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             isSpinning = false;
             setSpinControlsDisabled(false);
-            document.getElementById('spin-btn').disabled = false;
+            document.getElementById('spin-btn').disabled = names.length === 0;
             document.getElementById('spin-btn').innerHTML = '<i class="fas fa-play"></i> Quay bánh xe';
         }, activeSpinDurationMs);
     }
@@ -671,17 +683,20 @@ document.addEventListener('DOMContentLoaded', function() {
             showConfetti();
         }
         
-        // Remove winner if option is checked
+        // Remove winner if option is checked (look up by name to avoid stale index shifts)
         const removeWinnerElement = document.getElementById('remove-winner');
         if (removeWinnerElement && removeWinnerElement.checked) {
             setTimeout(() => {
-                if (confirm(window.t('wheel.warn.remove_winner_confirm', 'Xóa "{name}" khỏi danh sách?').replace('{name}', winner))) {
-                    removeName(winnerIndex);
+                if (confirm(tr('wheel.warn.remove_winner_confirm', 'Xóa "{name}" khỏi danh sách?').replace('{name}', winner))) {
+                    const currentIdx = names.indexOf(winner);
+                    if (currentIdx !== -1) {
+                        removeName(currentIdx, true);
+                    }
                 }
             }, 1000);
         }
         
-        showAlert(window.t('wheel.warn.winner_alert', '🎉 Người thắng: {name}!').replace('{name}', winner), 'success');
+        showAlert(tr('wheel.warn.winner_alert', '🎉 Người thắng: {name}!').replace('{name}', winner), 'success');
     }
     
     // Show confetti effect
@@ -773,10 +788,11 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (!topWinnersElement) return; // Safety check
         
-        // Calculate top winners
+        // Calculate top winners using null-prototype map to avoid prototype key collisions (e.g. "toString")
         if (spinHistory.length > 0) {
-            const winnerCounts = {};
+            const winnerCounts = Object.create(null);
             spinHistory.forEach(item => {
+                if (!item || typeof item.winner !== 'string') return;
                 winnerCounts[item.winner] = (winnerCounts[item.winner] || 0) + 1;
             });
             
@@ -813,7 +829,7 @@ document.addEventListener('DOMContentLoaded', function() {
         link.click();
         document.body.removeChild(link);
         
-        showAlert(window.t('wheel.warn.export_success', 'Đã xuất dữ liệu thành công!'), 'success');
+        showAlert(tr('wheel.warn.export_success', 'Đã xuất dữ liệu thành công!'), 'success');
     }
     
     // Event listeners
@@ -829,12 +845,18 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     document.getElementById('add-bulk-btn').addEventListener('click', function() {
+        if (isSpinning) return;
         const bulkNames = document.getElementById('bulk-names').value;
         const nameList = bulkNames.split('\n').filter(name => name.trim() !== '');
         
         let addedCount = 0;
+        let skippedLong = 0;
         nameList.forEach(name => {
             name = name.trim();
+            if (name.length > 20) {
+                skippedLong++;
+                return;
+            }
             if (name && !names.includes(name) && names.length < 200) {
                 names.push(name);
                 addedCount++;
@@ -847,13 +869,16 @@ document.addEventListener('DOMContentLoaded', function() {
             updateWheelDisplay();
             updateStatistics();
             document.getElementById('bulk-names').value = '';
-            showAlert(window.t('wheel.warn.added_count', 'Đã thêm {count} tên!').replace('{count}', addedCount), 'success');
+            showAlert(tr('wheel.warn.added_count', 'Đã thêm {count} tên!').replace('{count}', addedCount), 'success');
+        } else if (skippedLong > 0) {
+            showAlert(tr('wheel.warn.name_too_long', 'Tên không được dài quá 20 ký tự!'), 'warning');
         }
     });
     
     document.getElementById('spin-btn').addEventListener('click', spinWheel);
     
     document.getElementById('reset-wheel-btn').addEventListener('click', function() {
+        if (isSpinning) return;
         const wheelNames = document.getElementById('wheel-names');
         currentRotation = 0;
         wheelNames.style.transition = 'none';
@@ -873,23 +898,24 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     document.getElementById('clear-names-btn').addEventListener('click', function() {
-        if (names.length > 0 && confirm(window.t('wheel.warn.clear_all_confirm', 'Bạn có chắc muốn xóa tất cả tên?'))) {
+        if (isSpinning) return;
+        if (names.length > 0 && confirm(tr('wheel.warn.clear_all_confirm', 'Bạn có chắc muốn xóa tất cả tên?'))) {
             names = [];
             saveNames();
             updateNamesDisplay();
             updateWheelDisplay();
             updateStatistics();
-            showAlert(window.t('wheel.warn.clear_all_success', 'Đã xóa tất cả tên!'), 'success');
+            showAlert(tr('wheel.warn.clear_all_success', 'Đã xóa tất cả tên!'), 'success');
         }
     });
     
     document.getElementById('clear-history-wheel-btn').addEventListener('click', function() {
-        if (spinHistory.length > 0 && confirm(window.t('wheel.warn.clear_history_confirm', 'Bạn có chắc muốn xóa lịch sử?'))) {
+        if (spinHistory.length > 0 && confirm(tr('wheel.warn.clear_history_confirm', 'Bạn có chắc muốn xóa lịch sử?'))) {
             spinHistory = [];
             saveToLocalStorage('wheelSpinHistory', spinHistory);
             updateHistoryDisplay();
             updateStatistics();
-            showAlert(window.t('wheel.warn.clear_history_success', 'Đã xóa lịch sử!'), 'success');
+            showAlert(tr('wheel.warn.clear_history_success', 'Đã xóa lịch sử!'), 'success');
         }
     });
     
@@ -898,6 +924,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Preset buttons
     document.querySelectorAll('.preset-names-btn').forEach(btn => {
         btn.addEventListener('click', function() {
+            if (isSpinning) return;
             const presetName = this.dataset.preset;
             if (presets[presetName]) {
                 names = [...presets[presetName]];
@@ -905,7 +932,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 updateNamesDisplay();
                 updateWheelDisplay();
                 updateStatistics();
-                showAlert(window.t('wheel.warn.preset_loaded', 'Đã tải preset: {name}!').replace('{name}', presetName), 'success');
+                showAlert(tr('wheel.warn.preset_loaded', 'Đã tải preset: {name}!').replace('{name}', presetName), 'success');
                 
                 // Track preset usage
                 if (typeof gtag !== 'undefined') {

@@ -9,6 +9,11 @@ on:
 jobs:
   fetch-and-store:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    concurrency:
+      group: fetch-rates-history
+      cancel-in-progress: false
     
     steps:
       - name: Checkout data branch
@@ -47,5 +52,8 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add assets/data/rates-history.json assets/data/gold-history.json
-          git diff-index --quiet HEAD || git commit -m "data: update daily exchange rates and gold prices [skip ci]"
-          git push origin data
+          if ! git diff-index --quiet HEAD; then
+            git commit -m "data: update daily exchange rates and gold prices [skip ci]"
+            git pull --rebase origin data || true
+            git push origin data
+          fi

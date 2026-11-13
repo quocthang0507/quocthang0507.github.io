@@ -249,19 +249,30 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             const headers = csvData[0];
-            const rows = csvData.slice(1);
+            const rows = csvData.slice(1).filter(row => row.some(cell => cell.trim() !== ''));
+            const dangerousKeys = new Set(['__proto__', 'constructor', 'prototype']);
             
             const resultList = rows.map(row => {
-                let obj = {};
+                const obj = {};
                 headers.forEach((header, index) => {
+                    const cleanHeader = header.trim();
+                    if (!cleanHeader || dangerousKeys.has(cleanHeader)) return;
+
                     let val = row[index] !== undefined ? row[index].trim() : '';
                     
-                    // Auto-parse numeric/boolean types
+                    // Auto-parse numeric/boolean types (preserve leading-zero codes like "00123")
                     if (val.toLowerCase() === 'true') val = true;
                     else if (val.toLowerCase() === 'false') val = false;
-                    else if (val !== '' && !isNaN(Number(val))) val = Number(val);
+                    else if (val !== '' && !/^0\d+$/.test(val) && !isNaN(Number(val)) && Number.isFinite(Number(val))) {
+                        val = Number(val);
+                    }
 
-                    obj[header.trim()] = val;
+                    Object.defineProperty(obj, cleanHeader, {
+                        value: val,
+                        enumerable: true,
+                        writable: true,
+                        configurable: true
+                    });
                 });
                 return obj;
             });
@@ -282,6 +293,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const flattenObj = (obj) => {
             let flat = {};
             for (let k in obj) {
+                if (!Object.prototype.hasOwnProperty.call(obj, k)) continue;
                 if (typeof obj[k] === 'object' && obj[k] !== null) {
                     flat[k] = JSON.stringify(obj[k]);
                 } else {
@@ -310,13 +322,13 @@ document.addEventListener('DOMContentLoaded', function() {
             return str;
         };
 
-        let csv = headers.map(h => escapeCSVValue(h)).join(',') + '\n';
+        const rows = [headers.map(h => escapeCSVValue(h)).join(',')];
         flatArr.forEach(row => {
             const vals = headers.map(h => escapeCSVValue(row[h]));
-            csv += vals.join(',') + '\n';
+            rows.push(vals.join(','));
         });
 
-        return csv.trim();
+        return rows.join('\n');
     }
 
     // CSV Parser supporting quotes and comma escaping
@@ -372,7 +384,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 const originalText = span.textContent;
                 
                 icon.className = 'fas fa-check text-success';
-                span.textContent = tr('password.copied_short', 'Đã sao chép');
+                const copiedShort = (typeof window.t === 'function' ? window.t('password.copied_short', 'Đã sao chép') : 'Đã sao chép');
+                span.textContent = copiedShort;
                 
                 setTimeout(() => {
                     icon.className = originalIconClass;

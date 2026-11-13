@@ -109,8 +109,13 @@ layout: compress
     </script>
     
     <!-- Additional Performance Hints -->
+    {% if jekyll.environment == "production" %}
+    <link rel="prefetch" href="{{ '/assets/js/main.min.js' | relative_url }}">
+    <link rel="prefetch" href="{{ '/assets/js/i18n.min.js' | relative_url }}">
+    {% else %}
     <link rel="prefetch" href="{{ '/assets/js/main.js' | relative_url }}">
     <link rel="prefetch" href="{{ '/assets/js/i18n.js' | relative_url }}">
+    {% endif %}
     
     <!-- Feed Links -->
     <link rel="alternate" type="application/rss+xml" title="{{ site.title }} RSS Feed" href="{{ '/feed.xml' | relative_url }}">

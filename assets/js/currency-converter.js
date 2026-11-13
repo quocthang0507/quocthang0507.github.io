@@ -215,10 +215,20 @@ document.addEventListener('DOMContentLoaded', function() {
         let xmlContent = null;
         let lastError = null;
 
+        const fetchWithTimeout = async (url, timeoutMs = 8000) => {
+            const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+            const timer = controller ? setTimeout(() => controller.abort(), timeoutMs) : null;
+            try {
+                return await fetch(url, controller ? { signal: controller.signal } : undefined);
+            } finally {
+                if (timer) clearTimeout(timer);
+            }
+        };
+
         for (const proxy of proxies) {
             try {
                 console.log(`Attempting to fetch exchange rates via: ${proxy.url}`);
-                const response = await fetch(proxy.url);
+                const response = await fetchWithTimeout(proxy.url, 8000);
                 xmlContent = await proxy.handler(response);
                 if (xmlContent && xmlContent.includes('ExrateList')) {
                     console.log(`Successfully fetched rates via proxy!`);
@@ -238,11 +248,25 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    const esc = typeof escapeHtml === 'function'
+        ? escapeHtml
+        : (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+    function parseLocalYMD(str) {
+        if (!str || typeof str !== 'string') return new Date(NaN);
+        const parts = str.split('-').map(Number);
+        if (parts.length !== 3 || parts.some(n => !Number.isFinite(n))) return new Date(str);
+        return new Date(parts[0], parts[1] - 1, parts[2]);
+    }
+
     // Parse XML data into exchangeRates array
     function parseExchangeRates(xmlString) {
         try {
             const parser = new DOMParser();
             const xmlDoc = parser.parseFromString(xmlString, 'text/xml');
+            if (xmlDoc.querySelector('parsererror')) {
+                throw new Error('Malformed XML payload');
+            }
             
             // Check parsing errors
             const parserError = xmlDoc.querySelector('parsererror');
@@ -264,13 +288,15 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             rates.forEach(rate => {
-                const code = rate.getAttribute('CurrencyCode');
-                const name = rate.getAttribute('CurrencyName');
+                const code = (rate.getAttribute('CurrencyCode') || '').trim().toUpperCase();
+                const name = (rate.getAttribute('CurrencyName') || code).trim();
+                if (!code) return;
                 
                 // Parse rate values and clean up commas
                 const cleanRate = (val) => {
                     if (!val || val.trim() === '-' || val.trim() === '0') return null;
-                    return parseFloat(val.replace(/,/g, ''));
+                    const parsed = parseFloat(val.replace(/,/g, ''));
+                    return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
                 };
 
                 const buyCash = cleanRate(rate.getAttribute('Buy'));
@@ -321,9 +347,9 @@ document.addEventListener('DOMContentLoaded', function() {
         if (converterLoading) {
             converterLoading.innerHTML = `
                 <div class="text-danger mb-3"><i class="fas fa-exclamation-triangle fa-3x"></i></div>
-                <p class="text-danger font-weight-bold">${errorMsg}</p>
+                <p class="text-danger font-weight-bold">${esc(errorMsg)}</p>
                 <button class="btn btn-primary btn-sm mt-2" onclick="location.reload()">
-                    <i class="fas fa-redo me-1"></i> ${tr('error.back', 'Thử lại')}
+                    <i class="fas fa-redo me-1"></i> ${esc(tr('error.back', 'Thử lại'))}
                 </button>
             `;
         }
@@ -454,19 +480,19 @@ document.addEventListener('DOMContentLoaded', function() {
             const row = document.createElement('tr');
             row.innerHTML = `
                 <td class="text-center font-weight-bold">
-                    <span class="me-1">${flag}</span> ${rate.code}
+                    <span class="me-1">${esc(flag)}</span> ${esc(rate.code)}
                 </td>
                 <td>
-                    <span class="small text-body">${name}</span>
+                    <span class="small text-body">${esc(name)}</span>
                 </td>
                 <td class="text-end font-monospace text-primary">
-                    ${formatRateValue(rate.buyCash)}
+                    ${esc(formatRateValue(rate.buyCash))}
                 </td>
                 <td class="text-end font-monospace text-success">
-                    ${formatRateValue(rate.buyTransfer)}
+                    ${esc(formatRateValue(rate.buyTransfer))}
                 </td>
                 <td class="text-end font-monospace text-danger">
-                    ${formatRateValue(rate.sell)}
+                    ${esc(formatRateValue(rate.sell))}
                 </td>
             `;
 
@@ -518,27 +544,28 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const getRateBuy = (rateObj) => {
             if (transactionType === 'cash') {
-                return rateObj.buyCash || rateObj.buyTransfer || 1.0;
-            } else {
-                return rateObj.buyTransfer || rateObj.buyCash || 1.0;
+                return rateObj.buyCash ?? rateObj.buyTransfer ?? null;
             }
+            return rateObj.buyTransfer ?? rateObj.buyCash ?? null;
         };
 
         const getRateSell = (rateObj) => {
-            return rateObj.sell || 1.0;
+            return rateObj.sell ?? null;
         };
+
+        if (fromCode === toCode) {
+            return amount;
+        }
 
         const xRate = getRateBuy(fromRate);
         const yRate = getRateSell(toRate);
 
-        if (fromCode === toCode) {
-            return amount;
-        } else if (fromCode === 'VND') {
-            return amount / yRate;
+        if (fromCode === 'VND') {
+            return (yRate && yRate > 0) ? amount / yRate : null;
         } else if (toCode === 'VND') {
-            return amount * xRate;
+            return (xRate && xRate > 0) ? amount * xRate : null;
         } else {
-            return (amount * xRate) / yRate;
+            return (xRate && xRate > 0 && yRate && yRate > 0) ? (amount * xRate) / yRate : null;
         }
     }
 
@@ -564,20 +591,18 @@ document.addEventListener('DOMContentLoaded', function() {
         const toFlag = CURRENCY_FLAGS[toCode] || '🏳️';
 
         const amountFormatted = formatNumber(amount, { maximumFractionDigits: 4 });
-        const finalFormatted = formatNumber(finalValue, { 
-            minimumFractionDigits: 2, 
-            maximumFractionDigits: 4 
-        });
+        const finalFormatted = finalValue !== null && Number.isFinite(finalValue)
+            ? formatNumber(finalValue, { minimumFractionDigits: 2, maximumFractionDigits: 4 })
+            : 'N/A';
 
         if (resultFromDisplay) resultFromDisplay.textContent = `${fromFlag} ${amountFormatted} ${fromCode} =`;
         if (resultToDisplay) resultToDisplay.textContent = `${toFlag} ${finalFormatted} ${toCode}`;
 
         // Update Rate Formula Info
         const singleConvert = convertValue(1.0, fromCode, toCode, transactionType);
-        const formulaFormatted = formatNumber(singleConvert, { 
-            minimumFractionDigits: 2, 
-            maximumFractionDigits: 4 
-        });
+        const formulaFormatted = singleConvert !== null && Number.isFinite(singleConvert)
+            ? formatNumber(singleConvert, { minimumFractionDigits: 2, maximumFractionDigits: 4 })
+            : 'N/A';
         if (rateFormula) {
             rateFormula.textContent = `1 ${fromCode} = ${formulaFormatted} ${toCode}`;
         }
@@ -602,8 +627,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const toFlag = CURRENCY_FLAGS[toCode] || '';
 
         // Headers
-        commonFromHeader.innerHTML = `<th colspan="2" class="text-center font-weight-bold text-secondary bg-light">${fromFlag} ${fromCode} → ${toFlag} ${toCode}</th>`;
-        commonToHeader.innerHTML = `<th colspan="2" class="text-center font-weight-bold text-secondary bg-light">${toFlag} ${toCode} → ${fromFlag} ${fromCode}</th>`;
+        commonFromHeader.innerHTML = `<th colspan="2" class="text-center font-weight-bold text-secondary bg-light">${esc(fromFlag)} ${esc(fromCode)} → ${esc(toFlag)} ${esc(toCode)}</th>`;
+        commonToHeader.innerHTML = `<th colspan="2" class="text-center font-weight-bold text-secondary bg-light">${esc(toFlag)} ${esc(toCode)} → ${esc(fromFlag)} ${esc(fromCode)}</th>`;
 
         // Value steps
         const fromAmounts = fromCode === 'VND' ? [10000, 50000, 100000, 200000, 500000, 1000000, 2000000, 5000000] : [1, 5, 10, 50, 100, 500, 1000, 5000];
@@ -613,10 +638,13 @@ document.addEventListener('DOMContentLoaded', function() {
         commonFromBody.innerHTML = '';
         fromAmounts.forEach(amt => {
             const result = convertValue(amt, fromCode, toCode, transactionType);
+            const resultText = result !== null && Number.isFinite(result)
+                ? formatNumber(result, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                : 'N/A';
             const row = document.createElement('tr');
             row.innerHTML = `
-                <td class="w-50 text-end pe-3 font-weight-bold text-muted">${formatNumber(amt)} ${fromCode}</td>
-                <td class="w-50 text-start ps-3 text-primary">${formatNumber(result, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${toCode}</td>
+                <td class="w-50 text-end pe-3 font-weight-bold text-muted">${esc(formatNumber(amt))} ${esc(fromCode)}</td>
+                <td class="w-50 text-start ps-3 text-primary">${esc(resultText)} ${esc(toCode)}</td>
             `;
             commonFromBody.appendChild(row);
         });
@@ -625,10 +653,13 @@ document.addEventListener('DOMContentLoaded', function() {
         commonToBody.innerHTML = '';
         toAmounts.forEach(amt => {
             const result = convertValue(amt, toCode, fromCode, transactionType);
+            const resultText = result !== null && Number.isFinite(result)
+                ? formatNumber(result, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                : 'N/A';
             const row = document.createElement('tr');
             row.innerHTML = `
-                <td class="w-50 text-end pe-3 font-weight-bold text-muted">${formatNumber(amt)} ${toCode}</td>
-                <td class="w-50 text-start ps-3 text-success">${formatNumber(result, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${fromCode}</td>
+                <td class="w-50 text-end pe-3 font-weight-bold text-muted">${esc(formatNumber(amt))} ${esc(toCode)}</td>
+                <td class="w-50 text-start ps-3 text-success">${esc(resultText)} ${esc(fromCode)}</td>
             `;
             commonToBody.appendChild(row);
         });
@@ -776,7 +807,7 @@ document.addEventListener('DOMContentLoaded', function() {
         chartCurrencySelect.innerHTML = sortedCurrencies.map(code => {
             const fullName = CURRENCY_NAMES[lang]?.[code] || CURRENCY_NAMES['en']?.[code] || code;
             const flag = CURRENCY_FLAGS[code] || '🏳️';
-            return `<option value="${code}">${flag} ${code} - ${fullName}</option>`;
+            return `<option value="${esc(code)}">${esc(flag)} ${esc(code)} - ${esc(fullName)}</option>`;
         }).join('');
         
         // Default select target currency from converter 'fromSelect' if possible, otherwise first
@@ -821,9 +852,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // Slice the history to match current period selection (last N entries)
         const filteredHistory = historicalRates.slice(-currentPeriod);
         
-        // Format labels and data points
+        // Format labels and data points (local YYYY-MM-DD parse)
         const labels = filteredHistory.map(item => {
-            const dateObj = new Date(item.date);
+            const dateObj = parseLocalYMD(item.date);
             return dateObj.toLocaleDateString(window.translationSystem?.getCurrentLanguage() || 'vi', {
                 day: '2-digit',
                 month: '2-digit'
@@ -831,11 +862,15 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         const dataPoints = filteredHistory.map(item => {
-            return item.rates?.[currency]?.[rateType] || null;
+            return item.rates?.[currency]?.[rateType] ?? null;
         });
         
         const hasData = dataPoints.some(val => val !== null);
         if (!hasData) {
+            if (ratesChartInstance) {
+                ratesChartInstance.destroy();
+                ratesChartInstance = null;
+            }
             console.warn(`No data points found for ${currency} - ${rateType} in specified range.`);
             return;
         }

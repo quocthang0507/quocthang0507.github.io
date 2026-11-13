@@ -21,9 +21,9 @@ function escapeHtml(str) {
 }
 
 /**
- * Sanitizes HTML string by removing script tags and event handlers
- * @param {string} html - The HTML string to sanitize
- * @returns {string} - The sanitized HTML string
+ * Escapes all HTML by encoding via textContent (does not preserve HTML tags)
+ * @param {string} html - The string to HTML-encode
+ * @returns {string} - The HTML-encoded string
  */
 function sanitizeHtml(html) {
     if (!html) return '';
@@ -36,42 +36,65 @@ function sanitizeHtml(html) {
 }
 
 /**
- * Safely sets innerHTML with automatic sanitization
+ * Safely sets element text content (always avoids unsafe HTML injection)
  * @param {HTMLElement} element - The element to update
- * @param {string} html - The HTML content (will be sanitized)
+ * @param {string} html - The content to display safely as text
  */
 function safeSetInnerHTML(element, html) {
     if (!element) return;
-    
-    // For simple text, use textContent (safer)
-    if (!/<[^>]+>/.test(html)) {
-        element.textContent = html;
-        return;
-    }
-    
-    // For HTML content, sanitize first
-    element.innerHTML = sanitizeHtml(html);
+    element.textContent = html == null ? '' : String(html);
 }
 
 /**
- * Validates and sanitizes URL to prevent javascript: or data: schemes
+ * Validates and sanitizes URL to prevent javascript:, data:, vbscript:, or control-char bypasses
  * @param {string} url - The URL to validate
  * @returns {string|null} - The sanitized URL or null if invalid
  */
 function sanitizeUrl(url) {
-    if (!url) return null;
-    
-    const trimmed = url.trim().toLowerCase();
-    
-    // Block dangerous protocols
-    if (trimmed.startsWith('javascript:') || 
-        trimmed.startsWith('data:') || 
-        trimmed.startsWith('vbscript:')) {
+    if (typeof url !== 'string') return null;
+
+    const trimmed = url.trim();
+    if (!trimmed) return null;
+
+    // Strip ASCII control characters and whitespace when inspecting scheme to block "java\tscript:"
+    const collapsed = trimmed.replace(/[\u0000-\u0020\u007f]+/g, '').toLowerCase();
+
+    if (
+        collapsed.startsWith('javascript:') ||
+        collapsed.startsWith('data:') ||
+        collapsed.startsWith('vbscript:') ||
+        collapsed.startsWith('file:')
+    ) {
         console.warn('Blocked potentially dangerous URL:', url);
         return null;
     }
-    
-    return url;
+
+    // Allow safe same-page anchors and relative paths
+    if (trimmed.startsWith('#') || (trimmed.startsWith('/') && !trimmed.startsWith('//')) || trimmed.startsWith('./') || trimmed.startsWith('../')) {
+        return trimmed;
+    }
+
+    try {
+        const parsed = new URL(trimmed, 'https://example.invalid');
+        const allowedProtocols = ['http:', 'https:', 'mailto:', 'tel:'];
+        if (!allowedProtocols.includes(parsed.protocol)) {
+            console.warn('Blocked disallowed URL protocol:', parsed.protocol);
+            return null;
+        }
+        return trimmed;
+    } catch (_) {
+        return null;
+    }
+}
+
+/**
+ * Validates that a data URL represents a safe raster image (blocks image/svg+xml and arbitrary data)
+ * @param {string} url - Candidate data URL
+ * @returns {boolean} - True if safe raster image data URL
+ */
+function isSafeDataImageUrl(url) {
+    if (typeof url !== 'string') return false;
+    return /^data:image\/(?:png|jpe?g|webp|gif);base64,[A-Za-z0-9+/=]+$/i.test(url.trim());
 }
 
 /**
@@ -158,6 +181,7 @@ if (typeof module !== 'undefined' && module.exports) {
         sanitizeUrl,
         sanitizeError,
         showSafeAlert,
-        isInputSafe
+        isInputSafe,
+        isSafeDataImageUrl
     };
 }

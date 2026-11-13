@@ -56,11 +56,14 @@ function showAlert(message, type = 'info') {
         document.body.appendChild(toastContainer);
     }
 
+    const allowedTypes = new Set(['info', 'success', 'warning', 'danger', 'primary', 'secondary']);
+    const normalizedType = type === 'error' ? 'danger' : (allowedTypes.has(type) ? type : 'info');
+
     const toastElement = document.createElement('div');
-    toastElement.className = `global-toast toast-${type}`;
+    toastElement.className = `global-toast toast-${normalizedType}`;
     
     const messageSpan = document.createElement('span');
-    messageSpan.innerHTML = message;
+    messageSpan.textContent = message == null ? '' : String(message);
     
     const closeButton = document.createElement('button');
     closeButton.type = 'button';
@@ -282,15 +285,36 @@ function openQuickSettingsPanel() {
     panel = document.createElement('div');
     panel.id = 'quick-settings-panel';
     panel.className = 'quick-settings-panel';
-    panel.innerHTML = `
-      <div class="qs-header">
-        <strong>${window.t ? window.t('ui.settings') : 'Settings'}</strong>
-        <button type="button" class="btn-close" aria-label="Close" data-action="close-qsp"></button>
-      </div>
-      <div class="qs-body">
-        <button class="btn btn-sm btn-outline-primary w-100 mb-2" data-action="toggle-custom-theme">${window.t ? window.t('ui.toggle_custom_theme') : 'Toggle enhanced theme'}</button>
-        <button class="btn btn-sm btn-outline-secondary w-100" data-action="close-qsp">${window.t ? window.t('ui.close') : 'Close'}</button>
-      </div>`;
+
+    const header = document.createElement('div');
+    header.className = 'qs-header';
+    const titleEl = document.createElement('strong');
+    titleEl.textContent = window.t ? window.t('ui.settings') : 'Settings';
+    const headerCloseBtn = document.createElement('button');
+    headerCloseBtn.type = 'button';
+    headerCloseBtn.className = 'btn-close';
+    headerCloseBtn.setAttribute('aria-label', 'Close');
+    headerCloseBtn.dataset.action = 'close-qsp';
+    header.appendChild(titleEl);
+    header.appendChild(headerCloseBtn);
+
+    const body = document.createElement('div');
+    body.className = 'qs-body';
+    const toggleBtn = document.createElement('button');
+    toggleBtn.type = 'button';
+    toggleBtn.className = 'btn btn-sm btn-outline-primary w-100 mb-2';
+    toggleBtn.dataset.action = 'toggle-custom-theme';
+    toggleBtn.textContent = window.t ? window.t('ui.toggle_custom_theme') : 'Toggle enhanced theme';
+    const closeBtn = document.createElement('button');
+    closeBtn.type = 'button';
+    closeBtn.className = 'btn btn-sm btn-outline-secondary w-100';
+    closeBtn.dataset.action = 'close-qsp';
+    closeBtn.textContent = window.t ? window.t('ui.close') : 'Close';
+    body.appendChild(toggleBtn);
+    body.appendChild(closeBtn);
+
+    panel.appendChild(header);
+    panel.appendChild(body);
     panel.addEventListener('click', (e) => {
         if (e.target.matches('[data-action="close-qsp"]')) {
             panel.classList.remove('open');

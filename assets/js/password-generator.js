@@ -68,16 +68,48 @@ document.addEventListener('DOMContentLoaded', function() {
     copyBtn.addEventListener('click', copyPassword);
     clearHistoryBtn.addEventListener('click', clearHistory);
     
-    // Generate password on Enter key
+    // Generate password on Enter key (ignore command palette, buttons, links)
     document.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') {
-            generatePassword();
+        if (e.key !== 'Enter') return;
+        const target = e.target;
+        if (target && (target.closest('#command-palette-overlay') || ['A', 'BUTTON', 'TEXTAREA', 'SELECT'].includes(target.tagName))) {
+            return;
         }
+        generatePassword();
     });
+
+    function secureRandomInt(max) {
+        if (max <= 1) return 0;
+        const cryptoObj = window.crypto || window.msCrypto;
+        if (cryptoObj && typeof cryptoObj.getRandomValues === 'function') {
+            const limit = 0x100000000 - (0x100000000 % max);
+            const buf = new Uint32Array(1);
+            let value;
+            do {
+                cryptoObj.getRandomValues(buf);
+                value = buf[0];
+            } while (value >= limit);
+            return value % max;
+        }
+        return Math.floor(Math.random() * max);
+    }
+
+    function shuffleArray(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = secureRandomInt(i + 1);
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+
+    function filterAmbiguous(chars, exclude) {
+        if (!exclude) return chars;
+        return chars.split('').filter(c => !AMBIGUOUS.includes(c)).join('');
+    }
     
     // Generate password function
     function generatePassword() {
-        const length = parseInt(lengthSlider.value);
+        const length = parseInt(lengthSlider.value, 10) || 12;
         const options = {
             uppercase: includeUppercase.checked,
             lowercase: includeLowercase.checked,
@@ -93,17 +125,15 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // Build character set
-        let charset = '';
-        if (options.uppercase) charset += UPPERCASE;
-        if (options.lowercase) charset += LOWERCASE;
-        if (options.numbers) charset += NUMBERS;
-        if (options.symbols) charset += SYMBOLS;
-        
-        // Remove ambiguous characters if requested
-        if (options.excludeAmbiguous) {
-            charset = charset.split('').filter(char => !AMBIGUOUS.includes(char)).join('');
-        }
+        // Build active pools & combined character set respecting excludeAmbiguous
+        const pools = [];
+        if (options.uppercase) pools.push(filterAmbiguous(UPPERCASE, options.excludeAmbiguous));
+        if (options.lowercase) pools.push(filterAmbiguous(LOWERCASE, options.excludeAmbiguous));
+        if (options.numbers) pools.push(filterAmbiguous(NUMBERS, options.excludeAmbiguous));
+        if (options.symbols) pools.push(filterAmbiguous(SYMBOLS, options.excludeAmbiguous));
+
+        const nonEmptyPools = pools.filter(p => p.length > 0);
+        const charset = nonEmptyPools.join('');
         
         // Check if enough unique characters for no duplicate option
         if (options.noDuplicate && charset.length < length) {
@@ -116,26 +146,40 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // Generate password
-        let password = '';
-        const charArray = charset.split('');
-        
+        // Generate password using CSPRNG and unbiased Fisher-Yates shuffle
+        const passwordChars = [];
+
         if (options.noDuplicate) {
-            // Shuffle array and take first n characters
-            const shuffled = charArray.sort(() => Math.random() - 0.5);
-            password = shuffled.slice(0, length).join('');
+            const used = new Set();
+            // Guarantee one character from each active pool when length permits
+            if (length >= nonEmptyPools.length) {
+                for (const pool of nonEmptyPools) {
+                    const available = pool.split('').filter(c => !used.has(c));
+                    if (available.length > 0) {
+                        const chosen = available[secureRandomInt(available.length)];
+                        passwordChars.push(chosen);
+                        used.add(chosen);
+                    }
+                }
+            }
+            const remainingPool = charset.split('').filter(c => !used.has(c));
+            shuffleArray(remainingPool);
+            while (passwordChars.length < length && remainingPool.length > 0) {
+                passwordChars.push(remainingPool.pop());
+            }
         } else {
-            // Random selection with possible duplicates
-            for (let i = 0; i < length; i++) {
-                const randomIndex = Math.floor(Math.random() * charArray.length);
-                password += charArray[randomIndex];
+            if (length >= nonEmptyPools.length) {
+                for (const pool of nonEmptyPools) {
+                    passwordChars.push(pool[secureRandomInt(pool.length)]);
+                }
+            }
+            const charArray = charset.split('');
+            while (passwordChars.length < length) {
+                passwordChars.push(charArray[secureRandomInt(charArray.length)]);
             }
         }
-        
-        // Ensure at least one character from each selected type
-        if (!options.noDuplicate) {
-            password = ensureCharacterTypes(password, options, length);
-        }
+
+        const password = shuffleArray(passwordChars).join('');
         
         currentPassword = password;
         passwordDisplay.textContent = password;
@@ -160,41 +204,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 has_symbols: options.symbols
             });
         }
-    }
-    
-    // Ensure password has at least one character from each selected type
-    function ensureCharacterTypes(password, options, length) {
-        const chars = password.split('');
-        let hasUppercase = !options.uppercase;
-        let hasLowercase = !options.lowercase;
-        let hasNumber = !options.numbers;
-        let hasSymbol = !options.symbols;
-        
-        // Check what we have
-        for (const char of chars) {
-            if (UPPERCASE.includes(char)) hasUppercase = true;
-            if (LOWERCASE.includes(char)) hasLowercase = true;
-            if (NUMBERS.includes(char)) hasNumber = true;
-            if (SYMBOLS.includes(char)) hasSymbol = true;
-        }
-        
-        // Add missing types
-        let index = 0;
-        if (!hasUppercase && options.uppercase) {
-            chars[index++] = UPPERCASE[Math.floor(Math.random() * UPPERCASE.length)];
-        }
-        if (!hasLowercase && options.lowercase) {
-            chars[index++] = LOWERCASE[Math.floor(Math.random() * LOWERCASE.length)];
-        }
-        if (!hasNumber && options.numbers) {
-            chars[index++] = NUMBERS[Math.floor(Math.random() * NUMBERS.length)];
-        }
-        if (!hasSymbol && options.symbols) {
-            chars[index++] = SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)];
-        }
-        
-        // Shuffle to randomize position of enforced characters
-        return chars.sort(() => Math.random() - 0.5).join('');
     }
     
     // Calculate password strength

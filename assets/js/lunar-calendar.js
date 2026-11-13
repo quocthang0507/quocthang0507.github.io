@@ -177,7 +177,8 @@ document.addEventListener('DOMContentLoaded', function() {
     function getZodiacAnimal(year) {
         const animals = ['Tý (Chuột)', 'Sửu (Trâu)', 'Dần (Hổ)', 'Mão (Mèo)', 'Thìn (Rồng)', 'Tỵ (Rắn)', 
                         'Ngọ (Ngựa)', 'Mùi (Dê)', 'Thân (Khỉ)', 'Dậu (Gà)', 'Tuất (Chó)', 'Hợi (Heo)'];
-        return animals[(year - 4) % 12];
+        const idx = (((year - 4) % 12) + 12) % 12;
+        return animals[idx];
     }
     
     // Get heavenly stems and earthly branches
@@ -185,8 +186,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const can = ['Giáp', 'Ất', 'Bính', 'Đinh', 'Mậu', 'Kỷ', 'Canh', 'Tân', 'Nhâm', 'Quý'];
         const chi = ['Tý', 'Sửu', 'Dần', 'Mão', 'Thìn', 'Tỵ', 'Ngọ', 'Mùi', 'Thân', 'Dậu', 'Tuất', 'Hợi'];
         
-        const canIndex = (year - 4) % 10;
-        const chiIndex = (year - 4) % 12;
+        const canIndex = (((year - 4) % 10) + 10) % 10;
+        const chiIndex = (((year - 4) % 12) + 12) % 12;
         
         return `${can[canIndex]} ${chi[chiIndex]}`;
     }
@@ -194,8 +195,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Get lunar month names
     function getLunarMonthName(month, isLeap = false) {
         const monthNames = ['', 'Giêng', 'Hai', 'Ba', 'Tư', 'Năm', 'Sáu', 'Bảy', 'Tám', 'Chín', 'Mười', 'Mười một', 'Chạp'];
+        const name = monthNames[month] || String(month);
         const leapPrefix = isLeap ? 'Nhuận ' : '';
-        return `${leapPrefix}Tháng ${monthNames[month]}`;
+        return `${leapPrefix}Tháng ${name}`;
     }
     
     // Check if lunar year is leap year
@@ -315,14 +317,16 @@ document.addEventListener('DOMContentLoaded', function() {
             warningsEn.push('Thu Tu Day (Very Bad)');
         }
         
-        // 4. Overall Day Assessment
+        // 4. Overall Day Assessment:
+        // Hoàng Đạo + no warnings => Good; any critical/multiple warnings or Hắc Đạo with warning => Bad; otherwise Neutral
         let status = 'bình thường'; // 'tốt', 'xấu', 'bình thường'
         let statusEn = 'neutral';    // 'good', 'bad', 'neutral'
-        
+
+        const hasSevereWarning = satChuMap[m] === dayChiIndex || thuTuMap[m] === dayChiIndex;
         if (isHoangDao && warnings.length === 0) {
             status = 'tốt';
             statusEn = 'good';
-        } else if (warnings.length > 0 || !isHoangDao) {
+        } else if ((!isHoangDao && warnings.length > 0) || hasSevereWarning || warnings.length >= 2) {
             status = 'xấu';
             statusEn = 'bad';
         }

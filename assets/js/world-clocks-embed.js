@@ -44,8 +44,12 @@
                         hour: '2-digit',
                         minute: '2-digit',
                         second: '2-digit',
-                        hour12: false
+                        hour12: false,
+                        hourCycle: 'h23'
                     });
+                    if (timeString.startsWith('24:')) {
+                        timeString = '00:' + timeString.slice(3);
+                    }
                     
                     dateString = now.toLocaleDateString('en-US', {
                         timeZone: timezone,

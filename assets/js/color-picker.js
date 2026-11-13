@@ -899,8 +899,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function handleWheelClick(e) {
         const rect = colorWheel.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
+        if (!rect.width || !rect.height) return;
+        const scaleX = colorWheel.width / rect.width;
+        const scaleY = colorWheel.height / rect.height;
+        const x = (e.clientX - rect.left) * scaleX;
+        const y = (e.clientY - rect.top) * scaleY;
         
         const centerX = colorWheel.width / 2;
         const centerY = colorWheel.height / 2;
@@ -1059,7 +1062,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         savedColorsContainer.innerHTML = '';
-        savedColors.forEach((hex, index) => {
+        savedColors.forEach((rawHex, index) => {
+            const normalized = normalizeHexColor(rawHex);
+            if (!normalized) return;
+            const hex = normalized.slice(1);
             const colorDiv = document.createElement('div');
             colorDiv.className = 'saved-color';
             colorDiv.style.backgroundColor = `#${hex}`;
@@ -1115,12 +1121,19 @@ document.addEventListener('DOMContentLoaded', function() {
             window.showAlert(message, type);
             return;
         }
+        const allowedTypes = new Set(['info', 'success', 'warning', 'danger']);
+        const safeType = allowedTypes.has(type) ? type : 'info';
         const alertDiv = document.createElement('div');
-        alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
-        alertDiv.innerHTML = `
-            ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `;
+        alertDiv.className = `alert alert-${safeType} alert-dismissible fade show`;
+        const messageSpan = document.createElement('span');
+        messageSpan.textContent = message == null ? '' : String(message);
+        const closeBtn = document.createElement('button');
+        closeBtn.type = 'button';
+        closeBtn.className = 'btn-close';
+        closeBtn.setAttribute('data-bs-dismiss', 'alert');
+        closeBtn.setAttribute('aria-label', 'Close');
+        alertDiv.appendChild(messageSpan);
+        alertDiv.appendChild(closeBtn);
         
         alertContainer.innerHTML = '';
         alertContainer.appendChild(alertDiv);

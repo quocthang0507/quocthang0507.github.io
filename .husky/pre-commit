@@ -8,8 +8,8 @@ if [ -n "$JS_FILES" ]; then
     echo "🔨 JavaScript files changed, running minification..."
     npm run minify:js
     
-    # Stage the minified files
-    git add assets/js/**/*.min.js 2>/dev/null || true
+    # Stage the minified files (POSIX sh lacks globstar, so use find)
+    find assets/js -name '*.min.js' -exec git add {} +
     
     echo "✅ Minified JS files added to commit"
 else
@@ -23,6 +23,11 @@ if [ -n "$SCSS_FILES" ]; then
     echo "🎨 Sass files changed, compiling CSS..."
     npm run build:css
     git add assets/css/main.css assets/css/main.css.map
+fi
+
+if [ -n "$JS_FILES" ]; then
+    echo "🧪 Running unit tests..."
+    npm test -- --bail
 fi
 
 echo "✅ Pre-commit checks passed!"

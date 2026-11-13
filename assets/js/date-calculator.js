@@ -17,8 +17,23 @@ function dcLocale() {
 
 // Parse "YYYY-MM-DD" as a local date (new Date(str) would treat it as UTC midnight)
 function parseLocalDate(str) {
-    const [y, m, d] = str.split('-').map(Number);
-    return new Date(y, m - 1, d);
+    if (!str || typeof str !== 'string') return new Date(NaN);
+    const parts = str.split('-').map(Number);
+    if (parts.length !== 3 || parts.some(n => !Number.isFinite(n))) {
+        return new Date(NaN);
+    }
+    const [y, m, d] = parts;
+    const date = new Date(y, m - 1, d);
+    date.setFullYear(y);
+    return date;
+}
+
+function notifyDateError(msg) {
+    if (typeof window.showAlert === 'function') {
+        window.showAlert(msg, 'warning');
+    } else {
+        alert(msg);
+    }
 }
 
 function toInputValue(date) {
@@ -215,11 +230,15 @@ function calculateWeekday() {
     const dateStr = document.getElementById('weekdayDate').value;
 
     if (!dateStr) {
-        alert(dcT('date_calc.error.select_date', 'Please select a date'));
+        notifyDateError(dcT('date_calc.error.select_date', 'Please select a date'));
         return;
     }
 
     const date = parseLocalDate(dateStr);
+    if (isNaN(date.getTime())) {
+        notifyDateError(dcT('date_calc.error.select_date', 'Please select a valid date'));
+        return;
+    }
     const locale = dcLocale();
 
     const weekdayLong = date.toLocaleDateString(locale, { weekday: 'long' });
@@ -267,16 +286,20 @@ function getWeekNumber(date) {
 // Update translations when language changes
 window.addEventListener('languageChanged', function() {
     // Re-render results if they exist
-    if (document.getElementById('diffResult').style.display === 'block') {
+    const diffResult = document.getElementById('diffResult');
+    if (diffResult && diffResult.style.display === 'block') {
         calculateDateDifference();
     }
-    if (document.getElementById('addResult').style.display === 'block') {
+    const addResult = document.getElementById('addResult');
+    if (addResult && addResult.style.display === 'block') {
         shiftFromInput(lastShiftDirection);
     }
-    if (document.getElementById('ageResult').style.display === 'block') {
+    const ageResult = document.getElementById('ageResult');
+    if (ageResult && ageResult.style.display === 'block') {
         calculateAge();
     }
-    if (document.getElementById('weekdayResult').style.display === 'block') {
+    const weekdayResult = document.getElementById('weekdayResult');
+    if (weekdayResult && weekdayResult.style.display === 'block') {
         calculateWeekday();
     }
 });

@@ -5,6 +5,7 @@ module.exports = {
     '**/tests/unit/**/*.spec.js'
   ],
   testPathIgnorePatterns: ['/node_modules/', '/.git/', '/tests/ui/', '/_site/'],
+  modulePathIgnorePatterns: ['<rootDir>/_site/'],
   collectCoverageFrom: [
     'assets/js/**/*.js',
     '!assets/js/languages/*.js', // Exclude language files
