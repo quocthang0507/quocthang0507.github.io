@@ -1,60 +1,5 @@
 [
   {
-    "date": "2025-06-04",
-    "rates": {
-      "ha_noi_pnj": {
-        "buy": 160007,
-        "sell": 156977,
-        "label": "Hà Nội PNJ"
-      },
-      "ha_noi_sjc": {
-        "buy": 155877,
-        "sell": 152938,
-        "label": "Hà Nội SJC"
-      },
-      "nu_trang_99.99percent": {
-        "buy": 151971,
-        "sell": 155445,
-        "label": "Nữ Trang 99.99%"
-      },
-      "nu_trang_99percent": {
-        "buy": 149910,
-        "sell": 156456,
-        "label": "Nữ Trang 99%"
-      },
-      "sjc_1l_10l": {
-        "buy": 149683,
-        "sell": 152566,
-        "label": "SJC 1L, 10L, 1KG"
-      },
-      "sjc_2c_1c_5_phan": {
-        "buy": 155149,
-        "sell": 158176,
-        "label": "SJC 2c, 1C, 5 phân"
-      },
-      "sjc_5c": {
-        "buy": 150100,
-        "sell": 153009,
-        "label": "SJC 5c"
-      },
-      "thegioi": {
-        "buy": 4396,
-        "sell": 4398,
-        "label": "Giá vàng thế giới"
-      },
-      "tphcm_pnj": {
-        "buy": 153279,
-        "sell": 150371,
-        "label": "TPHCM PNJ"
-      },
-      "tphcm_sjc": {
-        "buy": 156759,
-        "sell": 153782,
-        "label": "TPHCM SJC"
-      }
-    }
-  },
-  {
     "date": "2025-06-05",
     "rates": {
       "ha_noi_pnj": {
@@ -20099,6 +20044,71 @@
       "tphcm_sjc": {
         "buy": 134500,
         "date_label": "14/11/2026",
+        "label": "TPHCM SJC",
+        "sell": 137500
+      }
+    }
+  },
+  {
+    "date": "2026-11-15",
+    "rates": {
+      "ha_noi_pnj": {
+        "buy": 132700,
+        "date_label": "16/11/2026",
+        "label": "Hà Nội PNJ",
+        "sell": 136900
+      },
+      "ha_noi_sjc": {
+        "buy": 134500,
+        "date_label": "16/11/2026",
+        "label": "Hà Nội SJC",
+        "sell": 137500
+      },
+      "nu_trang_99.99percent": {
+        "buy": 131600,
+        "date_label": "16/11/2026",
+        "label": "Nữ Trang 99.99%",
+        "sell": 136300
+      },
+      "nu_trang_99percent": {
+        "buy": 127950,
+        "date_label": "16/11/2026",
+        "label": "Nữ Trang 99%",
+        "sell": 134950
+      },
+      "sjc_1l_10l": {
+        "buy": 134500,
+        "date_label": "16/11/2026",
+        "label": "SJC 1L, 10L, 1KG",
+        "sell": 137500
+      },
+      "sjc_2c_1c_5_phan": {
+        "buy": 134500,
+        "date_label": "16/11/2026",
+        "label": "SJC 2c, 1C, 5 phân",
+        "sell": 137530
+      },
+      "sjc_5c": {
+        "buy": 134500,
+        "date_label": "16/11/2026",
+        "label": "SJC 5c",
+        "sell": 137520
+      },
+      "thegioi": {
+        "buy": 3883.4,
+        "date_label": "16/11/2026",
+        "label": "Giá vàng thế giới",
+        "sell": 3885.4
+      },
+      "tphcm_pnj": {
+        "buy": 132700,
+        "date_label": "16/11/2026",
+        "label": "TPHCM PNJ",
+        "sell": 136900
+      },
+      "tphcm_sjc": {
+        "buy": 134500,
+        "date_label": "16/11/2026",
         "label": "TPHCM SJC",
         "sell": 137500
       }
