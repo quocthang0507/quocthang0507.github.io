@@ -1,110 +1,5 @@
 [
   {
-    "date": "2025-06-11",
-    "rates": {
-      "AUD": {
-        "buyCash": 18628.31,
-        "buyTransfer": 18816.51,
-        "sell": 19419.16
-      },
-      "CAD": {
-        "buyCash": 18409.92,
-        "buyTransfer": 18595.87,
-        "sell": 19191.29
-      },
-      "CHF": {
-        "buyCash": 33032.82,
-        "buyTransfer": 33366.39,
-        "sell": 34434.99
-      },
-      "CNY": {
-        "buyCash": 3687.8,
-        "buyTransfer": 3725.09,
-        "sell": 3844.35
-      },
-      "DKK": {
-        "buyCash": null,
-        "buyTransfer": 4089.23,
-        "sell": 4245.66
-      },
-      "EUR": {
-        "buyCash": 29760.95,
-        "buyTransfer": 30061.46,
-        "sell": 31329.83
-      },
-      "GBP": {
-        "buyCash": 34516.39,
-        "buyTransfer": 34865.04,
-        "sell": 35981.44
-      },
-      "HKD": {
-        "buyCash": 3175.02,
-        "buyTransfer": 3207.02,
-        "sell": 3329.53
-      },
-      "INR": {
-        "buyCash": null,
-        "buyTransfer": 276.05,
-        "sell": 287.7
-      },
-      "JPY": {
-        "buyCash": 160.48,
-        "buyTransfer": 162.08,
-        "sell": 170.71
-      },
-      "KRW": {
-        "buyCash": 15.02,
-        "buyTransfer": 16.73,
-        "sell": 18.2
-      },
-      "KWD": {
-        "buyCash": null,
-        "buyTransfer": 86258.04,
-        "sell": 90438.69
-      },
-      "MYR": {
-        "buyCash": null,
-        "buyTransfer": 6551.08,
-        "sell": 6693.5
-      },
-      "NOK": {
-        "buyCash": null,
-        "buyTransfer": 2718.44,
-        "sell": 2833.76
-      },
-      "RUB": {
-        "buyCash": null,
-        "buyTransfer": 350.09,
-        "sell": 387.47
-      },
-      "SAR": {
-        "buyCash": null,
-        "buyTransfer": 7155.98,
-        "sell": 7463.79
-      },
-      "SEK": {
-        "buyCash": null,
-        "buyTransfer": 2717.82,
-        "sell": 2832.95
-      },
-      "SGD": {
-        "buyCash": 19659.56,
-        "buyTransfer": 19858.15,
-        "sell": 20535.09
-      },
-      "THB": {
-        "buyCash": 709.83,
-        "buyTransfer": 788.8,
-        "sell": 822.2
-      },
-      "USD": {
-        "buyCash": 26199.46,
-        "buyTransfer": 26229.5,
-        "sell": 26510.84
-      }
-    }
-  },
-  {
     "date": "2025-06-12",
     "rates": {
       "AUD": {
@@ -38221,6 +38116,111 @@
   },
   {
     "date": "2026-11-21",
+    "rates": {
+      "AUD": {
+        "buyCash": 16743.86,
+        "buyTransfer": 16912.99,
+        "sell": 17455.16
+      },
+      "CAD": {
+        "buyCash": 17542.76,
+        "buyTransfer": 17719.96,
+        "sell": 18288
+      },
+      "CHF": {
+        "buyCash": 29830.61,
+        "buyTransfer": 30131.93,
+        "sell": 31097.85
+      },
+      "CNY": {
+        "buyCash": 3767.79,
+        "buyTransfer": 3805.84,
+        "sell": 3927.84
+      },
+      "DKK": {
+        "buyCash": null,
+        "buyTransfer": 3717.83,
+        "sell": 3860.11
+      },
+      "EUR": {
+        "buyCash": 27582.27,
+        "buyTransfer": 27860.87,
+        "sell": 29037.28
+      },
+      "GBP": {
+        "buyCash": 32924.82,
+        "buyTransfer": 33257.4,
+        "sell": 34323.51
+      },
+      "HKD": {
+        "buyCash": 3195.97,
+        "buyTransfer": 3228.25,
+        "sell": 3351.79
+      },
+      "INR": {
+        "buyCash": null,
+        "buyTransfer": 275.33,
+        "sell": 287.19
+      },
+      "JPY": {
+        "buyCash": 155.93,
+        "buyTransfer": 157.51,
+        "sell": 166.68
+      },
+      "KRW": {
+        "buyCash": 16.68,
+        "buyTransfer": 18.53,
+        "sell": 20.1
+      },
+      "KWD": {
+        "buyCash": null,
+        "buyTransfer": 82983.14,
+        "sell": 87007.82
+      },
+      "MYR": {
+        "buyCash": null,
+        "buyTransfer": 6204.22,
+        "sell": 6339.38
+      },
+      "NOK": {
+        "buyCash": null,
+        "buyTransfer": 2588.57,
+        "sell": 2698.41
+      },
+      "RUB": {
+        "buyCash": null,
+        "buyTransfer": 298.68,
+        "sell": 330.63
+      },
+      "SAR": {
+        "buyCash": null,
+        "buyTransfer": 6835.99,
+        "sell": 7130.4
+      },
+      "SEK": {
+        "buyCash": null,
+        "buyTransfer": 2480.46,
+        "sell": 2585.71
+      },
+      "SGD": {
+        "buyCash": 19454.97,
+        "buyTransfer": 19651.49,
+        "sell": 20322.05
+      },
+      "THB": {
+        "buyCash": 669.76,
+        "buyTransfer": 744.17,
+        "sell": 775.75
+      },
+      "USD": {
+        "buyCash": 25570,
+        "buyTransfer": 25600,
+        "sell": 25980
+      }
+    }
+  },
+  {
+    "date": "2026-11-22",
     "rates": {
       "AUD": {
         "buyCash": 16743.86,
