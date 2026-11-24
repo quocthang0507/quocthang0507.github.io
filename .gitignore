@@ -41,3 +41,7 @@ Gemfile.lock
 # Ignore auto-generated history data (lives in 'data' branch)
 assets/data/rates-history.json
 assets/data/gold-history.json
+
+# Impeccable per-machine state (consent choice, detector cache)
+.impeccable/config.local.json
+.impeccable/hook.cache.json

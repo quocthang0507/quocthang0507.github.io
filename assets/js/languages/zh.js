@@ -1,5 +1,6 @@
 // Chinese Language File (Simplified)
 const chineseTranslations = {
+    "timer.countdown": "倒计时",
     "home.all_tools": "全部工具",
     "date_calc.days": "天",
     "date_calc.weeks": "周",
@@ -35,7 +36,6 @@ const chineseTranslations = {
     "np.batch_progress": "正在创建第 {done}/{total} 位代表…",
     "np.batch_done": "已为 {count} 位代表创建 ZIP。",
     "np.batch_size": "文件总量超过 100 MB。请降低 DPI、拆分名单或导出 SVG。",
-    "np.eyebrow": "活动工具",
     "np.title": "代表姓名牌",
     "np.intro": "按实际尺寸设计精美姓名牌。在浏览器中实时预览并下载。",
     "np.delegates": "代表名单",

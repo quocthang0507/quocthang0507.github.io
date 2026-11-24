@@ -576,7 +576,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 bgColor = '#fff';
                 borderCol = '#ddd';
                 textCol = '#333';
-                digitalCol = '#007bff';
+                digitalCol = '#0062cc';
             }
             
             const esc = typeof escapeHtml === 'function'
@@ -622,7 +622,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 containerBg = '#fff';
                 containerBorder = '#ddd';
                 containerText = '#333';
-                digitalColor = '#007bff';
+                digitalColor = '#0062cc';
                 dateColor = '#666';
             }
             

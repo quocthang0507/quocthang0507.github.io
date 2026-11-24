@@ -753,7 +753,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         historyDiv.innerHTML = spinHistory.map((item, index) => `
-            <div class="d-flex justify-content-between align-items-center mb-2 p-2 border-start border-4 border-primary bg-light rounded">
+            <div class="d-flex justify-content-between align-items-center mb-2 p-2 bg-light rounded">
                 <div>
                     <strong>${escapeHtml(item.winner)}</strong>
                     <small class="text-muted d-block">${escapeHtml(item.timestamp)}</small>

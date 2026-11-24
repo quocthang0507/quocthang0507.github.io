@@ -34,6 +34,25 @@ main {
   padding-bottom: 2rem;
 }
 
+// ─── Browser surfaces (selection, focus, native controls) ───
+:root {
+  accent-color: var(--bs-primary);
+}
+
+::selection {
+  background: rgba(var(--bs-primary-rgb), 0.25);
+}
+
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+summary:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--bs-primary);
+  outline-offset: 2px;
+}
+
 // ─── Typography ───
 h1, h2, h3, h4, h5, h6 {
   margin-top: 0;
@@ -81,7 +100,7 @@ label { display: inline-block; }
 .clock-display {
   font-size: 4.5rem;
   font-weight: 700;
-  color: var(--bs-primary);
+  color: var(--bs-primary-text);
   font-family: var(--bs-font-monospace);
   letter-spacing: 0.05em;
   text-shadow: 2px 2px 4px var(--nm-shadow-dark);
@@ -89,7 +108,7 @@ label { display: inline-block; }
 
 .date-display {
   font-size: 1.25rem;
-  color: var(--bs-secondary);
+  color: var(--bs-secondary-text);
   font-weight: 500;
   margin-top: 0.5rem;
 }
@@ -151,7 +170,7 @@ label { display: inline-block; }
   margin-top: auto;
   font-size: 0.75rem;
   line-height: 1;
-  color: var(--bs-secondary);
+  color: var(--bs-secondary-text);
 }
 
 .calendar-day-link {
@@ -189,7 +208,7 @@ label { display: inline-block; }
 }
 
 .calendar-table .other-month {
-  color: var(--bs-secondary);
+  color: var(--bs-secondary-text);
   background: var(--nm-bg-secondary);
   opacity: 0.6;
 }

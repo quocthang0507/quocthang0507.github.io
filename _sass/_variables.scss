@@ -20,10 +20,17 @@
   --bs-secondary-rgb: 98, 91, 113;
   --bs-success: #2E7D32;
   --bs-success-rgb: 46, 125, 50;
-  --bs-info: #0288D1;
-  --bs-info-rgb: 2, 136, 209;
+  --bs-info: #0277BD;
+  --bs-info-rgb: 2, 119, 189;
   --bs-warning: #ED6C02;
   --bs-warning-rgb: 237, 108, 2;
+  /* Semantic colors as text on light surfaces (WCAG AA ≥ 5:1 on --nm-bg) */
+  --bs-warning-text: #A04500;
+  --bs-danger-text: #B71C1C;
+  --bs-success-text: #1B5E20;
+  --bs-info-text: #01579B;
+  --bs-primary-text: var(--bs-primary);
+  --bs-secondary-text: var(--bs-secondary);
   --bs-danger: #D32F2F;
   --bs-danger-rgb: 211, 47, 47;
   --bs-light: #EDF0F5;

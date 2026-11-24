@@ -276,9 +276,10 @@ describe('sw.js ExtendableEvent waitUntil lifecycle', () => {
       skipWaiting: jest.fn(),
       clients: { claim: jest.fn() }
     };
+    const deleteMock = jest.fn().mockResolvedValue(true);
     const mockCaches = {
       match: jest.fn().mockResolvedValue(cachedResp),
-      open: jest.fn().mockResolvedValue({ put: putMock, addAll: jest.fn() }),
+      open: jest.fn().mockResolvedValue({ put: putMock, delete: deleteMock, addAll: jest.fn() }),
       keys: jest.fn().mockResolvedValue([]),
       delete: jest.fn()
     };
@@ -320,6 +321,8 @@ describe('sw.js ExtendableEvent waitUntil lifecycle', () => {
     resolveNetwork(netResp);
     await Promise.all(extendLifetimePromises);
 
+    // Older ?v= copies of the same asset are dropped before the fresh one is stored
+    expect(deleteMock).toHaveBeenCalledWith(fakeEvent.request, { ignoreSearch: true });
     expect(putMock).toHaveBeenCalledWith(fakeEvent.request, { cloned: true });
   });
 });

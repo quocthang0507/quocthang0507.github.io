@@ -1,5 +1,5 @@
 // Service Worker for Offline PWA support
-const CACHE_NAME = 'utility-hub-cache-v1.6';
+const CACHE_NAME = 'utility-hub-cache-v1.7';
 const PRECACHE_ASSETS = [
   './',
   './index.html',
@@ -107,8 +107,10 @@ self.addEventListener('fetch', event => {
   const networkFetch = fetch(event.request).then(networkResponse => {
     if (networkResponse && networkResponse.ok && networkResponse.type === 'basic') {
       const cacheCopy = networkResponse.clone();
+      // Drop older ?v= versions of the same file before storing the new one
       return caches.open(CACHE_NAME)
-        .then(cache => cache.put(event.request, cacheCopy))
+        .then(cache => cache.delete(event.request, { ignoreSearch: true })
+          .then(() => cache.put(event.request, cacheCopy)))
         .then(() => networkResponse);
     }
     return networkResponse;
@@ -121,7 +123,9 @@ self.addEventListener('fetch', event => {
       if (cachedResponse) return cachedResponse;
       return networkFetch.catch(err => {
         console.warn('[Service Worker] Network fetch failed, falling back to cache:', err);
-        return Response.error();
+        // Offline with a new ?v= token: serve any cached version of the same file
+        return caches.match(event.request, { ignoreSearch: true })
+          .then(fallback => fallback || Response.error());
       });
     })
   );

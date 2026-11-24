@@ -1,5 +1,6 @@
 // Korean Language File
 const koreanTranslations = {
+    "timer.countdown": "타이머",
     "home.all_tools": "모든 도구",
     "date_calc.days": "일",
     "date_calc.weeks": "주",
@@ -35,7 +36,6 @@ const koreanTranslations = {
     "np.batch_progress": "참석자 {done}/{total}명 생성 중…",
     "np.batch_done": "{count}명의 ZIP 파일을 만들었습니다.",
     "np.batch_size": "총 파일이 100 MB를 초과합니다. DPI를 낮추거나 목록을 나누거나 SVG를 사용하세요.",
-    "np.eyebrow": "행사 도구",
     "np.title": "참석자 명패",
     "np.intro": "실제 크기로 명패를 디자인하세요. 브라우저에서 미리 보고 바로 다운로드할 수 있습니다.",
     "np.delegates": "참석자 목록",

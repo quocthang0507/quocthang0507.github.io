@@ -1,5 +1,6 @@
 // Vietnamese Language File
 const vietnameseTranslations = {
+    "timer.countdown": "Hẹn giờ",
     "home.all_tools": "Tất cả công cụ",
     "date_calc.days": "ngày",
     "date_calc.weeks": "tuần",
@@ -35,7 +36,6 @@ const vietnameseTranslations = {
     "np.batch_progress": "Đang tạo {done}/{total} đại biểu…",
     "np.batch_done": "Đã tạo ZIP cho {count} đại biểu.",
     "np.batch_size": "Tổng tệp vượt 100 MB. Giảm DPI, chia nhỏ danh sách hoặc xuất SVG.",
-    "np.eyebrow": "CÔNG CỤ SỰ KIỆN",
     "np.title": "Bảng tên đại biểu",
     "np.intro": "Thiết kế bảng tên trang trọng, đúng kích thước. Xem trước và tải xuống ngay trên trình duyệt.",
     "np.delegates": "Danh sách đại biểu",

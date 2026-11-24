@@ -1,5 +1,6 @@
 // English Language File
 const englishTranslations = {
+    "timer.countdown": "Countdown",
     "home.all_tools": "All tools",
     "date_calc.days": "days",
     "date_calc.weeks": "weeks",
@@ -35,7 +36,6 @@ const englishTranslations = {
     "np.batch_progress": "Creating delegate {done}/{total}…",
     "np.batch_done": "ZIP created for {count} delegates.",
     "np.batch_size": "Files exceed 100 MB. Lower the DPI, split the list or export SVG.",
-    "np.eyebrow": "EVENT TOOLS",
     "np.title": "Delegate nameplate",
     "np.intro": "Design elegant nameplates at actual size. Preview and download directly in your browser.",
     "np.delegates": "Delegate list",

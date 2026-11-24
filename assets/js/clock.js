@@ -604,13 +604,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     <div class="row g-2 mt-1">
                         <div class="col-sm-6">
-                            <div class="p-2 rounded bg-success-subtle border-start border-success border-4 h-100">
+                            <div class="p-2 rounded bg-success-subtle h-100">
                                 <strong class="small text-success-emphasis d-block mb-1"><i class="fas fa-check-circle"></i> ${esc(t('lunar.should_do', 'Nên làm'))}</strong>
                                 <span class="small text-dark-emphasis d-block mt-1">${esc(shouldDo)}</span>
                             </div>
                         </div>
                         <div class="col-sm-6">
-                            <div class="p-2 rounded bg-danger-subtle border-start border-danger border-4 h-100">
+                            <div class="p-2 rounded bg-danger-subtle h-100">
                                 <strong class="small text-danger-emphasis d-block mb-1"><i class="fas fa-times-circle"></i> ${esc(t('lunar.should_avoid', 'Kiêng kỵ'))}</strong>
                                 <span class="small text-dark-emphasis d-block mt-1">${esc(shouldAvoid)}</span>
                             </div>

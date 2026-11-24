@@ -247,16 +247,15 @@ sitemap:
 .clock-item {
     text-align: center;
     padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background: #fff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    transition: transform 0.2s, box-shadow 0.2s;
+    border-radius: var(--nm-radius-md);
+    background: var(--nm-bg);
+    box-shadow: var(--nm-shadow-flat-sm);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .clock-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transform: translateY(-2px);
+    box-shadow: var(--nm-shadow-flat);
 }
 
 .clock-canvas {
@@ -271,25 +270,25 @@ sitemap:
     font-size: 1.2rem;
     font-weight: bold;
     margin: 10px 0 5px 0;
-    color: #333;
+    color: var(--bs-body-color);
 }
 
 .clock-digital-time {
     font-size: 1.5rem;
     font-weight: 500;
-    color: #007bff;
-    font-family: 'Courier New', monospace;
+    color: var(--bs-primary-text);
+    font-variant-numeric: tabular-nums;
 }
 
 .clock-date {
     font-size: 0.9rem;
-    color: #666;
+    color: var(--bs-secondary-text);
     margin-top: 5px;
 }
 
 .clock-timezone {
     font-size: 0.85rem;
-    color: #999;
+    color: var(--bs-secondary-text);
     font-style: italic;
 }
 
@@ -301,20 +300,5 @@ sitemap:
     .clock-canvas {
         max-width: 200px;
     }
-}
-
-/* Dark theme for body in dark mode */
-body.dark-mode .clock-item {
-    background: #2a2a2a;
-    border-color: #444;
-}
-
-body.dark-mode .clock-city-name {
-    color: #fff;
-}
-
-body.dark-mode .clock-date,
-body.dark-mode .clock-timezone {
-    color: #aaa;
 }
 </style>

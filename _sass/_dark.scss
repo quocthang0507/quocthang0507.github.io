@@ -22,6 +22,15 @@
   --bs-primary-border-subtle: rgba(var(--bs-primary-rgb), 0.35);
   --nav-bg: var(--nm-dark-card);
   --nav-hover-bg: rgba(255, 255, 255, 0.08);
+  /* Semantic colors as text on dark surfaces (all ≥ 5.8:1 on --nm-dark-card) */
+  --bs-warning-text: #FFB74D;
+  --bs-danger-text: #EF9A9A;
+  --bs-success-text: #81C784;
+  --bs-info-text: #4FC3F7;
+  /* #6750A4 / #625B71 are ~2:1 on dark surfaces; use lighter tints for text */
+  --bs-primary-text: #B69DF8;
+  --bs-secondary-text: var(--nm-dark-text-muted);
+  --bs-link-color: var(--bs-primary-text);
 }
 
 // ─── Body ───
@@ -71,7 +80,7 @@
 
 [data-theme="dark"] .nav-link:hover,
 [data-theme="dark"] .nav-link.active {
-  color: var(--bs-primary) !important;
+  color: var(--bs-primary-text) !important;
   background: rgba(255, 255, 255, 0.06);
   box-shadow: inset 2px 2px 4px var(--nm-dark-shadow-dark),
               inset -2px -2px 4px var(--nm-dark-shadow-light);
@@ -108,7 +117,7 @@
 
 [data-theme="dark"] .dropdown-item.active {
   background-color: rgba(var(--bs-primary-rgb), 0.2);
-  color: var(--bs-primary);
+  color: var(--bs-primary-text);
 }
 
 [data-theme="dark"] .dropdown-header {
@@ -199,7 +208,7 @@
 }
 
 [data-theme="dark"] .text-secondary {
-  color: var(--bs-secondary) !important;
+  color: var(--bs-secondary-text) !important;
 }
 
 [data-theme="dark"] .text-body {
@@ -268,7 +277,7 @@
 
 // ─── Calendar ───
 [data-theme="dark"] .clock-display {
-  color: var(--bs-primary);
+  color: var(--bs-primary-text);
 }
 
 [data-theme="dark"] .calendar-container {

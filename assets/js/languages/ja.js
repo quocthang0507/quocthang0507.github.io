@@ -1,5 +1,6 @@
 // Japanese Language File
 const japaneseTranslations = {
+    "timer.countdown": "タイマー",
     "home.all_tools": "すべてのツール",
     "date_calc.days": "日",
     "date_calc.weeks": "週",
@@ -35,7 +36,6 @@ const japaneseTranslations = {
     "np.batch_progress": "{done}/{total}名を作成中…",
     "np.batch_done": "{count}名分のZIPを作成しました。",
     "np.batch_size": "ファイル合計が100 MBを超えています。DPIを下げるか一覧を分割するかSVGを使用してください。",
-    "np.eyebrow": "イベントツール",
     "np.title": "出席者の名札",
     "np.intro": "実寸で美しい名札を作成。ブラウザーでプレビューしてダウンロードできます。",
     "np.delegates": "出席者一覧",

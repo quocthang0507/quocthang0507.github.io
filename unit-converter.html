@@ -54,45 +54,37 @@ sitemap:
 
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <div class="card border-primary">
-                            <div class="card-header bg-light">
-                                <h6 class="mb-0"><span data-i18n="converter.from">Từ</span></h6>
+                        <fieldset class="converter-side">
+                            <legend><span data-i18n="converter.from">Từ</span></legend>
+                            <div class="mb-3">
+                                <label for="from-unit" class="form-label" data-i18n="converter.unit">Đơn vị</label>
+                                <select id="from-unit" class="form-select">
+                                    <!-- Options will be populated by JS -->
+                                </select>
                             </div>
-                            <div class="card-body">
-                                <div class="mb-3">
-                                    <label for="from-unit" class="form-label" data-i18n="converter.unit">Đơn vị</label>
-                                    <select id="from-unit" class="form-select">
-                                        <!-- Options will be populated by JS -->
-                                    </select>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="from-value" class="form-label" data-i18n="converter.value">Giá trị</label>
-                                    <input type="number" id="from-value" class="form-control form-control-lg" 
-                                           placeholder="0" step="any" value="1">
-                                </div>
+                            <div class="mb-3">
+                                <label for="from-value" class="form-label" data-i18n="converter.value">Giá trị</label>
+                                <input type="number" id="from-value" class="form-control form-control-lg" 
+                                       placeholder="0" step="any" value="1">
                             </div>
-                        </div>
+                        </fieldset>
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <div class="card border-success">
-                            <div class="card-header bg-light">
-                                <h6 class="mb-0"><span data-i18n="converter.to">Sang</span></h6>
+                        <fieldset class="converter-side">
+                            <legend><span data-i18n="converter.to">Sang</span></legend>
+                            <div class="mb-3">
+                                <label for="to-unit" class="form-label" data-i18n="converter.unit">Đơn vị</label>
+                                <select id="to-unit" class="form-select">
+                                    <!-- Options will be populated by JS -->
+                                </select>
                             </div>
-                            <div class="card-body">
-                                <div class="mb-3">
-                                    <label for="to-unit" class="form-label" data-i18n="converter.unit">Đơn vị</label>
-                                    <select id="to-unit" class="form-select">
-                                        <!-- Options will be populated by JS -->
-                                    </select>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="to-value" class="form-label" data-i18n="converter.result">Kết quả</label>
-                                    <input type="text" id="to-value" class="form-control form-control-lg" 
-                                           readonly placeholder="0">
-                                </div>
+                            <div class="mb-3">
+                                <label for="to-value" class="form-label" data-i18n="converter.result">Kết quả</label>
+                                <input type="text" id="to-value" class="form-control form-control-lg" 
+                                       readonly placeholder="0">
                             </div>
-                        </div>
+                        </fieldset>
                     </div>
                 </div>
 
@@ -179,6 +171,30 @@ sitemap:
 </div>
 
 <style>
+.converter-side {
+    margin: 0;
+    padding: 1rem 1.25rem 0.25rem;
+    border: 0;
+    min-width: 0;
+    border-radius: var(--nm-radius-md);
+    box-shadow: inset 3px 3px 6px var(--nm-shadow-dark),
+                inset -3px -3px 6px var(--nm-shadow-light);
+}
+
+.converter-side legend {
+    /* Float keeps the legend inside the padded well instead of on its top edge */
+    float: left;
+    width: 100%;
+    padding: 0;
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.converter-side legend + * {
+    clear: left;
+}
+
 .conversion-history {
     max-height: 300px;
     overflow-y: auto;
@@ -187,19 +203,20 @@ sitemap:
 .history-item {
     padding: 10px;
     margin-bottom: 8px;
-    border-left: 3px solid #007bff;
-    background: #f8f9fa;
-    border-radius: 4px;
-    transition: background 0.2s;
+    background: var(--nm-bg);
+    border-radius: var(--nm-radius-sm);
+    box-shadow: var(--nm-shadow-flat-sm);
+    transition: box-shadow var(--transition-fast);
 }
 
 .history-item:hover {
-    background: #e9ecef;
+    box-shadow: inset 2px 2px 4px var(--nm-shadow-dark),
+                inset -2px -2px 4px var(--nm-shadow-light);
     cursor: pointer;
 }
 
 .history-item small {
-    color: #6c757d;
+    color: var(--bs-secondary-text);
 }
 
 .common-conversion-item {

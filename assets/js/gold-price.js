@@ -202,11 +202,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const rateType = chartRateTypeSelect.value;
         const lang = window.translationSystem ? window.translationSystem.getCurrentLanguage() : 'vi';
 
-        // Slice history
-        const filteredHistory = historicalGold.slice(-currentPeriod);
+        // Last N calendar days (not N records); null marks a hole in the data so the line breaks
+        const filteredHistory = selectHistoryWindow(historicalGold, currentPeriod);
 
         // Labels (parse YYYY-MM-DD as local date so UTC-negative timezones don't shift by a day)
         const labels = filteredHistory.map(item => {
+            if (!item) return '…';
             const dateObj = parseLocalYMD(item.date);
             return dateObj.toLocaleDateString(lang, {
                 day: '2-digit',
@@ -216,7 +217,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Values
         const dataPoints = filteredHistory.map(item => {
-            return item.rates?.[goldType]?.[rateType] ?? null;
+            return item?.rates?.[goldType]?.[rateType] ?? null;
         });
 
         const hasData = dataPoints.some(val => val !== null);

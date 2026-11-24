@@ -13,6 +13,8 @@ sitemap:
 
 <meta name="i18n-title" content="home.title">
 
+<h1 class="visually-hidden" data-i18n="site.title">{{ site.title }}</h1>
+
 <div class="card mb-4"><div class="card-body d-flex align-items-center justify-content-between flex-wrap gap-3"><div><h2 class="h5 mb-1" data-i18n="nav.delegate_nameplate">Bảng tên đại biểu</h2><p class="mb-0 text-muted" data-i18n="np.home_description">Thiết kế bảng tên sự kiện với logo, màu sắc và kích thước tùy chọn.</p></div><a class="btn btn-primary" href="{{ '/delegate-nameplate/' | relative_url }}" data-i18n="np.open_tool">Tạo bảng tên</a></div></div>
 
 <div class="row">
@@ -23,11 +25,11 @@ sitemap:
 
 <div class="row">
     <div class="col-lg-6 mb-4">
-        <div class="card">
+        <div class="card h-100 d-flex flex-column">
             <div class="card-header bg-primary text-white">
-                <h5 class="mb-0"><i class="fas fa-clock"></i> <span data-i18n="clock.title">Đồng hồ số</span></h5>
+                <h2 class="h5 mb-0"><i class="fas fa-clock"></i> <span data-i18n="clock.title">Đồng hồ số</span></h2>
             </div>
-            <div class="card-body text-center">
+            <div class="card-body text-center d-flex flex-column justify-content-center flex-grow-1">
                 <div id="digital-clock" class="clock-display">--:--:--</div>
                 <div id="current-date" class="date-display">Loading...</div>
                 <div class="mt-3">
@@ -43,9 +45,9 @@ sitemap:
     </div>
     
     <div class="col-lg-6 mb-4">
-        <div class="card">
+        <div class="card h-100">
             <div class="card-header bg-success text-white">
-                <h5 class="mb-0"><i class="fas fa-calendar-alt"></i> <span data-i18n="calendar.title">Lịch hiện tại</span></h5>
+                <h2 class="h5 mb-0"><i class="fas fa-calendar-alt"></i> <span data-i18n="calendar.title">Lịch hiện tại</span></h2>
             </div>
             <div class="card-body">
                 <div class="calendar-container">
@@ -53,7 +55,7 @@ sitemap:
                         <button id="prev-month" class="btn btn-outline-primary btn-sm">
                             <i class="fas fa-chevron-left"></i>
                         </button>
-                        <h6 id="calendar-title" class="mb-0">Tháng năm</h6>
+                        <h3 id="calendar-title" class="h6 mb-0">Tháng năm</h3>
                         <button id="next-month" class="btn btn-outline-primary btn-sm">
                             <i class="fas fa-chevron-right"></i>
                         </button>
@@ -81,14 +83,14 @@ sitemap:
     <div class="col-12 mb-4">
         <div class="card">
             <div class="card-header bg-info text-white">
-                <h5 class="mb-0"><i class="fas fa-stopwatch"></i> <span data-i18n="timer.title">Bộ đếm thời gian</span></h5>
+                <h2 class="h5 mb-0"><i class="fas fa-stopwatch"></i> <span data-i18n="timer.title">Bộ đếm thời gian</span></h2>
             </div>
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-6 text-center">
-                        <h6><i class="fas fa-play"></i> <span data-i18n="stopwatch.title">Stopwatch</span></h6>
+                        <h3 class="h6"><i class="fas fa-play"></i> <span data-i18n="stopwatch.title">Stopwatch</span></h3>
                         <div id="stopwatch-display" class="h4 text-primary">00:00:00.000</div>
-                        <div class="btn-group" role="group">
+                        <div class="btn-group timer-actions" role="group">
                             <button id="start-stopwatch" class="btn btn-success">
                                 <i class="fas fa-play"></i> <span data-i18n="stopwatch.start">Bắt đầu</span>
                             </button>
@@ -101,7 +103,7 @@ sitemap:
                         </div>
                     </div>
                     <div class="col-md-6 text-center">
-                        <h6><i class="fas fa-hourglass-half"></i> Timer</h6>
+                        <h3 class="h6"><i class="fas fa-hourglass-half"></i> <span data-i18n="timer.countdown">Hẹn giờ</span></h3>
                         <div class="row mb-2">
                             <div class="col">
                                 <label class="form-label small" data-i18n="timer.minutes">Phút</label>
@@ -119,7 +121,7 @@ sitemap:
                             <button type="button" class="btn btn-sm btn-outline-secondary" data-minutes="10" data-seconds="0">10m</button>
                         </div>
                         <div id="timer-display" class="h4 text-warning">05:00</div>
-                        <div class="btn-group">
+                        <div class="btn-group timer-actions" role="group">
                             <button id="start-timer" class="btn btn-danger">
                                 <i class="fas fa-play"></i> <span data-i18n="timer.start">Bắt đầu</span>
                             </button>
@@ -141,7 +143,7 @@ sitemap:
     <div class="col-12">
         <div class="card">
             <div class="card-header bg-dark text-white">
-                <h5 class="mb-0"><i class="fas fa-info-circle"></i> <span data-i18n="system_info.title">Thông tin hệ thống</span></h5>
+                <h2 class="h5 mb-0"><i class="fas fa-info-circle"></i> <span data-i18n="system_info.title">Thông tin hệ thống</span></h2>
             </div>
             <div class="card-body">
                 <div class="row">
@@ -164,137 +166,29 @@ sitemap:
     <div class="col-12 mt-4">
         <div class="card">
             <div class="card-header bg-primary text-white">
-                <h5 class="mb-0"><i class="fas fa-th-large"></i> <span data-i18n="home.all_tools">Tất cả công cụ</span></h5>
+                <h2 class="h5 mb-0"><i class="fas fa-th-large"></i> <span data-i18n="home.all_tools">Tất cả công cụ</span></h2>
             </div>
             <div class="card-body">
-                <div class="row g-3">
-                    <div class="col-6 col-md-4 col-lg-3">
-                        <a class="card h-100 text-decoration-none" href="{{ '/random-number/' | relative_url }}">
-                            <div class="card-body d-flex align-items-center gap-2">
-                                <i class="fas fa-random text-primary"></i> <span data-i18n="nav.random_number">Random number</span>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-6 col-md-4 col-lg-3">
-                        <a class="card h-100 text-decoration-none" href="{{ '/random-wheel/' | relative_url }}">
-                            <div class="card-body d-flex align-items-center gap-2">
-                                <i class="fas fa-dharmachakra text-primary"></i> <span data-i18n="nav.random_wheel">Random wheel</span>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-6 col-md-4 col-lg-3">
-                        <a class="card h-100 text-decoration-none" href="{{ '/world-clocks/' | relative_url }}">
-                            <div class="card-body d-flex align-items-center gap-2">
-                                <i class="fas fa-globe text-primary"></i> <span data-i18n="nav.world_clocks">World clocks</span>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-6 col-md-4 col-lg-3">
-                        <a class="card h-100 text-decoration-none" href="{{ '/date-calculator/' | relative_url }}">
-                            <div class="card-body d-flex align-items-center gap-2">
-                                <i class="fas fa-calendar-alt text-primary"></i> <span data-i18n="nav.date_calculator">Date calculator</span>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-6 col-md-4 col-lg-3">
-                        <a class="card h-100 text-decoration-none" href="{{ '/delegate-nameplate/' | relative_url }}">
-                            <div class="card-body d-flex align-items-center gap-2">
-                                <i class="fas fa-id-card text-primary"></i> <span data-i18n="nav.delegate_nameplate">Bảng tên đại biểu</span>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-6 col-md-4 col-lg-3">
-                        <a class="card h-100 text-decoration-none" href="{{ '/password-generator/' | relative_url }}">
-                            <div class="card-body d-flex align-items-center gap-2">
-                                <i class="fas fa-key text-primary"></i> <span data-i18n="nav.password_generator">Password generator</span>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-6 col-md-4 col-lg-3">
-                        <a class="card h-100 text-decoration-none" href="{{ '/unit-converter/' | relative_url }}">
-                            <div class="card-body d-flex align-items-center gap-2">
-                                <i class="fas fa-exchange-alt text-primary"></i> <span data-i18n="nav.unit_converter">Unit converter</span>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-6 col-md-4 col-lg-3">
-                        <a class="card h-100 text-decoration-none" href="{{ '/currency-converter/' | relative_url }}">
-                            <div class="card-body d-flex align-items-center gap-2">
-                                <i class="fas fa-money-bill-wave text-primary"></i> <span data-i18n="nav.currency_converter">Currency converter</span>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-6 col-md-4 col-lg-3">
-                        <a class="card h-100 text-decoration-none" href="{{ '/gold-price/' | relative_url }}">
-                            <div class="card-body d-flex align-items-center gap-2">
-                                <i class="fas fa-coins text-primary"></i> <span data-i18n="nav.gold_price">Gold price</span>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-6 col-md-4 col-lg-3">
-                        <a class="card h-100 text-decoration-none" href="{{ '/qr-generator/' | relative_url }}">
-                            <div class="card-body d-flex align-items-center gap-2">
-                                <i class="fas fa-qrcode text-primary"></i> <span data-i18n="nav.qr_generator">QR generator</span>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-6 col-md-4 col-lg-3">
-                        <a class="card h-100 text-decoration-none" href="{{ '/encoder-decoder/' | relative_url }}">
-                            <div class="card-body d-flex align-items-center gap-2">
-                                <i class="fas fa-terminal text-primary"></i> <span data-i18n="nav.encoder_decoder">Encoder/decoder</span>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-6 col-md-4 col-lg-3">
-                        <a class="card h-100 text-decoration-none" href="{{ '/hash-generator/' | relative_url }}">
-                            <div class="card-body d-flex align-items-center gap-2">
-                                <i class="fas fa-hashtag text-primary"></i> <span data-i18n="nav.hash_generator">Hash generator</span>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-6 col-md-4 col-lg-3">
-                        <a class="card h-100 text-decoration-none" href="{{ '/case-converter/' | relative_url }}">
-                            <div class="card-body d-flex align-items-center gap-2">
-                                <i class="fas fa-text-height text-primary"></i> <span data-i18n="nav.case_converter">Case converter</span>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-6 col-md-4 col-lg-3">
-                        <a class="card h-100 text-decoration-none" href="{{ '/regex-tester/' | relative_url }}">
-                            <div class="card-body d-flex align-items-center gap-2">
-                                <i class="fas fa-search text-primary"></i> <span data-i18n="nav.regex_tester">Regex tester</span>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-6 col-md-4 col-lg-3">
-                        <a class="card h-100 text-decoration-none" href="{{ '/markdown-preview/' | relative_url }}">
-                            <div class="card-body d-flex align-items-center gap-2">
-                                <i class="fab fa-markdown text-primary"></i> <span data-i18n="nav.markdown_preview">Markdown preview</span>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-6 col-md-4 col-lg-3">
-                        <a class="card h-100 text-decoration-none" href="{{ '/latex-editor/' | relative_url }}">
-                            <div class="card-body d-flex align-items-center gap-2">
-                                <i class="fas fa-square-root-alt text-primary"></i> <span data-i18n="nav.latex_editor">LaTeX editor</span>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-6 col-md-4 col-lg-3">
-                        <a class="card h-100 text-decoration-none" href="{{ '/color-picker/' | relative_url }}">
-                            <div class="card-body d-flex align-items-center gap-2">
-                                <i class="fas fa-palette text-primary"></i> <span data-i18n="nav.color_picker">Color picker</span>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-6 col-md-4 col-lg-3">
-                        <a class="card h-100 text-decoration-none" href="{{ '/json-formatter/' | relative_url }}">
-                            <div class="card-body d-flex align-items-center gap-2">
-                                <i class="fas fa-code text-primary"></i> <span data-i18n="nav.json_formatter">JSON formatter</span>
-                            </div>
-                        </a>
-                    </div>
-                </div>
+                <ul class="tool-links">
+                    <li><a class="tool-link" href="{{ '/random-number/' | relative_url }}"><i class="fas fa-random" aria-hidden="true"></i><span data-i18n="nav.random_number">Random number</span></a></li>
+                    <li><a class="tool-link" href="{{ '/random-wheel/' | relative_url }}"><i class="fas fa-dharmachakra" aria-hidden="true"></i><span data-i18n="nav.random_wheel">Random wheel</span></a></li>
+                    <li><a class="tool-link" href="{{ '/world-clocks/' | relative_url }}"><i class="fas fa-globe" aria-hidden="true"></i><span data-i18n="nav.world_clocks">World clocks</span></a></li>
+                    <li><a class="tool-link" href="{{ '/date-calculator/' | relative_url }}"><i class="fas fa-calendar-alt" aria-hidden="true"></i><span data-i18n="nav.date_calculator">Date calculator</span></a></li>
+                    <li><a class="tool-link" href="{{ '/delegate-nameplate/' | relative_url }}"><i class="fas fa-id-card" aria-hidden="true"></i><span data-i18n="nav.delegate_nameplate">Bảng tên đại biểu</span></a></li>
+                    <li><a class="tool-link" href="{{ '/password-generator/' | relative_url }}"><i class="fas fa-key" aria-hidden="true"></i><span data-i18n="nav.password_generator">Password generator</span></a></li>
+                    <li><a class="tool-link" href="{{ '/unit-converter/' | relative_url }}"><i class="fas fa-exchange-alt" aria-hidden="true"></i><span data-i18n="nav.unit_converter">Unit converter</span></a></li>
+                    <li><a class="tool-link" href="{{ '/currency-converter/' | relative_url }}"><i class="fas fa-money-bill-wave" aria-hidden="true"></i><span data-i18n="nav.currency_converter">Currency converter</span></a></li>
+                    <li><a class="tool-link" href="{{ '/gold-price/' | relative_url }}"><i class="fas fa-coins" aria-hidden="true"></i><span data-i18n="nav.gold_price">Gold price</span></a></li>
+                    <li><a class="tool-link" href="{{ '/qr-generator/' | relative_url }}"><i class="fas fa-qrcode" aria-hidden="true"></i><span data-i18n="nav.qr_generator">QR generator</span></a></li>
+                    <li><a class="tool-link" href="{{ '/encoder-decoder/' | relative_url }}"><i class="fas fa-terminal" aria-hidden="true"></i><span data-i18n="nav.encoder_decoder">Encoder/decoder</span></a></li>
+                    <li><a class="tool-link" href="{{ '/hash-generator/' | relative_url }}"><i class="fas fa-hashtag" aria-hidden="true"></i><span data-i18n="nav.hash_generator">Hash generator</span></a></li>
+                    <li><a class="tool-link" href="{{ '/case-converter/' | relative_url }}"><i class="fas fa-text-height" aria-hidden="true"></i><span data-i18n="nav.case_converter">Case converter</span></a></li>
+                    <li><a class="tool-link" href="{{ '/regex-tester/' | relative_url }}"><i class="fas fa-search" aria-hidden="true"></i><span data-i18n="nav.regex_tester">Regex tester</span></a></li>
+                    <li><a class="tool-link" href="{{ '/markdown-preview/' | relative_url }}"><i class="fab fa-markdown" aria-hidden="true"></i><span data-i18n="nav.markdown_preview">Markdown preview</span></a></li>
+                    <li><a class="tool-link" href="{{ '/latex-editor/' | relative_url }}"><i class="fas fa-square-root-alt" aria-hidden="true"></i><span data-i18n="nav.latex_editor">LaTeX editor</span></a></li>
+                    <li><a class="tool-link" href="{{ '/color-picker/' | relative_url }}"><i class="fas fa-palette" aria-hidden="true"></i><span data-i18n="nav.color_picker">Color picker</span></a></li>
+                    <li><a class="tool-link" href="{{ '/json-formatter/' | relative_url }}"><i class="fas fa-code" aria-hidden="true"></i><span data-i18n="nav.json_formatter">JSON formatter</span></a></li>
+                </ul>
             </div>
         </div>
     </div>

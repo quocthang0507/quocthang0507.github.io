@@ -326,6 +326,32 @@ function openQuickSettingsPanel() {
 
 // Footer theme badge and related listeners removed
 
+/**
+ * Pick the entries of a dated history (sorted, `date` as YYYY-MM-DD) that fall within
+ * `days` calendar days of the latest entry. Where consecutive entries are more than
+ * `maxGapDays` apart (missing data, not weekends), a null is inserted so charts break
+ * the line instead of drawing a straight segment across the hole.
+ */
+function selectHistoryWindow(history, days, maxGapDays = 7) {
+    if (!Array.isArray(history) || history.length === 0) return [];
+    const DAY_MS = 24 * 60 * 60 * 1000;
+    const toTime = (entry) => Date.UTC(...entry.date.slice(0, 10).split('-').map((n, i) => Number(n) - (i === 1 ? 1 : 0)));
+    const cutoff = toTime(history[history.length - 1]) - (days - 1) * DAY_MS;
+
+    const result = [];
+    let previous = null;
+    for (const entry of history) {
+        const time = toTime(entry);
+        if (time < cutoff) continue;
+        if (previous !== null && (time - previous) / DAY_MS > maxGapDays) {
+            result.push(null);
+        }
+        result.push(entry);
+        previous = time;
+    }
+    return result;
+}
+
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         showAlert,
@@ -338,6 +364,7 @@ if (typeof module !== 'undefined' && module.exports) {
         initializeCustomThemeToggle,
         announceThemeChange,
         injectSettingsFloatingButton,
-        openQuickSettingsPanel
+        openQuickSettingsPanel,
+        selectHistoryWindow
     };
 }

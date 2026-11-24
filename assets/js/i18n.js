@@ -85,7 +85,9 @@ class TranslationSystem {
             const match = currentScript ? currentScript.src.match(/^(.*)\/i18n(\.min)?\.js/) : null;
             const basePath = match ? match[1] : '/assets/js';
             const suffix = match && match[2] ? '.min.js' : '.js';
-            script.src = `${basePath}/languages/${lang}${suffix}`;
+            // Reuse the i18n script's cache-busting query so language files stay in sync
+            const query = currentScript && currentScript.src.includes('?') ? currentScript.src.slice(currentScript.src.indexOf('?')) : '';
+            script.src = `${basePath}/languages/${lang}${suffix}${query}`;
             script.onload = resolve;
             script.onerror = reject;
             document.head.appendChild(script);

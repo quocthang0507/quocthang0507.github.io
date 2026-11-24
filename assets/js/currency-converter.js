@@ -921,11 +921,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const currency = chartCurrencySelect.value;
         const rateType = chartRateTypeSelect.value;
         
-        // Slice the history to match current period selection (last N entries)
-        const filteredHistory = historicalRates.slice(-currentPeriod);
+        // Last N calendar days (not N records); null marks a hole in the data so the line breaks
+        const filteredHistory = selectHistoryWindow(historicalRates, currentPeriod);
         
         // Format labels and data points (local YYYY-MM-DD parse)
         const labels = filteredHistory.map(item => {
+            if (!item) return '…';
             const dateObj = parseLocalYMD(item.date);
             return dateObj.toLocaleDateString(window.translationSystem?.getCurrentLanguage() || 'vi', {
                 day: '2-digit',
@@ -934,7 +935,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         const dataPoints = filteredHistory.map(item => {
-            return item.rates?.[currency]?.[rateType] ?? null;
+            return item?.rates?.[currency]?.[rateType] ?? null;
         });
         
         const hasData = dataPoints.some(val => val !== null);

@@ -311,21 +311,21 @@ sitemap:
     font-size: 0.75rem;
     border-radius: var(--nm-radius-sm);
 }
-body.dark-mode .result-card {
+[data-theme="dark"] .result-card {
     background: var(--nm-dark-card);
     box-shadow: inset 3px 3px 6px var(--nm-dark-shadow-dark),
                 inset -3px -3px 6px var(--nm-dark-shadow-light);
 }
-body.dark-mode .sticky-top.bg-light {
+[data-theme="dark"] .sticky-top.bg-light {
     background-color: var(--nm-dark-card) !important;
     color: var(--nm-dark-text);
 }
-body.dark-mode .sticky-top th {
+[data-theme="dark"] .sticky-top th {
     background-color: var(--nm-dark-card) !important;
     color: var(--nm-dark-text);
     border-bottom: 2px solid var(--nm-dark-border);
 }
-body.dark-mode .table-striped>tbody>tr:nth-of-type(odd) {
+[data-theme="dark"] .table-striped>tbody>tr:nth-of-type(odd) {
     --bs-table-accent-bg: rgba(255, 255, 255, 0.05);
     color: var(--nm-dark-text);
 }
@@ -339,7 +339,7 @@ body.dark-mode .table-striped>tbody>tr:nth-of-type(odd) {
     padding: 1rem;
     margin-top: 1rem;
 }
-body.dark-mode .chart-canvas-wrapper {
+[data-theme="dark"] .chart-canvas-wrapper {
     background: var(--nm-dark-card);
     box-shadow: inset 3px 3px 6px var(--nm-dark-shadow-dark),
                 inset -3px -3px 6px var(--nm-dark-shadow-light);

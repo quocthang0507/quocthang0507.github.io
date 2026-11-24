@@ -1,6 +1,7 @@
 ---
 layout: compress
 ---
+{% comment %}Cache-busting token so the service worker never pairs fresh HTML with stale assets{% endcomment %}{% assign asset_v = site.time | date: '%s' %}
 <!DOCTYPE html>
 <html lang="{{ site.lang | default: 'vi' }}">
 <head>
@@ -110,11 +111,11 @@ layout: compress
     
     <!-- Additional Performance Hints -->
     {% if jekyll.environment == "production" %}
-    <link rel="prefetch" href="{{ '/assets/js/main.min.js' | relative_url }}">
-    <link rel="prefetch" href="{{ '/assets/js/i18n.min.js' | relative_url }}">
+    <link rel="prefetch" href="{{ '/assets/js/main.min.js' | relative_url }}?v={{ asset_v }}">
+    <link rel="prefetch" href="{{ '/assets/js/i18n.min.js' | relative_url }}?v={{ asset_v }}">
     {% else %}
-    <link rel="prefetch" href="{{ '/assets/js/main.js' | relative_url }}">
-    <link rel="prefetch" href="{{ '/assets/js/i18n.js' | relative_url }}">
+    <link rel="prefetch" href="{{ '/assets/js/main.js' | relative_url }}?v={{ asset_v }}">
+    <link rel="prefetch" href="{{ '/assets/js/i18n.js' | relative_url }}?v={{ asset_v }}">
     {% endif %}
     
     <!-- Feed Links -->
@@ -138,7 +139,7 @@ layout: compress
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Neumorphism CSS (replaces Bootstrap CSS) -->
-    <link href="{{ '/assets/css/main.css' | relative_url }}" rel="stylesheet">
+    <link href="{{ '/assets/css/main.css' | relative_url }}?v={{ asset_v }}" rel="stylesheet">
 </head>
 <body>
     {% include navigation.html %}
@@ -154,13 +155,13 @@ layout: compress
     
     <!-- Custom JS -->
     {% if jekyll.environment == "production" %}
-    <script src="{{ '/assets/js/security.min.js' | relative_url }}"></script>
-    <script src="{{ '/assets/js/main.min.js' | relative_url }}"></script>
-    <script id="i18n-script" src="{{ '/assets/js/i18n.min.js' | relative_url }}"></script>
+    <script src="{{ '/assets/js/security.min.js' | relative_url }}?v={{ asset_v }}"></script>
+    <script src="{{ '/assets/js/main.min.js' | relative_url }}?v={{ asset_v }}"></script>
+    <script id="i18n-script" src="{{ '/assets/js/i18n.min.js' | relative_url }}?v={{ asset_v }}"></script>
     {% else %}
-    <script src="{{ '/assets/js/security.js' | relative_url }}"></script>
-    <script src="{{ '/assets/js/main.js' | relative_url }}"></script>
-    <script id="i18n-script" src="{{ '/assets/js/i18n.js' | relative_url }}"></script>
+    <script src="{{ '/assets/js/security.js' | relative_url }}?v={{ asset_v }}"></script>
+    <script src="{{ '/assets/js/main.js' | relative_url }}?v={{ asset_v }}"></script>
+    <script id="i18n-script" src="{{ '/assets/js/i18n.js' | relative_url }}?v={{ asset_v }}"></script>
     {% endif %}
 
     <!-- Command Palette Overlay -->
@@ -176,9 +177,9 @@ layout: compress
 
     <!-- Command Palette Controller -->
     {% if jekyll.environment == "production" %}
-    <script src="{{ '/assets/js/command-palette.min.js' | relative_url }}"></script>
+    <script src="{{ '/assets/js/command-palette.min.js' | relative_url }}?v={{ asset_v }}"></script>
     {% else %}
-    <script src="{{ '/assets/js/command-palette.js' | relative_url }}"></script>
+    <script src="{{ '/assets/js/command-palette.js' | relative_url }}?v={{ asset_v }}"></script>
     {% endif %}
 
     <!-- Service Worker PWA registration -->
@@ -240,9 +241,9 @@ layout: compress
         {% for js_file in page.custom_js %}
             {% if jekyll.environment == "production" %}
                 {% assign min_file = js_file | replace: '.js', '.min.js' %}
-                <script src="{{ '/assets/js/' | append: min_file | relative_url }}"></script>
+                <script src="{{ '/assets/js/' | append: min_file | relative_url }}?v={{ asset_v }}"></script>
             {% else %}
-                <script src="{{ '/assets/js/' | append: js_file | relative_url }}"></script>
+                <script src="{{ '/assets/js/' | append: js_file | relative_url }}?v={{ asset_v }}"></script>
             {% endif %}
         {% endfor %}
     {% endif %}

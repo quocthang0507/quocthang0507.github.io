@@ -386,13 +386,13 @@ sitemap:
     margin-bottom: 10px;
 }
 
-body.dark-mode .qr-history-item,
-body.dark-mode .batch-qr-item {
-    background: #2a2a2a;
-    border-color: #444;
+[data-theme="dark"] .qr-history-item,
+[data-theme="dark"] .batch-qr-item {
+    background: var(--nm-dark-card);
+    border-color: var(--nm-dark-border);
 }
 
-body.dark-mode #qr-code-display {
+[data-theme="dark"] #qr-code-display {
     background: #fff !important;
 }
 </style>

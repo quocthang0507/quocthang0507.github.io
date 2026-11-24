@@ -55,6 +55,8 @@ exclude:
   - random-wheel-static.html
   - nav-test.html
   - assets/css/parts
+  # AI agent skills and commands (dot-directories are already skipped by Jekyll)
+  - agents
 
 # Collections
 collections:

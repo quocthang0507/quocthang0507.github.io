@@ -139,7 +139,7 @@
               -2px -2px 6px rgba(255, 255, 255, 0.15);
 
   &:hover {
-    background: #0277BD;
+    background: #01579B;
     color: #fff;
     box-shadow: 4px 4px 10px rgba(var(--bs-info-rgb), 0.5),
                 -3px -3px 8px rgba(255, 255, 255, 0.2);
@@ -194,7 +194,7 @@
 
 // ─── Outline Variants — Neumorphic ───
 .btn-outline-primary {
-  color: var(--bs-primary);
+  color: var(--bs-primary-text);
   background: var(--nm-bg);
   border: 2px solid rgba(var(--bs-primary-rgb), 0.3);
   box-shadow: var(--nm-shadow-flat-sm);
@@ -214,7 +214,7 @@
 }
 
 .btn-outline-success {
-  color: var(--bs-success);
+  color: var(--bs-success-text);
   background: var(--nm-bg);
   border: 2px solid rgba(var(--bs-success-rgb), 0.3);
   box-shadow: var(--nm-shadow-flat-sm);
@@ -233,7 +233,7 @@
 }
 
 .btn-outline-danger {
-  color: var(--bs-danger);
+  color: var(--bs-danger-text);
   background: var(--nm-bg);
   border: 2px solid rgba(var(--bs-danger-rgb), 0.3);
   box-shadow: var(--nm-shadow-flat-sm);
@@ -252,7 +252,7 @@
 }
 
 .btn-outline-secondary {
-  color: var(--bs-secondary);
+  color: var(--bs-secondary-text);
   background: var(--nm-bg);
   border: 2px solid rgba(var(--bs-secondary-rgb), 0.3);
   box-shadow: var(--nm-shadow-flat-sm);
@@ -348,3 +348,52 @@
 .btn-close-white {
   filter: invert(1) grayscale(100%) brightness(200%);
 }
+
+// ─── Remaining outline variants (same recipe as primary/success/danger) ───
+@each $name, $text, $hover-text in (warning, var(--bs-warning-text), #000), (info, var(--bs-info-text), #fff), (dark, var(--bs-body-color), #fff) {
+  .btn-outline-#{$name} {
+    color: $text;
+    background: var(--nm-bg);
+    border: 2px solid rgba(var(--bs-#{$name}-rgb, 45, 45, 54), 0.3);
+    box-shadow: var(--nm-shadow-flat-sm);
+
+    &:hover {
+      background: var(--bs-#{$name});
+      border-color: var(--bs-#{$name});
+      color: $hover-text;
+    }
+
+    &:active {
+      box-shadow: inset 2px 2px 5px rgba(0,0,0,0.2);
+    }
+  }
+}
+
+.btn-group-sm > .btn {
+  padding: 0.3rem 0.85rem;
+  font-size: 0.875rem;
+}
+
+// ─── Toggle buttons (radio/checkbox styled as buttons) ───
+.btn-check {
+  position: absolute;
+  clip: rect(0, 0, 0, 0);
+  pointer-events: none;
+}
+
+.btn-check:checked + .btn {
+  background: var(--bs-primary);
+  border-color: var(--bs-primary);
+  color: #fff;
+  box-shadow: inset 2px 2px 5px rgba(0,0,0,0.2);
+}
+
+.btn-check:focus-visible + .btn {
+  box-shadow: var(--nm-shadow-flat-sm), var(--nm-focus-ring);
+}
+
+.btn-check:disabled + .btn {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
