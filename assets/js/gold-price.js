@@ -256,7 +256,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     borderColor: primaryColor,
                     backgroundColor: isDark ? 'rgba(212, 175, 55, 0.15)' : 'rgba(212, 175, 55, 0.05)',
                     borderWidth: 2.5,
-                    pointRadius: currentPeriod > 90 ? 0 : 3,
+                    // Long ranges hide markers, except lone points between data gaps (no line to show them)
+                    pointRadius: (ctx) => (currentPeriod <= 90 || isIsolatedPoint(ctx.dataset.data, ctx.dataIndex)) ? 3 : 0,
+                    clip: false, // don't cut markers that sit on the chart edge
                     pointHoverRadius: 6,
                     pointBackgroundColor: primaryColor,
                     pointBorderColor: isDark ? '#2D2D36' : '#FFFFFF',

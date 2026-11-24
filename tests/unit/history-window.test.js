@@ -1,4 +1,4 @@
-const { selectHistoryWindow } = require('../../assets/js/main.js');
+const { selectHistoryWindow, isIsolatedPoint } = require('../../assets/js/main.js');
 
 const day = (iso) => ({ date: iso, value: iso });
 
@@ -30,3 +30,19 @@ describe('selectHistoryWindow', () => {
     expect(selectHistoryWindow(null, 30)).toEqual([]);
   });
 });
+
+describe('isIsolatedPoint', () => {
+  it('flags a value with no neighbours on either side', () => {
+    const data = [135000, null, 138000, 137500];
+    expect(isIsolatedPoint(data, 0)).toBe(true);
+    expect(isIsolatedPoint(data, 2)).toBe(false);
+    expect(isIsolatedPoint(data, 3)).toBe(false);
+  });
+
+  it('ignores gap markers themselves and handles single-value series', () => {
+    expect(isIsolatedPoint([null, 1, null], 0)).toBe(false);
+    expect(isIsolatedPoint([null, 1, null], 1)).toBe(true);
+    expect(isIsolatedPoint([42], 0)).toBe(true);
+  });
+});
+

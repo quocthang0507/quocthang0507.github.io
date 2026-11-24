@@ -327,6 +327,15 @@ function openQuickSettingsPanel() {
 // Footer theme badge and related listeners removed
 
 /**
+ * True when data[index] has a value but no neighbour on either side, so a line chart
+ * would draw nothing for it unless a point marker is shown.
+ */
+function isIsolatedPoint(data, index) {
+    const has = (i) => data[i] !== null && data[i] !== undefined;
+    return has(index) && !has(index - 1) && !has(index + 1);
+}
+
+/**
  * Pick the entries of a dated history (sorted, `date` as YYYY-MM-DD) that fall within
  * `days` calendar days of the latest entry. Where consecutive entries are more than
  * `maxGapDays` apart (missing data, not weekends), a null is inserted so charts break
@@ -365,6 +374,7 @@ if (typeof module !== 'undefined' && module.exports) {
         announceThemeChange,
         injectSettingsFloatingButton,
         openQuickSettingsPanel,
-        selectHistoryWindow
+        selectHistoryWindow,
+        isIsolatedPoint
     };
 }

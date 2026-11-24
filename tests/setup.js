@@ -1,6 +1,7 @@
 // Page scripts rely on globals from security.js (loaded by the layout)
 global.escapeHtml = require('../assets/js/security.js').escapeHtml;
 global.selectHistoryWindow = require('../assets/js/main.js').selectHistoryWindow;
+global.isIsolatedPoint = require('../assets/js/main.js').isIsolatedPoint;
 
 beforeEach(() => {
   document.body.innerHTML = '';
