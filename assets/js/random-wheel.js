@@ -1,9 +1,8 @@
 // Random Wheel functionality
 document.addEventListener('DOMContentLoaded', function() {
     const SOUND_END_LEAD_MS = 500;
-    const SUSPENSE_SETTLE_MS = 1000;
     const BASE_SOUND_WINDOW_MS = 2500;
-    const ALLOWED_SPIN_DURATIONS = [3000, 5000, 7000];
+    const ALLOWED_SPIN_DURATIONS = [2000, 3000, 5000, 7000, 10000, 15000, 20000, 30000];
     const ALLOWED_SPIN_SOUNDS = ['ticking', 'piano', 'classic', 'none'];
     const ALLOWED_WINNER_SOUNDS = ['applause', 'fanfare', 'chime', 'none'];
     const PIANO_TICK_FREQS = [
@@ -1017,26 +1016,36 @@ document.addEventListener('DOMContentLoaded', function() {
         playSpinSound(soundDurationMs);
 
         // Select a fair random section, then calculate a matching rotation.
-        const minSpins = 3;
-        const maxSpins = 6;
+        // Scale full spins naturally with duration (2s -> 3-4 spins, 30s -> 24-30 spins).
+        const durationSec = activeSpinDurationMs / 1000;
+        const minSpins = Math.max(3, Math.round(durationSec * 0.8 + 1.5));
+        const maxSpins = minSpins + Math.max(1, Math.round(durationSec * 0.25));
         const fullSpins = Math.floor(Math.random() * (maxSpins - minSpins + 1)) + minSpins;
         const anglePerSection = 360 / names.length;
         const selectedIndex = Math.floor(Math.random() * names.length);
-        const boundaryOffset = Math.min(3, Math.max(0.5, anglePerSection * 0.04));
-        const suspenseSettleDegrees = Math.min(
-            anglePerSection - boundaryOffset * 1.25,
-            Math.max(
-                boundaryOffset * 1.25,
-                Math.min(12, anglePerSection * (0.12 + Math.random() * 0.1))
-            )
-        );
-        const finalOffsetWithinSection = activeSuspenseEffect
-            ? anglePerSection - boundaryOffset - suspenseSettleDegrees
-            : anglePerSection * (0.2 + Math.random() * 0.6);
-        const targetOffset = activeSuspenseEffect
-            ? anglePerSection - boundaryOffset
-            : finalOffsetWithinSection;
-        const targetNormalizedAngle = (selectedIndex * anglePerSection + targetOffset) % 360;
+
+        let finalOffsetWithinSection;
+        if (activeSuspenseEffect && names.length > 1) {
+            // 50/50 fair suspense outcome while preserving uniform 1/N win probability:
+            // - pushOverDivider = false: creeps right to the divider edge and halts without crossing.
+            // - pushOverDivider = true: creeps onto the divider center, then gently tips just across.
+            const pushOverDivider = Math.random() < 0.5;
+            if (pushOverDivider) {
+                const maxPast = Math.min(3.0, anglePerSection * 0.28);
+                const minPast = Math.min(1.1, maxPast * 0.5);
+                const pastMargin = minPast + Math.random() * Math.max(0, maxPast - minPast);
+                finalOffsetWithinSection = anglePerSection - pastMargin;
+            } else {
+                const maxHold = Math.min(1.8, anglePerSection * 0.22);
+                const minHold = Math.min(0.6, maxHold * 0.5);
+                const holdMargin = minHold + Math.random() * Math.max(0, maxHold - minHold);
+                finalOffsetWithinSection = holdMargin;
+            }
+        } else {
+            finalOffsetWithinSection = anglePerSection * (0.2 + Math.random() * 0.6);
+        }
+
+        const targetNormalizedAngle = (selectedIndex * anglePerSection + finalOffsetWithinSection) % 360;
         const targetRotationModulo = (360 - targetNormalizedAngle) % 360;
         const currentRotationModulo = ((currentRotation % 360) + 360) % 360;
         const rotationToTarget = (targetRotationModulo - currentRotationModulo + 360) % 360;
@@ -1044,23 +1053,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
         currentRotation += totalRotation;
 
-        // Rotate only the wheel content, not the center button.
+        // Rotate only the wheel content using one continuous, smooth deceleration curve (no unnatural stop-then-jump).
         const wheelNames = document.getElementById('wheel-names');
-        const mainSpinDurationMs = activeSuspenseEffect
-            ? activeSpinDurationMs - SUSPENSE_SETTLE_MS
-            : activeSpinDurationMs;
-        wheelNames.style.transition = `transform ${mainSpinDurationMs}ms cubic-bezier(0.23, 1, 0.32, 1)`;
+        const easing = activeSuspenseEffect
+            ? 'cubic-bezier(0.06, 0.92, 0.12, 1)'
+            : 'cubic-bezier(0.22, 1, 0.36, 1)';
+        wheelNames.style.transition = `transform ${activeSpinDurationMs}ms ${easing}`;
         wheelNames.style.transform = `rotate(${currentRotation}deg)`;
-
-        if (activeSuspenseEffect) {
-            setTimeout(() => {
-                // Continue slowly from the divider toward the final position,
-                // without crossing into another result.
-                currentRotation += suspenseSettleDegrees;
-                wheelNames.style.transition = `transform ${SUSPENSE_SETTLE_MS}ms cubic-bezier(0.16, 0.72, 0.2, 1)`;
-                wheelNames.style.transform = `rotate(${currentRotation}deg)`;
-            }, mainSpinDurationMs);
-        }
 
         // In classic WAV mode, stop 0.5s early; in slice-synced ticking modes, track until spin ends.
         if (spinSoundMode === 'classic') {

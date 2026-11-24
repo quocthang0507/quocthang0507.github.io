@@ -624,26 +624,37 @@ document.addEventListener('DOMContentLoaded', function() {
         // Build holiday section
         let holidaySection = '';
         if (holiday) {
-            const holidayIcon = holiday.is_public_holiday ? '<i class="fas fa-star text-danger"></i>' : '<i class="fas fa-calendar-alt text-info"></i>';
-            const holidayBadge = holiday.is_public_holiday ? 
-                `<span class="badge bg-danger-subtle text-danger-emphasis border date-badge"><i class="fas fa-flag"></i> Ngày lễ chính thức</span>` : 
-                `<span class="badge bg-info-subtle text-info-emphasis border date-badge">Ngày kỷ niệm</span>`;
-            const holidayType = holiday.type === 'lunar' ? 
-                `<span class="badge bg-secondary-subtle text-secondary-emphasis border date-badge"><i class="fas fa-moon"></i> Âm lịch</span>` : 
-                `<span class="badge bg-primary-subtle text-primary-emphasis border date-badge"><i class="fas fa-sun"></i> Dương lịch</span>`;
-            
+            const isWorkdaySwap = Boolean(holiday.is_workday_swap);
+            const alertVariant = holiday.is_public_holiday ? 'danger' : (isWorkdaySwap ? 'warning' : 'info');
+            const holidayIcon = holiday.is_public_holiday
+                ? '<i class="fas fa-star text-danger"></i>'
+                : (isWorkdaySwap ? '<i class="fas fa-exchange-alt text-warning"></i>' : '<i class="fas fa-calendar-alt text-info"></i>');
+            const holidayBadge = holiday.is_public_holiday
+                ? `<span class="badge bg-danger-subtle text-danger-emphasis border date-badge"><i class="fas fa-flag"></i> Ngày lễ chính thức</span>`
+                : (isWorkdaySwap
+                    ? `<span class="badge bg-warning-subtle text-warning-emphasis border date-badge"><i class="fas fa-briefcase"></i> Ngày làm bù</span>`
+                    : `<span class="badge bg-info-subtle text-info-emphasis border date-badge">Ngày kỷ niệm</span>`);
+            const holidayType = holiday.type === 'lunar'
+                ? `<span class="badge bg-secondary-subtle text-secondary-emphasis border date-badge"><i class="fas fa-moon"></i> Âm lịch</span>`
+                : `<span class="badge bg-primary-subtle text-primary-emphasis border date-badge"><i class="fas fa-sun"></i> Dương lịch</span>`;
+            const extraHtml = Array.isArray(holiday.extra_holidays) && holiday.extra_holidays.length > 0
+                ? `<div class="mt-2 pt-2 border-top small"><strong>Sự kiện khác trong ngày:</strong> ${holiday.extra_holidays.map(h => esc(h.name)).join(' • ')}</div>`
+                : '';
+
             holidaySection = `
             <div class="col-12 mt-3">
-                <div class="alert alert-${holiday.is_public_holiday ? 'danger' : 'info'} mb-0">
-                    <h6 class="alert-heading mb-2">${holidayIcon} Ngày lễ</h6>
+                <div class="alert alert-${alertVariant} mb-0">
+                    <h6 class="alert-heading mb-2">${holidayIcon} ${isWorkdaySwap ? 'Lịch hoán đổi ngày làm việc' : 'Ngày lễ'}</h6>
                     <p class="mb-2 fw-bold">${esc(holiday.name)}</p>
                     ${holiday.name_en ? `<p class="mb-2 small text-muted">${esc(holiday.name_en)}</p>` : ''}
                     ${holiday.description ? `<p class="mb-2 small">${esc(holiday.description)}</p>` : ''}
+                    ${holiday.schedule_note ? `<p class="mb-2 small"><i class="fas fa-info-circle me-1"></i>${esc(holiday.schedule_note)}</p>` : ''}
                     <div class="d-flex flex-wrap gap-2 mt-2">
                         ${holidayBadge}
                         ${holidayType}
                         ${holiday.duration_days ? `<span class="badge bg-success-subtle text-success-emphasis border date-badge">Nghỉ: ${esc(holiday.duration_days)} ngày</span>` : ''}
                     </div>
+                    ${extraHtml}
                 </div>
             </div>`;
         }

@@ -5,9 +5,9 @@
       "month": 1,
       "name": "Tết Nguyên đán",
       "name_en": "Lunar New Year",
-      "description": "Tết cổ truyền",
+      "description": "Tết cổ truyền (nghỉ 5 ngày hưởng nguyên lương theo Bộ luật Lao động)",
       "is_public_holiday": true,
-      "duration_days": 3
+      "duration_days": 5
     },
     {
       "day": 15,
@@ -28,9 +28,9 @@
     {
       "day": 10,
       "month": 3,
-      "name": "Giỗ tổ Hùng Vương",
-      "name_en": "Hung Kings' Festival",
-      "description": "Lễ hội Đền Hùng hoặc Quốc giỗ",
+      "name": "Giỗ Tổ Hùng Vương",
+      "name_en": "Hung Kings' Commemoration Day",
+      "description": "Lễ hội Đền Hùng / Quốc giỗ (nghỉ 1 ngày hưởng nguyên lương)",
       "is_public_holiday": true,
       "duration_days": 1
     },
@@ -55,7 +55,7 @@
       "month": 7,
       "name": "Lễ Thất tịch",
       "name_en": "Qixi Festival",
-      "description": "Ngày lễ tình nhân của người Việt",
+      "description": "Ngày lễ tình nhân phương Đông",
       "is_public_holiday": false
     },
     {
@@ -113,7 +113,7 @@
       "month": 1,
       "name": "Tết Dương lịch",
       "name_en": "New Year's Day",
-      "description": "Tết Tây",
+      "description": "Ngày đầu năm mới Dương lịch",
       "is_public_holiday": true,
       "duration_days": 1
     },
@@ -128,7 +128,7 @@
     {
       "day": 3,
       "month": 2,
-      "name": "Ngày thành lập Đảng Cộng Sản Việt Nam",
+      "name": "Ngày thành lập Đảng Cộng sản Việt Nam",
       "name_en": "Vietnamese Communist Party Founding Day",
       "description": "",
       "is_public_holiday": false
@@ -144,7 +144,7 @@
     {
       "day": 27,
       "month": 2,
-      "name": "Ngày thầy thuốc Việt Nam",
+      "name": "Ngày Thầy thuốc Việt Nam",
       "name_en": "Vietnamese Doctors' Day",
       "description": "",
       "is_public_holiday": false
@@ -184,9 +184,9 @@
     {
       "day": 30,
       "month": 4,
-      "name": "Ngày giải phóng miền Nam",
+      "name": "Ngày Giải phóng miền Nam, thống nhất đất nước",
       "name_en": "Reunification Day",
-      "description": "Ngày thống nhất đất nước",
+      "description": "Ngày Chiến thắng 30/4",
       "is_public_holiday": true,
       "duration_days": 1
     },
@@ -202,19 +202,10 @@
     {
       "day": 7,
       "month": 5,
-      "name": "Ngày chiến thắng Điện Biên Phủ",
+      "name": "Ngày Chiến thắng Điện Biên Phủ",
       "name_en": "Dien Bien Phu Victory Day",
       "description": "",
       "is_public_holiday": false
-    },
-    {
-      "day": 13,
-      "month": 5,
-      "name": "Ngày của mẹ",
-      "name_en": "Mother's Day",
-      "description": "",
-      "is_public_holiday": false,
-      "note": "Chủ nhật tuần thứ 2 của tháng 5"
     },
     {
       "day": 19,
@@ -227,24 +218,15 @@
     {
       "day": 1,
       "month": 6,
-      "name": "Ngày Quốc tế thiếu nhi",
+      "name": "Ngày Quốc tế Thiếu nhi",
       "name_en": "International Children's Day",
       "description": "",
       "is_public_holiday": false
     },
     {
-      "day": 17,
-      "month": 6,
-      "name": "Ngày của cha",
-      "name_en": "Father's Day",
-      "description": "",
-      "is_public_holiday": false,
-      "note": "Chủ nhật tuần thứ 3 của tháng 6"
-    },
-    {
       "day": 21,
       "month": 6,
-      "name": "Ngày báo chí Việt Nam",
+      "name": "Ngày Báo chí Cách mạng Việt Nam",
       "name_en": "Vietnamese Press Day",
       "description": "",
       "is_public_holiday": false
@@ -252,7 +234,7 @@
     {
       "day": 28,
       "month": 6,
-      "name": "Ngày gia đình Việt Nam",
+      "name": "Ngày Gia đình Việt Nam",
       "name_en": "Vietnamese Family Day",
       "description": "",
       "is_public_holiday": false
@@ -260,7 +242,7 @@
     {
       "day": 11,
       "month": 7,
-      "name": "Ngày dân số thế giới",
+      "name": "Ngày Dân số Thế giới",
       "name_en": "World Population Day",
       "description": "",
       "is_public_holiday": false
@@ -268,7 +250,7 @@
     {
       "day": 27,
       "month": 7,
-      "name": "Ngày Thương binh liệt sĩ",
+      "name": "Ngày Thương binh - Liệt sĩ",
       "name_en": "War Invalids and Martyrs Day",
       "description": "",
       "is_public_holiday": false
@@ -276,7 +258,7 @@
     {
       "day": 28,
       "month": 7,
-      "name": "Ngày thành lập công đoàn Việt Nam",
+      "name": "Ngày thành lập Công đoàn Việt Nam",
       "name_en": "Vietnam Trade Union Founding Day",
       "description": "",
       "is_public_holiday": false
@@ -284,7 +266,7 @@
     {
       "day": 19,
       "month": 8,
-      "name": "Ngày kỷ niệm Cách mạng Tháng 8 thành công",
+      "name": "Ngày kỷ niệm Cách mạng Tháng Tám thành công",
       "name_en": "August Revolution Commemoration Day",
       "description": "",
       "is_public_holiday": false
@@ -292,9 +274,9 @@
     {
       "day": 2,
       "month": 9,
-      "name": "Ngày Quốc Khánh",
+      "name": "Ngày Quốc khánh",
       "name_en": "National Day",
-      "description": "Ngày độc lập",
+      "description": "Ngày Độc lập (nghỉ 2 ngày: 2/9 và 1 ngày liền kề)",
       "is_public_holiday": true,
       "duration_days": 2
     },
@@ -309,7 +291,7 @@
     {
       "day": 1,
       "month": 10,
-      "name": "Ngày quốc tế người cao tuổi",
+      "name": "Ngày Quốc tế Người cao tuổi",
       "name_en": "International Day of Older Persons",
       "description": "",
       "is_public_holiday": false
@@ -317,7 +299,7 @@
     {
       "day": 10,
       "month": 10,
-      "name": "Ngày giải phóng thủ đô",
+      "name": "Ngày Giải phóng Thủ đô",
       "name_en": "Hanoi Liberation Day",
       "description": "",
       "is_public_holiday": false
@@ -325,7 +307,7 @@
     {
       "day": 13,
       "month": 10,
-      "name": "Ngày doanh nhân Việt Nam",
+      "name": "Ngày Doanh nhân Việt Nam",
       "name_en": "Vietnamese Entrepreneurs' Day",
       "description": "",
       "is_public_holiday": false
@@ -349,7 +331,7 @@
     {
       "day": 9,
       "month": 11,
-      "name": "Ngày pháp luật Việt Nam",
+      "name": "Ngày Pháp luật Việt Nam",
       "name_en": "Vietnamese Law Day",
       "description": "",
       "is_public_holiday": false
@@ -373,15 +355,25 @@
     {
       "day": 23,
       "month": 11,
-      "name": "Ngày thành lập Hội chữ thập đỏ Việt Nam",
+      "name": "Ngày thành lập Hội Chữ thập đỏ Việt Nam",
       "name_en": "Vietnamese Red Cross Founding Day",
       "description": "",
       "is_public_holiday": false
     },
     {
+      "day": 24,
+      "month": 11,
+      "name": "Ngày Văn hóa Việt Nam",
+      "name_en": "Vietnamese Culture Day",
+      "description": "Ngày nghỉ lễ chính thức hưởng nguyên lương theo Nghị quyết số 28/2026/QH16 (áp dụng từ năm 2026)",
+      "is_public_holiday": true,
+      "duration_days": 1,
+      "since_year": 2026
+    },
+    {
       "day": 1,
       "month": 12,
-      "name": "Ngày thế giới phòng chống AIDS",
+      "name": "Ngày Thế giới phòng chống AIDS",
       "name_en": "World AIDS Day",
       "description": "",
       "is_public_holiday": false
@@ -389,7 +381,7 @@
     {
       "day": 19,
       "month": 12,
-      "name": "Ngày toàn quốc kháng chiến",
+      "name": "Ngày Toàn quốc kháng chiến",
       "name_en": "National Resistance Day",
       "description": "",
       "is_public_holiday": false
@@ -397,7 +389,7 @@
     {
       "day": 22,
       "month": 12,
-      "name": "Ngày thành lập quân đội nhân dân Việt Nam",
+      "name": "Ngày thành lập Quân đội nhân dân Việt Nam",
       "name_en": "Vietnam People's Army Founding Day",
       "description": "",
       "is_public_holiday": false
@@ -405,7 +397,7 @@
     {
       "day": 24,
       "month": 12,
-      "name": "Ngày lễ Giáng sinh",
+      "name": "Đêm Giáng sinh",
       "name_en": "Christmas Eve",
       "description": "",
       "is_public_holiday": false
@@ -419,8 +411,204 @@
       "is_public_holiday": false
     }
   ],
+  "floating_solar_holidays": [
+    {
+      "month": 5,
+      "weekday": 0,
+      "nth": 2,
+      "name": "Ngày của Mẹ",
+      "name_en": "Mother's Day",
+      "description": "Chủ nhật tuần thứ 2 của tháng 5",
+      "is_public_holiday": false
+    },
+    {
+      "month": 6,
+      "weekday": 0,
+      "nth": 3,
+      "name": "Ngày của Cha",
+      "name_en": "Father's Day",
+      "description": "Chủ nhật tuần thứ 3 của tháng 6",
+      "is_public_holiday": false
+    }
+  ],
+  "year_schedules": {
+    "2026": [
+      {
+        "day": 1,
+        "month": 1,
+        "name": "Tết Dương lịch 2026",
+        "name_en": "New Year's Day 2026",
+        "description": "Ngày nghỉ lễ chính thức Tết Dương lịch",
+        "schedule_note": "Kỳ nghỉ 4 ngày liên tục (01/01 – 04/01/2026), hoán đổi Thứ Sáu 02/01 sang làm bù Thứ Bảy 10/01/2026.",
+        "is_public_holiday": true,
+        "duration_days": 4
+      },
+      {
+        "day": 2,
+        "month": 1,
+        "name": "Nghỉ hoán đổi Tết Dương lịch 2026",
+        "name_en": "New Year's Day 2026 Swapped Holiday",
+        "description": "Ngày nghỉ hoán đổi nối liền cuối tuần (làm bù vào Thứ Bảy 10/01/2026)",
+        "schedule_note": "Kỳ nghỉ 4 ngày liên tục (01/01 – 04/01/2026).",
+        "is_public_holiday": true
+      },
+      {
+        "day": 10,
+        "month": 1,
+        "name": "Làm bù Tết Dương lịch 2026",
+        "name_en": "New Year's Day 2026 Makeup Workday",
+        "description": "Đi làm bù cho ngày nghỉ hoán đổi Thứ Sáu 02/01/2026 (áp dụng khối cơ quan nhà nước)",
+        "is_public_holiday": false,
+        "is_workday_swap": true
+      },
+      {
+        "day": 16,
+        "month": 2,
+        "name": "Nghỉ Tết Nguyên đán Bính Ngọ (29 tháng Chạp)",
+        "name_en": "Lunar New Year's Eve Holiday (Day 1/5)",
+        "description": "Ngày nghỉ chính thức thứ 1/5 dịp Tết Nguyên đán Bính Ngọ 2026",
+        "schedule_note": "Kỳ nghỉ Tết 2026 kéo dài 9 ngày liên tục từ Thứ Bảy 14/02 đến hết Chủ nhật 22/02/2026.",
+        "is_public_holiday": true,
+        "duration_days": 5,
+        "type": "lunar"
+      },
+      {
+        "day": 17,
+        "month": 2,
+        "name": "Mùng 1 Tết Nguyên đán Bính Ngọ",
+        "name_en": "Lunar New Year Day 1 (Year of the Fire Horse)",
+        "description": "Ngày nghỉ chính thức thứ 2/5 dịp Tết Nguyên đán Bính Ngọ 2026",
+        "schedule_note": "Kỳ nghỉ Tết 2026 kéo dài 9 ngày liên tục từ Thứ Bảy 14/02 đến hết Chủ nhật 22/02/2026.",
+        "is_public_holiday": true,
+        "duration_days": 5,
+        "type": "lunar"
+      },
+      {
+        "day": 18,
+        "month": 2,
+        "name": "Mùng 2 Tết Nguyên đán Bính Ngọ",
+        "name_en": "Lunar New Year Day 2",
+        "description": "Ngày nghỉ chính thức thứ 3/5 dịp Tết Nguyên đán Bính Ngọ 2026",
+        "schedule_note": "Kỳ nghỉ Tết 2026 kéo dài 9 ngày liên tục từ Thứ Bảy 14/02 đến hết Chủ nhật 22/02/2026.",
+        "is_public_holiday": true,
+        "duration_days": 5,
+        "type": "lunar"
+      },
+      {
+        "day": 19,
+        "month": 2,
+        "name": "Mùng 3 Tết Nguyên đán Bính Ngọ",
+        "name_en": "Lunar New Year Day 3",
+        "description": "Ngày nghỉ chính thức thứ 4/5 dịp Tết Nguyên đán Bính Ngọ 2026",
+        "schedule_note": "Kỳ nghỉ Tết 2026 kéo dài 9 ngày liên tục từ Thứ Bảy 14/02 đến hết Chủ nhật 22/02/2026.",
+        "is_public_holiday": true,
+        "duration_days": 5,
+        "type": "lunar"
+      },
+      {
+        "day": 20,
+        "month": 2,
+        "name": "Mùng 4 Tết Nguyên đán Bính Ngọ",
+        "name_en": "Lunar New Year Day 4",
+        "description": "Ngày nghỉ chính thức thứ 5/5 dịp Tết Nguyên đán Bính Ngọ 2026",
+        "schedule_note": "Kỳ nghỉ Tết 2026 kéo dài 9 ngày liên tục từ Thứ Bảy 14/02 đến hết Chủ nhật 22/02/2026.",
+        "is_public_holiday": true,
+        "duration_days": 5,
+        "type": "lunar"
+      },
+      {
+        "day": 26,
+        "month": 4,
+        "name": "Giỗ Tổ Hùng Vương (10/3 Âm lịch)",
+        "name_en": "Hung Kings' Commemoration Day 2026",
+        "description": "Rơi vào Chủ nhật 26/04/2026, được nghỉ bù Thứ Hai 27/04/2026",
+        "schedule_note": "Kỳ nghỉ 3 ngày liên tục (25/04 – 27/04/2026).",
+        "is_public_holiday": true,
+        "duration_days": 3,
+        "type": "lunar"
+      },
+      {
+        "day": 27,
+        "month": 4,
+        "name": "Nghỉ bù Giỗ Tổ Hùng Vương 2026",
+        "name_en": "Hung Kings' Day Substitute Holiday",
+        "description": "Ngày nghỉ bù do Giỗ Tổ Hùng Vương 26/04/2026 trùng Chủ nhật",
+        "schedule_note": "Kỳ nghỉ 3 ngày liên tục (25/04 – 27/04/2026).",
+        "is_public_holiday": true
+      },
+      {
+        "day": 30,
+        "month": 4,
+        "name": "Ngày Giải phóng miền Nam, thống nhất đất nước",
+        "name_en": "Reunification Day 2026",
+        "description": "Ngày Chiến thắng 30/4",
+        "schedule_note": "Kỳ nghỉ 30/4 – 1/5 năm 2026 kéo dài 4 ngày liên tục (Thứ Năm 30/04 – Chủ nhật 03/05/2026).",
+        "is_public_holiday": true,
+        "duration_days": 4
+      },
+      {
+        "day": 1,
+        "month": 5,
+        "name": "Ngày Quốc tế Lao động",
+        "name_en": "International Workers' Day 2026",
+        "description": "Ngày lễ chính thức 1/5",
+        "schedule_note": "Kỳ nghỉ 30/4 – 1/5 năm 2026 kéo dài 4 ngày liên tục (Thứ Năm 30/04 – Chủ nhật 03/05/2026).",
+        "is_public_holiday": true,
+        "duration_days": 4
+      },
+      {
+        "day": 22,
+        "month": 8,
+        "name": "Làm bù Lễ Quốc khánh 2026",
+        "name_en": "National Day 2026 Makeup Workday",
+        "description": "Đi làm bù cho ngày nghỉ hoán đổi Thứ Hai 31/08/2026 (áp dụng khối cơ quan nhà nước)",
+        "is_public_holiday": false,
+        "is_workday_swap": true
+      },
+      {
+        "day": 31,
+        "month": 8,
+        "name": "Nghỉ hoán đổi Lễ Quốc khánh 2026",
+        "name_en": "National Day 2026 Swapped Holiday",
+        "description": "Ngày nghỉ hoán đổi nối liền cuối tuần (làm bù vào Thứ Bảy 22/08/2026)",
+        "schedule_note": "Kỳ nghỉ Quốc khánh 2026 kéo dài 5 ngày liên tục (Thứ Bảy 29/08 – Thứ Tư 02/09/2026).",
+        "is_public_holiday": true
+      },
+      {
+        "day": 1,
+        "month": 9,
+        "name": "Nghỉ Lễ Quốc khánh (ngày liền kề)",
+        "name_en": "National Day Holiday (Adjacent Day)",
+        "description": "Ngày nghỉ lễ chính thức thứ 1/2 dịp Quốc khánh 2/9/2026",
+        "schedule_note": "Kỳ nghỉ Quốc khánh 2026 kéo dài 5 ngày liên tục (Thứ Bảy 29/08 – Thứ Tư 02/09/2026).",
+        "is_public_holiday": true,
+        "duration_days": 5
+      },
+      {
+        "day": 2,
+        "month": 9,
+        "name": "Ngày Quốc khánh 2/9",
+        "name_en": "National Day 2026",
+        "description": "Ngày Độc lập — ngày nghỉ lễ chính thức thứ 2/2 dịp Quốc khánh 2026",
+        "schedule_note": "Kỳ nghỉ Quốc khánh 2026 kéo dài 5 ngày liên tục (Thứ Bảy 29/08 – Thứ Tư 02/09/2026).",
+        "is_public_holiday": true,
+        "duration_days": 5
+      },
+      {
+        "day": 24,
+        "month": 11,
+        "name": "Ngày Văn hóa Việt Nam",
+        "name_en": "Vietnamese Culture Day",
+        "description": "Ngày nghỉ lễ chính thức mới hưởng nguyên lương theo Nghị quyết số 28/2026/QH16 (năm 2026 áp dụng lần đầu)",
+        "schedule_note": "Nghỉ trực tiếp 1 ngày Thứ Ba 24/11/2026, không thực hiện hoán đổi ngày làm việc.",
+        "is_public_holiday": true,
+        "duration_days": 1
+      }
+    ]
+  },
   "public_holidays_info": {
-    "note": "Các ngày nghỉ lễ chính thức được hưởng lương theo quy định của Nhà nước Việt Nam",
-    "total_days": "Tổng cộng có khoảng 10-11 ngày nghỉ lễ chính thức trong năm"
+    "updated_year": 2026,
+    "note": "Các ngày nghỉ lễ, Tết chính thức được hưởng nguyên lương theo Bộ luật Lao động và Nghị quyết số 28/2026/QH16 (bổ sung Ngày Văn hóa Việt Nam 24/11 từ năm 2026)",
+    "total_days": "Tổng cộng 12 ngày nghỉ lễ, Tết chính thức hưởng nguyên lương mỗi năm (từ năm 2026)"
   }
 }

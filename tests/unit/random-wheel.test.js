@@ -1,5 +1,5 @@
 describe('random wheel timing and suspense settings', () => {
-  it('uses a two-phase 5 second spin and stops audio 0.5 second early', async () => {
+  it('uses a single continuous suspense deceleration on 5s spin (no mid-spin jump) and stops classic audio 0.5s early', async () => {
     jest.useFakeTimers();
     localStorage.setItem('wheelSpinDuration', JSON.stringify(5000));
     localStorage.setItem('wheelSuspenseEffect', JSON.stringify(true));
@@ -9,9 +9,14 @@ describe('random wheel timing and suspense settings', () => {
     document.body.innerHTML = `
       <select id="color-theme-selector"></select>
       <select id="spin-duration-selector">
+        <option value="2000">Very Fast</option>
         <option value="3000">Fast</option>
         <option value="5000">Medium</option>
         <option value="7000">Slow</option>
+        <option value="10000">Very Slow</option>
+        <option value="15000">Dramatic</option>
+        <option value="20000">Event</option>
+        <option value="30000">Ultra</option>
       </select>
       <input id="suspense-effect" type="checkbox">
       <input id="remove-winner" type="checkbox">
@@ -61,11 +66,13 @@ describe('random wheel timing and suspense settings', () => {
 
     document.getElementById('spin-btn').click();
     const wheel = document.getElementById('wheel-names');
-    const mainPhaseTransform = wheel.style.transform;
+    const initialTransform = wheel.style.transform;
+    expect(wheel.style.transition).toBe('transform 5000ms cubic-bezier(0.06, 0.92, 0.12, 1)');
     expect(audio.playbackRate).toBeCloseTo(2500 / 4500);
 
+    // Must NOT perform a choppy second-phase transform jump mid-spin
     jest.advanceTimersByTime(4000);
-    expect(wheel.style.transform).not.toBe(mainPhaseTransform);
+    expect(wheel.style.transform).toBe(initialTransform);
     expect(document.getElementById('spin-btn').disabled).toBe(true);
 
     jest.advanceTimersByTime(499);
@@ -79,6 +86,103 @@ describe('random wheel timing and suspense settings', () => {
     expect(document.getElementById('spin-btn').disabled).toBe(false);
     expect(document.getElementById('wheel-result').textContent).toBe('A');
 
+    Math.random.mockRestore();
+    jest.useRealTimers();
+  });
+
+  it('randomly either tips gently over the divider or holds at the edge in suspense mode, and supports 15s duration', () => {
+    jest.useFakeTimers();
+    localStorage.setItem('wheelSpinDuration', JSON.stringify(15000));
+    localStorage.setItem('wheelSuspenseEffect', JSON.stringify(true));
+    localStorage.setItem('wheelSpinSound', JSON.stringify('none'));
+    localStorage.setItem('wheelWinnerSound', JSON.stringify('none'));
+
+    document.body.innerHTML = `
+      <select id="color-theme-selector"></select>
+      <select id="spin-duration-selector">
+        <option value="2000">2s</option>
+        <option value="3000">3s</option>
+        <option value="5000">5s</option>
+        <option value="7000">7s</option>
+        <option value="10000">10s</option>
+        <option value="15000">15s</option>
+        <option value="20000">20s</option>
+        <option value="30000">30s</option>
+      </select>
+      <input id="suspense-effect" type="checkbox">
+      <input id="remove-winner" type="checkbox">
+      <input id="confetti-effect" type="checkbox">
+      <input id="name-input"><textarea id="bulk-names"></textarea>
+      <button id="add-name-btn"></button><button id="add-bulk-btn"></button>
+      <button id="spin-btn"></button><button id="reset-wheel-btn"></button>
+      <button id="clear-names-btn"></button><button id="clear-history-wheel-btn"></button>
+      <button id="export-wheel-data-btn"></button>
+      <div id="names-list"></div><div id="wheel-names"></div>
+      <div id="wheel-result"></div><div id="spin-history"></div>
+      <div id="total-spins"></div><div id="current-names-count"></div><div id="top-winners"></div>
+      <audio id="wheel-spin-audio"></audio>
+    `;
+
+    window.t = (key, fallback) => fallback || key;
+    global.loadFromLocalStorage = jest.fn(key => key === 'wheelNames' ? ['A', 'B', 'C', 'D'] : []);
+    global.saveToLocalStorage = jest.fn();
+    global.showAlert = jest.fn();
+
+    const domLoadedCallbacks = [];
+    const origAdd = document.addEventListener.bind(document);
+    const addSpy = jest.spyOn(document, 'addEventListener').mockImplementation((type, fn, opts) => {
+      if (type === 'DOMContentLoaded') domLoadedCallbacks.push(fn);
+      else origAdd(type, fn, opts);
+    });
+    try {
+      jest.isolateModules(() => {
+        require('../../assets/js/random-wheel.js');
+      });
+    } finally {
+      addSpy.mockRestore();
+    }
+    domLoadedCallbacks.forEach(fn => fn());
+
+    expect(document.getElementById('spin-duration-selector').value).toBe('15000');
+    const wheel = document.getElementById('wheel-names');
+
+    // Spin 1: pushOverDivider = true (3rd random < 0.5) -> lands just past divider inside slice B (near 180 deg, offset ~87..89)
+    const randSpy = jest.spyOn(Math, 'random')
+      .mockReturnValueOnce(0.0)   // fullSpins = minSpins (~14 spins for 15s)
+      .mockReturnValueOnce(0.3)   // selectedIndex = 1 ('B', slice [90, 180))
+      .mockReturnValueOnce(0.2)   // pushOverDivider = true (< 0.5)
+      .mockReturnValueOnce(0.5);  // pastMargin midpoint (~2.05 deg)
+
+    document.getElementById('spin-btn').click();
+    expect(wheel.style.transition).toBe('transform 15000ms cubic-bezier(0.06, 0.92, 0.12, 1)');
+    const rot1 = parseFloat(wheel.style.transform.match(/rotate\(([-0-9.]+)deg\)/)[1]);
+    expect(rot1).toBeGreaterThanOrEqual(13 * 360);
+    const norm1 = ((360 - (rot1 % 360)) + 360) % 360;
+    // Just past the 180 deg divider into slice B [90, 180)
+    expect(norm1).toBeGreaterThan(176);
+    expect(norm1).toBeLessThan(180);
+
+    jest.advanceTimersByTime(15000);
+    expect(document.getElementById('wheel-result').textContent).toBe('B');
+
+    // Spin 2: pushOverDivider = false (3rd random >= 0.5) -> holds right before divider inside slice B (near 90 deg, offset ~0.6..1.8)
+    randSpy
+      .mockReturnValueOnce(0.0)   // fullSpins
+      .mockReturnValueOnce(0.3)   // selectedIndex = 1 ('B', slice [90, 180))
+      .mockReturnValueOnce(0.8)   // pushOverDivider = false (>= 0.5)
+      .mockReturnValueOnce(0.5);  // holdMargin midpoint (~1.2 deg)
+
+    document.getElementById('spin-btn').click();
+    const rot2 = parseFloat(wheel.style.transform.match(/rotate\(([-0-9.]+)deg\)/)[1]);
+    const norm2 = ((360 - (rot2 % 360)) + 360) % 360;
+    // Holding right before the 90 deg divider inside slice B
+    expect(norm2).toBeGreaterThan(90);
+    expect(norm2).toBeLessThan(93);
+
+    jest.advanceTimersByTime(15000);
+    expect(document.getElementById('wheel-result').textContent).toBe('B');
+
+    randSpy.mockRestore();
     jest.useRealTimers();
   });
 
