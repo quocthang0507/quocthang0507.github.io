@@ -22,117 +22,93 @@
         [1, 4, 6, 7, 10, 11]    // Tỵ, Hợi
     ];
 
-    // Curated scenic & cultural photographs from Wikimedia Commons Category:Featured_pictures_of_Vietnam
-    const VIETNAM_FEATURED_PHOTOS = [
+    // Built-in fallback gallery (replaced automatically once /assets/data/vietnam_photos.json loads with 40 curated photos)
+    let vietnamFeaturedPhotos = [
         {
             title: 'Hoàng hôn Hà Nội sau cơn mưa',
             titleEn: 'Sunset over Hanoi After the Rain',
             location: 'Hà Nội',
+            region: 'north',
             url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Sunset_over_Hanoi_After_the_Rain.jpg/960px-Sunset_over_Hanoi_After_the_Rain.jpg',
             page: 'https://commons.wikimedia.org/wiki/File:Sunset_over_Hanoi_After_the_Rain.jpg',
             author: 'Christopher Crouzet',
             license: 'CC BY-SA 4.0'
         },
         {
-            title: 'Làng hương truyền thống Việt Nam',
-            titleEn: 'Traditional Incense Village in Vietnam',
-            location: 'Việt Nam',
-            url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Incense_in_Vietnam.jpg/960px-Incense_in_Vietnam.jpg',
-            page: 'https://commons.wikimedia.org/wiki/File:Incense_in_Vietnam.jpg',
-            author: 'Trantuanviet',
+            title: 'Vịnh Hạ Long & Làng chài nổi',
+            titleEn: 'Hạ Long Bay Floating Village',
+            location: 'Quảng Ninh',
+            region: 'north',
+            url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Vietnam_08_-_49_-_Halong_Bay_floating_village_%283170198801%29.jpg/960px-Vietnam_08_-_49_-_Halong_Bay_floating_village_%283170198801%29.jpg',
+            page: 'https://commons.wikimedia.org/wiki/File:Vietnam_08_-_49_-_Halong_Bay_floating_village_(3170198801).jpg',
+            author: 'McKay Savage',
+            license: 'CC BY 2.0'
+        },
+        {
+            title: 'Phố cổ Hội An đêm rằm hoa đăng',
+            titleEn: 'Hội An Full Moon Lantern Festival',
+            location: 'Quảng Nam',
+            region: 'central',
+            url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Hoi_An_Full_Moon_Festival.jpg/960px-Hoi_An_Full_Moon_Festival.jpg',
+            page: 'https://commons.wikimedia.org/wiki/File:Hoi_An_Full_Moon_Festival.jpg',
+            author: 'Christophe95',
             license: 'CC BY-SA 4.0'
         },
         {
             title: 'Kinh thành Huế — Cố đô di sản',
             titleEn: 'Imperial Citadel of Huế',
             location: 'Thừa Thiên Huế',
+            region: 'central',
             url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Hue_Vietnam_Citadel-of-Hu%E1%BA%BF-21.jpg/960px-Hue_Vietnam_Citadel-of-Hu%E1%BA%BF-21.jpg',
             page: 'https://commons.wikimedia.org/wiki/File:Hue_Vietnam_Citadel-of-Hu%E1%BA%BF-21.jpg',
             author: 'Uwe Aranas',
             license: 'CC BY-SA 3.0'
         },
         {
-            title: 'Thung lũng Mường Thanh',
-            titleEn: 'Mường Thanh Valley',
-            location: 'Điện Biên Phủ',
-            url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/M%C6%B0%E1%BB%9Dng_Thanh_Valley.jpg/960px-M%C6%B0%E1%BB%9Dng_Thanh_Valley.jpg',
-            page: 'https://commons.wikimedia.org/wiki/File:M%C6%B0%E1%BB%9Dng_Thanh_Valley.jpg',
-            author: 'Tycho',
-            license: 'CC BY-SA 3.0'
+            title: 'Chợ nổi Cái Răng buổi sớm',
+            titleEn: 'Cái Răng Floating Market, Cần Thơ',
+            location: 'Cần Thơ',
+            region: 'south',
+            url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Can_Tho%2C_Vietnam%2C_Floating_Market_2.jpg/960px-Can_Tho%2C_Vietnam%2C_Floating_Market_2.jpg',
+            page: 'https://commons.wikimedia.org/wiki/File:Can_Tho,_Vietnam,_Floating_Market_2.jpg',
+            author: 'Vyacheslav Argenberg',
+            license: 'CC BY 4.0'
         },
         {
-            title: 'Động Phong Nha – Kẻ Bàng',
-            titleEn: 'Phong Nha-Kẻ Bàng National Park',
-            location: 'Quảng Bình',
-            url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Phong_Nha-Ke_Bang_cave3.jpg/960px-Phong_Nha-Ke_Bang_cave3.jpg',
-            page: 'https://commons.wikimedia.org/wiki/File:Phong_Nha-Ke_Bang_cave3.jpg',
-            author: 'Tycho',
-            license: 'CC BY-SA 3.0'
-        },
-        {
-            title: 'Sông Cu Đê lúc hoàng hôn',
-            titleEn: 'Cu Đê River, Da Nang',
-            location: 'Đà Nẵng',
-            url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Cu_%C4%90%C3%AA_River%2C_Da_Nang.jpg/960px-Cu_%C4%90%C3%AA_River%2C_Da_Nang.jpg',
-            page: 'https://commons.wikimedia.org/wiki/File:Cu_%C4%90%C3%AA_River,_Da_Nang.jpg',
-            author: 'Christopher Crouzet',
+            title: 'Hoàng hôn đảo ngọc Phú Quốc',
+            titleEn: 'Sunset at Phú Quốc Island',
+            location: 'Kiên Giang',
+            region: 'south',
+            url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Sunset_at_Phu_Quoc.jpg/960px-Sunset_at_Phu_Quoc.jpg',
+            page: 'https://commons.wikimedia.org/wiki/File:Sunset_at_Phu_Quoc.jpg',
+            author: 'Pswanson1980',
             license: 'CC BY-SA 4.0'
-        },
-        {
-            title: 'Cánh đồng muối Ninh Hòa',
-            titleEn: 'Salt Production in Ninh Hòa',
-            location: 'Khánh Hòa',
-            url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Ninh_H%C3%B2a_salt_production_-_alt.JPG/960px-Ninh_H%C3%B2a_salt_production_-_alt.JPG',
-            page: 'https://commons.wikimedia.org/wiki/File:Ninh_H%C3%B2a_salt_production_-_alt.JPG',
-            author: 'Tycho / Ximonic',
-            license: 'CC BY-SA 3.0'
-        },
-        {
-            title: 'Nhịp sống yên bình Mai Châu',
-            titleEn: 'Peaceful Life in Mai Châu',
-            location: 'Hòa Bình',
-            url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Laundry-Lady-in-Mai-Chau%2C-Vietnam.jpg/960px-Laundry-Lady-in-Mai-Chau%2C-Vietnam.jpg',
-            page: 'https://commons.wikimedia.org/wiki/File:Laundry-Lady-in-Mai-Chau,-Vietnam.jpg',
-            author: 'Steven C. Price',
-            license: 'CC BY-SA 4.0'
-        },
-        {
-            title: 'Cầu Móng cổ kính bên kênh Bến Nghé',
-            titleEn: 'Mống Bridge, Ho Chi Minh City',
-            location: 'TP. Hồ Chí Minh',
-            url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Puente_Mong%2C_Ciudad_Ho_Chi_Minh%2C_Vietnam%2C_2013-08-14%2C_DD_01.JPG/960px-Puente_Mong%2C_Ciudad_Ho_Chi_Minh%2C_Vietnam%2C_2013-08-14%2C_DD_01.JPG',
-            page: 'https://commons.wikimedia.org/wiki/File:Puente_Mong,_Ciudad_Ho_Chi_Minh,_Vietnam,_2013-08-14,_DD_01.JPG',
-            author: 'Diego Delso',
-            license: 'CC BY-SA 3.0'
-        },
-        {
-            title: 'Toàn cảnh TP. Hồ Chí Minh từ trên cao',
-            titleEn: 'Ho Chi Minh City Panorama',
-            location: 'TP. Hồ Chí Minh',
-            url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Vista_de_Ciudad_Ho_Chi_Minh_desde_Bitexco_Financial_Tower%2C_Vietnam%2C_2013-08-14%2C_DD_13.JPG/960px-Vista_de_Ciudad_Ho_Chi_Minh_desde_Bitexco_Financial_Tower%2C_Vietnam%2C_2013-08-14%2C_DD_13.JPG',
-            page: 'https://commons.wikimedia.org/wiki/File:Vista_de_Ciudad_Ho_Chi_Minh_desde_Bitexco_Financial_Tower,_Vietnam,_2013-08-14,_DD_13.JPG',
-            author: 'Diego Delso',
-            license: 'CC BY-SA 3.0'
-        },
-        {
-            title: 'Hoa súng trắng nở rộ',
-            titleEn: 'White Water Lily in Bloom',
-            location: 'TP. Hồ Chí Minh',
-            url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Adarga_%28Nymphaea_alba%29%2C_Ciudad_Ho_Chi_Minh%2C_Vietnam%2C_2013-08-14%2C_DD_01.jpg/960px-Adarga_%28Nymphaea_alba%29%2C_Ciudad_Ho_Chi_Minh%2C_Vietnam%2C_2013-08-14%2C_DD_01.jpg',
-            page: 'https://commons.wikimedia.org/wiki/File:Adarga_(Nymphaea_alba),_Ciudad_Ho_Chi_Minh,_Vietnam,_2013-08-14,_DD_01.jpg',
-            author: 'Diego Delso',
-            license: 'CC BY-SA 3.0'
-        },
-        {
-            title: 'Thiên nhiên Việt Nam — Chuồn chuồn trên hoa',
-            titleEn: 'Dragonfly on Blossom, Vietnam',
-            location: 'Việt Nam',
-            url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Lib%C3%A9lula_%28Orthetrum_sabina%29_sobre_un_Gymnocalicium_mihanowichii%2C_Ciudad_Ho_Chi_Minh%2C_Vietnam%2C_2013-08-14%2C_DD_02.jpg/960px-Lib%C3%A9lula_%28Orthetrum_sabina%29_sobre_un_Gymnocalicium_mihanowichii%2C_Ciudad_Ho_Chi_Minh%2C_Vietnam%2C_2013-08-14%2C_DD_02.jpg',
-            page: 'https://commons.wikimedia.org/wiki/File:Lib%C3%A9lula_(Orthetrum_sabina)_sobre_un_Gymnocalicium_mihanowichii,_Ciudad_Ho_Chi_Minh,_Vietnam,_2013-08-14,_DD_02.jpg',
-            author: 'Diego Delso',
-            license: 'CC BY-SA 3.0'
         }
     ];
+
+    async function loadFeaturedPhotos() {
+        if (typeof fetch !== 'function') return vietnamFeaturedPhotos;
+        try {
+            const res = await fetch('/assets/data/vietnam_photos.json');
+            if (!res.ok) return vietnamFeaturedPhotos;
+            const list = await res.json();
+            if (Array.isArray(list) && list.length > 0) {
+                vietnamFeaturedPhotos = list;
+                try {
+                    window.dispatchEvent(new CustomEvent('vietnamPhotosLoaded', { detail: list }));
+                } catch (_) {}
+            }
+        } catch (_) {
+            // Keep built-in fallback gallery when offline or in tests
+        }
+        return vietnamFeaturedPhotos;
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', loadFeaturedPhotos);
+    } else {
+        loadFeaturedPhotos();
+    }
 
     const DAILY_QUOTES = [
         'Đi một ngày đàng, học một sàng khôn.',
@@ -182,9 +158,10 @@
             label: `${CHI_LIST[ci]} (${CHI_HOURS[ci]})`
         }));
 
+        const photoCount = vietnamFeaturedPhotos.length || 1;
         const photoIndex = photoOverrideIndex !== null && photoOverrideIndex >= 0
-            ? photoOverrideIndex % VIETNAM_FEATURED_PHOTOS.length
-            : (((info.dayOfYear - 1) % VIETNAM_FEATURED_PHOTOS.length) + VIETNAM_FEATURED_PHOTOS.length) % VIETNAM_FEATURED_PHOTOS.length;
+            ? photoOverrideIndex % photoCount
+            : (((info.dayOfYear - 1) % photoCount) + photoCount) % photoCount;
         const quoteIndex = (((info.dayOfYear - 1) % DAILY_QUOTES.length) + DAILY_QUOTES.length) % DAILY_QUOTES.length;
 
         return {
@@ -205,9 +182,9 @@
             },
             napAm: getNapAm(lunarYear),
             hoangDaoHours,
-            photo: VIETNAM_FEATURED_PHOTOS[photoIndex],
+            photo: vietnamFeaturedPhotos[photoIndex],
             photoIndex,
-            totalPhotos: VIETNAM_FEATURED_PHOTOS.length,
+            totalPhotos: photoCount,
             quote: DAILY_QUOTES[quoteIndex]
         };
     }
@@ -935,7 +912,10 @@
         getMonthName,
         getDayInfo,
         getBlocDetails,
-        getFeaturedPhotos: () => VIETNAM_FEATURED_PHOTOS,
+        getFeaturedPhotos: () => vietnamFeaturedPhotos,
+        _setFeaturedPhotos: (list) => {
+            if (Array.isArray(list) && list.length > 0) vietnamFeaturedPhotos = list;
+        },
         getMonthSummary,
         getYearOverview,
         renderMonthTableHTML,

@@ -600,7 +600,6 @@
         "name": "Ngày Văn hóa Việt Nam",
         "name_en": "Vietnamese Culture Day",
         "description": "Ngày nghỉ lễ chính thức mới hưởng nguyên lương theo Nghị quyết số 28/2026/QH16 (năm 2026 áp dụng lần đầu)",
-        "schedule_note": "Nghỉ trực tiếp 1 ngày Thứ Ba 24/11/2026, không thực hiện hoán đổi ngày làm việc.",
         "is_public_holiday": true,
         "duration_days": 1
       }

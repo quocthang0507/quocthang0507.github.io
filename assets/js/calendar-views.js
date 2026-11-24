@@ -159,14 +159,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
                         <!-- Scenic Featured Picture of Vietnam (Wikimedia Commons) -->
                         <div class="bloc-hero">
-                            <img class="bloc-hero-img" src="${esc(bloc.photo.url)}" alt="${esc(photoCaption)}" loading="eager" referrerpolicy="no-referrer" onerror="this.style.display='none'">
+                            <img class="bloc-hero-img" src="${esc(bloc.photo.url)}" alt="${esc(photoCaption)}" loading="eager" crossorigin="anonymous" referrerpolicy="no-referrer" onerror="this.style.display='none'">
                             <div class="bloc-hero-overlay">
                                 <div class="bloc-hero-title">
                                     <i class="fas fa-map-marker-alt me-1"></i>${esc(photoCaption)}
                                     <span class="opacity-75">· ${esc(bloc.photo.location)}</span>
                                 </div>
                                 <a class="bloc-hero-credit" href="${esc(bloc.photo.page)}" target="_blank" rel="noopener noreferrer">
-                                    Wikimedia Commons · ${esc(bloc.photo.author)} (${esc(bloc.photo.license)})
+                                    Wikimedia Commons · ${esc(bloc.photo.author)} (${esc(bloc.photo.license)}) · ${bloc.photoIndex + 1}/${bloc.totalPhotos}
                                 </a>
                             </div>
                         </div>
@@ -299,7 +299,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
         window.addEventListener('languageChanged', () => render());
         window.addEventListener('vietnamHolidaysLoaded', () => render());
+        window.addEventListener('vietnamPhotosLoaded', () => render());
         render();
+
+        return () => ({
+            targetEl: containerEl,
+            filename: `lich-bloc-${toIsoInputValue(currentDate)}.png`,
+            orientation: 'portrait'
+        });
     }
 
     // ═══════════════════════════════════════════
@@ -376,33 +383,31 @@ document.addEventListener('DOMContentLoaded', function () {
                                 <i class="fas ${info.holiday.is_public_holiday ? 'fa-star' : (info.holiday.is_workday_swap ? 'fa-exchange-alt' : 'fa-calendar-alt')} me-1"></i>
                                 ${esc(info.holiday.name)}
                             </span>
-                            ${info.holiday.schedule_note ? `<div class="small text-muted mt-1">${esc(info.holiday.schedule_note)}</div>` : ''}
                         </div>`;
                 }
 
+                const lunarWord = tr('lunar.lunar', 'Âm lịch').replace(/:\s*$/, '');
                 const lunarLine = info.lunar
-                    ? `${info.lunar.day}/${info.lunar.month}${info.lunar.isLeap ? '*' : ''} ${tr('lunar.lunar', 'Âm lịch')} · ${info.canChi}`
+                    ? `${info.lunar.day}/${info.lunar.month}${info.lunar.isLeap ? '*' : ''} ${lunarWord} · ${info.canChi}`
                     : '';
 
                 return `
-                    <div class="col-12 col-md-6 col-xl-4">
-                        <div class="${cardClasses.join(' ')}" role="button" tabindex="0" data-calendar-open-date="1" data-date="${info.day}" data-month="${info.month}" data-year="${info.year}">
-                            <div class="d-flex justify-content-between align-items-start gap-2">
-                                <div>
-                                    <div class="small fw-semibold text-uppercase text-muted">${esc(info.weekdayName)}</div>
-                                    <div class="week-solar-num">${info.day}<span class="week-solar-month">/${info.month}/${info.year}</span></div>
-                                </div>
-                                ${info.isToday ? `<span class="badge bg-primary">${esc(tr('cal.today_badge', 'Hôm nay'))}</span>` : `<span class="badge bg-secondary-subtle text-secondary-emphasis border">#${info.dayOfYear}</span>`}
+                    <div class="${cardClasses.join(' ')}" role="button" tabindex="0" data-calendar-open-date="1" data-date="${info.day}" data-month="${info.month}" data-year="${info.year}">
+                        <div class="d-flex justify-content-between align-items-start gap-2">
+                            <div>
+                                <div class="small fw-semibold text-uppercase text-muted">${esc(info.weekdayName)}</div>
+                                <div class="week-solar-num">${info.day}<span class="week-solar-month">/${info.month}/${info.year}</span></div>
                             </div>
-                            ${lunarLine ? `<div class="small fw-medium text-primary mt-1"><i class="fas fa-moon me-1"></i>${esc(lunarLine)}</div>` : ''}
-                            ${statusBadge}
-                            ${holidayHtml}
+                            ${info.isToday ? `<span class="badge bg-primary">${esc(tr('cal.today_badge', 'Hôm nay'))}</span>` : `<span class="badge bg-secondary-subtle text-secondary-emphasis border">#${info.dayOfYear}</span>`}
                         </div>
+                        ${lunarLine ? `<div class="small fw-medium text-primary mt-1"><i class="fas fa-moon me-1"></i>${esc(lunarLine)}</div>` : ''}
+                        ${statusBadge}
+                        ${holidayHtml}
                     </div>`;
             }).join('');
 
             if (gridEl) {
-                gridEl.innerHTML = `<div class="row g-3">${cardsHtml}</div>`;
+                gridEl.innerHTML = `<div class="weekly-cards-grid">${cardsHtml}</div>`;
                 Core.bindDayClickHandlers(gridEl);
                 gridEl.querySelectorAll('[data-calendar-open-date]').forEach(card => {
                     card.addEventListener('keydown', e => {
@@ -449,6 +454,17 @@ document.addEventListener('DOMContentLoaded', function () {
         window.addEventListener('languageChanged', render);
         window.addEventListener('vietnamHolidaysLoaded', render);
         render();
+
+        return () => {
+            const weekDates = Core.getWeekDates(anchorDate, 1);
+            const first = weekDates[0];
+            const isoWeek = String(Core.computeISOWeek(first)).padStart(2, '0');
+            return {
+                targetEl: document.getElementById('weekly-export-area') || root,
+                filename: `lich-tuan-${isoWeek}-${first.getFullYear()}.png`,
+                orientation: 'landscape'
+            };
+        };
     }
 
     // ═══════════════════════════════════════════
@@ -588,6 +604,12 @@ document.addEventListener('DOMContentLoaded', function () {
         window.addEventListener('languageChanged', render);
         window.addEventListener('vietnamHolidaysLoaded', render);
         render();
+
+        return () => ({
+            targetEl: document.getElementById('monthly-export-area') || root,
+            filename: `lich-thang-${currentYear}-${String(currentMonth).padStart(2, '0')}.png`,
+            orientation: 'landscape'
+        });
     }
 
     // ═══════════════════════════════════════════
@@ -604,6 +626,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const nextBtn = document.getElementById('yearly-next-btn');
         const thisYearBtn = document.getElementById('yearly-current-btn');
         const overviewEl = document.getElementById('yearly-overview-banner');
+        const headerBadgeEl = document.getElementById('yearly-header-badge');
         const gridEl = document.getElementById('yearly-months-grid');
         const publicListEl = document.getElementById('yearly-public-holidays');
         const lunarListEl = document.getElementById('yearly-lunar-events');
@@ -614,6 +637,9 @@ document.addEventListener('DOMContentLoaded', function () {
             if (yearSelect) yearSelect.value = String(currentYear);
 
             const overview = Core.getYearOverview(currentYear);
+            if (headerBadgeEl) {
+                headerBadgeEl.textContent = overview.canChi ? `${overview.year} · ${overview.canChi}` : String(overview.year);
+            }
 
             // 1. Year Overview Banner (inspired by ngaydep.com/xem-lich-nam-2026.html)
             if (overviewEl) {
@@ -687,23 +713,21 @@ document.addEventListener('DOMContentLoaded', function () {
                     });
                     const isCurrentMonth = currentYear === today.getFullYear() && m === (today.getMonth() + 1);
                     cards.push(`
-                        <div class="col-12 col-md-6 col-xl-4">
-                            <div class="card year-month-card h-100${isCurrentMonth ? ' is-current-month' : ''}">
-                                <div class="card-header d-flex justify-content-between align-items-center py-2 px-3">
-                                    <a href="${esc(monthUrl)}" class="fw-bold text-decoration-none year-month-link">
-                                        ${esc(monthTitle)}
-                                    </a>
-                                    <a href="${esc(monthUrl)}" class="btn btn-sm btn-outline-primary py-0 px-2" title="${esc(tr('cal.open_month', 'Xem chi tiết tháng'))}">
-                                        <i class="fas fa-external-link-alt fa-xs"></i>
-                                    </a>
-                                </div>
-                                <div class="card-body p-2">
-                                    ${tableHtml}
-                                </div>
+                        <div class="card year-month-card h-100${isCurrentMonth ? ' is-current-month' : ''}">
+                            <div class="card-header d-flex justify-content-between align-items-center py-2 px-3">
+                                <a href="${esc(monthUrl)}" class="fw-bold text-decoration-none year-month-link">
+                                    ${esc(monthTitle)}
+                                </a>
+                                <a href="${esc(monthUrl)}" class="btn btn-sm btn-outline-primary py-0 px-2 calendar-no-print" title="${esc(tr('cal.open_month', 'Xem chi tiết tháng'))}">
+                                    <i class="fas fa-external-link-alt fa-xs"></i>
+                                </a>
+                            </div>
+                            <div class="card-body p-2">
+                                ${tableHtml}
                             </div>
                         </div>`);
                 }
-                gridEl.innerHTML = `<div class="row g-3">${cards.join('')}</div>`;
+                gridEl.innerHTML = `<div class="yearly-months-grid">${cards.join('')}</div>`;
                 Core.bindDayClickHandlers(gridEl);
             }
 
@@ -770,10 +794,223 @@ document.addEventListener('DOMContentLoaded', function () {
         window.addEventListener('languageChanged', render);
         window.addEventListener('vietnamHolidaysLoaded', render);
         render();
+
+        return () => ({
+            targetEl: document.getElementById('yearly-export-area') || root,
+            filename: `lich-nam-${currentYear}.png`,
+            orientation: 'portrait'
+        });
     }
 
-    if (view === 'day') initDailyView();
-    else if (view === 'week') initWeeklyView();
-    else if (view === 'month') initMonthlyView();
-    else if (view === 'year') initYearlyView();
+    // ═══════════════════════════════════════════
+    // 4. SHARED PRINT & HIGH-FIDELITY PNG EXPORT (All 4 Calendar Views)
+    // ═══════════════════════════════════════════
+    function setupCalendarOutputActions(getExportMeta) {
+        if (typeof getExportMeta !== 'function') return;
+
+        const printBtn = document.getElementById('calendar-print-btn');
+        const exportBtn = document.getElementById('calendar-export-img-btn');
+        const imgDataCache = new Map();
+
+        function applyPrintPageStyle(orientation) {
+            let styleEl = document.getElementById('calendar-print-page-style');
+            if (!styleEl) {
+                styleEl = document.createElement('style');
+                styleEl.id = 'calendar-print-page-style';
+                document.head.appendChild(styleEl);
+            }
+            const pageSize = orientation === 'landscape' ? 'A4 landscape' : 'A4 portrait';
+            styleEl.textContent = `@media print { @page { size: ${pageSize}; margin: 8mm; } }`;
+        }
+
+        // Apply optimal @page orientation immediately so Ctrl+P / Cmd+P matches the Print button
+        const initialMeta = getExportMeta();
+        if (initialMeta && initialMeta.orientation) {
+            applyPrintPageStyle(initialMeta.orientation);
+        }
+
+        async function waitForImages(container) {
+            const imgs = Array.from(container.querySelectorAll('img'));
+            await Promise.all(imgs.map(img => {
+                if (img.style.display === 'none' || !img.src || img.complete) return Promise.resolve();
+                return new Promise(resolve => {
+                    const timer = setTimeout(resolve, 4000);
+                    const done = () => { clearTimeout(timer); resolve(); };
+                    img.addEventListener('load', done, { once: true });
+                    img.addEventListener('error', done, { once: true });
+                });
+            }));
+        }
+
+        function inlineLoadedImages(container) {
+            const restored = [];
+            const imgs = Array.from(container.querySelectorAll('img'));
+            imgs.forEach(img => {
+                const origSrc = img.getAttribute('src');
+                if (!origSrc || origSrc.startsWith('data:') || !img.complete || img.naturalWidth === 0) return;
+                if (imgDataCache.has(origSrc)) {
+                    img.setAttribute('src', imgDataCache.get(origSrc));
+                    restored.push({ img, origSrc });
+                    return;
+                }
+                try {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.naturalWidth;
+                    canvas.height = img.naturalHeight;
+                    const ctx = canvas.getContext('2d');
+                    if (!ctx) return;
+                    ctx.drawImage(img, 0, 0);
+                    const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
+                    if (dataUrl && dataUrl.startsWith('data:image/')) {
+                        imgDataCache.set(origSrc, dataUrl);
+                        img.setAttribute('src', dataUrl);
+                        restored.push({ img, origSrc });
+                    }
+                } catch (_) {
+                    // Tainted canvas or non-CORS image: leave src for html-to-image fallback
+                }
+            });
+            return () => {
+                restored.forEach(({ img, origSrc }) => {
+                    img.setAttribute('src', origSrc);
+                });
+            };
+        }
+
+        function ensureHtmlToImage() {
+            if (window.htmlToImage && typeof window.htmlToImage.toBlob === 'function') {
+                return Promise.resolve(window.htmlToImage);
+            }
+            return new Promise((resolve, reject) => {
+                const existing = document.querySelector('script[src*="html-to-image"]');
+                if (existing) {
+                    const timer = setTimeout(() => {
+                        if (window.htmlToImage && typeof window.htmlToImage.toBlob === 'function') resolve(window.htmlToImage);
+                        else reject(new Error('html-to-image failed to load'));
+                    }, 5000);
+                    existing.addEventListener('load', () => {
+                        clearTimeout(timer);
+                        if (window.htmlToImage) resolve(window.htmlToImage);
+                        else reject(new Error('html-to-image unavailable'));
+                    }, { once: true });
+                    existing.addEventListener('error', () => {
+                        clearTimeout(timer);
+                        reject(new Error('html-to-image network error'));
+                    }, { once: true });
+                    return;
+                }
+                const s = document.createElement('script');
+                s.src = 'https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js';
+                s.onload = () => (window.htmlToImage ? resolve(window.htmlToImage) : reject(new Error('html-to-image unavailable')));
+                s.onerror = () => reject(new Error('html-to-image network error'));
+                document.head.appendChild(s);
+            });
+        }
+
+        async function printCalendar() {
+            const meta = getExportMeta();
+            if (!meta || !meta.targetEl) return;
+            applyPrintPageStyle(meta.orientation);
+            await waitForImages(meta.targetEl);
+            window.print();
+        }
+
+        async function exportCalendarImage() {
+            const meta = getExportMeta();
+            if (!meta || !meta.targetEl) return;
+
+            const targetEl = meta.targetEl;
+            const filename = meta.filename || `calendar-${view}.png`;
+            const origHtml = exportBtn ? exportBtn.innerHTML : '';
+
+            if (exportBtn) {
+                exportBtn.disabled = true;
+                exportBtn.innerHTML = `<i class="fas fa-spinner fa-spin me-1" aria-hidden="true"></i><span>${esc(tr('cal.exporting_image', 'Đang xuất ảnh...'))}</span>`;
+            }
+
+            let restoreImages = () => {};
+            try {
+                const htmlToImage = await ensureHtmlToImage();
+                await waitForImages(targetEl);
+                if (document.fonts && document.fonts.ready) {
+                    await Promise.race([document.fonts.ready, new Promise(r => setTimeout(r, 1500))]);
+                }
+
+                targetEl.classList.add('is-exporting-image');
+                restoreImages = inlineLoadedImages(targetEl);
+
+                // Let layout settle so export-only legend & framing padding apply before capture
+                await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+
+                const bodyBg = getComputedStyle(document.body).backgroundColor || '#ffffff';
+                const pixelRatio = targetEl.scrollHeight > 3200 ? 1.5 : 2;
+                const exportOpts = {
+                    pixelRatio,
+                    backgroundColor: bodyBg,
+                    cacheBust: false,
+                    style: {
+                        margin: '0'
+                    },
+                    filter: (node) => {
+                        if (node && node.classList && node.classList.contains('calendar-no-print')) return false;
+                        return true;
+                    }
+                };
+
+                let blob;
+                try {
+                    blob = await htmlToImage.toBlob(targetEl, exportOpts);
+                } catch (_) {
+                    // Offline or restricted stylesheet fallback: preserve full layout & photo without remote font embedding
+                    blob = await htmlToImage.toBlob(targetEl, Object.assign({}, exportOpts, { skipFonts: true }));
+                }
+
+                if (!blob) throw new Error('Empty image blob');
+
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                setTimeout(() => URL.revokeObjectURL(url), 2000);
+
+                if (typeof window.showAlert === 'function') {
+                    window.showAlert(tr('cal.export_success', 'Đã xuất ảnh lịch PNG!'), 'success');
+                }
+            } catch (_) {
+                if (typeof window.showAlert === 'function') {
+                    window.showAlert(
+                        tr('cal.export_error', 'Không thể xuất ảnh. Vui lòng thử lại hoặc dùng nút In lịch (Lưu PDF).'),
+                        'danger'
+                    );
+                }
+            } finally {
+                restoreImages();
+                targetEl.classList.remove('is-exporting-image');
+                if (exportBtn) {
+                    exportBtn.disabled = false;
+                    exportBtn.innerHTML = origHtml;
+                }
+            }
+        }
+
+        if (printBtn) printBtn.addEventListener('click', printCalendar);
+        if (exportBtn) exportBtn.addEventListener('click', exportCalendarImage);
+
+        window.CalendarOutput = {
+            print: printCalendar,
+            exportImage: exportCalendarImage,
+            getExportMeta
+        };
+    }
+
+    let getExportMeta = null;
+    if (view === 'day') getExportMeta = initDailyView();
+    else if (view === 'week') getExportMeta = initWeeklyView();
+    else if (view === 'month') getExportMeta = initMonthlyView();
+    else if (view === 'year') getExportMeta = initYearlyView();
+
+    setupCalendarOutputActions(getExportMeta);
 });

@@ -16,6 +16,7 @@ sitemap:
 <div data-calendar-view="week">
     {% include calendar-view-tabs.html active="week" %}
 
+    <div id="weekly-export-area">
     <div class="card mb-4">
         <div class="card-header bg-primary text-white d-flex flex-wrap justify-content-between align-items-center gap-2">
             <div>
@@ -25,7 +26,7 @@ sitemap:
         </div>
         <div class="card-body">
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
-                <div class="btn-group" role="group">
+                <div class="btn-group calendar-no-print" role="group">
                     <button type="button" id="prev-week-btn" class="btn btn-outline-primary btn-sm">
                         <i class="fas fa-chevron-left me-1"></i><span data-i18n="cal.prev_week">Tuần trước</span>
                     </button>
@@ -39,7 +40,7 @@ sitemap:
 
                 <h2 id="week-range-title" class="h6 mb-0 fw-bold text-center flex-grow-1"></h2>
 
-                <div class="d-flex align-items-center gap-2">
+                <div class="d-flex align-items-center gap-2 calendar-no-print">
                     <label for="week-date-picker" class="form-label mb-0 small text-muted text-nowrap" data-i18n="cal.jump_date">Chọn ngày:</label>
                     <input type="date" id="week-date-picker" class="form-control form-control-sm" style="width: auto;">
                 </div>
@@ -48,6 +49,8 @@ sitemap:
             <div id="weekly-summary" class="d-flex flex-wrap gap-2 mb-3"></div>
             <div id="weekly-calendar-grid"></div>
         </div>
+    </div>
+    {% include calendar-export-legend.html %}
     </div>
 </div>
 

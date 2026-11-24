@@ -26,10 +26,10 @@
   margin-left: -0.75rem;
 
   // Gutter support: g-* classes
-  &.g-0 { margin-right: 0; margin-left: 0; > :is(.col, [class^="col-"], [class*=" col-"]) { padding-right: 0; padding-left: 0; } }
-  &.g-1 { margin-right: -0.125rem; margin-left: -0.125rem; > :is(.col, [class^="col-"], [class*=" col-"]) { padding-right: 0.125rem; padding-left: 0.125rem; } }
-  &.g-2 { margin-right: -0.25rem; margin-left: -0.25rem; > :is(.col, [class^="col-"], [class*=" col-"]) { padding-right: 0.25rem; padding-left: 0.25rem; } }
-  &.g-3 { margin-right: -0.5rem; margin-left: -0.5rem; > :is(.col, [class^="col-"], [class*=" col-"]) { padding-right: 0.5rem; padding-left: 0.5rem; } }
+  &.g-0 { margin-right: 0; margin-left: 0; row-gap: 0; > :is(.col, [class^="col-"], [class*=" col-"]) { padding-right: 0; padding-left: 0; } }
+  &.g-1 { margin-right: -0.125rem; margin-left: -0.125rem; row-gap: 0.25rem; > :is(.col, [class^="col-"], [class*=" col-"]) { padding-right: 0.125rem; padding-left: 0.125rem; } }
+  &.g-2 { margin-right: -0.25rem; margin-left: -0.25rem; row-gap: 0.5rem; > :is(.col, [class^="col-"], [class*=" col-"]) { padding-right: 0.25rem; padding-left: 0.25rem; } }
+  &.g-3 { margin-right: -0.5rem; margin-left: -0.5rem; row-gap: 1rem; > :is(.col, [class^="col-"], [class*=" col-"]) { padding-right: 0.5rem; padding-left: 0.5rem; } }
   &.g-4 { margin-right: -0.75rem; margin-left: -0.75rem; row-gap: 1.5rem; > :is(.col, [class^="col-"], [class*=" col-"]) { padding-right: 0.75rem; padding-left: 0.75rem; } }
 }
 

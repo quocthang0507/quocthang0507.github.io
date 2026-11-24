@@ -4,15 +4,21 @@ const path = require('path');
 describe('Shared CalendarCore engine & Weekly/Monthly/Yearly calendar views', () => {
   const rootDir = path.join(__dirname, '../..');
   let holidaysData;
+  let photosData;
 
   beforeAll(() => {
     holidaysData = JSON.parse(
       fs.readFileSync(path.join(rootDir, 'assets/data/vietnam_holidays.json'), 'utf8')
     );
+    photosData = JSON.parse(
+      fs.readFileSync(path.join(rootDir, 'assets/data/vietnam_photos.json'), 'utf8')
+    );
 
-    global.fetch = jest.fn().mockResolvedValue({
-      ok: true,
-      json: async () => holidaysData
+    global.fetch = jest.fn().mockImplementation(async (url) => {
+      if (String(url).includes('vietnam_photos.json')) {
+        return { ok: true, json: async () => photosData };
+      }
+      return { ok: true, json: async () => holidaysData };
     });
 
     const domLoadedCallbacks = [];
@@ -32,6 +38,7 @@ describe('Shared CalendarCore engine & Weekly/Monthly/Yearly calendar views', ()
     }
     domLoadedCallbacks.forEach(fn => fn());
     window.VietnamHolidays._setHolidaysData(holidaysData);
+    window.CalendarCore._setFeaturedPhotos(photosData);
   });
 
   it('computes accurate 2026 Bính Ngọ overview matching Vietnamese lunar calendar standards', () => {
@@ -131,6 +138,99 @@ describe('Shared CalendarCore engine & Weekly/Monthly/Yearly calendar views', ()
     expect(bloc.dayZodiac.chi).toBe('Dậu');
     expect(bloc.hoangDaoHours.map(h => h.chi)).toEqual(['Tý', 'Dần', 'Mão', 'Ngọ', 'Mùi', 'Dậu']);
     expect(bloc.photo.url).toContain('upload.wikimedia.org/wikipedia/commons/thumb/');
-    expect(bloc.totalPhotos).toBe(12);
+    expect(bloc.totalPhotos).toBe(40);
+  });
+
+  it('provides a curated 40-photo Vietnam gallery across North, Central, and South regions', () => {
+    const gallery = window.CalendarCore.getFeaturedPhotos();
+    expect(gallery).toHaveLength(40);
+
+    const uniqueUrls = new Set(gallery.map(p => p.url));
+    expect(uniqueUrls.size).toBe(40);
+
+    const regions = gallery.reduce((acc, p) => {
+      acc[p.region] = (acc[p.region] || 0) + 1;
+      return acc;
+    }, {});
+    expect(regions.north).toBeGreaterThanOrEqual(10);
+    expect(regions.central).toBeGreaterThanOrEqual(10);
+    expect(regions.south).toBeGreaterThanOrEqual(8);
+
+    gallery.forEach(p => {
+      expect(p.title).toBeTruthy();
+      expect(p.location).toBeTruthy();
+      expect(p.author).toBeTruthy();
+      expect(p.license).toBeTruthy();
+      expect(p.url).toMatch(/^https:\/\/upload\.wikimedia\.org\/wikipedia\/commons\/thumb\/.+\/960px-/);
+      expect(p.page).toMatch(/^https:\/\/commons\.wikimedia\.org\/wiki\/File:/);
+    });
+  });
+
+  it('wires Print & PNG Export actions with dynamic @page orientation and descriptive filenames', async () => {
+    window.history.replaceState({}, '', '/daily-calendar/?date=2026-11-24');
+    document.body.innerHTML = `
+      <div data-calendar-view="day">
+        <button id="calendar-print-btn"></button>
+        <button id="calendar-export-img-btn">Xuất ảnh</button>
+        <div id="daily-bloc-sheet"></div>
+      </div>
+    `;
+
+    const domLoadedCallbacks = [];
+    const origAdd = document.addEventListener.bind(document);
+    const addSpy = jest.spyOn(document, 'addEventListener').mockImplementation((type, fn, opts) => {
+      if (type === 'DOMContentLoaded') domLoadedCallbacks.push(fn);
+      else origAdd(type, fn, opts);
+    });
+    try {
+      jest.isolateModules(() => {
+        require('../../assets/js/calendar-views.js');
+      });
+    } finally {
+      addSpy.mockRestore();
+    }
+    domLoadedCallbacks.forEach(fn => fn());
+
+    expect(window.CalendarOutput).toBeDefined();
+    const meta = window.CalendarOutput.getExportMeta();
+    expect(meta.filename).toBe('lich-bloc-2026-11-24.png');
+    expect(meta.orientation).toBe('portrait');
+
+    const printStyle = document.getElementById('calendar-print-page-style');
+    expect(printStyle).not.toBeNull();
+    expect(printStyle.textContent).toContain('A4 portrait');
+
+    // Simulate image loaded in JSDOM (JSDOM does not fetch remote images)
+    const heroImg = document.querySelector('.bloc-hero-img');
+    if (heroImg) {
+      Object.defineProperty(heroImg, 'complete', { value: true, configurable: true });
+    }
+
+    // Verify print invokes window.print()
+    const printSpy = jest.spyOn(window, 'print').mockImplementation(() => {});
+    await window.CalendarOutput.print();
+    expect(printSpy).toHaveBeenCalledTimes(1);
+    printSpy.mockRestore();
+
+    // Verify export invokes htmlToImage.toBlob and cleans up .is-exporting-image
+    const mockBlob = new Blob(['png'], { type: 'image/png' });
+    window.htmlToImage = { toBlob: jest.fn().mockResolvedValue(mockBlob) };
+    const origCreateObjectURL = URL.createObjectURL;
+    const origRevokeObjectURL = URL.revokeObjectURL;
+    URL.createObjectURL = jest.fn(() => 'blob:mock-calendar-png');
+    URL.revokeObjectURL = jest.fn();
+    const clickSpy = jest.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
+
+    try {
+      await window.CalendarOutput.exportImage();
+      expect(window.htmlToImage.toBlob).toHaveBeenCalledTimes(1);
+      expect(clickSpy).toHaveBeenCalledTimes(1);
+      expect(document.getElementById('daily-bloc-sheet').classList.contains('is-exporting-image')).toBe(false);
+    } finally {
+      clickSpy.mockRestore();
+      URL.createObjectURL = origCreateObjectURL;
+      URL.revokeObjectURL = origRevokeObjectURL;
+      delete window.htmlToImage;
+    }
   });
 });

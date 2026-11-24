@@ -16,11 +16,13 @@ sitemap:
 <div data-calendar-view="year" data-monthly-url="{{ '/monthly-calendar/' | relative_url }}">
     {% include calendar-view-tabs.html active="year" %}
 
+    <div id="yearly-export-area">
     <div class="card mb-4">
         <div class="card-header bg-primary text-white d-flex flex-wrap justify-content-between align-items-center gap-2">
             <h1 class="h5 mb-0"><i class="fas fa-calendar me-2"></i><span data-i18n="cal.yearly_title">Lịch năm âm dương (12 tháng)</span></h1>
             <div class="d-flex flex-wrap align-items-center gap-2">
-                <div class="btn-group btn-group-sm" role="group">
+                <span id="yearly-header-badge" class="badge bg-light text-dark"></span>
+                <div class="btn-group btn-group-sm calendar-no-print" role="group">
                     <button type="button" class="btn btn-light" data-quick-year="2025">2025</button>
                     <button type="button" class="btn btn-warning fw-bold" data-quick-year="2026">2026</button>
                     <button type="button" class="btn btn-light" data-quick-year="2027">2027</button>
@@ -28,7 +30,7 @@ sitemap:
             </div>
         </div>
         <div class="card-body">
-            <div class="row g-2 align-items-center mb-3">
+            <div class="row g-2 align-items-center mb-3 calendar-no-print">
                 <div class="col-12 col-md-auto">
                     <div class="btn-group" role="group">
                         <button type="button" id="yearly-prev-btn" class="btn btn-outline-primary btn-sm">
@@ -80,6 +82,8 @@ sitemap:
                 </div>
             </div>
         </div>
+    </div>
+    {% include calendar-export-legend.html %}
     </div>
 </div>
 

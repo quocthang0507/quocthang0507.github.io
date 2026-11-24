@@ -1080,15 +1080,64 @@ body.dark-mode {
   }
 }
 
+.weekly-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-auto-rows: 1fr;
+  gap: 1.15rem;
+
+  @media (max-width: 1199.98px) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  @media (max-width: 991.98px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (max-width: 575.98px) {
+    grid-template-columns: 1fr;
+    grid-auto-rows: auto;
+  }
+}
+
+.yearly-months-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-rows: 1fr;
+  gap: 1.15rem;
+
+  @media (max-width: 1199.98px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (max-width: 767.98px) {
+    grid-template-columns: 1fr;
+    grid-auto-rows: auto;
+  }
+}
+
 .week-day-card {
+  display: flex;
+  flex-direction: column;
   height: 100%;
+  min-width: 0;
+  overflow: hidden;
   padding: 1rem;
   border-radius: var(--nm-radius-md);
   background: var(--nm-bg);
   box-shadow: var(--nm-shadow-flat-sm);
-  border: 1px solid rgba(148, 163, 184, 0.2);
+  border: 1px solid rgba(148, 163, 184, 0.22);
   cursor: pointer;
   @include nm.nm-transition;
+
+  .badge.text-wrap {
+    max-width: 100%;
+    white-space: normal !important;
+    line-height: 1.35;
+    text-align: left;
+    border-radius: 10px;
+    padding: 0.35em 0.65em;
+  }
 
   &:hover {
     transform: translateY(-2px);
@@ -1604,6 +1653,169 @@ body.dark-mode {
     border-top: 1px solid rgba(212, 160, 23, 0.3);
     border-bottom: 1px solid rgba(212, 160, 23, 0.3);
     padding: 0.85rem 0;
+  }
+}
+
+// ─── Calendar Print & High-Fidelity PNG Export Styles ───
+[data-calendar-view] .card-header .badge.bg-light {
+  color: #1e293b !important;
+  background-color: rgba(255, 255, 255, 0.94) !important;
+}
+
+.calendar-export-legend.d-flex,
+.calendar-export-legend {
+  display: none !important;
+}
+
+.is-exporting-image {
+  padding: 20px !important;
+  border-radius: 16px;
+
+  .calendar-no-print,
+  .calendar-no-print.d-flex {
+    display: none !important;
+  }
+
+  .calendar-export-legend,
+  .calendar-export-legend.d-flex {
+    display: flex !important;
+  }
+
+  .table-responsive {
+    overflow: visible !important;
+  }
+
+  .bloc-card {
+    animation: none !important;
+  }
+}
+
+.bloc-stage-wrapper.is-exporting-image {
+  max-width: 760px !important;
+}
+
+@media print {
+  body:has([data-calendar-view]),
+  [data-calendar-view],
+  [data-calendar-view] * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  body:has([data-calendar-view]) {
+    header,
+    nav.navbar,
+    footer,
+    #alert-container,
+    .toast-container,
+    #command-palette-overlay,
+    #cookie-consent-banner,
+    .pwa-install-banner,
+    .pwa-offline-banner,
+    .tool-guide-card,
+    .row:has(.tool-guide-card) {
+      display: none !important;
+    }
+
+    main.container {
+      max-width: 100% !important;
+      width: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+  }
+
+  [data-calendar-view] .calendar-no-print,
+  [data-calendar-view] .calendar-no-print.d-flex,
+  .calendar-top-bar.calendar-no-print,
+  .calendar-no-print {
+    display: none !important;
+  }
+
+  [data-calendar-view] .calendar-export-legend,
+  .calendar-export-legend.d-flex {
+    display: flex !important;
+  }
+
+  [data-calendar-view] {
+    .table-responsive {
+      overflow: visible !important;
+    }
+
+    .card {
+      box-shadow: none !important;
+      border: 1px solid rgba(148, 163, 184, 0.35) !important;
+    }
+  }
+
+  // Daily Lịch Bloc: fit cleanly onto 1 single A4 portrait sheet with full color fidelity
+  [data-calendar-view="day"] {
+    .bloc-stage-wrapper {
+      max-width: 660px !important;
+      margin: 0 auto !important;
+    }
+
+    .bloc-card {
+      break-inside: avoid;
+      page-break-inside: avoid;
+      box-shadow:
+        4px 4px 0 #f5ecd7,
+        5px 5px 0 rgba(212, 160, 23, 0.7) !important;
+    }
+
+    .bloc-hero {
+      max-height: 245px !important;
+      min-height: 170px !important;
+    }
+
+    .bloc-solar-number {
+      font-size: 6.8rem !important;
+    }
+  }
+
+  // Weekly Calendar: clean equal 4-column card grid on A4 landscape
+  [data-calendar-view="week"] {
+    .weekly-cards-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+      grid-auto-rows: 1fr !important;
+      gap: 0.75rem !important;
+    }
+
+    .week-day-card {
+      break-inside: avoid;
+      page-break-inside: avoid;
+      box-shadow: none !important;
+    }
+  }
+
+  // Monthly Calendar: full table width + side-by-side summary cards on A4 landscape
+  [data-calendar-view="month"] {
+    #monthly-export-area > .row {
+      display: flex !important;
+      flex-wrap: wrap !important;
+    }
+
+    #monthly-export-area > .row > .col-lg-6 {
+      flex: 0 0 50% !important;
+      max-width: 50% !important;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+  }
+
+  // Yearly Calendar: clean equal 3-column 12-month grid with no split month cards
+  [data-calendar-view="year"] {
+    .yearly-months-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+      grid-auto-rows: 1fr !important;
+      gap: 0.75rem !important;
+    }
+
+    .year-month-card,
+    .year-overview-banner {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
   }
 }
 
