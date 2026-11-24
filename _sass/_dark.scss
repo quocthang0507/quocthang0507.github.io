@@ -196,10 +196,36 @@
 [data-theme="dark"] .btn-outline-primary,
 [data-theme="dark"] .btn-outline-success,
 [data-theme="dark"] .btn-outline-danger,
-[data-theme="dark"] .btn-outline-secondary {
+[data-theme="dark"] .btn-outline-secondary,
+[data-theme="dark"] .btn-outline-dark {
   background: var(--nm-dark-card);
   box-shadow: 3px 3px 6px var(--nm-dark-shadow-dark),
               -3px -3px 6px var(--nm-dark-shadow-light);
+}
+
+[data-theme="dark"] .btn-outline-secondary {
+  color: var(--nm-dark-text);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+[data-theme="dark"] .btn-outline-dark {
+  color: var(--nm-dark-text);
+  border-color: rgba(255, 255, 255, 0.3);
+
+  &:hover {
+    background: var(--nm-dark-text);
+    color: var(--nm-dark-bg);
+    border-color: var(--nm-dark-text);
+  }
+}
+
+[data-theme="dark"] .btn-light:hover {
+  background: #4A4A58;
+  color: var(--nm-dark-text);
+}
+
+[data-theme="dark"] .bg-white {
+  color: #111827;
 }
 
 // ─── Text ───
@@ -242,6 +268,12 @@
 [data-theme="dark"] .table td {
   color: var(--nm-dark-text);
   border-bottom-color: var(--nm-dark-border);
+}
+
+[data-theme="dark"] .table tbody tr:hover td,
+[data-theme="dark"] .table-hover tbody tr:hover td {
+  background: rgba(182, 157, 248, 0.14);
+  color: #ffffff;
 }
 
 // ─── Progress ───

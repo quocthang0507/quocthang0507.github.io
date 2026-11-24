@@ -4,6 +4,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const SUSPENSE_SETTLE_MS = 1000;
     const BASE_SOUND_WINDOW_MS = 2500;
     const ALLOWED_SPIN_DURATIONS = [3000, 5000, 7000];
+    const ALLOWED_SPIN_SOUNDS = ['ticking', 'piano', 'classic', 'none'];
+    const ALLOWED_WINNER_SOUNDS = ['applause', 'fanfare', 'chime', 'none'];
+    const PIANO_TICK_FREQS = [
+        523.25, 587.33, 659.25, 783.99, 880.00, 1046.50, 1174.66, 1318.51,
+        1174.66, 1046.50, 880.00, 783.99, 659.25, 587.33
+    ];
 
     const tr = (key, fallback) => (typeof window.t === 'function' ? window.t(key, fallback) : fallback);
 
@@ -16,6 +22,9 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentColorTheme = 'classic';
     let spinDurationMs = 3000;
     let suspenseEffectEnabled = false;
+    let spinSoundMode = 'ticking';
+    let winnerSoundMode = 'applause';
+    let soundVolume = 0.75;
     try {
         currentColorTheme = localStorage.getItem('wheelColorTheme') || 'classic';
     } catch (e) {
@@ -27,6 +36,21 @@ document.addEventListener('DOMContentLoaded', function() {
             spinDurationMs = savedDuration;
         }
         suspenseEffectEnabled = JSON.parse(localStorage.getItem('wheelSuspenseEffect')) === true;
+        const savedSpinSound = JSON.parse(localStorage.getItem('wheelSpinSound'));
+        if (ALLOWED_SPIN_SOUNDS.includes(savedSpinSound)) {
+            spinSoundMode = savedSpinSound;
+        }
+        const savedWinnerSound = JSON.parse(localStorage.getItem('wheelWinnerSound'));
+        if (ALLOWED_WINNER_SOUNDS.includes(savedWinnerSound)) {
+            winnerSoundMode = savedWinnerSound;
+        }
+        const rawSavedVolume = localStorage.getItem('wheelSoundVolume');
+        if (rawSavedVolume !== null) {
+            const savedVolume = Number(JSON.parse(rawSavedVolume));
+            if (Number.isFinite(savedVolume) && savedVolume >= 0 && savedVolume <= 100) {
+                soundVolume = savedVolume / 100;
+            }
+        }
     } catch (e) {
         console.warn('Spin settings could not be restored:', e);
     }
@@ -150,103 +174,477 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
     
-    // Audio context for generating spinning sound
+    // Audio context, noise buffer, and timers for Wheel-of-Names-style sounds
     let audioContext;
     let gainNode;
-    let oscillator;
-    
-    // Initialize audio context
+    let cachedNoiseBuffer = null;
+    let activeAudioNodes = [];
+    let spinSoundToken = 0;
+    let soundStopTimer = null;
+    let tickTrackerRafId = null;
+    let pointerFlickTimer = null;
+    let previewTimers = [];
+    let pianoNoteIndex = 0;
+
+    // Initialize or unlock Web Audio context (must be called inside a user gesture)
     function initAudio() {
         try {
-            audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            gainNode = audioContext.createGain();
-            gainNode.connect(audioContext.destination);
+            if (!audioContext) {
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                if (!AudioCtx) return null;
+                audioContext = new AudioCtx();
+                gainNode = audioContext.createGain();
+                if (gainNode.gain) {
+                    gainNode.gain.value = soundVolume;
+                }
+                gainNode.connect(audioContext.destination);
+            }
+            if (gainNode && gainNode.gain) {
+                gainNode.gain.value = soundVolume;
+            }
+            if (audioContext.state === 'suspended' && typeof audioContext.resume === 'function') {
+                audioContext.resume().catch(() => {});
+            }
+            return audioContext;
         } catch (e) {
             console.log('Web Audio API not supported');
+            return null;
         }
     }
-    
-    // Play spinning sound
-    function playSpinSound(soundDurationMs) {
-        if (!audioContext) {
-            initAudio();
+
+    // Lazily create a 1-second mono white noise buffer for realistic ticks & applause
+    function getNoiseBuffer() {
+        if (cachedNoiseBuffer) return cachedNoiseBuffer;
+        if (!audioContext || typeof audioContext.createBuffer !== 'function') return null;
+        try {
+            const sampleRate = audioContext.sampleRate || 44100;
+            const buffer = audioContext.createBuffer(1, sampleRate, sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < data.length; i++) {
+                data[i] = Math.random() * 2 - 1;
+            }
+            cachedNoiseBuffer = buffer;
+            return cachedNoiseBuffer;
+        } catch (_) {
+            return null;
         }
-        
-        if (audioContext) {
-            // Try to play HTML audio first
-            const audioElement = document.getElementById('wheel-spin-audio');
-            if (audioElement && audioElement.canPlayType && audioElement.canPlayType('audio/mpeg') !== '') {
-                audioElement.currentTime = 0;
-                // Stretch the same sound profile to match each selected spin duration.
-                audioElement.playbackRate = BASE_SOUND_WINDOW_MS / soundDurationMs;
-                audioElement.preservesPitch = false;
-                audioElement.webkitPreservesPitch = false;
-                audioElement.play().catch(() => {
-                    // Fallback to Web Audio API
-                    generateSpinSound(soundDurationMs);
-                });
+    }
+
+    function flickPointer() {
+        const pointer = document.querySelector('.wheel-pointer');
+        if (!pointer) return;
+        pointer.classList.add('is-ticking');
+        if (pointerFlickTimer) clearTimeout(pointerFlickTimer);
+        pointerFlickTimer = setTimeout(() => {
+            pointer.classList.remove('is-ticking');
+            pointerFlickTimer = null;
+        }, 50);
+    }
+
+    // Play a single crisp peg tick (Wheel of Names style) or musical note
+    function playTickSound(mode = spinSoundMode, timeOffset = 0) {
+        if (soundVolume <= 0 || mode === 'none') return;
+        const ctx = initAudio();
+        if (!ctx || typeof ctx.createOscillator !== 'function') return;
+
+        const now = (ctx.currentTime || 0) + timeOffset;
+        const dest = gainNode || ctx.destination;
+
+        if (mode === 'piano') {
+            const freq = PIANO_TICK_FREQS[pianoNoteIndex % PIANO_TICK_FREQS.length];
+            pianoNoteIndex++;
+
+            const osc = ctx.createOscillator();
+            const env = ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, now);
+            env.gain.setValueAtTime(0.0001, now);
+            env.gain.exponentialRampToValueAtTime(0.28, now + 0.004);
+            env.gain.exponentialRampToValueAtTime(0.0001, now + 0.14);
+            osc.connect(env);
+            env.connect(dest);
+            osc.start(now);
+            osc.stop(now + 0.15);
+
+            // Soft octave harmonic for bell-like sparkle
+            const harm = ctx.createOscillator();
+            const harmEnv = ctx.createGain();
+            harm.type = 'sine';
+            harm.frequency.setValueAtTime(freq * 2, now);
+            harmEnv.gain.setValueAtTime(0.0001, now);
+            harmEnv.gain.exponentialRampToValueAtTime(0.08, now + 0.003);
+            harmEnv.gain.exponentialRampToValueAtTime(0.0001, now + 0.09);
+            harm.connect(harmEnv);
+            harmEnv.connect(dest);
+            harm.start(now);
+            harm.stop(now + 0.1);
+            return;
+        }
+
+        // Default 'ticking': crisp woody-plastic peg snap (body pitch drop + filtered click burst)
+        const pitchJitter = 0.96 + Math.random() * 0.08;
+        const osc = ctx.createOscillator();
+        const env = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(840 * pitchJitter, now);
+        osc.frequency.exponentialRampToValueAtTime(200, now + 0.022);
+        env.gain.setValueAtTime(0.0001, now);
+        env.gain.exponentialRampToValueAtTime(0.38, now + 0.002);
+        env.gain.exponentialRampToValueAtTime(0.0001, now + 0.032);
+        osc.connect(env);
+        env.connect(dest);
+        osc.start(now);
+        osc.stop(now + 0.036);
+
+        const noiseBuffer = getNoiseBuffer();
+        if (noiseBuffer && typeof ctx.createBufferSource === 'function' && typeof ctx.createBiquadFilter === 'function') {
+            const noise = ctx.createBufferSource();
+            noise.buffer = noiseBuffer;
+            const filter = ctx.createBiquadFilter();
+            filter.type = 'bandpass';
+            filter.frequency.setValueAtTime(2500 * pitchJitter, now);
+            filter.Q.setValueAtTime(2.4, now);
+            const nEnv = ctx.createGain();
+            nEnv.gain.setValueAtTime(0.0001, now);
+            nEnv.gain.exponentialRampToValueAtTime(0.28, now + 0.0015);
+            nEnv.gain.exponentialRampToValueAtTime(0.0001, now + 0.016);
+            noise.connect(filter);
+            filter.connect(nEnv);
+            nEnv.connect(dest);
+            noise.start(now, Math.random() * 0.5, 0.02);
+        }
+    }
+
+    function readElementRotationDegrees(el) {
+        if (!el || typeof window.getComputedStyle !== 'function') return null;
+        const transform = window.getComputedStyle(el).transform;
+        if (!transform || transform === 'none') return null;
+        const match = transform.match(/^matrix\(([^)]+)\)$/);
+        if (match) {
+            const parts = match[1].split(',').map(Number);
+            if (parts.length >= 2 && !Number.isNaN(parts[0]) && !Number.isNaN(parts[1])) {
+                return ((Math.atan2(parts[1], parts[0]) * 180 / Math.PI) + 360) % 360;
+            }
+        }
+        return null;
+    }
+
+    // Track live wheel rotation via requestAnimationFrame and trigger ticks on every slice crossing
+    function startSliceTickTracker(mode) {
+        const wheelNames = document.getElementById('wheel-names');
+        if (!wheelNames || typeof window.requestAnimationFrame !== 'function') return;
+
+        const sliceCount = names.length > 1 ? names.length : 12;
+        const sliceAngle = 360 / sliceCount;
+        let lastSliceIndex = null;
+        let lastTickTime = 0;
+
+        const initialAngle = readElementRotationDegrees(wheelNames);
+        if (initialAngle !== null) {
+            const norm = ((360 - initialAngle) % 360 + 360) % 360;
+            lastSliceIndex = Math.floor(norm / sliceAngle) % sliceCount;
+        }
+
+        const step = (timestamp) => {
+            if (!isSpinning) {
+                tickTrackerRafId = null;
+                return;
+            }
+            const angle = readElementRotationDegrees(wheelNames);
+            if (angle !== null) {
+                const norm = ((360 - angle) % 360 + 360) % 360;
+                const sliceIdx = Math.floor(norm / sliceAngle) % sliceCount;
+                if (lastSliceIndex !== null && sliceIdx !== lastSliceIndex) {
+                    if (timestamp - lastTickTime >= 28) {
+                        playTickSound(mode);
+                        flickPointer();
+                        lastTickTime = timestamp;
+                    }
+                    lastSliceIndex = sliceIdx;
+                } else if (lastSliceIndex === null) {
+                    lastSliceIndex = sliceIdx;
+                }
+            }
+            tickTrackerRafId = window.requestAnimationFrame(step);
+        };
+
+        tickTrackerRafId = window.requestAnimationFrame(step);
+    }
+
+    // Celebratory winner sound (Wheel of Names inspired: applause, fanfare, chime)
+    function playWinnerSound(mode = winnerSoundMode) {
+        if (soundVolume <= 0 || mode === 'none') return;
+        const ctx = initAudio();
+        if (!ctx || typeof ctx.createOscillator !== 'function') return;
+
+        const now = ctx.currentTime || 0;
+        const dest = gainNode || ctx.destination;
+
+        const scheduleTone = (freq, startOffset, duration, type, peakGain, filterFreq) => {
+            const safePeak = Math.max(0.001, peakGain);
+            const t0 = now + startOffset;
+            const osc = ctx.createOscillator();
+            const env = ctx.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, t0);
+            env.gain.setValueAtTime(0.0001, t0);
+            env.gain.exponentialRampToValueAtTime(safePeak, t0 + 0.015);
+            env.gain.exponentialRampToValueAtTime(0.0001, t0 + duration);
+
+            if (filterFreq && typeof ctx.createBiquadFilter === 'function') {
+                const lp = ctx.createBiquadFilter();
+                lp.type = 'lowpass';
+                lp.frequency.setValueAtTime(filterFreq, t0);
+                osc.connect(lp);
+                lp.connect(env);
             } else {
-                generateSpinSound(soundDurationMs);
+                osc.connect(env);
+            }
+            env.connect(dest);
+            osc.start(t0);
+            osc.stop(t0 + duration + 0.02);
+        };
+
+        if (mode === 'chime') {
+            [1046.50, 1318.51, 1567.98, 2093.00].forEach((freq, i) => {
+                scheduleTone(freq, i * 0.09, 0.7, 'sine', 0.22);
+                scheduleTone(freq * 2, i * 0.09, 0.35, 'sine', 0.06);
+            });
+            return;
+        }
+
+        if (mode === 'fanfare') {
+            // Classic C5 -> E5 -> G5 -> C6 brass/chime victory fanfare
+            scheduleTone(523.25, 0.00, 0.14, 'sawtooth', 0.16, 2400);
+            scheduleTone(659.25, 0.11, 0.14, 'sawtooth', 0.16, 2400);
+            scheduleTone(783.99, 0.22, 0.14, 'sawtooth', 0.18, 2600);
+            // Final triumphant major chord
+            [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+                scheduleTone(freq, 0.34, 0.95, idx === 3 ? 'triangle' : 'sawtooth', idx === 3 ? 0.24 : 0.12, 2800);
+            });
+            return;
+        }
+
+        // Default 'applause': bright victory ding + realistic layered crowd applause
+        scheduleTone(783.99, 0.02, 0.35, 'triangle', 0.22);
+        scheduleTone(1046.50, 0.12, 0.65, 'triangle', 0.26);
+        scheduleTone(2093.00, 0.12, 0.45, 'sine', 0.08);
+
+        const noiseBuffer = getNoiseBuffer();
+        if (noiseBuffer && typeof ctx.createBufferSource === 'function' && typeof ctx.createBiquadFilter === 'function') {
+            const clapCount = 34;
+            for (let i = 0; i < clapCount; i++) {
+                const progress = i / clapCount;
+                const offset = 0.06 + progress * 1.95 + Math.random() * 0.07;
+                // Natural crowd envelope: quick swell then gradual fade (always > 0 for exponentialRamp)
+                const swell = progress < 0.15
+                    ? Math.max(0.25, progress / 0.15)
+                    : Math.max(0.12, 1 - (progress - 0.15) / 0.92);
+                const clapGain = Math.max(0.001, (0.14 + Math.random() * 0.14) * swell);
+                const clapDuration = 0.028 + Math.random() * 0.026;
+                const t0 = now + offset;
+
+                const src = ctx.createBufferSource();
+                src.buffer = noiseBuffer;
+                const bp = ctx.createBiquadFilter();
+                bp.type = 'bandpass';
+                bp.frequency.setValueAtTime(950 + Math.random() * 1400, t0);
+                bp.Q.setValueAtTime(1.4 + Math.random() * 1.3, t0);
+                const env = ctx.createGain();
+                env.gain.setValueAtTime(0.0001, t0);
+                env.gain.exponentialRampToValueAtTime(clapGain, t0 + 0.004);
+                env.gain.exponentialRampToValueAtTime(0.0001, t0 + clapDuration);
+
+                src.connect(bp);
+                bp.connect(env);
+                env.connect(dest);
+                src.start(t0, Math.random() * 0.6, clapDuration + 0.01);
             }
         }
     }
-    
+
+    function previewSelectedSounds() {
+        previewTimers.forEach(clearTimeout);
+        previewTimers = [];
+        initAudio();
+        pianoNoteIndex = 0;
+
+        if (spinSoundMode === 'classic') {
+            playSpinSound(1200);
+            previewTimers.push(setTimeout(() => {
+                stopSpinSound();
+                playWinnerSound(winnerSoundMode);
+            }, 900));
+            return;
+        }
+
+        if (spinSoundMode === 'ticking' || spinSoundMode === 'piano') {
+            [0, 95, 220, 380].forEach(delay => {
+                previewTimers.push(setTimeout(() => {
+                    playTickSound(spinSoundMode);
+                    flickPointer();
+                }, delay));
+            });
+            previewTimers.push(setTimeout(() => {
+                playWinnerSound(winnerSoundMode);
+            }, 560));
+            return;
+        }
+
+        playWinnerSound(winnerSoundMode);
+    }
+
+    // Play spinning sound
+    function playSpinSound(soundDurationMs) {
+        if (!soundDurationMs || soundDurationMs <= 0 || soundVolume <= 0 || spinSoundMode === 'none') return;
+
+        const token = ++spinSoundToken;
+        if (soundStopTimer) {
+            clearTimeout(soundStopTimer);
+            soundStopTimer = null;
+        }
+        if (tickTrackerRafId && typeof window.cancelAnimationFrame === 'function') {
+            window.cancelAnimationFrame(tickTrackerRafId);
+            tickTrackerRafId = null;
+        }
+
+        // Wheel of Names mode: real-time slice-synced peg ticks (or musical ticks)
+        if (spinSoundMode === 'ticking' || spinSoundMode === 'piano') {
+            pianoNoteIndex = 0;
+            initAudio();
+            // Fire an immediate crisp opening tick on spin launch
+            playTickSound(spinSoundMode);
+            flickPointer();
+            startSliceTickTracker(spinSoundMode);
+            return;
+        }
+
+        // Classic mode: HTML5 audio element with Web Audio fallback
+        const audioElement = document.getElementById('wheel-spin-audio');
+        const canPlayAudio = audioElement
+            && !audioElement.error
+            && audioElement.networkState !== 3
+            && typeof audioElement.play === 'function'
+            && (!audioElement.canPlayType
+                || audioElement.canPlayType('audio/wav') !== ''
+                || audioElement.canPlayType('audio/mpeg') !== '');
+
+        if (canPlayAudio) {
+            try {
+                if (!audioElement.paused) {
+                    audioElement.pause();
+                }
+                audioElement.currentTime = 0;
+                audioElement.volume = soundVolume;
+                // Keep playbackRate within [0.5, 4.0] because Chromium/Safari mute media below 0.5x.
+                const rawRate = BASE_SOUND_WINDOW_MS / soundDurationMs;
+                audioElement.playbackRate = Math.min(4, Math.max(0.5, rawRate));
+                audioElement.preservesPitch = false;
+                audioElement.webkitPreservesPitch = false;
+                const playPromise = audioElement.play();
+                if (playPromise && typeof playPromise.catch === 'function') {
+                    playPromise.catch((err) => {
+                        if (token !== spinSoundToken || !isSpinning) return;
+                        if (err && err.name === 'AbortError') return;
+                        generateSpinSound(soundDurationMs);
+                    });
+                }
+                return;
+            } catch (_) {
+                // Fall through to Web Audio API fallback
+            }
+        }
+
+        generateSpinSound(soundDurationMs);
+    }
+
     // Stop spinning sound
     function stopSpinSound() {
+        spinSoundToken++;
+        if (soundStopTimer) {
+            clearTimeout(soundStopTimer);
+            soundStopTimer = null;
+        }
+        if (tickTrackerRafId && typeof window.cancelAnimationFrame === 'function') {
+            window.cancelAnimationFrame(tickTrackerRafId);
+            tickTrackerRafId = null;
+        }
+        if (pointerFlickTimer) {
+            clearTimeout(pointerFlickTimer);
+            pointerFlickTimer = null;
+        }
+        const pointer = document.querySelector('.wheel-pointer');
+        if (pointer) pointer.classList.remove('is-ticking');
+
         // Stop HTML audio element
         const audioElement = document.getElementById('wheel-spin-audio');
         if (audioElement) {
-            audioElement.pause();
-            audioElement.currentTime = 0;
-            audioElement.playbackRate = 1;
-        }
-        
-        // Stop Web Audio API oscillator
-        if (oscillator) {
             try {
-                oscillator.stop();
-                oscillator.disconnect();
-                oscillator = null;
-            } catch (e) {
-                // Oscillator may already be stopped
-                oscillator = null;
+                audioElement.pause();
+                audioElement.currentTime = 0;
+                audioElement.playbackRate = 1;
+            } catch (_) {
+                // Ignore media reset errors when media isn't loaded yet
             }
+        }
+
+        // Stop any scheduled Web Audio API nodes
+        if (activeAudioNodes.length > 0) {
+            activeAudioNodes.forEach(node => {
+                try {
+                    if (typeof node.stop === 'function') node.stop();
+                    if (typeof node.disconnect === 'function') node.disconnect();
+                } catch (_) {
+                    // Node may already be stopped
+                }
+            });
+            activeAudioNodes = [];
         }
     }
-    
-    // Generate spinning sound using Web Audio API
-    function generateSpinSound(soundDurationMs) {
-        if (!audioContext) return;
 
-        const soundDurationSeconds = soundDurationMs / 1000;
-        
-        // Stop any existing sound
-        if (oscillator) {
-            try {
-                oscillator.stop();
-                oscillator.disconnect();
-            } catch (e) {
-                // Oscillator may already be stopped
-            }
+    // Generate realistic decelerating wheel-peg ticks using Web Audio API fallback
+    function generateSpinSound(soundDurationMs) {
+        initAudio();
+        if (!audioContext || typeof audioContext.createOscillator !== 'function') return;
+
+        // Clear any previous Web Audio nodes
+        if (activeAudioNodes.length > 0) {
+            activeAudioNodes.forEach(node => {
+                try {
+                    if (typeof node.stop === 'function') node.stop();
+                    if (typeof node.disconnect === 'function') node.disconnect();
+                } catch (_) {}
+            });
+            activeAudioNodes = [];
         }
-        
-        // Create oscillator for spinning sound
-        oscillator = audioContext.createOscillator();
-        const envelope = audioContext.createGain();
-        
-        oscillator.connect(envelope);
-        envelope.connect(gainNode);
-        
-        // Configure sound
-        oscillator.frequency.setValueAtTime(200, audioContext.currentTime);
-        oscillator.frequency.exponentialRampToValueAtTime(100, audioContext.currentTime + soundDurationSeconds);
-        
-        envelope.gain.setValueAtTime(0.1, audioContext.currentTime);
-        envelope.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + soundDurationSeconds);
-        
-        oscillator.type = 'sawtooth';
-        oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + soundDurationSeconds);
+
+        const soundDurationSeconds = Math.max(0.2, soundDurationMs / 1000);
+        const now = audioContext.currentTime || 0;
+        const tickCount = Math.max(12, Math.min(48, Math.round(soundDurationSeconds * 10)));
+
+        for (let i = 0; i < tickCount; i++) {
+            const progress = i / tickCount;
+            // Quadratic easing spaces ticks further apart as the wheel slows down
+            const offset = soundDurationSeconds * (progress * progress);
+            const startTime = now + offset;
+            const osc = audioContext.createOscillator();
+            const env = audioContext.createGain();
+
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(950 - progress * 350, startTime);
+            osc.frequency.exponentialRampToValueAtTime(240, startTime + 0.035);
+
+            env.gain.setValueAtTime(0.0001, startTime);
+            env.gain.exponentialRampToValueAtTime(0.26 * (1 - progress * 0.4), startTime + 0.003);
+            env.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.038);
+
+            osc.connect(env);
+            env.connect(gainNode || audioContext.destination);
+
+            osc.start(startTime);
+            osc.stop(startTime + 0.042);
+            activeAudioNodes.push(osc, env);
+        }
     }
     
     // Get current wheel colors based on selected theme
@@ -301,6 +699,11 @@ document.addEventListener('DOMContentLoaded', function() {
     function initializeSpinSettings() {
         const durationSelector = document.getElementById('spin-duration-selector');
         const suspenseCheckbox = document.getElementById('suspense-effect');
+        const spinSoundSelector = document.getElementById('spin-sound-selector');
+        const winnerSoundSelector = document.getElementById('winner-sound-selector');
+        const volumeSlider = document.getElementById('wheel-volume-slider');
+        const volumeValue = document.getElementById('wheel-volume-value');
+        const testSoundBtn = document.getElementById('test-wheel-sound-btn');
 
         if (durationSelector) {
             durationSelector.value = String(spinDurationMs);
@@ -318,6 +721,45 @@ document.addEventListener('DOMContentLoaded', function() {
                 suspenseEffectEnabled = this.checked;
                 saveToLocalStorage('wheelSuspenseEffect', suspenseEffectEnabled);
             });
+        }
+
+        if (spinSoundSelector) {
+            spinSoundSelector.value = spinSoundMode;
+            spinSoundSelector.addEventListener('change', function() {
+                if (!ALLOWED_SPIN_SOUNDS.includes(this.value)) return;
+                spinSoundMode = this.value;
+                saveToLocalStorage('wheelSpinSound', spinSoundMode);
+            });
+        }
+
+        if (winnerSoundSelector) {
+            winnerSoundSelector.value = winnerSoundMode;
+            winnerSoundSelector.addEventListener('change', function() {
+                if (!ALLOWED_WINNER_SOUNDS.includes(this.value)) return;
+                winnerSoundMode = this.value;
+                saveToLocalStorage('wheelWinnerSound', winnerSoundMode);
+            });
+        }
+
+        if (volumeSlider) {
+            const pct = Math.round(soundVolume * 100);
+            volumeSlider.value = String(pct);
+            if (volumeValue) volumeValue.textContent = `${pct}%`;
+            volumeSlider.addEventListener('input', function() {
+                const nextPct = Math.max(0, Math.min(100, Number(this.value) || 0));
+                soundVolume = nextPct / 100;
+                if (volumeValue) volumeValue.textContent = `${nextPct}%`;
+                if (gainNode && gainNode.gain) {
+                    gainNode.gain.value = soundVolume;
+                }
+                const audioElement = document.getElementById('wheel-spin-audio');
+                if (audioElement) audioElement.volume = soundVolume;
+                saveToLocalStorage('wheelSoundVolume', nextPct);
+            });
+        }
+
+        if (testSoundBtn) {
+            testSoundBtn.addEventListener('click', previewSelectedSounds);
         }
     }
 
@@ -620,11 +1062,14 @@ document.addEventListener('DOMContentLoaded', function() {
             }, mainSpinDurationMs);
         }
 
-        // Let the wheel coast silently for the final 0.5 second.
-        setTimeout(stopSpinSound, soundDurationMs);
+        // In classic WAV mode, stop 0.5s early; in slice-synced ticking modes, track until spin ends.
+        if (spinSoundMode === 'classic') {
+            soundStopTimer = setTimeout(stopSpinSound, soundDurationMs);
+        }
         
         // Calculate winner after animation
         setTimeout(() => {
+            stopSpinSound();
             if (names.length === 0) {
                 isSpinning = false;
                 setSpinControlsDisabled(false);
@@ -656,6 +1101,12 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Show winner
     function showWinner(winner, winnerIndex) {
+        try {
+            playWinnerSound(winnerSoundMode);
+        } catch (e) {
+            console.warn('Winner sound failed:', e);
+        }
+
         const resultElement = document.getElementById('wheel-result');
         if (resultElement) {
             resultElement.textContent = winner;

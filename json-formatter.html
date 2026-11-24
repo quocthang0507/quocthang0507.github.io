@@ -110,26 +110,7 @@ sitemap:
 </div>
 
 <!-- Tips Section -->
-<div class="row mb-4">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header bg-info text-white">
-                <h6 class="mb-0">
-                    <i class="fas fa-lightbulb me-2"></i>
-                    <span data-i18n="password.tips_title" data-i18n-default="Mẹo sử dụng">Mẹo sử dụng</span>
-                </h6>
-            </div>
-            <div class="card-body py-3">
-                <ul class="mb-0 small text-muted">
-                    <li>Đảm bảo các chuỗi ký tự trong khóa JSON luôn được bao quanh bởi dấu ngoặc kép đôi (`""`), không dùng ngoặc kép đơn (`''`).</li>
-                    <li>Sử dụng chức năng "Kiểm tra JSON" để nhận biết vị trí lỗi cú pháp (dòng, cột) chính xác nếu việc phân tích cú pháp thất bại.</li>
-                    <li>Chuyển đổi CSV sang JSON hỗ trợ tự động nhận diện tiêu đề cột (header) ở dòng đầu tiên của tập tin CSV.</li>
-                    <li>Mọi xử lý dữ liệu đều được thực hiện trực tiếp trong trình duyệt của bạn (client-side), cam kết bảo mật tuyệt đối cho dữ liệu của bạn.</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>
+{% include tool-tips-card.html tool="json" info="Định dạng, thu gọn (minify), kiểm tra cú pháp JSON và chuyển đổi hai chiều JSON ↔ CSV an toàn hoàn toàn trên trình duyệt." tip1="Chuỗi và khóa trong JSON chuẩn phải đặt trong dấu ngoặc kép đôi (&quot;&quot;), không dùng ngoặc đơn." tip2="Dùng 'Kiểm tra JSON' để xác định lỗi cú pháp nhanh trước khi đưa dữ liệu vào API hoặc cấu hình." tip3="Chuyển đổi CSV sang JSON tự nhận diện dòng đầu làm tiêu đề cột và giữ nguyên mã có số 0 đứng đầu." tip4="Chọn mức thụt lề 2, 4 khoảng trắng hoặc Tab tùy theo quy chuẩn mã nguồn của dự án." %}
 
 <style>
 #json-validation-status {

@@ -249,6 +249,7 @@ sitemap:
     </div>
 </div>
 
+{% include tool-tips-card.html tool="date_calc" info="Tính khoảng cách giữa hai ngày, cộng/trừ ngày tháng năm, tính tuổi chi tiết kèm đếm ngược sinh nhật và tra cứu thứ/tuần ISO trong năm." tip1="Chuyển nhanh giữa 4 tab chức năng: Khoảng cách ngày, Cộng/Trừ ngày, Tính tuổi và Tra thứ trong tuần." tip2="Khi cộng/trừ theo tháng (ví dụ 31/01 + 1 tháng), công cụ tự động chuẩn hóa về ngày cuối tháng hợp lệ." tip3="Tab Tính tuổi hiển thị chính xác năm, tháng, ngày và số ngày còn lại đến sinh nhật tiếp theo." tip4="Tuần trong năm được tính theo chuẩn quốc tế ISO-8601 không bị sai lệch theo múi giờ." %}
 
 <style>
 .result-box {
@@ -278,19 +279,19 @@ sitemap:
 .stat-value {
     font-size: 2rem;
     font-weight: bold;
-    color: var(--bs-primary);
+    color: var(--bs-primary-text);
 }
 
 .stat-label {
     font-size: 0.9rem;
-    color: #6c757d;
+    color: var(--bs-secondary-text);
     margin-top: 5px;
 }
 
 .result-date {
     font-size: 1.5rem;
     font-weight: bold;
-    color: var(--bs-success);
+    color: var(--bs-success-text);
     margin-bottom: 10px;
 }
 

@@ -76,6 +76,42 @@ sitemap:
                         </select>
                     </div>
 
+                    <div class="row g-2 mb-3">
+                        <div class="col-md-6">
+                            <label for="spin-sound-selector" class="form-label">
+                                <i class="fas fa-volume-up"></i> <span data-i18n="wheel.spin_sound">Âm thanh khi quay</span>
+                            </label>
+                            <select id="spin-sound-selector" class="form-select">
+                                <option value="ticking" data-i18n="wheel.sound_ticking">Tiếng gõ theo ô (Wheel of Names)</option>
+                                <option value="piano" data-i18n="wheel.sound_piano">Giai điệu vui nhộn</option>
+                                <option value="classic" data-i18n="wheel.sound_classic">Âm thanh quay cổ điển</option>
+                                <option value="none" data-i18n="wheel.sound_none">Tắt âm thanh</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="winner-sound-selector" class="form-label">
+                                <i class="fas fa-trophy"></i> <span data-i18n="wheel.winner_sound">Âm thanh kết quả</span>
+                            </label>
+                            <select id="winner-sound-selector" class="form-select">
+                                <option value="applause" data-i18n="wheel.winner_applause">Tiếng vỗ tay &amp; reo mừng</option>
+                                <option value="fanfare" data-i18n="wheel.winner_fanfare">Kèn chiến thắng (Fanfare)</option>
+                                <option value="chime" data-i18n="wheel.winner_chime">Chuông nhẹ nhàng</option>
+                                <option value="none" data-i18n="wheel.sound_none">Tắt âm thanh</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 d-flex align-items-center gap-2">
+                        <label for="wheel-volume-slider" class="form-label mb-0 text-nowrap small">
+                            <i class="fas fa-sliders-h"></i> <span data-i18n="wheel.volume">Âm lượng</span>:
+                            <strong id="wheel-volume-value">75%</strong>
+                        </label>
+                        <input type="range" class="form-range flex-grow-1" id="wheel-volume-slider" min="0" max="100" step="5" value="75">
+                        <button type="button" id="test-wheel-sound-btn" class="btn btn-sm btn-outline-primary text-nowrap">
+                            <i class="fas fa-play-circle"></i> <span data-i18n="wheel.test_sound">Nghe thử</span>
+                        </button>
+                    </div>
+
                     <div class="form-check mb-3">
                         <input class="form-check-input" type="checkbox" id="suspense-effect">
                         <label class="form-check-label" for="suspense-effect" data-i18n="wheel.suspense_effect">
@@ -212,3 +248,5 @@ sitemap:
         </div>
     </div>
 </div>
+
+{% include tool-tips-card.html tool="random_wheel" info="Vòng quay may mắn trực quan hỗ trợ tới 200 mục, tùy chỉnh tốc độ quay, hiệu ứng hồi hộp, chủ đề màu và lưu lịch sử tự động." tip1="Dán danh sách mỗi dòng một tên vào ô nhập nhiều tên để thêm hàng loạt nhanh chóng." tip2="Bật 'Xóa người thắng sau khi quay' khi bốc thăm nhiều giải không lặp lại người trúng." tip3="Kết hợp chế độ quay 5–7 giây cùng 'Hiệu ứng hồi hộp' để tăng kịch tính cho sự kiện." tip4="Danh sách và lịch sử được lưu cục bộ trên trình duyệt; dùng 'Xuất dữ liệu' để sao lưu JSON." %}

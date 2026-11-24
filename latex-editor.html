@@ -94,7 +94,7 @@ sitemap:
                 <!-- Preview -->
                 <div class="mb-3">
                     <label class="form-label" data-i18n="latex.preview_label">Xem trước:</label>
-                    <div id="latex-preview" class="latex-preview-box p-4 bg-white border rounded text-center">
+                    <div id="latex-preview" class="latex-preview-box p-4 border rounded text-center">
                         <div id="latex-output" class="fs-3"></div>
                     </div>
                 </div>
@@ -411,12 +411,21 @@ sitemap:
     </div>
 </div>
 
+{% include tool-tips-card.html tool="latex" info="Soạn thảo công thức toán học LaTeX trực tuyến với MathJax, thư viện ký hiệu phong phú, tự động lưu lịch sử và xuất ảnh PNG sắc nét." tip1="Không cần bọc $ hay $$ khi gõ; công cụ tự động hiển thị ở chế độ công thức căn giữa." tip2="Nhấn Ctrl+Enter (Cmd+Enter) để xem trước ngay hoặc Ctrl+S (Cmd+S) để lưu nhanh hình ảnh PNG." tip3="Chọn sẵn công thức trong mục Mẫu phổ biến và Biểu thức mẫu minh họa ở cột phải để tiết kiệm thời gian." tip4="Ảnh PNG tải về luôn xuất chữ đen trên nền trắng độ phân giải 2x để dán đẹp vào Word và PowerPoint." %}
+
 <style>
 .latex-preview-box {
     min-height: 100px;
     display: flex;
     align-items: center;
     justify-content: center;
+    background: #ffffff;
+    color: #111827;
+}
+
+.latex-preview-box #latex-output,
+.latex-preview-box mjx-container {
+    color: inherit;
 }
 
 .symbol-grid {
@@ -427,17 +436,19 @@ sitemap:
 
 .symbol-btn {
     padding: 0.5rem;
-    border: 1px solid #ddd;
-    background: white;
-    border-radius: 0.25rem;
+    border: 1px solid #d1d5db;
+    background: #ffffff;
+    color: #111827;
+    border-radius: 0.375rem;
     cursor: pointer;
     transition: all 0.2s;
     font-size: 1.2rem;
 }
 
 .symbol-btn:hover {
-    background: #f0f4f8;
+    background: #eef4ff;
     border-color: #0F62FE;
+    color: #0F62FE;
     transform: translateY(-2px);
 }
 
@@ -603,7 +614,8 @@ sitemap:
     padding: 1rem;
     border: 1px solid #ddd;
     border-radius: 0.5rem;
-    background: white;
+    background: #ffffff;
+    color: #111827;
     transition: all 0.2s;
 }
 
@@ -612,55 +624,86 @@ sitemap:
     transform: translateY(-2px);
 }
 
-body.dark-mode .latex-preview-box,
-body.dark-mode .symbol-btn,
-body.dark-mode .latex-history-item {
-    background: #2a2a2a;
-    border-color: #444;
-    color: #e6e1e5;
+[data-theme="dark"] .latex-preview-box,
+body.dark-mode .latex-preview-box {
+    background: var(--nm-dark-input, #252630);
+    border-color: rgba(255, 255, 255, 0.14);
+    color: #f3f4f6;
 }
 
+[data-theme="dark"] .symbol-btn,
+body.dark-mode .symbol-btn {
+    background: #2b2d38;
+    border-color: rgba(255, 255, 255, 0.16);
+    color: #f3f4f6;
+}
+
+[data-theme="dark"] .symbol-btn:hover,
 body.dark-mode .symbol-btn:hover {
-    background: #3a3a3a;
+    background: #3b3f52;
+    border-color: #78a9ff;
+    color: #ffffff;
 }
 
+[data-theme="dark"] #quick-symbols .insert-symbol,
+body.dark-mode #quick-symbols .insert-symbol {
+    color: #f3f4f6;
+    border-color: rgba(255, 255, 255, 0.18);
+}
+
+[data-theme="dark"] .latex-history-item,
+body.dark-mode .latex-history-item {
+    background: #2a2c36;
+    border-color: rgba(255, 255, 255, 0.14);
+    color: #f3f4f6;
+}
+
+[data-theme="dark"] .latex-preset-library,
 body.dark-mode .latex-preset-library {
     border-color: #3f5578;
-    background: linear-gradient(180deg, rgba(63, 105, 180, 0.2), rgba(35, 35, 42, 0.65));
+    background: linear-gradient(180deg, rgba(63, 105, 180, 0.22), rgba(35, 37, 46, 0.85));
 }
 
+[data-theme="dark"] .latex-preset-library-heading,
+[data-theme="dark"] .latex-preset-group,
 body.dark-mode .latex-preset-library-heading,
 body.dark-mode .latex-preset-group {
-    border-color: #3f4652;
+    border-color: #3f4656;
 }
 
+[data-theme="dark"] .latex-preset-group > summary,
 body.dark-mode .latex-preset-group > summary {
-    color: #b8d1ff;
-    background: rgba(42, 42, 42, 0.72);
+    color: #dbeafe;
+    background: rgba(42, 46, 60, 0.88);
 }
 
+[data-theme="dark"] .latex-preset-group > summary:hover,
 body.dark-mode .latex-preset-group > summary:hover {
-    background: rgba(72, 101, 150, 0.28);
+    background: rgba(72, 101, 150, 0.36);
 }
 
+[data-theme="dark"] .latex-preset-btn,
 body.dark-mode .latex-preset-btn {
-    color: #ececf1;
-    background: #292a2f;
-    border-color: #484b55;
+    color: #f3f4f6;
+    background: #292c38;
+    border-color: #464c5f;
 }
 
+[data-theme="dark"] .latex-preset-btn:hover,
 body.dark-mode .latex-preset-btn:hover {
     border-color: #78a9ff;
 }
 
+[data-theme="dark"] .latex-preset-formula,
 body.dark-mode .latex-preset-formula {
-    color: #e8efff;
-    background: linear-gradient(135deg, #263552, #352b48);
-    border-color: #484b55;
+    color: #f8fafc;
+    background: linear-gradient(135deg, #25334d, #342b4a);
+    border-color: #464c5f;
 }
 
+[data-theme="dark"] .latex-preset-info code,
 body.dark-mode .latex-preset-info code {
-    color: #b7c5dc;
+    color: #cbd5e1;
 }
 
 @media (max-width: 575.98px) {

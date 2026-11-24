@@ -324,6 +324,7 @@ li.nav-item.dropdown {
     width: 100%;
   }
 
+  [data-theme="dark"] .navbar-collapse,
   body.dark-mode .navbar-collapse {
     background: var(--nm-dark-card);
     box-shadow: inset 3px 3px 6px var(--nm-dark-shadow-dark),
@@ -362,6 +363,7 @@ li.nav-item.dropdown {
     width: 100%;
   }
 
+  [data-theme="dark"] .dropdown-menu,
   body.dark-mode .dropdown-menu {
     background: rgba(0, 0, 0, 0.25) !important;
     box-shadow: inset 2px 2px 4px var(--nm-dark-shadow-dark),
@@ -379,6 +381,7 @@ li.nav-item.dropdown {
     }
   }
 
+  [data-theme="dark"] .dropdown-item:hover,
   body.dark-mode .dropdown-item:hover {
     background: rgba(255, 255, 255, 0.05) !important;
     box-shadow: inset 1px 1px 3px var(--nm-dark-shadow-dark),

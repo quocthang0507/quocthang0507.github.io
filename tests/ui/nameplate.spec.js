@@ -157,3 +157,36 @@ test('smart font size grows and shrinks without crossing configured margins', as
  await page.screenshot({path:'.tmp/nameplate-smart.png',fullPage:true});
 });
 
+test('Vietnamese administrative and office presets, 3-tier layouts and borders fit cleanly', async ({ page }) => {
+ const {expect}=require('@playwright/test');
+ await openLocalized(page,'vi');
+ await page.fill('#np-name','NGUYỄN THỊ THANH HƯƠNG');
+ await page.fill('#np-role','PHÓ CHỦ TỊCH ỦY BAN NHÂN DÂN');
+ for (const preset of ['gov_agency','gov_public','gov_paper','brass_leader','office_modern','office_inox','exec_dark','one_stop']) {
+  await page.click(`#np-presets button[data-preset="${preset}"]`);
+  await expect(page.locator(`#np-presets button[data-preset="${preset}"]`)).toHaveClass(/is-active/);
+  await expect(page.locator('#np-name')).toHaveValue('NGUYỄN THỊ THANH HƯƠNG');
+  const svg = page.locator('#np-preview svg');
+  await expect(svg).toBeVisible();
+  const [vbW, vbH] = (await svg.getAttribute('viewBox')).split(' ').slice(2).map(Number);
+  const fits = await page.locator('#np-preview text').evaluateAll((nodes, [w, h]) =>
+   nodes.every(n => { const b = n.getBBox(); return b.x >= 0 && b.x + b.width <= w && b.y >= 0 && b.y + b.height <= h; }),
+   [vbW, vbH]
+  );
+  expect(fits).toBe(true);
+ }
+ for (const size of ['20x10','22x10','30x10']) {
+  await page.selectOption('#np-size', size);
+  expect(await page.locator('#np-preview svg').getAttribute('width')).toBe(size.split('x')[0] + 'cm');
+ }
+ for (const border of ['admin_frame','brass_corners','header_bar','ribbon_sides']) {
+  await page.selectOption('#np-border', border);
+  await expect(page.locator('#np-preview svg')).toBeVisible();
+ }
+ await page.selectOption('#np-layout', 'two');
+ await page.fill('#np-role', 'PHÓ CHỦ TỊCH ỦY BAN NHÂN DÂN\nTỈNH THỪA THIÊN HUẾ');
+ await expect(page.locator('#np-preview text[data-field="role"]')).toHaveCount(2);
+ const multiBounds = await page.locator('#np-preview text[data-field="role"]').evaluateAll(nodes => nodes.map(n => { const b = n.getBBox(); return [b.x, b.y, b.x + b.width, b.y + b.height]; }));
+ expect(multiBounds[1][1]).toBeGreaterThan(multiBounds[0][3] - 1);
+});
+

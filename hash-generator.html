@@ -146,57 +146,57 @@ sitemap:
 
                     <!-- MD5 -->
                     <div class="mb-3">
-                        <label class="form-label d-flex justify-content-between align-items-center">
+                        <label class="form-label d-flex justify-content-between align-items-center" for="md5-hash">
                             <span class="fw-bold">MD5 <small class="text-muted">(128-bit)</small></span>
                             <button class="btn btn-sm btn-outline-primary copy-hash-btn" data-target="md5-hash">
                                 <i class="fas fa-copy"></i> <span data-i18n="hash.copy">Copy</span>
                             </button>
                         </label>
-                        <input type="text" class="form-control font-monospace" id="md5-hash" readonly>
+                        <textarea class="form-control font-monospace hash-output" id="md5-hash" rows="1" readonly></textarea>
                     </div>
 
                     <!-- SHA-1 -->
                     <div class="mb-3">
-                        <label class="form-label d-flex justify-content-between align-items-center">
+                        <label class="form-label d-flex justify-content-between align-items-center" for="sha1-hash">
                             <span class="fw-bold">SHA-1 <small class="text-muted">(160-bit)</small></span>
                             <button class="btn btn-sm btn-outline-primary copy-hash-btn" data-target="sha1-hash">
                                 <i class="fas fa-copy"></i> <span data-i18n="hash.copy">Copy</span>
                             </button>
                         </label>
-                        <input type="text" class="form-control font-monospace" id="sha1-hash" readonly>
+                        <textarea class="form-control font-monospace hash-output" id="sha1-hash" rows="1" readonly></textarea>
                     </div>
 
                     <!-- SHA-256 -->
                     <div class="mb-3">
-                        <label class="form-label d-flex justify-content-between align-items-center">
+                        <label class="form-label d-flex justify-content-between align-items-center" for="sha256-hash">
                             <span class="fw-bold">SHA-256 <small class="text-muted">(256-bit)</small></span>
                             <button class="btn btn-sm btn-outline-primary copy-hash-btn" data-target="sha256-hash">
                                 <i class="fas fa-copy"></i> <span data-i18n="hash.copy">Copy</span>
                             </button>
                         </label>
-                        <input type="text" class="form-control font-monospace" id="sha256-hash" readonly>
+                        <textarea class="form-control font-monospace hash-output" id="sha256-hash" rows="1" readonly></textarea>
                     </div>
 
                     <!-- SHA-384 -->
                     <div class="mb-3">
-                        <label class="form-label d-flex justify-content-between align-items-center">
+                        <label class="form-label d-flex justify-content-between align-items-center" for="sha384-hash">
                             <span class="fw-bold">SHA-384 <small class="text-muted">(384-bit)</small></span>
                             <button class="btn btn-sm btn-outline-primary copy-hash-btn" data-target="sha384-hash">
                                 <i class="fas fa-copy"></i> <span data-i18n="hash.copy">Copy</span>
                             </button>
                         </label>
-                        <input type="text" class="form-control font-monospace" id="sha384-hash" readonly>
+                        <textarea class="form-control font-monospace hash-output" id="sha384-hash" rows="1" readonly></textarea>
                     </div>
 
                     <!-- SHA-512 -->
                     <div class="mb-3">
-                        <label class="form-label d-flex justify-content-between align-items-center">
+                        <label class="form-label d-flex justify-content-between align-items-center" for="sha512-hash">
                             <span class="fw-bold">SHA-512 <small class="text-muted">(512-bit)</small></span>
                             <button class="btn btn-sm btn-outline-primary copy-hash-btn" data-target="sha512-hash">
                                 <i class="fas fa-copy"></i> <span data-i18n="hash.copy">Copy</span>
                             </button>
                         </label>
-                        <input type="text" class="form-control font-monospace" id="sha512-hash" readonly>
+                        <textarea class="form-control font-monospace hash-output" id="sha512-hash" rows="1" readonly></textarea>
                     </div>
 
                     <!-- Copy All Button -->
@@ -250,3 +250,5 @@ sitemap:
         </div>
     </div>
 </div>
+
+{% include tool-tips-card.html tool="hash" info="Tạo mã băm MD5, SHA-1, SHA-256, SHA-384 và SHA-512 ngay trên trình duyệt bằng Web Crypto API, hỗ trợ tệp lớn tới 100 MB." tip1="Nên ưu tiên SHA-256 hoặc SHA-512 để đối chiếu toàn vẹn tệp tải về (checksum) thay vì MD5/SHA-1." tip2="Bỏ chọn các thuật toán không cần thiết khi băm tệp lớn để rút ngắn thời gian xử lý." tip3="Chỉ cần thay đổi 1 khoảng trắng hay 1 ký tự cũng sẽ tạo ra chuỗi hash khác hoàn toàn." tip4="Nhấn 'Copy All' để sao chép toàn bộ mã băm đã tạo chỉ trong một lần bấm." %}

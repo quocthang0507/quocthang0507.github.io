@@ -82,11 +82,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 await MathJax.typesetPromise([output]);
             }
             
-            // Use html2canvas to capture the preview
+            // Use html2canvas to capture the preview with crisp dark ink on white background
             const canvas = await html2canvas(output, {
                 backgroundColor: '#ffffff',
                 scale: 2, // Higher quality
-                logging: false
+                logging: false,
+                onclone: function(clonedDoc) {
+                    const clonedPreview = clonedDoc.getElementById('latex-preview');
+                    if (clonedPreview) {
+                        clonedPreview.style.background = '#ffffff';
+                        clonedPreview.style.color = '#111827';
+                        clonedPreview.style.borderColor = '#e5e7eb';
+                    }
+                }
             });
             
             // Convert to blob and download

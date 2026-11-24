@@ -80,6 +80,31 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    // Auto-resize hash output textareas: 1 line by default, expands to multiple lines when long
+    function autoResizeHashOutput(el) {
+        if (!el || el.tagName !== 'TEXTAREA') return;
+        el.style.height = 'auto';
+        if (el.value && el.scrollHeight > 0) {
+            const styles = window.getComputedStyle(el);
+            const borderY = (parseFloat(styles.borderTopWidth) || 0) + (parseFloat(styles.borderBottomWidth) || 0);
+            el.style.height = (el.scrollHeight + borderY) + 'px';
+        }
+    }
+
+    function resizeAllHashOutputs() {
+        Object.values(hashOutputs).forEach(autoResizeHashOutput);
+    }
+
+    let resizeRaf = null;
+    window.addEventListener('resize', function() {
+        if (!hashResults || hashResults.style.display === 'none') return;
+        if (resizeRaf) cancelAnimationFrame(resizeRaf);
+        resizeRaf = requestAnimationFrame(() => {
+            resizeRaf = null;
+            resizeAllHashOutputs();
+        });
+    });
+
     // Helper function to get selected algorithms
     function getSelectedAlgorithms() {
         const selected = [];
@@ -164,7 +189,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Clear all hash outputs first
             Object.values(hashOutputs).forEach(output => {
-                if (output) output.value = '';
+                if (output) {
+                    output.value = '';
+                    if (output.tagName === 'TEXTAREA') output.style.height = '';
+                }
             });
 
             // Generate only selected hashes with progress tracking for large files
@@ -217,6 +245,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             hashResults.style.display = 'block';
+            resizeAllHashOutputs();
             
             // Show file info if it was a file
             if (fileData) {
@@ -546,6 +575,12 @@ document.addEventListener('DOMContentLoaded', function() {
         inputText.value = '';
         clearFile();
         updateCharCounts();
+        Object.values(hashOutputs).forEach(output => {
+            if (output) {
+                output.value = '';
+                if (output.tagName === 'TEXTAREA') output.style.height = '';
+            }
+        });
         hashResults.style.display = 'none';
     }
 
