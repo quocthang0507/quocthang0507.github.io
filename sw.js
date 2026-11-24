@@ -1,17 +1,28 @@
 // Service Worker for Offline PWA support
-const CACHE_NAME = 'utility-hub-cache-v1.7';
+const CACHE_NAME = 'utility-hub-cache-v2.0';
+const OFFLINE_FALLBACK_URL = './offline.html';
+
 const PRECACHE_ASSETS = [
   './',
   './index.html',
+  './offline.html',
   './404.html',
   './privacy/',
   './favicon.ico',
   './site.webmanifest',
+  './assets/images/icon-192x192.png',
+  './assets/images/icon-512x512.png',
   './assets/css/main.css',
+  './assets/data/vietnam_holidays.json',
   './assets/js/security.min.js',
+  './assets/js/consent.min.js',
   './assets/js/main.min.js',
   './assets/js/i18n.min.js',
   './assets/js/command-palette.min.js',
+  './assets/js/pwa.min.js',
+  './assets/js/lunar-calendar.min.js',
+  './assets/js/vietnam-holidays.min.js',
+  './assets/js/clock.min.js',
   './assets/js/languages/vi.min.js',
   './assets/js/languages/en.min.js',
   './assets/js/languages/zh.min.js',
@@ -19,33 +30,51 @@ const PRECACHE_ASSETS = [
   './assets/js/languages/ja.min.js'
 ];
 
+const CACHEABLE_CDN_HOSTS = new Set([
+  'cdn.jsdelivr.net',
+  'cdnjs.cloudflare.com',
+  'fonts.googleapis.com',
+  'fonts.gstatic.com'
+]);
+
 // Install Service Worker
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then(cache => {
-        console.log('[Service Worker] Pre-caching offline shell');
-        return cache.addAll(PRECACHE_ASSETS);
-      })
+      .then(cache =>
+        Promise.allSettled(
+          PRECACHE_ASSETS.map(url =>
+            cache.add(url).catch(err => {
+              console.warn('[Service Worker] Precache skipped:', url, err);
+            })
+          )
+        )
+      )
       .then(() => self.skipWaiting())
   );
 });
 
-// Activate Service Worker
+// Activate Service Worker and purge older caches
 self.addEventListener('activate', event => {
-  console.log('[Service Worker] Activating and cleaning old caches');
   event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
+    caches.keys().then(cacheNames =>
+      Promise.all(
         cacheNames.map(cache => {
           if (cache !== CACHE_NAME) {
-            console.log('[Service Worker] Deleting old cache:', cache);
             return caches.delete(cache);
           }
+          return null;
         })
-      );
-    }).then(() => self.clients.claim())
+      )
+    ).then(() => self.clients.claim())
   );
+});
+
+// Allow clients to trigger immediate activation of an updated SW
+self.addEventListener('message', event => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
 
 // Fetch Interceptor
@@ -58,15 +87,13 @@ self.addEventListener('fetch', event => {
   // Never intercept requests for the Service Worker script itself
   if (requestUrl.origin === self.location.origin && requestUrl.pathname.endsWith('/sw.js')) return;
 
-  // Skip cross-origin external API fetches like CORS proxy or google analytics
+  // Cross-origin static libraries (Bootstrap, Font Awesome, Google Fonts, Marked, MathJax, etc.)
   if (requestUrl.origin !== self.location.origin) {
-    // Fonts and FontAwesome CSS can be cached
-    if (requestUrl.hostname === 'cdnjs.cloudflare.com' || requestUrl.hostname === 'fonts.gstatic.com' || requestUrl.hostname === 'fonts.googleapis.com') {
+    if (CACHEABLE_CDN_HOSTS.has(requestUrl.hostname)) {
       event.respondWith(
         caches.match(event.request).then(cachedResponse => {
-          if (cachedResponse) return cachedResponse;
-          return fetch(event.request).then(networkResponse => {
-            if (networkResponse && networkResponse.ok) {
+          const networkFetch = fetch(event.request).then(networkResponse => {
+            if (networkResponse && (networkResponse.ok || networkResponse.type === 'opaque')) {
               const cacheCopy = networkResponse.clone();
               caches.open(CACHE_NAME)
                 .then(cache => cache.put(event.request, cacheCopy))
@@ -74,13 +101,18 @@ self.addEventListener('fetch', event => {
             }
             return networkResponse;
           });
+          if (cachedResponse) {
+            event.waitUntil(networkFetch.catch(() => {}));
+            return cachedResponse;
+          }
+          return networkFetch.catch(() => Response.error());
         })
       );
     }
     return;
   }
 
-  // Pages: Network-first so new deployments show up immediately, cache as offline fallback
+  // Pages: Network-first so new deployments appear immediately, with cached page / offline.html fallback
   if (event.request.mode === 'navigate') {
     event.respondWith(
       fetch(event.request).then(networkResponse => {
@@ -92,7 +124,8 @@ self.addEventListener('fetch', event => {
         }
         return networkResponse;
       }).catch(() =>
-        caches.match(event.request)
+        caches.match(event.request, { ignoreSearch: true })
+          .then(cachedResponse => cachedResponse || caches.match(OFFLINE_FALLBACK_URL))
           .then(cachedResponse => cachedResponse || caches.match('./'))
           .then(cachedResponse => cachedResponse || Response.error())
       )
@@ -101,13 +134,10 @@ self.addEventListener('fetch', event => {
   }
 
   // Other same-origin assets: Stale-While-Revalidate caching strategy
-  // Register waitUntil synchronously during event dispatch so background cache updates
-  // never throw InvalidStateError after respondWith resolves from cache.
   const cachedResponsePromise = caches.match(event.request);
   const networkFetch = fetch(event.request).then(networkResponse => {
     if (networkResponse && networkResponse.ok && networkResponse.type === 'basic') {
       const cacheCopy = networkResponse.clone();
-      // Drop older ?v= versions of the same file before storing the new one
       return caches.open(CACHE_NAME)
         .then(cache => cache.delete(event.request, { ignoreSearch: true })
           .then(() => cache.put(event.request, cacheCopy)))
@@ -121,12 +151,10 @@ self.addEventListener('fetch', event => {
   event.respondWith(
     cachedResponsePromise.then(cachedResponse => {
       if (cachedResponse) return cachedResponse;
-      return networkFetch.catch(err => {
-        console.warn('[Service Worker] Network fetch failed, falling back to cache:', err);
-        // Offline with a new ?v= token: serve any cached version of the same file
-        return caches.match(event.request, { ignoreSearch: true })
-          .then(fallback => fallback || Response.error());
-      });
+      return networkFetch.catch(() =>
+        caches.match(event.request, { ignoreSearch: true })
+          .then(fallback => fallback || Response.error())
+      );
     })
   );
 });

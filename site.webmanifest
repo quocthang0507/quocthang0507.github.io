@@ -1,14 +1,20 @@
 {
-    "name": "My Website - Useful Online Tools",
-    "short_name": "MyWebsite",
-    "description": "Comprehensive online tools including digital clock, lunar calendar, random number generator, and random wheel with multi-language support.",
-    "start_url": "/",
+    "id": "/",
+    "name": "Utility Hub — Công cụ trực tuyến",
+    "short_name": "Utility Hub",
+    "description": "Bộ công cụ trực tuyến chạy ngay trên trình duyệt: đồng hồ, lịch vạn niên, bảng tên đại biểu, vòng quay may mắn, tạo mã QR, mật khẩu, đổi đơn vị và nhiều tiện ích khác.",
+    "start_url": "/?source=pwa",
+    "scope": "/",
     "display": "standalone",
-    "background_color": "#ffffff",
+    "display_override": [
+        "window-controls-overlay",
+        "standalone"
+    ],
+    "background_color": "#e0e5ec",
     "theme_color": "#6750A4",
     "orientation": "any",
-    "scope": "/",
     "lang": "vi",
+    "dir": "ltr",
     "categories": [
         "productivity",
         "utilities",
@@ -16,10 +22,82 @@
     ],
     "icons": [
         {
-            "src": "/assets/images/icon-460x460.jpeg",
-            "sizes": "460x460",
-            "type": "image/jpeg",
+            "src": "/assets/images/icon-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png",
             "purpose": "any"
+        },
+        {
+            "src": "/assets/images/icon-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/assets/images/icon-maskable-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "/assets/images/icon-maskable-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "Đồng hồ & Lịch vạn niên",
+            "short_name": "Lịch & Giờ",
+            "description": "Xem đồng hồ số, lịch âm dương và ngày lễ Việt Nam",
+            "url": "/",
+            "icons": [
+                {
+                    "src": "/assets/images/icon-192x192.png",
+                    "sizes": "192x192",
+                    "type": "image/png"
+                }
+            ]
+        },
+        {
+            "name": "Bánh xe may mắn",
+            "short_name": "Vòng quay",
+            "description": "Quay ngẫu nhiên chọn tên hoặc giải thưởng",
+            "url": "/random-wheel/",
+            "icons": [
+                {
+                    "src": "/assets/images/icon-192x192.png",
+                    "sizes": "192x192",
+                    "type": "image/png"
+                }
+            ]
+        },
+        {
+            "name": "Bảng tên đại biểu",
+            "short_name": "Bảng tên",
+            "description": "Thiết kế và in bảng tên hội nghị, hành chính, văn phòng",
+            "url": "/delegate-nameplate/",
+            "icons": [
+                {
+                    "src": "/assets/images/icon-192x192.png",
+                    "sizes": "192x192",
+                    "type": "image/png"
+                }
+            ]
+        },
+        {
+            "name": "Tạo mã QR",
+            "short_name": "Mã QR",
+            "description": "Tạo mã QR tùy chỉnh màu sắc, logo và tải PNG/SVG",
+            "url": "/qr-generator/",
+            "icons": [
+                {
+                    "src": "/assets/images/icon-192x192.png",
+                    "sizes": "192x192",
+                    "type": "image/png"
+                }
+            ]
         }
     ]
 }

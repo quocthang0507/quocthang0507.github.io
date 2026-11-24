@@ -441,3 +441,24 @@
   color: var(--nm-dark-text);
   box-shadow: none;
 }
+
+// ─── PWA ───
+[data-theme="dark"] .pwa-install-btn {
+  background: var(--nm-dark-card);
+  color: #c4b5fd;
+  border-color: rgba(167, 139, 250, 0.45);
+  box-shadow: 3px 3px 6px var(--nm-dark-shadow-dark),
+              -3px -3px 6px var(--nm-dark-shadow-light);
+
+  &:hover {
+    background: rgba(139, 92, 246, 0.22);
+    color: #ffffff;
+  }
+}
+
+[data-theme="dark"] .pwa-status-toast {
+  background: var(--nm-dark-card);
+  color: var(--nm-dark-text);
+  border-color: rgba(167, 139, 250, 0.35);
+  box-shadow: 6px 6px 14px rgba(0, 0, 0, 0.45);
+}

@@ -854,5 +854,19 @@ const koreanTranslations = {
     "wheel.winner_fanfare": "승리 팡파레",
     "wheel.winner_chime": "부드러운 차임벨",
     "wheel.volume": "볼륨",
-    "wheel.test_sound": "미리듣기"
+    "wheel.test_sound": "미리듣기",
+    "pwa.install": "앱 설치",
+    "pwa.install_title": "이 웹사이트를 기기에 앱으로 설치합니다",
+    "pwa.installed_success": "앱이 성공적으로 설치되었습니다!",
+    "pwa.update_available": "새 버전의 앱이 있습니다.",
+    "pwa.update_now": "업데이트",
+    "pwa.offline_title": "오프라인 모드입니다",
+    "pwa.offline_desc": "이 페이지는 아직 기기에 저장되지 않았습니다. 네트워크 연결을 확인하거나 이전에 방문한 도구를 열어 보세요.",
+    "pwa.offline_hint": "대부분의 도구(시계·음력 달력, 룰렛, 명패, 비밀번호, 해시, 단위 변환 등)는 캐시된 후 오프라인에서도 작동합니다.",
+    "pwa.offline_banner": "오프라인 상태입니다 — 로컬 도구는 계속 정상 작동합니다.",
+    "pwa.retry": "다시 시도",
+    "pwa.ios_title": "iPhone / iPad에 설치",
+    "pwa.ios_step1": "Safari 하단의 공유 버튼(위쪽 화살표 아이콘)을 탭하세요.",
+    "pwa.ios_step2": "아래로 스크롤하여 '홈 화면에 추가'를 선택한 뒤 '추가'를 탭하세요.",
+    "pwa.got_it": "확인"
 };

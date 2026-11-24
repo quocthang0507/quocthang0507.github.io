@@ -1,0 +1,47 @@
+---
+layout: default
+title: "Ngoại tuyến"
+description: "Bạn đang ở chế độ ngoại tuyến. Các trang và công cụ đã lưu trên thiết bị vẫn có thể sử dụng bình thường."
+permalink: /offline.html
+sitemap: false
+---
+
+<div class="row justify-content-center my-4">
+    <div class="col-lg-8">
+        <div class="card text-center">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0">
+                    <i class="fas fa-wifi-slash me-2" aria-hidden="true"></i>
+                    <span data-i18n="pwa.offline_title">Đang ở chế độ ngoại tuyến</span>
+                </h5>
+            </div>
+            <div class="card-body py-4">
+                <p class="lead mb-2" data-i18n="pwa.offline_desc">
+                    Trang này chưa được lưu sẵn trên thiết bị. Hãy kiểm tra kết nối mạng hoặc quay lại các công cụ đã mở trước đó.
+                </p>
+                <p class="small text-muted mb-4" data-i18n="pwa.offline_hint">
+                    Hầu hết các công cụ (Đồng hồ & Lịch vạn niên, Vòng quay, Bảng tên, Mật khẩu, Mã băm, Đổi đơn vị...) đều hoạt động trực tiếp trên trình duyệt khi đã lưu bộ nhớ đệm.
+                </p>
+
+                <div class="d-flex flex-wrap justify-content-center gap-2 mb-4">
+                    <button type="button" class="btn btn-primary" onclick="window.location.reload()">
+                        <i class="fas fa-redo me-1" aria-hidden="true"></i>
+                        <span data-i18n="pwa.retry">Thử tải lại</span>
+                    </button>
+                    <a href="{{ '/' | relative_url }}" class="btn btn-outline-primary">
+                        <i class="fas fa-home me-1" aria-hidden="true"></i>
+                        <span data-i18n="nav.home">Trang chủ</span>
+                    </a>
+                </div>
+
+                <div class="d-flex flex-wrap justify-content-center gap-2 small">
+                    <a href="{{ '/random-wheel/' | relative_url }}" class="btn btn-sm btn-outline-secondary" data-i18n="nav.random_wheel">Bánh xe may mắn</a>
+                    <a href="{{ '/delegate-nameplate/' | relative_url }}" class="btn btn-sm btn-outline-secondary" data-i18n="nav.delegate_nameplate">Bảng tên đại biểu</a>
+                    <a href="{{ '/qr-generator/' | relative_url }}" class="btn btn-sm btn-outline-secondary" data-i18n="nav.qr_generator">Tạo mã QR</a>
+                    <a href="{{ '/password-generator/' | relative_url }}" class="btn btn-sm btn-outline-secondary" data-i18n="nav.password_generator">Tạo mật khẩu</a>
+                    <a href="{{ '/unit-converter/' | relative_url }}" class="btn btn-sm btn-outline-secondary" data-i18n="nav.unit_converter">Chuyển đổi đơn vị</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

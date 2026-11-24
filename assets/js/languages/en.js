@@ -975,5 +975,19 @@ const englishTranslations = {
     "wheel.winner_fanfare": "Victory fanfare",
     "wheel.winner_chime": "Gentle chime",
     "wheel.volume": "Volume",
-    "wheel.test_sound": "Preview"
+    "wheel.test_sound": "Preview",
+    "pwa.install": "Install App",
+    "pwa.install_title": "Install this website as an app on your device",
+    "pwa.installed_success": "App installed successfully!",
+    "pwa.update_available": "A new version of the app is available.",
+    "pwa.update_now": "Update",
+    "pwa.offline_title": "You are offline",
+    "pwa.offline_desc": "This page has not been cached on your device yet. Check your internet connection or open tools you previously visited.",
+    "pwa.offline_hint": "Most tools (Clock & Lunar Calendar, Random Wheel, Nameplate, Password, Hash, Unit Converter...) work locally in your browser once cached.",
+    "pwa.offline_banner": "You are offline — local tools continue to work normally.",
+    "pwa.retry": "Try again",
+    "pwa.ios_title": "Install on iPhone / iPad",
+    "pwa.ios_step1": "Tap the Share button (upward arrow icon) at the bottom of Safari.",
+    "pwa.ios_step2": "Scroll down and tap Add to Home Screen, then tap Add.",
+    "pwa.got_it": "Got it"
 };

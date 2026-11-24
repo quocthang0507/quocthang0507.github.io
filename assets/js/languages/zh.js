@@ -845,5 +845,19 @@ const chineseTranslations = {
     "wheel.winner_fanfare": "胜利号角（Fanfare）",
     "wheel.winner_chime": "轻柔铃声",
     "wheel.volume": "音量",
-    "wheel.test_sound": "试听"
+    "wheel.test_sound": "试听",
+    "pwa.install": "安装应用",
+    "pwa.install_title": "将本网站安装到设备作为桌面或移动应用",
+    "pwa.installed_success": "应用安装成功！",
+    "pwa.update_available": "发现应用新版本。",
+    "pwa.update_now": "立即更新",
+    "pwa.offline_title": "当前处于离线模式",
+    "pwa.offline_desc": "此页面尚未缓存到您的设备。请检查网络连接或返回您之前访问过的工具。",
+    "pwa.offline_hint": "大多数本地工具（时钟与农历、幸运转盘、名牌制作、密码、哈希、单位换算等）缓存后可完全离线使用。",
+    "pwa.offline_banner": "当前已离线 — 本地工具仍可正常使用。",
+    "pwa.retry": "重试",
+    "pwa.ios_title": "在 iPhone / iPad 上安装",
+    "pwa.ios_step1": "点击 Safari 底部的分享按钮（向上箭头图标）。",
+    "pwa.ios_step2": "向下滑动并选择“添加到主屏幕”，然后点击“添加”。",
+    "pwa.got_it": "知道了"
 };

@@ -845,5 +845,19 @@ const japaneseTranslations = {
     "wheel.winner_fanfare": "ファンファーレ",
     "wheel.winner_chime": "やさしいチャイム",
     "wheel.volume": "音量",
-    "wheel.test_sound": "試聴"
+    "wheel.test_sound": "試聴",
+    "pwa.install": "アプリをインストール",
+    "pwa.install_title": "このサイトを端末にアプリとしてインストールします",
+    "pwa.installed_success": "アプリをインストールしました！",
+    "pwa.update_available": "新しいバージョンが利用可能です。",
+    "pwa.update_now": "更新する",
+    "pwa.offline_title": "オフラインモードです",
+    "pwa.offline_desc": "このページはまだ端末にキャッシュされていません。通信状態を確認するか、以前開いたツールをご利用ください。",
+    "pwa.offline_hint": "多くのツール（時計・旧暦カレンダー、ルーレット、名札、パスワード、ハッシュ、単位変換など）はキャッシュ後にオフラインで利用できます。",
+    "pwa.offline_banner": "オフラインです — ローカルツールは引き続き利用できます。",
+    "pwa.retry": "再読み込み",
+    "pwa.ios_title": "iPhone / iPad へのインストール",
+    "pwa.ios_step1": "Safari 下部の共有ボタン（上向き矢印アイコン）をタップします。",
+    "pwa.ios_step2": "下にスクロールして「ホーム画面に追加」を選び、「追加」をタップします。",
+    "pwa.got_it": "了解"
 };

@@ -903,3 +903,51 @@ body.dark-mode {
 
 .table-hover tbody tr:hover td { background: rgba(var(--bs-primary-rgb), 0.06); }
 
+// ─── PWA Install Button & Status Toasts ───
+.pwa-install-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  padding: 0 0.75rem;
+  border-radius: 999px;
+  border: 1px solid rgba(var(--bs-primary-rgb), 0.35);
+  background: var(--nm-bg);
+  color: var(--bs-primary-text);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: var(--nm-shadow-flat-sm);
+  @include nm.nm-transition;
+
+  &:hover {
+    background: rgba(var(--bs-primary-rgb), 0.12);
+    border-color: var(--bs-primary);
+  }
+}
+
+.pwa-status-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 1.25rem;
+  transform: translateX(-50%);
+  z-index: 1080;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  max-width: calc(100vw - 2rem);
+  padding: 0.65rem 1rem;
+  border-radius: var(--nm-radius-md);
+  background: var(--nm-bg);
+  color: var(--bs-body-color);
+  font-size: 0.875rem;
+  border: 1px solid rgba(var(--bs-primary-rgb), 0.25);
+  box-shadow: var(--nm-shadow-flat-lg);
+}
+
+.pwa-offline-toast {
+  border-color: rgba(245, 158, 11, 0.5);
+  color: var(--bs-body-color);
+}
+

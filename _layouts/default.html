@@ -58,6 +58,7 @@ layout: compress
     <meta name="msapplication-navbutton-color" content="#6750A4">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Utility Hub">
     <meta name="mobile-web-app-capable" content="yes">
     
     <!-- Canonical URL -->
@@ -203,18 +204,12 @@ layout: compress
     <script src="{{ '/assets/js/command-palette.js' | relative_url }}?v={{ asset_v }}"></script>
     {% endif %}
 
-    <!-- Service Worker PWA registration -->
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function() {
-                navigator.serviceWorker.register('{{ "/sw.js" | relative_url }}', { updateViaCache: 'none' }).then(function(reg) {
-                    console.log('ServiceWorker registration successful with scope: ', reg.scope);
-                }).catch(function(err) {
-                    console.warn('ServiceWorker registration failed: ', err);
-                });
-            });
-        }
-    </script>
+    <!-- Progressive Web App (Service Worker, install prompt, updates & offline banner) -->
+    {% if jekyll.environment == "production" %}
+    <script id="pwa-script" data-sw-url="{{ '/sw.js' | relative_url }}" src="{{ '/assets/js/pwa.min.js' | relative_url }}?v={{ asset_v }}"></script>
+    {% else %}
+    <script id="pwa-script" data-sw-url="{{ '/sw.js' | relative_url }}" src="{{ '/assets/js/pwa.js' | relative_url }}?v={{ asset_v }}"></script>
+    {% endif %}
     
     <!-- Global tracking functions that work with or without gtag -->
     <script>

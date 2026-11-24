@@ -987,5 +987,19 @@ const vietnameseTranslations = {
     "wheel.winner_fanfare": "Kèn chiến thắng (Fanfare)",
     "wheel.winner_chime": "Chuông nhẹ nhàng",
     "wheel.volume": "Âm lượng",
-    "wheel.test_sound": "Nghe thử"
+    "wheel.test_sound": "Nghe thử",
+    "pwa.install": "Cài ứng dụng",
+    "pwa.install_title": "Cài đặt trang web thành ứng dụng trên thiết bị",
+    "pwa.installed_success": "Đã cài đặt ứng dụng thành công!",
+    "pwa.update_available": "Đã có phiên bản ứng dụng mới.",
+    "pwa.update_now": "Cập nhật",
+    "pwa.offline_title": "Đang ở chế độ ngoại tuyến",
+    "pwa.offline_desc": "Trang này chưa được lưu sẵn trên thiết bị. Hãy kiểm tra kết nối mạng hoặc quay lại các công cụ đã mở trước đó.",
+    "pwa.offline_hint": "Hầu hết các công cụ (Đồng hồ & Lịch vạn niên, Vòng quay, Bảng tên, Mật khẩu, Mã băm, Đổi đơn vị...) đều hoạt động trực tiếp trên trình duyệt khi đã lưu bộ nhớ đệm.",
+    "pwa.offline_banner": "Đang ngoại tuyến — các công cụ cục bộ vẫn hoạt động bình thường.",
+    "pwa.retry": "Thử tải lại",
+    "pwa.ios_title": "Cài đặt trên iPhone / iPad",
+    "pwa.ios_step1": "Nhấn vào nút Chia sẻ (biểu tượng mũi tên đi lên) ở thanh dưới Safari.",
+    "pwa.ios_step2": "Cuộn xuống và chọn Thêm vào Màn hình chính (Add to Home Screen), sau đó nhấn Thêm.",
+    "pwa.got_it": "Đã hiểu"
 };
