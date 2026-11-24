@@ -1,0 +1,83 @@
+---
+layout: default
+title: "Đồng hồ bấm giờ (Stopwatch)"
+description: "Đồng hồ bấm giờ trực tuyến chính xác đến từng mili giây, hỗ trợ ghi vòng (Lap), đánh dấu vòng nhanh/chậm nhất, phím tắt và xuất CSV."
+keywords: "đồng hồ bấm giờ, stopwatch online, bấm giờ thể thao, ghi vòng lap, đo thời gian mili giây"
+custom_js: ['clock.js']
+permalink: /stopwatch/
+sitemap:
+  priority: 0.8
+  changefreq: weekly
+  lastmod: 2026-11-24
+---
+
+<div id="alert-container"></div>
+
+<div data-time-tool="stopwatch">
+    {% include time-tools-tabs.html active="stopwatch" %}
+
+    <div class="row justify-content-center">
+        <div class="col-lg-10 mb-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h1 class="h5 mb-0"><i class="fas fa-stopwatch me-2"></i><span data-i18n="stopwatch.page_title">Đồng hồ bấm giờ (Stopwatch)</span></h1>
+                    <button type="button" id="fullscreen-stopwatch-btn" class="btn btn-sm btn-outline-light" title="Toàn màn hình">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                </div>
+                <div class="card-body text-center py-4">
+                    <div id="stopwatch-display" class="clock-display font-monospace mb-4">00:00:00.000</div>
+
+                    <div class="d-flex flex-wrap justify-content-center gap-2 mb-3">
+                        <button type="button" id="start-stopwatch" class="btn btn-success btn-lg px-4">
+                            <i class="fas fa-play me-1"></i><span data-i18n="stopwatch.start">Bắt đầu</span>
+                        </button>
+                        <button type="button" id="pause-stopwatch" class="btn btn-warning btn-lg px-4" disabled>
+                            <i class="fas fa-pause me-1"></i><span data-i18n="stopwatch.pause">Tạm dừng</span>
+                        </button>
+                        <button type="button" id="lap-stopwatch" class="btn btn-info btn-lg px-4" disabled>
+                            <i class="fas fa-flag me-1"></i><span data-i18n="stopwatch.lap">Ghi vòng (Lap)</span>
+                        </button>
+                        <button type="button" id="reset-stopwatch" class="btn btn-danger btn-lg px-4">
+                            <i class="fas fa-redo me-1"></i><span data-i18n="stopwatch.reset">Reset</span>
+                        </button>
+                    </div>
+
+                    <p class="small text-muted mb-0" data-i18n="stopwatch.shortcuts_hint">
+                        Phím tắt: Space (Bắt đầu/Tạm dừng) · L (Ghi vòng) · R (Reset khi tạm dừng)
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-10 mb-4">
+            <div class="card">
+                <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                    <h2 class="h6 mb-0"><i class="fas fa-list-ol me-2"></i><span data-i18n="stopwatch.laps_title">Danh sách vòng đo (Laps)</span></h2>
+                    <button type="button" id="export-laps-btn" class="btn btn-sm btn-outline-light" disabled>
+                        <i class="fas fa-file-csv me-1"></i><span data-i18n="stopwatch.export_csv">Xuất CSV</span>
+                    </button>
+                </div>
+                <div class="card-body">
+                    <p id="stopwatch-laps-empty" class="text-muted text-center small mb-0" data-i18n="stopwatch.no_laps">
+                        Chưa có vòng đo nào. Nhấn "Bắt đầu" rồi bấm "Ghi vòng (Lap)" để lưu mốc thời gian.
+                    </p>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th data-i18n="stopwatch.col_lap">Vòng</th>
+                                    <th data-i18n="stopwatch.col_split">Thời gian vòng</th>
+                                    <th data-i18n="stopwatch.col_total">Tổng thời gian</th>
+                                </tr>
+                            </thead>
+                            <tbody id="stopwatch-laps"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include tool-tips-card.html tool="stopwatch" info="Đồng hồ bấm giờ trực tuyến sử dụng mốc thời gian hệ thống không trôi nhịp, chính xác đến từng mili giây và hỗ trợ ghi vòng (Lap) cùng xuất dữ liệu CSV." tip1="Nhấn phím Space để bắt đầu hoặc tạm dừng nhanh mà không cần di chuột." tip2="Nhấn phím L hoặc nút Ghi vòng để lưu từng chặng; hệ thống tự động đánh dấu vòng nhanh nhất và chậm nhất." tip3="Dùng nút Toàn màn hình ở góc phải tiêu đề khi cần chiếu lớn trong lớp học hoặc buổi tập." tip4="Nhấn Xuất CSV để tải bảng kết quả các vòng đo về mở bằng Excel hoặc Google Sheets." %}

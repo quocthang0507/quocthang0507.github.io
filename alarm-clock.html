@@ -1,0 +1,122 @@
+---
+layout: default
+title: "Đồng hồ báo thức"
+description: "Đặt đồng hồ báo thức online miễn phí, hỗ trợ nhiều mốc báo thức, đặt nhãn nhắc nhở, chọn kiểu chuông, báo lại Snooze 5 phút và đếm ngược đến giờ reo."
+keywords: "đồng hồ báo thức online, đặt báo thức trên web, hẹn giờ báo thức, alarm clock online, snooze"
+custom_js: ['clock.js']
+permalink: /alarm-clock/
+sitemap:
+  priority: 0.85
+  changefreq: weekly
+  lastmod: 2026-11-24
+---
+
+<div id="alert-container"></div>
+
+<div id="alarm-panel" data-time-tool="alarm">
+    {% include time-tools-tabs.html active="alarm" %}
+
+    <!-- Ringing Banner -->
+    <div id="alarm-ringing-panel" class="alert alert-danger shadow-sm d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4" hidden>
+        <div class="d-flex align-items-center gap-3">
+            <i class="fas fa-bell fa-2x fa-shake"></i>
+            <div>
+                <div class="h4 mb-0 font-monospace fw-bold" id="alarm-ringing-time">07:00</div>
+                <div class="fw-semibold" id="alarm-ringing-label" data-i18n="alarm.default_label">Báo thức</div>
+            </div>
+        </div>
+        <div class="d-flex gap-2">
+            <button type="button" id="alarm-snooze-btn" class="btn btn-warning">
+                <i class="fas fa-clock me-1"></i><span data-i18n="alarm.snooze">Báo lại (+5 phút)</span>
+            </button>
+            <button type="button" id="alarm-stop-btn" class="btn btn-danger">
+                <i class="fas fa-volume-mute me-1"></i><span data-i18n="alarm.stop_ring">Tắt chuông</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Live Clock + Set Alarm -->
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h1 class="h5 mb-0"><i class="fas fa-bell me-2"></i><span data-i18n="alarm.page_title">Đồng hồ báo thức</span></h1>
+                    <div class="btn-group btn-group-sm">
+                        <button type="button" id="toggle-format" class="btn btn-outline-light" title="12/24h">12/24h</button>
+                        <button type="button" id="toggle-seconds" class="btn btn-outline-light" title="Giây"><i class="fas fa-eye"></i></button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-3 pb-3 border-bottom">
+                        <div id="digital-clock" class="clock-display">--:--:--</div>
+                        <div id="current-date" class="date-display mb-2">Loading...</div>
+                        <span id="next-alarm-countdown" class="badge bg-info-subtle text-info-emphasis border px-3 py-2"></span>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-sm-5">
+                            <label for="alarm-time-input" class="form-label fw-bold small" data-i18n="alarm.select_time">Chọn giờ báo thức</label>
+                            <input type="time" id="alarm-time-input" class="form-control font-monospace fs-5" value="07:00">
+                        </div>
+                        <div class="col-sm-7">
+                            <label for="alarm-label-input" class="form-label fw-bold small" data-i18n="alarm.label">Nhãn báo thức</label>
+                            <input type="text" id="alarm-label-input" class="form-control" data-i18n-placeholder="alarm.label_placeholder" placeholder="VD: Dậy đi làm, Vào họp, Uống thuốc..." maxlength="60">
+                        </div>
+                        <div class="col-12">
+                            <div class="small text-muted mb-1" data-i18n="alarm.quick_times">Mốc giờ nhanh:</div>
+                            <div class="d-flex flex-wrap gap-1">
+                                <button type="button" class="btn btn-sm btn-outline-secondary" data-alarm-preset="05:30">05:30</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" data-alarm-preset="06:00">06:00</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" data-alarm-preset="06:30">06:30</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" data-alarm-preset="07:00">07:00</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" data-alarm-preset="08:00">08:00</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" data-alarm-preset="12:00">12:00</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" data-alarm-preset="13:30">13:30</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" data-alarm-preset="22:00">22:00</button>
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            <label for="alarm-sound-select" class="form-label fw-bold small" data-i18n="alarm.sound">Âm thanh chuông báo</label>
+                            <div class="input-group">
+                                <select id="alarm-sound-select" class="form-select">
+                                    <option value="digital" data-i18n="alarm.sound_digital">Chuông kỹ thuật số</option>
+                                    <option value="classic" data-i18n="alarm.sound_classic">Chuông reo cổ điển</option>
+                                    <option value="gentle" data-i18n="alarm.sound_gentle">Giai điệu nhẹ nhàng</option>
+                                    <option value="bell" data-i18n="alarm.sound_bell">Chuông thanh thoát</option>
+                                </select>
+                                <button type="button" id="alarm-test-sound-btn" class="btn btn-outline-primary" title="Nghe thử">
+                                    <i class="fas fa-volume-up"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-5 d-flex align-items-end">
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="alarm-repeat-daily">
+                                <label class="form-check-label small" for="alarm-repeat-daily" data-i18n="alarm.repeat_daily">Lặp lại hằng ngày</label>
+                            </div>
+                        </div>
+                        <div class="col-12 d-grid">
+                            <button type="button" id="add-alarm-btn" class="btn btn-success btn-lg">
+                                <i class="fas fa-plus-circle me-1"></i><span data-i18n="alarm.add">Đặt báo thức</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Active Alarms List -->
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-success text-white">
+                    <h2 class="h6 mb-0"><i class="fas fa-list me-2"></i><span data-i18n="alarm.list_title">Danh sách báo thức đã đặt</span></h2>
+                </div>
+                <div class="card-body">
+                    <div id="alarms-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include tool-tips-card.html tool="alarm_clock" info="Đặt nhiều mốc báo thức trực tuyến ngay trên trình duyệt với 4 kiểu chuông Web Audio, nhãn nhắc nhở riêng, đếm ngược tới giờ reo và nút Báo lại (Snooze 5 phút)." tip1="Giữ tab trình duyệt luôn mở và tránh để máy tính ngủ sâu (Sleep) để chuông báo reo đúng giờ." tip2="Bấm nút biểu tượng loa để nghe thử và kiểm tra mức âm lượng thiết bị trước khi đặt báo thức." tip3="Bật 'Lặp lại hằng ngày' cho các lịch cố định như dậy sớm, nghỉ trưa hoặc uống thuốc." tip4="Danh sách báo thức được lưu tự động trên thiết bị trong localStorage nên không mất khi tải lại trang." %}

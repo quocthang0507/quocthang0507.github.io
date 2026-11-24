@@ -197,6 +197,9 @@
         if (holidaysData) {
             patchCalendarUpdate();
             setTimeout(enhanceCalendar, 100);
+            try {
+                window.dispatchEvent(new CustomEvent('vietnamHolidaysLoaded', { detail: holidaysData }));
+            } catch (_) {}
         }
     }
 

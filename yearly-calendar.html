@@ -1,0 +1,86 @@
+---
+layout: default
+title: "Lịch năm"
+description: "Xem lịch âm dương cả năm (12 tháng) kèm thông tin Can Chi, mệnh Ngũ hành Nạp âm, ngày Hoàng Đạo và lịch nghỉ lễ Việt Nam mới nhất 2026."
+keywords: "lịch năm 2026, lịch âm dương cả năm, năm Bính Ngọ 2026, lịch vạn niên 12 tháng, ngày lễ 2026, yearly calendar"
+custom_js: ['lunar-calendar.js', 'vietnam-holidays.js', 'calendar-core.js', 'calendar-views.js']
+permalink: /yearly-calendar/
+sitemap:
+  priority: 0.9
+  changefreq: weekly
+  lastmod: 2026-11-24
+---
+
+<div id="alert-container"></div>
+
+<div data-calendar-view="year" data-monthly-url="{{ '/monthly-calendar/' | relative_url }}">
+    {% include calendar-view-tabs.html active="year" %}
+
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <h1 class="h5 mb-0"><i class="fas fa-calendar me-2"></i><span data-i18n="cal.yearly_title">Lịch năm âm dương (12 tháng)</span></h1>
+            <div class="d-flex flex-wrap align-items-center gap-2">
+                <div class="btn-group btn-group-sm" role="group">
+                    <button type="button" class="btn btn-light" data-quick-year="2025">2025</button>
+                    <button type="button" class="btn btn-warning fw-bold" data-quick-year="2026">2026</button>
+                    <button type="button" class="btn btn-light" data-quick-year="2027">2027</button>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row g-2 align-items-center mb-3">
+                <div class="col-12 col-md-auto">
+                    <div class="btn-group" role="group">
+                        <button type="button" id="yearly-prev-btn" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-chevron-left me-1"></i><span data-i18n="cal.prev_year">Năm trước</span>
+                        </button>
+                        <button type="button" id="yearly-current-btn" class="btn btn-primary btn-sm">
+                            <i class="fas fa-calendar-day me-1"></i><span data-i18n="cal.this_year">Năm nay</span>
+                        </button>
+                        <button type="button" id="yearly-next-btn" class="btn btn-outline-primary btn-sm">
+                            <span data-i18n="cal.next_year">Năm sau</span><i class="fas fa-chevron-right ms-1"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-6 col-md-auto">
+                    <select id="yearly-year-select" class="form-select form-select-sm" aria-label="Year"></select>
+                </div>
+                <div class="col-6 col-md-auto ms-md-auto">
+                    <select id="yearly-filter" class="form-select form-select-sm" aria-label="Filter">
+                        <option value="all" data-i18n="cal.filter_all">Tất cả các ngày</option>
+                        <option value="holidays" data-i18n="cal.filter_holidays">Nổi bật ngày lễ</option>
+                        <option value="good" data-i18n="cal.filter_good">Nổi bật ngày Hoàng Đạo</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="yearly-overview-banner" class="year-overview-banner p-3 rounded mb-4"></div>
+            <div id="yearly-months-grid"></div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-7 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-danger text-white">
+                    <h2 class="h6 mb-0"><i class="fas fa-flag me-2"></i><span data-i18n="cal.year_public_holidays">Lịch nghỉ lễ chính thức &amp; Hoán đổi trong năm</span></h2>
+                </div>
+                <div class="card-body">
+                    <div id="yearly-public-holidays" class="list-group list-group-flush"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-5 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-info text-white">
+                    <h2 class="h6 mb-0"><i class="fas fa-moon me-2"></i><span data-i18n="cal.year_lunar_events">Ngày lễ Âm lịch tiêu biểu</span></h2>
+                </div>
+                <div class="card-body">
+                    <div id="yearly-lunar-events" class="list-group list-group-flush"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include tool-tips-card.html tool="yearly_cal" info="Tra cứu trọn bộ 12 tháng Âm – Dương trong năm kèm Can Chi, mệnh Ngũ hành Nạp âm, thời gian năm âm lịch, tháng nhuận và toàn bộ lịch nghỉ lễ Việt Nam." tip1="Nhấn vào tiêu đề bất kỳ tháng nào để mở chế độ Lịch tháng phóng to với danh sách ngày đẹp chi tiết." tip2="Nhấn trực tiếp vào từng ô ngày để mở cửa sổ xem Can Chi, giờ/sao Hoàng Đạo và sự kiện ngày lễ." tip3="Dùng bộ lọc 'Nổi bật ngày lễ' để lên kế hoạch nghỉ phép và du lịch cả năm nhanh chóng." tip4="Hỗ trợ tra cứu mọi năm từ 1950 đến 2100, bao gồm lịch nghỉ lễ Việt Nam mới nhất 2026 (có Ngày Văn hóa Việt Nam 24/11)." %}

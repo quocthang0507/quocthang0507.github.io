@@ -1,738 +1,958 @@
-// Clock and Calendar functionality
-document.addEventListener('DOMContentLoaded', function() {
-    let is24HourFormat = true;
-    let showSeconds = true;
-    let currentMonth = new Date().getMonth();
-    let currentYear = new Date().getFullYear();
-    
-    // Stopwatch variables
-    let stopwatchStartTime = 0;
-    let stopwatchElapsed = 0;
-    let stopwatchInterval = null;
-    let stopwatchRunning = false;
-    
-    // Timer variables
-    let timerDuration = 0;
-    let timerRemaining = 0;
-    let timerInterval = null;
-    let timerRunning = false;
+// Unified Clock, Calendar, Stopwatch, Countdown Timer & Alarm Clock engine
+// Shared directly across Home (/), Stopwatch (/stopwatch/), Countdown Timer (/countdown-timer/), and Alarm Clock (/alarm-clock/).
 
-    // Initialize all components
-    updateClock();
-    updateCalendar();
-    updateSystemInfo();
-    
-    // Start clock updates
-    setInterval(updateClock, 1000);
-    
-    // Clock functionality
-    function updateClock() {
-        const now = new Date();
-        const hours = now.getHours();
-        const minutes = now.getMinutes();
-        const seconds = now.getSeconds();
-        
-        let timeString;
-        if (is24HourFormat) {
-            timeString = `${padZero(hours)}:${padZero(minutes)}`;
-            if (showSeconds) {
-                timeString += `:${padZero(seconds)}`;
-            }
-        } else {
-            const displayHours = hours === 0 ? 12 : hours > 12 ? hours - 12 : hours;
-            const ampm = hours >= 12 ? 'PM' : 'AM';
-            timeString = `${padZero(displayHours)}:${padZero(minutes)}`;
-            if (showSeconds) {
-                timeString += `:${padZero(seconds)}`;
-            }
-            timeString += ` ${ampm}`;
+(function () {
+    const padZero = (num) => String(Math.max(0, Math.floor(num))).padStart(2, '0');
+    const padThree = (num) => String(Math.max(0, Math.floor(num))).padStart(3, '0');
+
+    const tr = (key, fallback) => {
+        if (typeof window.t === 'function') {
+            const val = window.t(key, fallback);
+            if (val && val !== key) return val;
         }
-        
-        document.getElementById('digital-clock').textContent = timeString;
-        
-        // Update date using current i18n locale
-        const lang = (window.translationSystem && window.translationSystem.getCurrentLanguage()) || 'vi';
-        const localeMap = { vi: 'vi-VN', en: 'en-US', zh: 'zh-CN', ko: 'ko-KR', ja: 'ja-JP' };
-        const options = { 
-            weekday: 'long', 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric' 
-        };
-        document.getElementById('current-date').textContent = now.toLocaleDateString(localeMap[lang] || 'vi-VN', options);
-    }
-    
-    function padZero(num) {
-        return num.toString().padStart(2, '0');
-    }
+        return fallback !== undefined ? fallback : key;
+    };
 
-    function computeDayOfYear(date) {
-        const utcDate = Date.UTC(date.getFullYear(), date.getMonth(), date.getDate());
-        const utcStart = Date.UTC(date.getFullYear(), 0, 0);
-        return Math.round((utcDate - utcStart) / 86400000);
-    }
+    const esc = (s) => {
+        if (typeof window.escapeHtml === 'function') return window.escapeHtml(s);
+        return String(s ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    };
 
-    function computeISOWeek(date) {
-        const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
-        const dayNum = d.getUTCDay() || 7;
-        d.setUTCDate(d.getUTCDate() + 4 - dayNum);
-        const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-        return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
-    }
-    
-    // Calendar functionality
-    function updateCalendar() {
-        const firstDay = new Date(currentYear, currentMonth, 1);
-        const lastDay = new Date(currentYear, currentMonth + 1, 0);
-        const today = new Date();
-        
-        // Update title with translation
-        const monthKey = `month.${currentMonth + 1}`;
-        const monthName = window.t ? window.t(monthKey) : `Tháng ${currentMonth + 1}`;
-        document.getElementById('calendar-title').textContent = `${monthName} ${currentYear}`;
-        
-        // Create calendar table
-        let calendarHTML = '<table class="calendar-table">';
-        
-        // Calendar header with translated day names
-        const dayKeys = ['cal.sunday', 'cal.monday', 'cal.tuesday', 'cal.wednesday', 'cal.thursday', 'cal.friday', 'cal.saturday'];
-        const dayNames = dayKeys.map(key => window.t ? window.t(key) : key.split('.')[1]);
-        calendarHTML += `<tr>${dayNames.map(day => `<th>${day}</th>`).join('')}</tr>`;
-        
-        let date = 1;
-        const startDay = firstDay.getDay();
-        
-        for (let week = 0; week < 6; week++) {
-            calendarHTML += '<tr>';
-            for (let day = 0; day < 7; day++) {
-                if (week === 0 && day < startDay) {
-                    // Previous month days
-                    const prevMonth = new Date(currentYear, currentMonth, 0);
-                    const prevDate = prevMonth.getDate() - (startDay - day - 1);
-                    calendarHTML += `<td class="other-month">${prevDate}</td>`;
-                } else if (date > lastDay.getDate()) {
-                    // Next month days
-                    const nextDate = date - lastDay.getDate();
-                    calendarHTML += `<td class="other-month">${nextDate}</td>`;
-                    date++;
-                } else {
-                    // Current month days
-                    const isToday = currentYear === today.getFullYear() && 
-                                   currentMonth === today.getMonth() && 
-                                   date === today.getDate();
-                    const className = isToday ? 'today' : '';
-                    
-                    // Get lunar date for this day
-                    let lunarInfo = '';
-                    if (window.LunarCalendar) {
-                        try {
-                            const lunar = window.LunarCalendar.solarToLunar(date, currentMonth + 1, currentYear);
-                            if (lunar) {
-                                lunarInfo = `<small class="lunar-date mt-auto">${lunar.day}/${lunar.month}${lunar.isLeap ? '*' : ''}</small>`;
-                            }
-                        } catch (e) {
-                            // Fallback if lunar calculation fails
-                        }
-                    }
-                    
-                    calendarHTML += `<td class="${className} calendar-day" data-date="${date}" data-month="${currentMonth + 1}" data-year="${currentYear}">
-                        <a href="#" class="calendar-day-link d-flex flex-column align-items-center p-1" aria-label="${date}/${currentMonth + 1}/${currentYear}">
-                            <div class="solar-date">${date}</div>
-                            ${lunarInfo}
-                        </a>
-                    </td>`;
-                    date++;
-                }
+    // ═══════════════════════════════════════════
+    // Shared Web Audio Ringtone Synthesizer (Offline-ready, zero external audio files)
+    // ═══════════════════════════════════════════
+    let audioCtx = null;
+    let ringLoopTimer = null;
+    let activeOscillators = [];
+
+    function ensureAudioContext() {
+        try {
+            if (!audioCtx) {
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                if (!AudioCtx) return null;
+                audioCtx = new AudioCtx();
             }
-            calendarHTML += '</tr>';
-            if (date > lastDay.getDate()) break;
+            if (audioCtx.state === 'suspended' && typeof audioCtx.resume === 'function') {
+                audioCtx.resume().catch(() => {});
+            }
+            return audioCtx;
+        } catch (_) {
+            return null;
         }
-        calendarHTML += '</table>';
-        
-        document.getElementById('calendar-display').innerHTML = calendarHTML;
-        
-        // Add click handlers for calendar day links
-        document.querySelectorAll('.calendar-day-link').forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                const cell = this.closest('.calendar-day');
-                if (!cell) return;
-                const day = parseInt(cell.dataset.date);
-                const month = parseInt(cell.dataset.month);
-                const year = parseInt(cell.dataset.year);
-                showDateDetails(day, month, year);
+    }
+
+    function stopAudioNodes() {
+        activeOscillators.forEach(node => {
+            try {
+                if (typeof node.stop === 'function') node.stop();
+                if (typeof node.disconnect === 'function') node.disconnect();
+            } catch (_) {}
+        });
+        activeOscillators = [];
+    }
+
+    function scheduleTone(ctx, freq, startOffset, duration, type, peakGain) {
+        if (!ctx || typeof ctx.createOscillator !== 'function') return;
+        const now = ctx.currentTime || 0;
+        const t0 = now + startOffset;
+        const safePeak = Math.max(0.001, peakGain);
+        const osc = ctx.createOscillator();
+        const env = ctx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, t0);
+        env.gain.setValueAtTime(0.0001, t0);
+        env.gain.exponentialRampToValueAtTime(safePeak, t0 + 0.012);
+        env.gain.exponentialRampToValueAtTime(0.0001, t0 + duration);
+        osc.connect(env);
+        env.connect(ctx.destination);
+        osc.start(t0);
+        osc.stop(t0 + duration + 0.02);
+        activeOscillators.push(osc, env);
+    }
+
+    function playRingtoneOnce(soundType = 'digital', volume = 0.75) {
+        const ctx = ensureAudioContext();
+        if (!ctx || volume <= 0) return;
+        const vol = Math.min(1, Math.max(0.05, volume));
+
+        if (soundType === 'classic') {
+            // Classic twin-bell metallic shimmer
+            for (let i = 0; i < 8; i++) {
+                scheduleTone(ctx, i % 2 === 0 ? 1180 : 1480, i * 0.09, 0.08, 'triangle', 0.3 * vol);
+            }
+            return;
+        }
+
+        if (soundType === 'gentle') {
+            // Warm ascending morning melody C5 -> E5 -> G5 -> C6
+            const notes = [523.25, 659.25, 783.99, 1046.5];
+            notes.forEach((f, idx) => {
+                scheduleTone(ctx, f, idx * 0.18, 0.42, 'sine', 0.24 * vol);
+                scheduleTone(ctx, f * 2, idx * 0.18, 0.22, 'sine', 0.07 * vol);
             });
+            return;
+        }
+
+        if (soundType === 'bell') {
+            // Bright chime triad
+            [1046.5, 1318.51, 1567.98].forEach((f, idx) => {
+                scheduleTone(ctx, f, idx * 0.14, 0.65, 'sine', 0.26 * vol);
+            });
+            return;
+        }
+
+        // Default 'digital': rhythmic alarm beeps (beep-beep-beep-beep)
+        [0, 0.16, 0.32, 0.48].forEach(offset => {
+            scheduleTone(ctx, 880, offset, 0.11, 'square', 0.18 * vol);
         });
     }
-    
-    function updateSystemInfo() {
-        const now = new Date();
-        
-        // Timezone
-        document.getElementById('timezone').textContent = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        
-        // Day of year and ISO week of year (DST-safe UTC calculation)
-        document.getElementById('day-of-year').textContent = computeDayOfYear(now);
-        document.getElementById('week-of-year').textContent = computeISOWeek(now);
-    }
-    
-    // Stopwatch functionality
-    function updateStopwatch() {
-        const elapsed = stopwatchElapsed + (stopwatchRunning ? Date.now() - stopwatchStartTime : 0);
-        const hours = Math.floor(elapsed / 3600000);
-        const minutes = Math.floor((elapsed % 3600000) / 60000);
-        const seconds = Math.floor((elapsed % 60000) / 1000);
-        const milliseconds = elapsed % 1000;
-        
-        document.getElementById('stopwatch-display').textContent = 
-            `${padZero(hours)}:${padZero(minutes)}:${padZero(seconds)}.${padThree(milliseconds)}`;
-    }
-    
-    function padThree(num) {
-        return num.toString().padStart(3, '0');
-    }
-    
-    // Timer functionality
-    function renderTimerDisplay(secondsLeft) {
-        const timerDisplay = document.getElementById('timer-display');
-        if (!timerDisplay) return;
-        const clamped = Math.max(0, secondsLeft);
-        const minutes = Math.floor(clamped / 60);
-        const seconds = clamped % 60;
-        timerDisplay.textContent = `${padZero(minutes)}:${padZero(seconds)}`;
-        if (clamped > 0 && clamped <= 10) {
-            timerDisplay.classList.add('warning-low');
-        } else {
-            timerDisplay.classList.remove('warning-low');
-        }
+
+    function startRingtoneLoop(soundType = 'digital', volume = 0.75) {
+        stopRingtoneLoop();
+        playRingtoneOnce(soundType, volume);
+        ringLoopTimer = setInterval(() => {
+            playRingtoneOnce(soundType, volume);
+        }, 1500);
     }
 
-    function updateTimer() {
-        const timerDisplay = document.getElementById('timer-display');
-        if (timerRemaining > 1) {
-            timerRemaining--;
-            renderTimerDisplay(timerRemaining);
-        } else {
-            timerRemaining = 0;
-            clearInterval(timerInterval);
-            timerRunning = false;
-            renderTimerDisplay(0);
-            timerDisplay.classList.remove('running');
-            timerDisplay.classList.remove('warning-low');
-            document.getElementById('start-timer').disabled = false;
-            document.getElementById('pause-timer').disabled = true;
-            showAlert('Timer đã kết thúc!', 'warning');
-            
-            // Play notification sound (if supported)
-            if ('speechSynthesis' in window) {
-                try {
-                    const utterance = new SpeechSynthesisUtterance('Timer đã kết thúc');
-                    utterance.lang = 'vi-VN';
-                    speechSynthesis.speak(utterance);
-                } catch (_) {}
-            }
+    function stopRingtoneLoop() {
+        if (ringLoopTimer) {
+            clearInterval(ringLoopTimer);
+            ringLoopTimer = null;
         }
+        stopAudioNodes();
     }
-    
-    // Event listeners
-    document.getElementById('toggle-format').addEventListener('click', function() {
-        is24HourFormat = !is24HourFormat;
-        updateClock();
-        
-        // Track format change
-        if (typeof gtag !== 'undefined') {
-            gtag('event', 'clock_format_change', {
-                event_category: 'clock_tools',
-                event_label: is24HourFormat ? '24_hour' : '12_hour'
-            });
+
+    function formatStopwatchMs(elapsedMs) {
+        const clamped = Math.max(0, Math.floor(elapsedMs));
+        const hours = Math.floor(clamped / 3600000);
+        const minutes = Math.floor((clamped % 3600000) / 60000);
+        const seconds = Math.floor((clamped % 60000) / 1000);
+        const milliseconds = clamped % 1000;
+        return `${padZero(hours)}:${padZero(minutes)}:${padZero(seconds)}.${padThree(milliseconds)}`;
+    }
+
+    function formatCountdownSeconds(totalSeconds, forceHours = false) {
+        const clamped = Math.max(0, Math.ceil(totalSeconds));
+        const hours = Math.floor(clamped / 3600);
+        const minutes = Math.floor((clamped % 3600) / 60);
+        const seconds = clamped % 60;
+        if (hours > 0 || forceHours) {
+            return `${padZero(hours)}:${padZero(minutes)}:${padZero(seconds)}`;
         }
-    });
-    
-    document.getElementById('toggle-seconds').addEventListener('click', function() {
-        showSeconds = !showSeconds;
-        updateClock();
-        
-        // Track seconds toggle
-        if (typeof gtag !== 'undefined') {
-            gtag('event', 'clock_seconds_toggle', {
-                event_category: 'clock_tools',
-                event_label: showSeconds ? 'show_seconds' : 'hide_seconds'
-            });
+        return `${padZero(minutes)}:${padZero(seconds)}`;
+    }
+
+    function computeNextAlarmMs(timeStr, now = new Date()) {
+        const [hh, mm] = String(timeStr || '07:00').split(':').map(Number);
+        if (Number.isNaN(hh) || Number.isNaN(mm)) return null;
+        const target = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hh, mm, 0, 0);
+        if (target.getTime() <= now.getTime()) {
+            target.setDate(target.getDate() + 1);
         }
-    });
-    
-    document.getElementById('prev-month').addEventListener('click', function() {
-        currentMonth--;
-        if (currentMonth < 0) {
-            currentMonth = 11;
-            currentYear--;
-        }
-        updateCalendar();
-    });
-    
-    document.getElementById('next-month').addEventListener('click', function() {
-        currentMonth++;
-        if (currentMonth > 11) {
-            currentMonth = 0;
-            currentYear++;
-        }
-        updateCalendar();
-    });
-    
-    document.getElementById('today-btn').addEventListener('click', function() {
-        const today = new Date();
-        currentMonth = today.getMonth();
-        currentYear = today.getFullYear();
-        updateCalendar();
-    });
-    
-    // Stopwatch event listeners
-    document.getElementById('start-stopwatch').addEventListener('click', function() {
-        if (!stopwatchRunning) {
-            stopwatchStartTime = Date.now();
-            stopwatchRunning = true;
-            stopwatchInterval = setInterval(updateStopwatch, 10); // Update every 10ms for millisecond precision
-            this.disabled = true;
-            document.getElementById('pause-stopwatch').disabled = false;
-            document.getElementById('stopwatch-display').classList.add('running');
-            
-            // Track stopwatch start
-            if (typeof gtag !== 'undefined') {
-                gtag('event', 'stopwatch_start', {
-                    event_category: 'clock_tools',
-                    event_label: 'stopwatch_interaction'
+        return target.getTime() - now.getTime();
+    }
+
+    // ═══════════════════════════════════════════
+    // 1. Digital Clock (Home + Alarm Clock)
+    // ═══════════════════════════════════════════
+    function initDigitalClock() {
+        const clockEl = document.getElementById('digital-clock');
+        const dateEl = document.getElementById('current-date');
+        if (!clockEl) return;
+
+        let is24HourFormat = true;
+        let showSeconds = true;
+
+        function updateClock() {
+            const now = new Date();
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+
+            let timeString;
+            if (is24HourFormat) {
+                timeString = `${padZero(hours)}:${padZero(minutes)}`;
+                if (showSeconds) timeString += `:${padZero(seconds)}`;
+            } else {
+                const displayHours = hours === 0 ? 12 : hours > 12 ? hours - 12 : hours;
+                const ampm = hours >= 12 ? 'PM' : 'AM';
+                timeString = `${padZero(displayHours)}:${padZero(minutes)}`;
+                if (showSeconds) timeString += `:${padZero(seconds)}`;
+                timeString += ` ${ampm}`;
+            }
+
+            clockEl.textContent = timeString;
+
+            if (dateEl) {
+                const lang = (window.translationSystem && window.translationSystem.getCurrentLanguage()) || 'vi';
+                const localeMap = { vi: 'vi-VN', en: 'en-US', zh: 'zh-CN', ko: 'ko-KR', ja: 'ja-JP' };
+                dateEl.textContent = now.toLocaleDateString(localeMap[lang] || 'vi-VN', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
                 });
             }
         }
-    });
-    
-    document.getElementById('pause-stopwatch').addEventListener('click', function() {
-        if (stopwatchRunning) {
-            stopwatchElapsed += Date.now() - stopwatchStartTime;
-            stopwatchRunning = false;
-            clearInterval(stopwatchInterval);
-            document.getElementById('start-stopwatch').disabled = false;
-            this.disabled = true;
-            document.getElementById('stopwatch-display').classList.remove('running');
-            
-            // Track stopwatch pause
+
+        const toggleFormatBtn = document.getElementById('toggle-format');
+        if (toggleFormatBtn) {
+            toggleFormatBtn.addEventListener('click', function () {
+                is24HourFormat = !is24HourFormat;
+                updateClock();
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'clock_format_change', {
+                        event_category: 'clock_tools',
+                        event_label: is24HourFormat ? '24_hour' : '12_hour'
+                    });
+                }
+            });
+        }
+
+        const toggleSecondsBtn = document.getElementById('toggle-seconds');
+        if (toggleSecondsBtn) {
+            toggleSecondsBtn.addEventListener('click', function () {
+                showSeconds = !showSeconds;
+                updateClock();
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'clock_seconds_toggle', {
+                        event_category: 'clock_tools',
+                        event_label: showSeconds ? 'show_seconds' : 'hide_seconds'
+                    });
+                }
+            });
+        }
+
+        updateClock();
+        setInterval(updateClock, 1000);
+        window.addEventListener('languageChanged', updateClock);
+    }
+
+    // ═══════════════════════════════════════════
+    // 2. Home Calendar & System Info
+    // ═══════════════════════════════════════════
+    function initHomeCalendarAndSystemInfo() {
+        const displayEl = document.getElementById('calendar-display');
+        let currentMonth = new Date().getMonth();
+        let currentYear = new Date().getFullYear();
+
+        function computeDayOfYear(date) {
+            if (window.CalendarCore) return window.CalendarCore.computeDayOfYear(date);
+            const utcDate = Date.UTC(date.getFullYear(), date.getMonth(), date.getDate());
+            const utcStart = Date.UTC(date.getFullYear(), 0, 0);
+            return Math.round((utcDate - utcStart) / 86400000);
+        }
+
+        function computeISOWeek(date) {
+            if (window.CalendarCore) return window.CalendarCore.computeISOWeek(date);
+            const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+            const dayNum = d.getUTCDay() || 7;
+            d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+            const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+            return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+        }
+
+        function showDateDetails(day, month, year) {
+            if (window.CalendarCore && typeof window.CalendarCore.showDateDetails === 'function') {
+                window.CalendarCore.showDateDetails(day, month, year);
+            }
+        }
+
+        function updateCalendar() {
+            if (!displayEl) return;
+            const titleEl = document.getElementById('calendar-title');
+            const monthName = window.CalendarCore
+                ? window.CalendarCore.getMonthName(currentMonth + 1)
+                : tr(`month.${currentMonth + 1}`, `Tháng ${currentMonth + 1}`);
+            if (titleEl) titleEl.textContent = `${monthName} ${currentYear}`;
+
+            if (window.CalendarCore) {
+                displayEl.innerHTML = window.CalendarCore.renderMonthTableHTML(currentYear, currentMonth + 1, {
+                    weekStartsOn: 0,
+                    compact: false,
+                    showGoodBad: true
+                });
+                window.CalendarCore.bindDayClickHandlers(displayEl, showDateDetails);
+            }
+        }
+
+        if (displayEl) {
+            const prevBtn = document.getElementById('prev-month');
+            const nextBtn = document.getElementById('next-month');
+            const todayBtn = document.getElementById('today-btn');
+            if (prevBtn) {
+                prevBtn.addEventListener('click', () => {
+                    currentMonth--;
+                    if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+                    updateCalendar();
+                });
+            }
+            if (nextBtn) {
+                nextBtn.addEventListener('click', () => {
+                    currentMonth++;
+                    if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+                    updateCalendar();
+                });
+            }
+            if (todayBtn) {
+                todayBtn.addEventListener('click', () => {
+                    const today = new Date();
+                    currentMonth = today.getMonth();
+                    currentYear = today.getFullYear();
+                    updateCalendar();
+                });
+            }
+
+            window.addEventListener('languageChanged', updateCalendar);
+            window.addEventListener('vietnamHolidaysLoaded', updateCalendar);
+            window.updateCalendar = updateCalendar;
+            updateCalendar();
+        }
+
+        const tzEl = document.getElementById('timezone');
+        if (tzEl) {
+            const now = new Date();
+            tzEl.textContent = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            const doyEl = document.getElementById('day-of-year');
+            const woyEl = document.getElementById('week-of-year');
+            if (doyEl) doyEl.textContent = computeDayOfYear(now);
+            if (woyEl) woyEl.textContent = computeISOWeek(now);
+        }
+    }
+
+    // ═══════════════════════════════════════════
+    // 3. Shared Stopwatch (Home + /stopwatch/)
+    // ═══════════════════════════════════════════
+    function initStopwatch() {
+        const displayEl = document.getElementById('stopwatch-display');
+        const startBtn = document.getElementById('start-stopwatch');
+        const pauseBtn = document.getElementById('pause-stopwatch');
+        const resetBtn = document.getElementById('reset-stopwatch');
+        if (!displayEl || !startBtn) return;
+
+        const lapBtn = document.getElementById('lap-stopwatch');
+        const lapsBody = document.getElementById('stopwatch-laps');
+        const lapsEmpty = document.getElementById('stopwatch-laps-empty');
+        const exportLapsBtn = document.getElementById('export-laps-btn');
+        const fullscreenBtn = document.getElementById('fullscreen-stopwatch-btn');
+
+        let startTime = 0;
+        let elapsed = 0;
+        let intervalId = null;
+        let running = false;
+        let laps = [];
+
+        function getCurrentElapsed() {
+            return elapsed + (running ? Date.now() - startTime : 0);
+        }
+
+        function renderDisplay() {
+            displayEl.textContent = formatStopwatchMs(getCurrentElapsed());
+        }
+
+        function renderLaps() {
+            if (!lapsBody) return;
+            if (laps.length === 0) {
+                lapsBody.innerHTML = '';
+                if (lapsEmpty) lapsEmpty.style.display = 'block';
+                if (exportLapsBtn) exportLapsBtn.disabled = true;
+                return;
+            }
+            if (lapsEmpty) lapsEmpty.style.display = 'none';
+            if (exportLapsBtn) exportLapsBtn.disabled = false;
+
+            const splits = laps.map(l => l.split);
+            const fastest = laps.length > 1 ? Math.min(...splits) : -1;
+            const slowest = laps.length > 1 ? Math.max(...splits) : -1;
+
+            lapsBody.innerHTML = laps.slice().reverse().map(lap => {
+                let badge = '';
+                if (lap.split === fastest) {
+                    badge = ` <span class="badge bg-success-subtle text-success-emphasis border">${esc(tr('stopwatch.fastest', 'Nhanh nhất'))}</span>`;
+                } else if (lap.split === slowest) {
+                    badge = ` <span class="badge bg-danger-subtle text-danger-emphasis border">${esc(tr('stopwatch.slowest', 'Chậm nhất'))}</span>`;
+                }
+                return `<tr>
+                    <td class="fw-bold">#${lap.index}${badge}</td>
+                    <td class="font-monospace">+${formatStopwatchMs(lap.split)}</td>
+                    <td class="font-monospace fw-semibold">${formatStopwatchMs(lap.total)}</td>
+                </tr>`;
+            }).join('');
+        }
+
+        function start() {
+            if (running) return;
+            startTime = Date.now();
+            running = true;
+            intervalId = setInterval(renderDisplay, 10);
+            startBtn.disabled = true;
+            if (pauseBtn) pauseBtn.disabled = false;
+            if (lapBtn) lapBtn.disabled = false;
+            displayEl.classList.add('running');
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'stopwatch_start', { event_category: 'clock_tools', event_label: 'stopwatch_interaction' });
+            }
+        }
+
+        function pause() {
+            if (!running) return;
+            elapsed += Date.now() - startTime;
+            running = false;
+            clearInterval(intervalId);
+            intervalId = null;
+            startBtn.disabled = false;
+            if (pauseBtn) pauseBtn.disabled = true;
+            if (lapBtn) lapBtn.disabled = true;
+            displayEl.classList.remove('running');
+            renderDisplay();
             if (typeof gtag !== 'undefined') {
                 gtag('event', 'stopwatch_pause', {
                     event_category: 'clock_tools',
                     event_label: 'stopwatch_interaction',
-                    elapsed_time: Math.round(stopwatchElapsed / 1000)
+                    elapsed_time: Math.round(elapsed / 1000)
                 });
             }
         }
-    });
-    
-    document.getElementById('reset-stopwatch').addEventListener('click', function() {
-        const previousElapsed = stopwatchElapsed;
-        stopwatchElapsed = 0;
-        stopwatchRunning = false;
-        clearInterval(stopwatchInterval);
-        document.getElementById('start-stopwatch').disabled = false;
-        document.getElementById('pause-stopwatch').disabled = true;
-        document.getElementById('stopwatch-display').classList.remove('running');
-        updateStopwatch();
-        
-        // Track stopwatch reset
-        if (typeof gtag !== 'undefined') {
-            gtag('event', 'stopwatch_reset', {
-                event_category: 'clock_tools',
-                event_label: 'stopwatch_interaction',
-                final_time: Math.round(previousElapsed / 1000)
+
+        function reset() {
+            const previousElapsed = getCurrentElapsed();
+            elapsed = 0;
+            running = false;
+            clearInterval(intervalId);
+            intervalId = null;
+            laps = [];
+            startBtn.disabled = false;
+            if (pauseBtn) pauseBtn.disabled = true;
+            if (lapBtn) lapBtn.disabled = true;
+            displayEl.classList.remove('running');
+            renderDisplay();
+            renderLaps();
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'stopwatch_reset', {
+                    event_category: 'clock_tools',
+                    event_label: 'stopwatch_interaction',
+                    final_time: Math.round(previousElapsed / 1000)
+                });
+            }
+        }
+
+        function recordLap() {
+            if (!running) return;
+            const total = getCurrentElapsed();
+            const prevTotal = laps.length > 0 ? laps[laps.length - 1].total : 0;
+            laps.push({ index: laps.length + 1, split: total - prevTotal, total });
+            renderLaps();
+        }
+
+        startBtn.addEventListener('click', start);
+        if (pauseBtn) pauseBtn.addEventListener('click', pause);
+        if (resetBtn) resetBtn.addEventListener('click', reset);
+        if (lapBtn) lapBtn.addEventListener('click', recordLap);
+
+        if (exportLapsBtn) {
+            exportLapsBtn.addEventListener('click', () => {
+                if (laps.length === 0) return;
+                const csv = ['Lap,Split,Total']
+                    .concat(laps.map(l => `${l.index},${formatStopwatchMs(l.split)},${formatStopwatchMs(l.total)}`))
+                    .join('\n');
+                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `stopwatch-laps-${new Date().toISOString().slice(0, 10)}.csv`;
+                a.click();
+                setTimeout(() => URL.revokeObjectURL(url), 1000);
             });
         }
-    });
-    
-    // Timer event listeners
-    document.getElementById('start-timer').addEventListener('click', function() {
-        if (!timerRunning) {
-            const minutes = parseInt(document.getElementById('timer-minutes').value) || 0;
-            const seconds = parseInt(document.getElementById('timer-seconds').value) || 0;
-            timerDuration = minutes * 60 + seconds;
-            timerRemaining = timerDuration;
-            
-            if (timerRemaining > 0) {
-                timerRunning = true;
-                renderTimerDisplay(timerRemaining);
-                timerInterval = setInterval(updateTimer, 1000);
-                this.disabled = true;
-                document.getElementById('pause-timer').disabled = false;
-                document.getElementById('timer-display').classList.add('running');
-                
-                // Track timer start
-                if (typeof gtag !== 'undefined') {
-                    gtag('event', 'timer_start', {
-                        event_category: 'clock_tools',
-                        event_label: 'timer_interaction',
-                        timer_duration: timerDuration
-                    });
+
+        if (fullscreenBtn) {
+            fullscreenBtn.addEventListener('click', () => {
+                const card = displayEl.closest('.card') || document.documentElement;
+                if (!document.fullscreenElement && card.requestFullscreen) {
+                    card.requestFullscreen().catch(() => {});
+                } else if (document.fullscreenElement && document.exitFullscreen) {
+                    document.exitFullscreen().catch(() => {});
                 }
-            } else {
-                showAlert('Vui lòng nhập thời gian hợp lệ!', 'danger');
-            }
+            });
         }
-    });
-    
-    document.getElementById('pause-timer').addEventListener('click', function() {
-        if (timerRunning) {
-            timerRunning = false;
-            clearInterval(timerInterval);
-            document.getElementById('start-timer').disabled = false;
-            this.disabled = true;
-            document.getElementById('timer-display').classList.remove('running');
-        }
-    });
-    
-    document.getElementById('reset-timer').addEventListener('click', function() {
-        timerRunning = false;
-        clearInterval(timerInterval);
-        const parsedMin = parseInt(document.getElementById('timer-minutes').value, 10);
-        const parsedSec = parseInt(document.getElementById('timer-seconds').value, 10);
-        const minutes = Number.isNaN(parsedMin) ? 5 : Math.max(0, parsedMin);
-        const seconds = Number.isNaN(parsedSec) ? 0 : Math.max(0, parsedSec);
-        timerRemaining = minutes * 60 + seconds;
-        const timerDisplay = document.getElementById('timer-display');
-        timerDisplay.classList.remove('running');
-        renderTimerDisplay(timerRemaining);
-        document.getElementById('start-timer').disabled = false;
-        document.getElementById('pause-timer').disabled = true;
-    });
-    
-    // Timer presets
-    const presetButtons = document.querySelectorAll('#timer-presets button');
-    presetButtons.forEach(btn => {
-        btn.addEventListener('click', function() {
-            if (timerRunning) return; // Don't allow changing presets while running
-            const mins = this.dataset.minutes;
-            const secs = this.dataset.seconds;
-            document.getElementById('timer-minutes').value = mins;
-            document.getElementById('timer-seconds').value = secs;
-            timerRemaining = parseInt(mins) * 60 + parseInt(secs);
-            
-            // Update display
-            const minutesDisplay = Math.floor(timerRemaining / 60);
-            const secondsDisplay = timerRemaining % 60;
-            const timerDisplay = document.getElementById('timer-display');
-            timerDisplay.textContent = `${padZero(minutesDisplay)}:${padZero(secondsDisplay)}`;
-            timerDisplay.classList.remove('warning-low');
-        });
-    });
-    
-    // Initialize displays
-    updateStopwatch();
-    const parsedInitMin = parseInt(document.getElementById('timer-minutes').value, 10);
-    const parsedInitSec = parseInt(document.getElementById('timer-seconds').value, 10);
-    const initialMinutes = Number.isNaN(parsedInitMin) ? 5 : Math.max(0, parsedInitMin);
-    const initialSeconds = Number.isNaN(parsedInitSec) ? 0 : Math.max(0, parsedInitSec);
-    timerRemaining = initialMinutes * 60 + initialSeconds;
-    renderTimerDisplay(timerRemaining);
-    
-    // Listen for language changes to update calendar
-    window.addEventListener('languageChanged', function() {
-        updateCalendar();
-    });
-    
-    // Make updateCalendar globally available for i18n system
-    window.updateCalendar = updateCalendar;
-    
-    // Show date details modal
-    function showDateDetails(day, month, year) {
-        // Helper translation function
-        const t = window.t || ((key, fallback) => fallback || key);
-        const lang = (window.translationSystem && window.translationSystem.getCurrentLanguage()) || 'vi';
 
-        const solarDate = new Date(year, month - 1, day);
-        const dayKeys = ['day.sunday', 'day.monday', 'day.tuesday', 'day.wednesday', 'day.thursday', 'day.friday', 'day.saturday'];
-        const dayOfWeek = t(dayKeys[solarDate.getDay()], dayKeys[solarDate.getDay()]);
-
-        // Compute day-of-year and ISO week for extra context (DST-safe UTC calculation)
-        const dayOfYear = computeDayOfYear(solarDate);
-        const weekOfYear = computeISOWeek(solarDate);
-        const esc = typeof escapeHtml === 'function'
-            ? escapeHtml
-            : (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-
-        let lunar = null; let zodiac = ''; let canChi = ''; let lunarMonthName = ''; let lunarOk = false;
-        let goodBadInfo = null;
-        if (window.LunarCalendar) {
-            try {
-                lunar = window.LunarCalendar.solarToLunar(day, month, year);
-                if (lunar) {
-                    zodiac = window.LunarCalendar.getZodiacAnimal(lunar.year) || '';
-                    canChi = window.LunarCalendar.getCanChi(lunar.year) || '';
-                    lunarMonthName = window.LunarCalendar.getLunarMonthName(lunar.month, lunar.isLeap) || '';
-                    lunarOk = true;
-                    goodBadInfo = window.LunarCalendar.getGoodBadDayInfo(day, month, year);
+        // Dedicated stopwatch page keyboard shortcuts (Space: start/pause, L: lap, R: reset)
+        if (document.querySelector('[data-time-tool="stopwatch"]')) {
+            document.addEventListener('keydown', e => {
+                const tag = (e.target && e.target.tagName) || '';
+                if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+                if (e.code === 'Space') {
+                    e.preventDefault();
+                    running ? pause() : start();
+                } else if (e.key === 'l' || e.key === 'L') {
+                    if (running) recordLap();
+                } else if (e.key === 'r' || e.key === 'R') {
+                    if (!running) reset();
                 }
-            } catch(err) {
-                lunarOk = false;
-            }
+            });
         }
 
-        // Check for holidays
-        let holiday = null;
-        if (window.VietnamHolidays) {
-            holiday = window.VietnamHolidays.getHoliday(day, month, year);
+        renderDisplay();
+        renderLaps();
+    }
+
+    // ═══════════════════════════════════════════
+    // 4. Shared Countdown Timer (Home + /countdown-timer/)
+    // ═══════════════════════════════════════════
+    function initCountdownTimer() {
+        const displayEl = document.getElementById('timer-display');
+        const startBtn = document.getElementById('start-timer');
+        const pauseBtn = document.getElementById('pause-timer');
+        const resetBtn = document.getElementById('reset-timer');
+        const hoursInput = document.getElementById('timer-hours');
+        const minutesInput = document.getElementById('timer-minutes');
+        const secondsInput = document.getElementById('timer-seconds');
+        if (!displayEl || !startBtn || !minutesInput || !secondsInput) return;
+
+        const progressBar = document.getElementById('timer-progress-bar');
+        const soundSelect = document.getElementById('timer-sound-select');
+        const testSoundBtn = document.getElementById('timer-test-sound-btn');
+        const ringingBanner = document.getElementById('timer-ringing-banner');
+        const stopRingBtn = document.getElementById('timer-stop-ring-btn');
+        const labelInput = document.getElementById('timer-label-input');
+        const ringingLabelEl = document.getElementById('timer-ringing-label');
+        const hasHoursField = Boolean(hoursInput);
+
+        let totalDurationSec = 0;
+        let remainingSec = 0;
+        let endTimestamp = 0;
+        let intervalId = null;
+        let running = false;
+
+        function readInputSeconds() {
+            const h = hoursInput ? Math.max(0, parseInt(hoursInput.value, 10) || 0) : 0;
+            const m = Math.max(0, parseInt(minutesInput.value, 10) || 0);
+            const s = Math.max(0, parseInt(secondsInput.value, 10) || 0);
+            return h * 3600 + m * 60 + s;
         }
 
-        // Create (or reuse) modal container skeleton once
-        let modal = document.getElementById('dateDetailsModal');
-        if (!modal) {
-            document.body.insertAdjacentHTML('beforeend', `
-            <div class="modal fade" id="dateDetailsModal" tabindex="-1" aria-hidden="true">
-              <div class="modal-dialog modal-lg modal-dialog-centered">
-                <div class="modal-content date-modal">
-                  <div class="modal-header date-modal-header">
-                    <h5 class="modal-title" id="dateDetailsTitle"></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                  <div class="modal-body" id="dateDetailsBody"></div>
-                  <div class="modal-footer flex-wrap gap-2">
-                    <div class="btn-group me-auto" role="group" aria-label="Navigation">
-                      <button type="button" class="btn btn-outline-primary" id="datePrevBtn"><i class="fas fa-chevron-left"></i></button>
-                      <button type="button" class="btn btn-outline-secondary" id="dateTodayBtn"><i class="fas fa-calendar-day"></i></button>
-                      <button type="button" class="btn btn-outline-primary" id="dateNextBtn"><i class="fas fa-chevron-right"></i></button>
-                    </div>
-                    <button type="button" class="btn btn-outline-success" id="dateCopyBtn"><i class="fas fa-copy"></i> ${esc(t('lunar.copy','Sao chép'))}</button>
-                    <button type="button" class="btn btn-secondary" id="dateCloseBtn" data-bs-dismiss="modal">${esc(t('lunar.close','Đóng'))}</button>
-                  </div>
-                </div>
-              </div>
-            </div>`);
-            modal = document.getElementById('dateDetailsModal');
-        }
-
-        const copyBtnEl = modal.querySelector('#dateCopyBtn');
-        if (copyBtnEl) {
-            copyBtnEl.innerHTML = `<i class="fas fa-copy"></i> ${esc(t('lunar.copy','Sao chép'))}`;
-        }
-        const closeBtnEl = modal.querySelector('#dateCloseBtn');
-        if (closeBtnEl) {
-            closeBtnEl.textContent = t('lunar.close','Đóng');
-        }
-
-        // Fill content
-        const titleEl = modal.querySelector('#dateDetailsTitle');
-        titleEl.textContent = `${t('lunar.details_title','Chi tiết ngày')} ${day}/${month}/${year}`;
-
-        // Build detail HTML
-        let lunarSection = '';
-        if (lunarOk) {
-            lunarSection = `
-            <div class="col-md-6">
-                <div class="date-card lunar-card p-3 h-100">
-                    <h6 class="text-muted mb-2"><i class="fas fa-moon"></i> ${esc(t('lunar.lunar','Âm lịch'))}</h6>
-                    <div class="display-6 fw-bold mb-1">${esc(lunar.day)}</div>
-                    <div class="fs-6">${esc(lunarMonthName)}</div>
-                    <div class="small text-secondary mt-1">${esc(t('lunar.year','Năm'))}: ${esc(lunar.year)} (${esc(canChi)})</div>
-                    <div class="d-flex flex-wrap gap-2 mt-3">
-                        <span class="badge bg-info-subtle text-info-emphasis border date-badge">${esc(zodiac)}</span>
-                        <span class="badge bg-warning-subtle text-warning-emphasis border date-badge">${esc(lunar.isLeap ? t('lunar.month_leap','Tháng nhuận') : t('lunar.month_normal','Tháng thường'))}</span>
-                    </div>
-                </div>
-            </div>`;
-        } else {
-            lunarSection = `<div class="col-md-6"><div class="alert alert-warning mb-0">${esc(t('lunar.unavailable','Không có dữ liệu âm lịch'))}</div></div>`;
-        }
-
-        // Build good/bad day section
-        let goodBadSection = '';
-        if (lunarOk && goodBadInfo) {
-            const isVi = lang === 'vi';
-            const statusLabel = goodBadInfo.status === 'tốt' ? t('lunar.status_good', 'Ngày Hoàng Đạo (Tốt)') :
-                                (goodBadInfo.status === 'xấu' ? t('lunar.status_bad', 'Ngày Hắc Đạo (Xấu/Kiêng kỵ)') : t('lunar.status_normal', 'Ngày Bình Thường'));
-            const statusClass = goodBadInfo.status === 'tốt' ? 'success' : (goodBadInfo.status === 'xấu' ? 'danger' : 'secondary');
-            const starText = isVi ? goodBadInfo.starName : goodBadInfo.starNameEn;
-            const activeWarnings = isVi ? goodBadInfo.warnings : goodBadInfo.warningsEn;
-            
-            let warningsHtml = '';
-            if (activeWarnings.length > 0) {
-                warningsHtml = `
-                <div class="mt-3 text-danger small">
-                    <strong><i class="fas fa-exclamation-triangle"></i> ${esc(t('lunar.warnings', 'Cảnh báo kỵ'))}:</strong>
-                    <ul class="mb-0 ps-3 mt-1">
-                        ${activeWarnings.map(w => `<li>${esc(w)}</li>`).join('')}
-                    </ul>
-                </div>`;
-            }
-            
-            let descText = t('lunar.details_normal_desc', 'Thích hợp cho các công việc thường nhật, công việc lớn cần cân nhắc kỹ lưỡng.');
-            if (goodBadInfo.status === 'tốt') {
-                descText = t('lunar.details_good_desc', 'Thích hợp cho các công việc quan trọng như khởi công, cưới hỏi, khai trương, giao dịch.');
-            } else if (goodBadInfo.status === 'xấu') {
-                descText = t('lunar.details_bad_desc', 'Hạn chế làm các việc lớn như xuất hành đi xa, ký kết đại sự, khởi công xây dựng.');
-            }
-            
-            let shouldDo = '';
-            let shouldAvoid = '';
-            if (goodBadInfo.status === 'tốt') {
-                shouldDo = isVi ? 'Cưới hỏi, khai trương, mở cửa hàng, giao dịch ký kết, động thổ, xuất hành đi xa.' : 'Weddings, grand openings, business transactions, groundbreaking, long journeys.';
-                shouldAvoid = isVi ? 'Tranh chấp khiếu nại, kiện tụng.' : 'Disputes, lawsuits.';
-            } else if (goodBadInfo.status === 'xấu') {
-                shouldDo = isVi ? 'Dọn dẹp nhà cửa, quét dọn, nghỉ ngơi.' : 'House cleaning, resting, routine maintenance.';
-                shouldAvoid = isVi ? 'Khởi công xây nhà, cưới hỏi, khai trương, ký hợp đồng lớn, xuất hành hướng xấu.' : 'Starting construction, weddings, grand openings, signing major contracts, travelling.';
+        function render(sec) {
+            const clamped = Math.max(0, sec);
+            displayEl.textContent = formatCountdownSeconds(clamped, hasHoursField || totalDurationSec >= 3600);
+            if (clamped > 0 && clamped <= 10) {
+                displayEl.classList.add('warning-low');
             } else {
-                shouldDo = isVi ? 'Làm các việc thường nhật, đi chùa, làm việc thiện.' : 'Routine work, visiting temples, charity work.';
-                shouldAvoid = isVi ? 'Tránh quyết định vội vàng đối với các giao dịch có tính rủi ro cao.' : 'Avoid rushed decisions for high-risk transactions.';
+                displayEl.classList.remove('warning-low');
             }
-            
-            goodBadSection = `
-            <div class="col-12 mt-3">
-                <div class="date-card p-3">
-                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-                        <h6 class="mb-0 text-primary"><i class="fas fa-balance-scale"></i> ${esc(t('lunar.day_status', 'Đánh giá ngày'))}</h6>
-                        <span class="badge bg-${statusClass}-subtle text-${statusClass}-emphasis border date-badge">${esc(statusLabel)}</span>
-                    </div>
-                    <p class="small text-secondary mb-3">${esc(descText)}</p>
-                    <div class="row g-2 mb-2">
-                        <div class="col-sm-6">
-                            <div class="p-2 border rounded bg-light-subtle h-100">
-                                <strong class="small text-secondary d-block mb-1">${esc(t('lunar.day_canchi', 'Can Chi ngày'))}</strong>
-                                <span class="fs-6 fw-bold text-dark">${esc(goodBadInfo.dayCanChi)}</span>
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="p-2 border rounded bg-light-subtle h-100">
-                                <strong class="small text-secondary d-block mb-1">${esc(t('lunar.zodiac_star', 'Sao hoàng đạo'))}</strong>
-                                <span class="fs-6 fw-bold text-dark">${esc(starText)}</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="row g-2 mt-1">
-                        <div class="col-sm-6">
-                            <div class="p-2 rounded bg-success-subtle h-100">
-                                <strong class="small text-success-emphasis d-block mb-1"><i class="fas fa-check-circle"></i> ${esc(t('lunar.should_do', 'Nên làm'))}</strong>
-                                <span class="small text-dark-emphasis d-block mt-1">${esc(shouldDo)}</span>
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="p-2 rounded bg-danger-subtle h-100">
-                                <strong class="small text-danger-emphasis d-block mb-1"><i class="fas fa-times-circle"></i> ${esc(t('lunar.should_avoid', 'Kiêng kỵ'))}</strong>
-                                <span class="small text-dark-emphasis d-block mt-1">${esc(shouldAvoid)}</span>
-                            </div>
-                        </div>
-                    </div>
-                    ${warningsHtml}
-                </div>
-            </div>`;
+            if (progressBar) {
+                const pct = totalDurationSec > 0 ? Math.max(0, Math.min(100, (clamped / totalDurationSec) * 100)) : 0;
+                progressBar.style.width = `${pct}%`;
+                progressBar.setAttribute('aria-valuenow', String(Math.round(pct)));
+            }
         }
 
-        // Build holiday section
-        let holidaySection = '';
-        if (holiday) {
-            const isWorkdaySwap = Boolean(holiday.is_workday_swap);
-            const alertVariant = holiday.is_public_holiday ? 'danger' : (isWorkdaySwap ? 'warning' : 'info');
-            const holidayIcon = holiday.is_public_holiday
-                ? '<i class="fas fa-star text-danger"></i>'
-                : (isWorkdaySwap ? '<i class="fas fa-exchange-alt text-warning"></i>' : '<i class="fas fa-calendar-alt text-info"></i>');
-            const holidayBadge = holiday.is_public_holiday
-                ? `<span class="badge bg-danger-subtle text-danger-emphasis border date-badge"><i class="fas fa-flag"></i> Ngày lễ chính thức</span>`
-                : (isWorkdaySwap
-                    ? `<span class="badge bg-warning-subtle text-warning-emphasis border date-badge"><i class="fas fa-briefcase"></i> Ngày làm bù</span>`
-                    : `<span class="badge bg-info-subtle text-info-emphasis border date-badge">Ngày kỷ niệm</span>`);
-            const holidayType = holiday.type === 'lunar'
-                ? `<span class="badge bg-secondary-subtle text-secondary-emphasis border date-badge"><i class="fas fa-moon"></i> Âm lịch</span>`
-                : `<span class="badge bg-primary-subtle text-primary-emphasis border date-badge"><i class="fas fa-sun"></i> Dương lịch</span>`;
-            const extraHtml = Array.isArray(holiday.extra_holidays) && holiday.extra_holidays.length > 0
-                ? `<div class="mt-2 pt-2 border-top small"><strong>Sự kiện khác trong ngày:</strong> ${holiday.extra_holidays.map(h => esc(h.name)).join(' • ')}</div>`
-                : '';
-
-            holidaySection = `
-            <div class="col-12 mt-3">
-                <div class="alert alert-${alertVariant} mb-0">
-                    <h6 class="alert-heading mb-2">${holidayIcon} ${isWorkdaySwap ? 'Lịch hoán đổi ngày làm việc' : 'Ngày lễ'}</h6>
-                    <p class="mb-2 fw-bold">${esc(holiday.name)}</p>
-                    ${holiday.name_en ? `<p class="mb-2 small text-muted">${esc(holiday.name_en)}</p>` : ''}
-                    ${holiday.description ? `<p class="mb-2 small">${esc(holiday.description)}</p>` : ''}
-                    ${holiday.schedule_note ? `<p class="mb-2 small"><i class="fas fa-info-circle me-1"></i>${esc(holiday.schedule_note)}</p>` : ''}
-                    <div class="d-flex flex-wrap gap-2 mt-2">
-                        ${holidayBadge}
-                        ${holidayType}
-                        ${holiday.duration_days ? `<span class="badge bg-success-subtle text-success-emphasis border date-badge">Nghỉ: ${esc(holiday.duration_days)} ngày</span>` : ''}
-                    </div>
-                    ${extraHtml}
-                </div>
-            </div>`;
+        function dismissRinging() {
+            stopRingtoneLoop();
+            if (ringingBanner) ringingBanner.hidden = true;
         }
 
-        const bodyHTML = `
-        <div class="row g-3 align-items-stretch">
-            <div class="col-md-6">
-                <div class="date-card solar-card p-3 h-100">
-                    <h6 class="text-muted mb-2"><i class="fas fa-sun"></i> ${esc(t('lunar.solar','Dương lịch'))}</h6>
-                    <div class="display-6 fw-bold mb-1">${esc(day)}</div>
-                    <div class="fs-5">${esc(dayOfWeek)}</div>
-                    <div class="small text-secondary mt-1">${esc(t('lunar.full_date','Ngày'))} ${esc(day)} / ${esc(month)} / ${esc(year)}</div>
-                    <div class="d-flex flex-wrap gap-2 mt-3">
-                        <span class="badge bg-primary-subtle text-primary-emphasis border date-badge">${esc(t('lunar.day_of_year','Ngày trong năm'))}: ${esc(dayOfYear)}</span>
-                        <span class="badge bg-secondary-subtle text-secondary-emphasis border date-badge">${esc(t('lunar.week_of_year','Tuần'))}: ${esc(weekOfYear)}</span>
-                    </div>
-                </div>
-            </div>
-            ${lunarSection}
-            ${goodBadSection}
-            ${holidaySection}
-        </div>`;
+        function finishTimer() {
+            clearInterval(intervalId);
+            intervalId = null;
+            running = false;
+            remainingSec = 0;
+            render(0);
+            displayEl.classList.remove('running', 'warning-low');
+            startBtn.disabled = false;
+            if (pauseBtn) pauseBtn.disabled = true;
 
-        modal.querySelector('#dateDetailsBody').innerHTML = bodyHTML;
+            const soundType = (soundSelect && soundSelect.value) || 'digital';
+            const label = (labelInput && labelInput.value.trim()) || tr('timer.finished_default', 'Hết giờ đếm ngược!');
 
-        // Store current shown date for navigation
-        modal.dataset.day = day;
-        modal.dataset.month = month;
-        modal.dataset.year = year;
+            if (soundType !== 'none') {
+                startRingtoneLoop(soundType, 0.8);
+                // Auto-stop loop after 30s if user is away on home page without banner
+                if (!ringingBanner) {
+                    setTimeout(stopRingtoneLoop, 6000);
+                }
+            }
 
-        // Navigation handlers (rebind each time to ensure updated references)
-        modal.querySelector('#datePrevBtn').onclick = () => {
-            const d = new Date(year, month - 1, day);
-            d.setDate(d.getDate() - 1);
-            showDateDetails(d.getDate(), d.getMonth() + 1, d.getFullYear());
-        };
-        modal.querySelector('#dateNextBtn').onclick = () => {
-            const d = new Date(year, month - 1, day);
-            d.setDate(d.getDate() + 1);
-            showDateDetails(d.getDate(), d.getMonth() + 1, d.getFullYear());
-        };
-        modal.querySelector('#dateTodayBtn').onclick = () => {
-            const today = new Date();
-            showDateDetails(today.getDate(), today.getMonth() + 1, today.getFullYear());
-        };
-        modal.querySelector('#dateCopyBtn').onclick = () => {
-            const parts = [
-                `${t('lunar.solar','Dương lịch')}: ${day}/${month}/${year} (${dayOfWeek})`,
-                lunarOk ? `${t('lunar.lunar','Âm lịch')}: ${lunar.day} ${lunarMonthName} ${lunar.year} (${canChi})` : '',
-                lunarOk ? `${t('lunar.zodiac','Con giáp')}: ${zodiac}` : '',
-                lunarOk && goodBadInfo ? `${t('lunar.day_canchi', 'Can Chi ngày')}: ${goodBadInfo.dayCanChi}` : '',
-                lunarOk && goodBadInfo ? `${t('lunar.day_status', 'Đánh giá ngày')}: ${goodBadInfo.status === 'tốt' ? t('lunar.status_good') : (goodBadInfo.status === 'xấu' ? t('lunar.status_bad') : t('lunar.status_normal'))}` : '',
-                lunarOk && goodBadInfo ? `${t('lunar.zodiac_star', 'Sao hoàng đạo')}: ${lang === 'vi' ? goodBadInfo.starName : goodBadInfo.starNameEn}` : '',
-                lunarOk && goodBadInfo && goodBadInfo.warnings.length > 0 ? `${t('lunar.warnings', 'Cảnh báo kỵ')}: ${(lang === 'vi' ? goodBadInfo.warnings : goodBadInfo.warningsEn).join(', ')}` : '',
-                `${t('lunar.day_of_year','Ngày trong năm')}: ${dayOfYear}`,
-                `${t('lunar.week_of_year','Tuần')}: ${weekOfYear}`
-            ].filter(Boolean).join('\n');
-            if (navigator.clipboard) {
-                navigator.clipboard.writeText(parts).then(() => {
-                    showAlert(t('lunar.copied','Đã sao chép!'), 'success');
-                }).catch(() => {
-                    if (typeof copyToClipboard === 'function') copyToClipboard(parts);
+            if (ringingBanner) {
+                if (ringingLabelEl) ringingLabelEl.textContent = label;
+                ringingBanner.hidden = false;
+            }
+            if (typeof window.showAlert === 'function') {
+                window.showAlert(label, 'warning');
+            }
+        }
+
+        function tick() {
+            const left = Math.ceil((endTimestamp - Date.now()) / 1000);
+            if (left > 0) {
+                remainingSec = left;
+                render(remainingSec);
+            } else {
+                finishTimer();
+            }
+        }
+
+        startBtn.addEventListener('click', () => {
+            if (running) return;
+            dismissRinging();
+            ensureAudioContext();
+
+            if (remainingSec <= 0) {
+                totalDurationSec = readInputSeconds();
+                remainingSec = totalDurationSec;
+            } else if (totalDurationSec <= 0) {
+                totalDurationSec = remainingSec;
+            }
+
+            if (remainingSec <= 0) {
+                if (typeof window.showAlert === 'function') {
+                    window.showAlert(tr('timer.invalid_time', 'Vui lòng nhập thời gian hợp lệ!'), 'danger');
+                }
+                return;
+            }
+
+            running = true;
+            endTimestamp = Date.now() + remainingSec * 1000;
+            render(remainingSec);
+            intervalId = setInterval(tick, 250);
+            startBtn.disabled = true;
+            if (pauseBtn) pauseBtn.disabled = false;
+            displayEl.classList.add('running');
+
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'timer_start', {
+                    event_category: 'clock_tools',
+                    event_label: 'timer_interaction',
+                    timer_duration: totalDurationSec
                 });
-            } else if (typeof copyToClipboard === 'function') {
-                copyToClipboard(parts);
             }
-        };
+        });
 
-        // Show via Bootstrap API for proper backdrop & accessibility
-        const bootstrapModal = bootstrap.Modal.getOrCreateInstance(modal);
-        bootstrapModal.show();
-    }
-    
-    // Function to close date modal
-    window.closeDateModal = function() {
-        const modal = document.getElementById('dateDetailsModal');
-        if (modal) {
-            modal.remove();
+        if (pauseBtn) {
+            pauseBtn.addEventListener('click', () => {
+                if (!running) return;
+                remainingSec = Math.max(0, Math.ceil((endTimestamp - Date.now()) / 1000));
+                running = false;
+                clearInterval(intervalId);
+                intervalId = null;
+                startBtn.disabled = false;
+                pauseBtn.disabled = true;
+                displayEl.classList.remove('running');
+                render(remainingSec);
+            });
         }
+
+        if (resetBtn) {
+            resetBtn.addEventListener('click', () => {
+                dismissRinging();
+                running = false;
+                clearInterval(intervalId);
+                intervalId = null;
+                totalDurationSec = readInputSeconds();
+                remainingSec = totalDurationSec;
+                displayEl.classList.remove('running', 'warning-low');
+                render(remainingSec);
+                startBtn.disabled = false;
+                if (pauseBtn) pauseBtn.disabled = true;
+            });
+        }
+
+        // Sync display when user edits inputs while paused/stopped
+        [hoursInput, minutesInput, secondsInput].filter(Boolean).forEach(inp => {
+            inp.addEventListener('change', () => {
+                if (running) return;
+                totalDurationSec = readInputSeconds();
+                remainingSec = totalDurationSec;
+                render(remainingSec);
+            });
+        });
+
+        document.querySelectorAll('#timer-presets button').forEach(btn => {
+            btn.addEventListener('click', function () {
+                if (running) return;
+                dismissRinging();
+                const h = parseInt(this.dataset.hours, 10) || 0;
+                const m = parseInt(this.dataset.minutes, 10) || 0;
+                const s = parseInt(this.dataset.seconds, 10) || 0;
+                if (hoursInput) hoursInput.value = h;
+                minutesInput.value = hoursInput ? m : (h * 60 + m);
+                secondsInput.value = s;
+                totalDurationSec = h * 3600 + m * 60 + s;
+                remainingSec = totalDurationSec;
+                render(remainingSec);
+            });
+        });
+
+        if (testSoundBtn) {
+            testSoundBtn.addEventListener('click', () => {
+                const soundType = (soundSelect && soundSelect.value) || 'digital';
+                if (soundType !== 'none') {
+                    playRingtoneOnce(soundType, 0.8);
+                }
+            });
+        }
+
+        if (stopRingBtn) {
+            stopRingBtn.addEventListener('click', dismissRinging);
+        }
+
+        totalDurationSec = readInputSeconds();
+        remainingSec = totalDurationSec;
+        render(remainingSec);
     }
-});
+
+    // ═══════════════════════════════════════════
+    // 5. Alarm Clock (/alarm-clock/)
+    // ═══════════════════════════════════════════
+    function initAlarmClock() {
+        const panel = document.getElementById('alarm-panel');
+        if (!panel) return;
+
+        const STORAGE_KEY = 'utilityHubAlarms';
+        const timeInput = document.getElementById('alarm-time-input');
+        const labelInput = document.getElementById('alarm-label-input');
+        const soundSelect = document.getElementById('alarm-sound-select');
+        const repeatCheckbox = document.getElementById('alarm-repeat-daily');
+        const addBtn = document.getElementById('add-alarm-btn');
+        const testSoundBtn = document.getElementById('alarm-test-sound-btn');
+        const listEl = document.getElementById('alarms-list');
+        const nextCountdownEl = document.getElementById('next-alarm-countdown');
+        const ringingPanel = document.getElementById('alarm-ringing-panel');
+        const ringingTimeEl = document.getElementById('alarm-ringing-time');
+        const ringingLabelEl = document.getElementById('alarm-ringing-label');
+        const snoozeBtn = document.getElementById('alarm-snooze-btn');
+        const stopBtn = document.getElementById('alarm-stop-btn');
+
+        let alarms = [];
+        try {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            const parsed = raw ? JSON.parse(raw) : [];
+            if (Array.isArray(parsed)) alarms = parsed;
+        } catch (_) {
+            alarms = [];
+        }
+
+        let activeRingingAlarm = null;
+
+        function saveAlarms() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(alarms));
+            } catch (_) {}
+        }
+
+        function getSoundLabel(sound) {
+            const map = {
+                digital: tr('alarm.sound_digital', 'Chuông kỹ thuật số'),
+                classic: tr('alarm.sound_classic', 'Chuông reo cổ điển'),
+                gentle: tr('alarm.sound_gentle', 'Giai điệu nhẹ nhàng'),
+                bell: tr('alarm.sound_bell', 'Chuông thanh thoát')
+            };
+            return map[sound] || sound;
+        }
+
+        function renderAlarms() {
+            if (!listEl) return;
+            if (alarms.length === 0) {
+                listEl.innerHTML = `<p class="text-muted text-center py-3 mb-0" data-i18n="alarm.empty">${esc(tr('alarm.empty', 'Chưa có báo thức nào. Hãy chọn giờ và nhấn Thêm báo thức.'))}</p>`;
+                updateNextCountdown();
+                return;
+            }
+
+            const sorted = alarms.slice().sort((a, b) => a.time.localeCompare(b.time));
+            listEl.innerHTML = sorted.map(alarm => `
+                <div class="alarm-item d-flex flex-wrap justify-content-between align-items-center gap-2 p-3 border rounded mb-2${alarm.enabled ? '' : ' opacity-50'}" data-alarm-id="${esc(alarm.id)}">
+                    <div>
+                        <div class="h4 mb-0 font-monospace fw-bold">${esc(alarm.time)}</div>
+                        <div class="small fw-medium">${esc(alarm.label || tr('alarm.default_label', 'Báo thức'))}</div>
+                        <div class="small text-muted">
+                            <i class="fas fa-music me-1"></i>${esc(getSoundLabel(alarm.sound))}
+                            ${alarm.repeat ? ` · <span class="badge bg-info-subtle text-info-emphasis border">${esc(tr('alarm.daily', 'Hằng ngày'))}</span>` : ` · <span class="badge bg-secondary-subtle text-secondary-emphasis border">${esc(tr('alarm.once', 'Một lần'))}</span>`}
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="form-check form-switch mb-0">
+                            <input class="form-check-input alarm-toggle" type="checkbox" role="switch" data-id="${esc(alarm.id)}" ${alarm.enabled ? 'checked' : ''} aria-label="Toggle alarm ${esc(alarm.time)}">
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline-danger alarm-delete-btn" data-id="${esc(alarm.id)}" aria-label="Delete alarm ${esc(alarm.time)}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            listEl.querySelectorAll('.alarm-toggle').forEach(sw => {
+                sw.addEventListener('change', () => {
+                    const target = alarms.find(a => a.id === sw.dataset.id);
+                    if (target) {
+                        target.enabled = sw.checked;
+                        saveAlarms();
+                        renderAlarms();
+                    }
+                });
+            });
+
+            listEl.querySelectorAll('.alarm-delete-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    alarms = alarms.filter(a => a.id !== btn.dataset.id);
+                    saveAlarms();
+                    renderAlarms();
+                });
+            });
+
+            updateNextCountdown();
+        }
+
+        function updateNextCountdown() {
+            if (!nextCountdownEl) return;
+            const enabled = alarms.filter(a => a.enabled);
+            if (enabled.length === 0) {
+                nextCountdownEl.textContent = tr('alarm.no_active', 'Chưa có báo thức đang bật');
+                return;
+            }
+            const now = new Date();
+            let nearest = null;
+            enabled.forEach(a => {
+                const diff = computeNextAlarmMs(a.time, now);
+                if (diff !== null && (!nearest || diff < nearest.diff)) {
+                    nearest = { alarm: a, diff };
+                }
+            });
+            if (!nearest) return;
+            const totalSec = Math.ceil(nearest.diff / 1000);
+            const h = Math.floor(totalSec / 3600);
+            const m = Math.floor((totalSec % 3600) / 60);
+            const s = totalSec % 60;
+            nextCountdownEl.textContent = `${tr('alarm.next_in', 'Chuông kế tiếp lúc')} ${nearest.alarm.time} (${padZero(h)}:${padZero(m)}:${padZero(s)})`;
+        }
+
+        function triggerAlarm(alarm) {
+            activeRingingAlarm = alarm;
+            if (!alarm.repeat) {
+                alarm.enabled = false;
+                saveAlarms();
+                renderAlarms();
+            }
+            startRingtoneLoop(alarm.sound || 'digital', 0.85);
+
+            if (ringingPanel) {
+                if (ringingTimeEl) ringingTimeEl.textContent = alarm.time;
+                if (ringingLabelEl) ringingLabelEl.textContent = alarm.label || tr('alarm.default_label', 'Báo thức');
+                ringingPanel.hidden = false;
+            }
+            if (typeof window.showAlert === 'function') {
+                window.showAlert(`⏰ ${alarm.time} — ${alarm.label || tr('alarm.default_label', 'Báo thức')}`, 'warning');
+            }
+        }
+
+        function dismissAlarm() {
+            stopRingtoneLoop();
+            activeRingingAlarm = null;
+            if (ringingPanel) ringingPanel.hidden = true;
+        }
+
+        function snoozeAlarm() {
+            const prev = activeRingingAlarm;
+            dismissAlarm();
+            if (!prev) return;
+            const snoozeDate = new Date(Date.now() + 5 * 60 * 1000);
+            const snoozeTime = `${padZero(snoozeDate.getHours())}:${padZero(snoozeDate.getMinutes())}`;
+            alarms.push({
+                id: `snooze-${Date.now()}`,
+                time: snoozeTime,
+                label: `${prev.label || tr('alarm.default_label', 'Báo thức')} (${tr('alarm.snoozed', 'Báo lại +5p')})`,
+                sound: prev.sound || 'digital',
+                repeat: false,
+                enabled: true,
+                lastTriggeredKey: ''
+            });
+            saveAlarms();
+            renderAlarms();
+        }
+
+        function checkAlarms() {
+            const now = new Date();
+            const hhmm = `${padZero(now.getHours())}:${padZero(now.getMinutes())}`;
+            const dateKey = `${now.getFullYear()}-${padZero(now.getMonth() + 1)}-${padZero(now.getDate())} ${hhmm}`;
+
+            alarms.forEach(alarm => {
+                if (!alarm.enabled) return;
+                if (alarm.time === hhmm && alarm.lastTriggeredKey !== dateKey && now.getSeconds() <= 2) {
+                    alarm.lastTriggeredKey = dateKey;
+                    saveAlarms();
+                    triggerAlarm(alarm);
+                }
+            });
+            updateNextCountdown();
+        }
+
+        if (addBtn) {
+            addBtn.addEventListener('click', () => {
+                ensureAudioContext();
+                const time = (timeInput && timeInput.value) || '';
+                if (!/^\d{2}:\d{2}$/.test(time)) {
+                    if (typeof window.showAlert === 'function') {
+                        window.showAlert(tr('alarm.invalid_time', 'Vui lòng chọn giờ báo thức hợp lệ!'), 'danger');
+                    }
+                    return;
+                }
+                const newAlarm = {
+                    id: `alarm-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+                    time,
+                    label: (labelInput && labelInput.value.trim()) || tr('alarm.default_label', 'Báo thức'),
+                    sound: (soundSelect && soundSelect.value) || 'digital',
+                    repeat: Boolean(repeatCheckbox && repeatCheckbox.checked),
+                    enabled: true,
+                    lastTriggeredKey: ''
+                };
+                alarms.push(newAlarm);
+                saveAlarms();
+                renderAlarms();
+                if (labelInput) labelInput.value = '';
+                if (typeof window.showAlert === 'function') {
+                    window.showAlert(`${tr('alarm.added', 'Đã đặt báo thức lúc')} ${time}`, 'success');
+                }
+            });
+        }
+
+        document.querySelectorAll('[data-alarm-preset]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (timeInput) timeInput.value = btn.dataset.alarmPreset;
+            });
+        });
+
+        if (testSoundBtn) {
+            testSoundBtn.addEventListener('click', () => {
+                playRingtoneOnce((soundSelect && soundSelect.value) || 'digital', 0.8);
+            });
+        }
+
+        if (stopBtn) stopBtn.addEventListener('click', dismissAlarm);
+        if (snoozeBtn) snoozeBtn.addEventListener('click', snoozeAlarm);
+
+        renderAlarms();
+        setInterval(checkAlarms, 1000);
+        window.addEventListener('languageChanged', renderAlarms);
+    }
+
+    // Export shared helpers for tests & extensions
+    window.TimeTools = {
+        formatStopwatchMs,
+        formatCountdownSeconds,
+        computeNextAlarmMs,
+        playRingtoneOnce,
+        startRingtoneLoop,
+        stopRingtoneLoop
+    };
+
+    document.addEventListener('DOMContentLoaded', function () {
+        initDigitalClock();
+        initHomeCalendarAndSystemInfo();
+        initStopwatch();
+        initCountdownTimer();
+        initAlarmClock();
+    });
+})();

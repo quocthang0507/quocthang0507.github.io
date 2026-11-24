@@ -1,5 +1,5 @@
 // Service Worker for Offline PWA support
-const CACHE_NAME = 'utility-hub-cache-v2.0';
+const CACHE_NAME = 'utility-hub-cache-v2.1';
 const OFFLINE_FALLBACK_URL = './offline.html';
 
 const PRECACHE_ASSETS = [
@@ -22,6 +22,8 @@ const PRECACHE_ASSETS = [
   './assets/js/pwa.min.js',
   './assets/js/lunar-calendar.min.js',
   './assets/js/vietnam-holidays.min.js',
+  './assets/js/calendar-core.min.js',
+  './assets/js/calendar-views.min.js',
   './assets/js/clock.min.js',
   './assets/js/languages/vi.min.js',
   './assets/js/languages/en.min.js',

@@ -1,0 +1,54 @@
+---
+layout: default
+title: "Lịch tuần"
+description: "Xem lịch tuần âm dương Việt Nam chi tiết từng ngày: Can Chi, ngày Hoàng Đạo / Hắc Đạo, số tuần ISO và ngày lễ Việt Nam."
+keywords: "lịch tuần, lịch âm dương theo tuần, tuần ISO, ngày hoàng đạo, lịch vạn niên, weekly calendar"
+custom_js: ['lunar-calendar.js', 'vietnam-holidays.js', 'calendar-core.js', 'calendar-views.js']
+permalink: /weekly-calendar/
+sitemap:
+  priority: 0.8
+  changefreq: weekly
+  lastmod: 2026-11-24
+---
+
+<div id="alert-container"></div>
+
+<div data-calendar-view="week">
+    {% include calendar-view-tabs.html active="week" %}
+
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <div>
+                <h1 class="h5 mb-0"><i class="fas fa-calendar-week me-2"></i><span data-i18n="cal.weekly_title">Lịch tuần âm dương</span></h1>
+            </div>
+            <span id="week-meta-subtitle" class="badge bg-light text-dark"></span>
+        </div>
+        <div class="card-body">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                <div class="btn-group" role="group">
+                    <button type="button" id="prev-week-btn" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-chevron-left me-1"></i><span data-i18n="cal.prev_week">Tuần trước</span>
+                    </button>
+                    <button type="button" id="this-week-btn" class="btn btn-primary btn-sm">
+                        <i class="fas fa-calendar-day me-1"></i><span data-i18n="cal.this_week">Tuần này</span>
+                    </button>
+                    <button type="button" id="next-week-btn" class="btn btn-outline-primary btn-sm">
+                        <span data-i18n="cal.next_week">Tuần sau</span><i class="fas fa-chevron-right ms-1"></i>
+                    </button>
+                </div>
+
+                <h2 id="week-range-title" class="h6 mb-0 fw-bold text-center flex-grow-1"></h2>
+
+                <div class="d-flex align-items-center gap-2">
+                    <label for="week-date-picker" class="form-label mb-0 small text-muted text-nowrap" data-i18n="cal.jump_date">Chọn ngày:</label>
+                    <input type="date" id="week-date-picker" class="form-control form-control-sm" style="width: auto;">
+                </div>
+            </div>
+
+            <div id="weekly-summary" class="d-flex flex-wrap gap-2 mb-3"></div>
+            <div id="weekly-calendar-grid"></div>
+        </div>
+    </div>
+</div>
+
+{% include tool-tips-card.html tool="weekly_cal" info="Xem chi tiết 7 ngày trong tuần (Thứ Hai – Chủ Nhật) kèm ngày Âm lịch, Can Chi ngày, đánh giá Hoàng Đạo / Hắc Đạo và các ngày lễ Việt Nam." tip1="Nhấn vào bất kỳ thẻ ngày nào để mở bảng chi tiết đầy đủ gồm Sao hoàng đạo, việc nên làm và kiêng kỵ." tip2="Dùng ô Chọn ngày ở góc phải để nhảy ngay tới tuần chứa ngày bất kỳ trong năm." tip3="Chuyển nhanh sang Lịch tháng hoặc Lịch năm bằng thanh nút phía trên để bao quát cả năm." tip4="Số tuần hiển thị theo chuẩn quốc tế ISO-8601 (bắt đầu từ Thứ Hai)." %}

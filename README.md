@@ -1,11 +1,11 @@
-# Useful Online Tools & Utilities Hub 🛠️✨
+# Utility Hub — Useful Online Tools 🛠️✨
 
 [![Jekyll Build](https://img.shields.io/badge/Jekyll-build--passing-brightgreen.svg)](https://quocthang0507.github.io)
-[![PWA Supported](https://img.shields.io/badge/PWA-offline--enabled-blue.svg)](https://quocthang0507.github.io)
+[![PWA Installable](https://img.shields.io/badge/PWA-installable%20%26%20offline-blue.svg)](https://quocthang0507.github.io)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Multi-language](https://img.shields.io/badge/i18n-VI%20%7C%20EN%20%7C%20ZH%20%7C%20KO%20%7C%20JA-orange)](https://quocthang0507.github.io)
 
-A premium, modern collection of online utilities and productivity tools built with **Vanilla HTML/CSS/JavaScript**, **Jekyll**, and a custom **Neumorphic Design System**. The hub supports 5 languages and runs entirely in the browser, featuring full offline capability via Service Workers.
+A fast, privacy-first collection of **26 online utilities and calendar/time tools** built with **Vanilla HTML/CSS/JavaScript**, **Jekyll**, and a custom **Neumorphic Design System**. The hub supports **5 languages**, installs cleanly as a **Progressive Web App (PWA)** on Desktop, Android, and iOS, and runs almost entirely client-side with offline support.
 
 🔗 **Live Website:** [https://quocthang0507.github.io/](https://quocthang0507.github.io/)
 
@@ -13,121 +13,129 @@ A premium, modern collection of online utilities and productivity tools built wi
 
 ## 🚀 Key Features & Built-in Tools
 
-The hub is grouped into three main categories, offering **18 ready-to-use tools**:
+Every tool page includes a consistent **Usage Tips & Quick Info** guide and full Light/Dark Mode support.
+
+### 📅 Calendar Suite (Shared `CalendarCore` Engine + Vietnam Holidays 2026)
+1. **Daily Calendar — Vietnamese Lịch Bloc (`/daily-calendar/`):** Traditional tear-off bloc calendar UI featuring large sculptural solar/lunar dates, curated Wikimedia Commons *Featured Pictures of Vietnam*, 12 Zodiac emblems, Day/Month/Year/First-hour Can Chi, all 6 auspicious hours (*Giờ Hoàng Đạo*), daily proverbs, and a clickable 7-day strip.
+2. **Weekly Calendar (`/weekly-calendar/`):** Detailed 7-day ISO week view (Mon–Sun) with lunar dates, Can Chi, auspicious ratings, and Vietnam holidays.
+3. **Monthly Calendar (`/monthly-calendar/`):** Full lunar-solar monthly grid with ISO week numbers, inline holiday chips, Monday/Sunday week-start toggle, filters (Auspicious / Holidays), and monthly summaries.
+4. **Yearly Calendar (`/yearly-calendar/`):** 12-month lunar-solar overview (1950–2100) with Can Chi, 60-year Five Elements (*Ngũ hành Nạp âm*, e.g. 2026 **Bính Ngọ — Thiên Hà Thủy**), Tết & lunar-year span, leap month info, and Vietnam's **2026 official holiday schedule** (including **Ngày Văn hóa Việt Nam — Nov 24** under Resolution 28/2026/QH16, substitute days, and makeup workdays).
+
+### ⏱️ Time & Clocks (Shared `clock.js` Engine)
+5. **Home — Digital Clock, Calendar & Quick Timers (`/`):** Real-time 12/24h digital clock, current solar/lunar calendar, quick stopwatch & countdown timer, and ISO week/day-of-year stats.
+6. **Stopwatch (`/stopwatch/`):** Drift-free millisecond online stopwatch with Lap recording, fastest/slowest highlights, keyboard shortcuts (`Space`, `L`, `R`), fullscreen mode, and CSV export.
+7. **Countdown Timer (`/countdown-timer/`):** Hours/minutes/seconds countdown with wall-clock accuracy, progress bar, Pomodoro presets, custom labels, and 4 offline Web Audio alarm tones.
+8. **Alarm Clock (`/alarm-clock/`):** Multi-alarm browser clock persisted in `localStorage` with quick time presets, daily repeat, live countdown to next ring, 4 Web Audio ringtones, and 5-minute Snooze.
+9. **World Clocks (`/world-clocks/`):** Live multi-city timezone dashboard with analog/digital views, city presets, and embeddable view.
+10. **Date Calculator (`/date-calculator/`):** Date difference, add/subtract periods (month-end clamping), exact age with birthday countdown, and weekday / ISO week lookup.
 
 ### 🎲 Randomization
-1. **Random Number Generator:** Generate unique or duplicate numbers within custom ranges with statistics, quick dice presets, coin flips, and lotto formats.
-2. **Random Wheel:** Spin wheel selector for quick decisions with customizable names, color schemes, confetti effects, and spin statistics/history.
-3. **Strong Password Generator:** Build secure, high-entropy passwords with custom parameters, strength levels, ambiguous character exclusion, and history log.
-
-### ⏱️ Time & Date
-4. **Digital Clock & Lunar Calendar:** Standard clock showing local solar time, current week/day numbers, and a fully interactive solar/lunar calendar.
-5. **World Clocks:** Monitor times across multiple international cities concurrently with analog/digital hands and city presets.
-6. **Date Calculator:** Calculate the precise duration between two dates, add or subtract days/weeks/months/years, and calculate exact age.
+11. **Random Number Generator (`/random-number/`):** Custom ranges with unique/duplicate modes, statistics, dice presets, coin flips, and lottery draws.
+12. **Random Wheel (`/random-wheel/`):** Decision spinner with 12 color themes, 8 spin durations (`2s`–`30s`), continuous edge-hover suspense effect (fair 50/50 hold or gentle tip-over), real-time slice-synced ticking & celebratory Web Audio sounds inspired by Wheel of Names, volume & preview controls, confetti, and spin history.
 
 ### ⚙️ Utilities & Developer Tools
-7. **Unit Converter:** Convert units across length, weight, temperature, volume, area, speed, time, and data storage.
-8. **Currency Converter:** Online currency converter using live exchange rates and historical trend charts from Vietcombank.
-9. **Gold Price Tracker:** Domestic (SJC, PNJ) and global gold price chart viewer with timeline duration controls.
-10. **QR Code Generator:** Custom QR code builder with colors, error correction levels, corner styles, custom logo overlays, and batch generation.
-11. **Encoder/Decoder:** Safe, local base64, URL, and HTML entity encoder/decoder supporting both text input and files up to 10MB.
-12. **Hash Generator:** Calculate MD5, SHA-1, SHA-256, SHA-384, and SHA-512 hashes locally on text or files up to 100MB.
-13. **Case Converter:** Change text casing to UPPERCASE, lowercase, camelCase, snake_case, PascalCase, or sentence case with acronym preservation.
-14. **Regex Tester:** Visual regular expression matcher and editor with flags, replacements, and quick explanations.
-15. **Markdown Preview:** Real-time Markdown syntax editor and HTML formatter/previewer with one-click HTML copy.
-16. **LaTeX Editor:** Write and render complex mathematical formulas in LaTeX with symbols references, templates, and image output (PNG/SVG).
-17. **Color Picker & Palette:** Interactive color wheel and harmonies generator, WCAG contrast ratio checker, and CSS gradient builder.
-18. **JSON Formatter & CSV Converter:** Beautify, validate, and minify JSON data, or bidirectionally convert between JSON and CSV.
+13. **Delegate Nameplate Designer (`/delegate-nameplate/`):** Actual-size event, administrative, and office desk nameplate studio with 8 Vietnamese administrative/office quick templates, 3-tier layouts, custom borders & themes, multi-line role/organization support, logo upload, batch Excel/text ZIP export, and crisp SVG/PNG/JPG/Print output.
+14. **Strong Password Generator (`/password-generator/`):** Cryptographically secure passwords via Web Crypto CSPRNG with entropy strength meter and local history.
+15. **Unit Converter (`/unit-converter/`):** Length, weight, temperature, volume, area, speed, time, and data storage with live formula display and history.
+16. **Currency Converter (`/currency-converter/`):** Live Vietcombank exchange rates with historical charts and offline snapshot fallback.
+17. **Gold Price Tracker (`/gold-price/`):** Domestic (SJC, PNJ) and global gold price charts with timeline filtering and local history fallback.
+18. **QR Code Generator (`/qr-generator/`):** Custom colors, dot/corner styles, logo overlays, WiFi/vCard formats, PNG/SVG export, and batch ZIP generation.
+19. **Encoder / Decoder (`/encoder-decoder/`):** Local Base64, URL, and HTML entity encoding/decoding for text and files up to 10 MB.
+20. **Hash Generator (`/hash-generator/`):** Local MD5, SHA-1, SHA-256, SHA-384, and SHA-512 digests for text or files up to 100 MB, with auto-expanding single/multi-line output boxes.
+21. **Case Converter (`/case-converter/`):** Instant UPPERCASE, lowercase, Title Case, camelCase, PascalCase, snake_case, and kebab-case conversion.
+22. **Regex Tester (`/regex-tester/`):** Interactive JavaScript regular expression matcher with flags, syntax explanations, and live replacement preview.
+23. **Markdown Preview (`/markdown-preview/`):** Real-time GitHub Flavored Markdown editor/previewer sanitized with DOMPurify and one-click HTML copy.
+24. **LaTeX Editor (`/latex-editor/`):** MathJax-powered equation editor with symbol library, templates, auto-saved history, and crisp 2× black-on-white PNG export.
+25. **Color Picker & Palette (`/color-picker/`):** Interactive color wheel, HEX/RGB/HSL/HSV/CMYK converter, harmonies, WCAG contrast checker, and CSS gradient builder.
+26. **JSON Formatter & CSV Converter (`/json-formatter/`):** Format, minify, validate JSON, and bidirectionally convert JSON ↔ CSV.
 
 ---
 
-## 🎨 Premium UI & Accessibility
-- **Neumorphism Design System:** Harmonious HSL colors, deep inset and flat drop shadows, and responsive glassmorphism menus.
-- **Unified Dark Mode:** Instant toggle between light and dark modes, fully integrated across charts, inputs, and components.
-- **Command Palette:** Quick navigate anywhere on the site by pressing `Cmd/Ctrl + K` (includes search matching and arrow navigation).
-- **Smooth Animations:** Glow-in animations for active states, red alert pulses for low timer counts, and rotating hover transitions.
-
----
-
-## 🛠️ Architecture & Tech Stack
-
-- **Static Site Generator:** [Jekyll](https://jekyllrb.com/) (configured for production-level Sass minification and HTML compression).
-- **Styling:** Custom SCSS/CSS using Bootstrap 5 layout grid and neumorphic design components.
-- **Offline Shell (PWA):** Custom Service Worker (`sw.js`) with a *Stale-While-Revalidate* strategy.
-- **Multilingual System (i18n):** Proprietary JSON translation system supporting Vietnamese (`vi`), English (`en`), Chinese (`zh`), Korean (`ko`), and Japanese (`ja`).
-- **Data Safety:** Zero server-side processing. All computations, hashing, QR rendering, and encoding occur 100% locally in the browser.
+## 📱 Progressive Web App (PWA) & UI Highlights
+- **Installable App:** Valid `site.webmanifest` with `192×192`, `512×512`, and `maskable` PNG icons, multi-resolution `favicon.ico`, app shortcuts, active `beforeinstallprompt` install button, iOS Safari install guide, and dynamic `theme-color` syncing with Dark Mode.
+- **Offline Ready:** Service Worker (`sw.js`) caches the app shell, core scripts, holiday JSON, and static CDN libraries (`cdn.jsdelivr.net`, `cdnjs.cloudflare.com`, Google Fonts), with a dedicated `/offline.html` fallback and live update toast.
+- **Neumorphism & Accessible Dark Mode:** WCAG AA verified contrast in both Light and Dark themes.
+- **Command Palette:** Press `Cmd/Ctrl + K` anywhere to search and jump to any of the 26 tools.
+- **5-Language i18n:** Client-side localization for Vietnamese (`vi`), English (`en`), Chinese (`zh`), Korean (`ko`), and Japanese (`ja`).
 
 ---
 
 ## 💻 Local Development & Build
 
 ### Prerequisites
-- Ruby (with Bundler)
-- Node.js (for minification and tests)
+- Ruby (with Bundler) for Jekyll local preview
+- Node.js (v18+) for CSS compilation, JS minification, and tests
 
-### Setup & Installation
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/quocthang0507/quocthang0507.github.io.git
-   cd quocthang0507.github.io
-   ```
-2. Install Ruby dependencies:
-   ```bash
-   bundle install
-   ```
-3. Install Node.js tools:
-   ```bash
-   npm install
-   ```
+### Setup
+```bash
+git clone https://github.com/quocthang0507/quocthang0507.github.io.git
+cd quocthang0507.github.io
+bundle install
+npm install
+```
 
-### Development Commands
-- **Compile SCSS** (`_sass/` → `assets/css/main.css`; Jekyll skips `main.scss`, so the compiled file is what gets deployed):
+### Scripts
+- **Compile SCSS (`_sass/` → `assets/css/main.css`):**
   ```bash
   npm run build:css
+  npm run check:css
   ```
-- **Minify Javascript files:**
+- **Minify JavaScript files (`assets/js/*.js` → `*.min.js`):**
   ```bash
   npm run minify:js
   ```
-- **Start Jekyll dev server locally:**
+- **Run Jest unit test suite (13 suites / 69 tests):**
+  ```bash
+  npm test
+  ```
+- **Run Playwright E2E tests:**
+  ```bash
+  npx playwright test
+  ```
+- **Serve locally with Jekyll:**
   ```bash
   npm run serve
   # or: bundle exec jekyll serve
   ```
-- **Build production bundle:**
-  ```bash
-  npm run build
-  ```
-- **Run JS unit tests (Jest):**
-  ```bash
-  npm run test
-  ```
+
+> A Husky `pre-commit` hook automatically minifies modified JS files, compiles SCSS, verifies `assets/css/main.css`, and runs `npm test` before every commit.
 
 ---
 
 ## 📁 Repository Structure
 
-```
+```text
 .
-├── _includes/              # HTML layout components (navigation, footer, etc.)
-├── _layouts/               # Core Jekyll page layouts
-├── _sass/                  # Modular Sass styling files
+├── _data/                  # Source data files (vietnam_holidays.json, gold/currency history)
+├── _includes/              # Reusable partials (navigation, footer, tool-tips-card, calendar/time tabs)
+├── _layouts/               # Core Jekyll layouts (default, compress)
+├── _sass/                  # Modular Neumorphism SCSS (_variables, _base, _components, _dark, _navigation, ...)
 ├── assets/
-│   ├── css/                # Main stylesheets (main.css generated from main.scss)
-│   ├── images/             # Icons, logos, and PWA assets
-│   └── js/                 # Tool logic scripts and translation files
-│       └── languages/      # i18n locale scripts (en.js, vi.js, etc.)
-├── scripts/                # Utility scripts (terser JS minification)
-├── tests/                  # Unit and integration tests (Jest / Playwright)
-├── index.html              # Main homepage entrypoint
-├── sw.js                   # Service Worker script
-└── package.json            # NPM configuration and dev scripts
+│   ├── audio/              # Normalized 16-bit PCM audio assets
+│   ├── css/                # Compiled main.css & delegate-nameplate.css
+│   ├── data/               # Public JSON datasets (vietnam_holidays.json, rates)
+│   ├── images/             # PNG/maskable PWA icons & favicons
+│   └── js/                 # Shared engines (calendar-core, calendar-views, clock, pwa, i18n, tools)
+│       └── languages/      # 5 locale dictionaries (vi, en, zh, ko, ja) + minified builds
+├── scripts/                # Build scripts (build-css.js, minify-js.js)
+├── tests/                  # Jest unit tests & Playwright E2E specs
+├── daily-calendar.html     # Vietnamese Lịch Bloc daily calendar
+├── weekly-calendar.html    # Weekly calendar
+├── monthly-calendar.html   # Monthly calendar
+├── yearly-calendar.html    # Yearly 12-month calendar
+├── stopwatch.html          # Online Stopwatch
+├── countdown-timer.html    # Online Countdown Timer
+├── alarm-clock.html        # Online Alarm Clock
+├── offline.html            # PWA offline fallback page
+├── site.webmanifest        # PWA Web App Manifest
+├── sw.js                   # Service Worker
+└── package.json            # NPM scripts & tooling
 ```
 
 ---
 
-## 🔒 Security
-Please refer to [SECURITY.md](file:///Users/quocthang0507/GitHub/quocthang0507.github.io/SECURITY.md) for vulnerability reporting guidelines and details on implemented security headers (CSP, HSTS, X-Content-Type-Options).
+## 🔒 Security & Privacy
+Please see [SECURITY.md](SECURITY.md) for vulnerability reporting and security policy details (CSP headers, zero server-side tracking/processing, Consent Mode v2).
 
 ---
-*Created by [@quocthang0507](https://github.com/quocthang0507). Feel free to submit an issue or pull request!*
+*Created by [@quocthang0507](https://github.com/quocthang0507). Issues and pull requests are welcome!*

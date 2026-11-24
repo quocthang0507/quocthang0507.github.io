@@ -1,0 +1,22 @@
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <div class="btn-group calendar-view-switcher" role="group" aria-label="Calendar Views">
+        <a href="{{ '/daily-calendar/' | relative_url }}" class="btn btn-sm {% if include.active == 'day' %}btn-primary{% else %}btn-outline-primary{% endif %}">
+            <i class="fas fa-calendar-day me-1" aria-hidden="true"></i><span data-i18n="nav.daily_calendar">Lịch ngày</span>
+        </a>
+        <a href="{{ '/weekly-calendar/' | relative_url }}" class="btn btn-sm {% if include.active == 'week' %}btn-primary{% else %}btn-outline-primary{% endif %}">
+            <i class="fas fa-calendar-week me-1" aria-hidden="true"></i><span data-i18n="nav.weekly_calendar">Lịch tuần</span>
+        </a>
+        <a href="{{ '/monthly-calendar/' | relative_url }}" class="btn btn-sm {% if include.active == 'month' %}btn-primary{% else %}btn-outline-primary{% endif %}">
+            <i class="fas fa-calendar-alt me-1" aria-hidden="true"></i><span data-i18n="nav.monthly_calendar">Lịch tháng</span>
+        </a>
+        <a href="{{ '/yearly-calendar/' | relative_url }}" class="btn btn-sm {% if include.active == 'year' %}btn-primary{% else %}btn-outline-primary{% endif %}">
+            <i class="fas fa-calendar me-1" aria-hidden="true"></i><span data-i18n="nav.yearly_calendar">Lịch năm</span>
+        </a>
+    </div>
+    <div class="calendar-legend d-flex flex-wrap align-items-center gap-3 small text-muted">
+        <span><span class="day-auspicious-dot good me-1"></span><span data-i18n="cal.good_short">Hoàng Đạo</span></span>
+        <span><span class="day-auspicious-dot bad me-1"></span><span data-i18n="cal.bad_short">Hắc Đạo</span></span>
+        <span><span class="calendar-legend-swatch swatch-public me-1"></span><span data-i18n="cal.public_holiday_short">Nghỉ lễ</span></span>
+        <span><span class="calendar-legend-swatch swatch-event me-1"></span><span data-i18n="cal.event_short">Sự kiện</span></span>
+    </div>
+</div>

@@ -1,0 +1,91 @@
+---
+layout: default
+title: "Lịch tháng"
+description: "Xem lịch tháng âm dương Việt Nam đầy đủ với ngày lễ, ngày Hoàng Đạo / Hắc Đạo, số tuần ISO và tra cứu chi tiết từng ngày."
+keywords: "lịch tháng, lịch âm dương, xem ngày tốt xấu, ngày hoàng đạo trong tháng, lịch vạn niên, monthly calendar"
+custom_js: ['lunar-calendar.js', 'vietnam-holidays.js', 'calendar-core.js', 'calendar-views.js']
+permalink: /monthly-calendar/
+sitemap:
+  priority: 0.85
+  changefreq: weekly
+  lastmod: 2026-11-24
+---
+
+<div id="alert-container"></div>
+
+<div data-calendar-view="month">
+    {% include calendar-view-tabs.html active="month" %}
+
+    <div class="card mb-4">
+        <div class="card-header bg-success text-white d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <h1 class="h5 mb-0">
+                <i class="fas fa-calendar-alt me-2"></i>
+                <span id="monthly-title" data-i18n="cal.monthly_title">Lịch tháng âm dương</span>
+            </h1>
+            <span id="monthly-subtitle" class="badge bg-light text-dark"></span>
+        </div>
+        <div class="card-body">
+            <div class="row g-2 align-items-center mb-3">
+                <div class="col-12 col-lg-auto">
+                    <div class="btn-group" role="group">
+                        <button type="button" id="monthly-prev-btn" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button type="button" id="monthly-today-btn" class="btn btn-primary btn-sm">
+                            <i class="fas fa-calendar-day me-1"></i><span data-i18n="calendar.today">Về hôm nay</span>
+                        </button>
+                        <button type="button" id="monthly-next-btn" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-6 col-sm-3 col-lg-auto">
+                    <select id="monthly-month-select" class="form-select form-select-sm" aria-label="Month"></select>
+                </div>
+                <div class="col-6 col-sm-3 col-lg-auto">
+                    <select id="monthly-year-select" class="form-select form-select-sm" aria-label="Year"></select>
+                </div>
+                <div class="col-6 col-sm-3 col-lg-auto ms-lg-auto">
+                    <select id="monthly-filter" class="form-select form-select-sm" aria-label="Filter">
+                        <option value="all" data-i18n="cal.filter_all">Tất cả các ngày</option>
+                        <option value="good" data-i18n="cal.filter_good">Nổi bật ngày Hoàng Đạo</option>
+                        <option value="holidays" data-i18n="cal.filter_holidays">Nổi bật ngày lễ</option>
+                    </select>
+                </div>
+                <div class="col-6 col-sm-3 col-lg-auto">
+                    <select id="monthly-week-start" class="form-select form-select-sm" aria-label="Week start">
+                        <option value="1" data-i18n="cal.start_monday">Bắt đầu: Thứ 2</option>
+                        <option value="0" data-i18n="cal.start_sunday">Bắt đầu: Chủ nhật</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="monthly-calendar-display" class="table-responsive"></div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-danger text-white">
+                    <h2 class="h6 mb-0"><i class="fas fa-star me-2"></i><span data-i18n="cal.month_holidays_heading">Ngày lễ &amp; Sự kiện trong tháng</span></h2>
+                </div>
+                <div class="card-body">
+                    <div id="monthly-holidays-list" class="list-group list-group-flush"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-info text-white">
+                    <h2 class="h6 mb-0"><i class="fas fa-sun me-2"></i><span data-i18n="cal.month_good_days_heading">Ngày Hoàng Đạo trong tháng</span></h2>
+                </div>
+                <div class="card-body">
+                    <div id="monthly-good-days-list" class="d-flex flex-wrap gap-2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include tool-tips-card.html tool="monthly_cal" info="Lịch tháng âm dương đầy đủ hiển thị số tuần ISO, ngày lễ trực tiếp trong từng ô, đánh dấu Hoàng Đạo / Hắc Đạo và tổng hợp ngày đẹp trong tháng." tip1="Dùng bộ lọc 'Nổi bật ngày Hoàng Đạo' hoặc 'Nổi bật ngày lễ' để nhìn nhanh các mốc quan trọng." tip2="Bạn có thể đổi cột đầu tuần giữa Thứ 2 (chuẩn Việt Nam/ISO) và Chủ nhật tùy thói quen." tip3="Nhấn vào bất kỳ ngày nào trên lịch hoặc danh sách bên dưới để xem Can Chi, sao tốt và việc nên làm." tip4="Truyền tham số ?year=2026&month=11 trên URL để chia sẻ nhanh đúng tháng cần xem." %}

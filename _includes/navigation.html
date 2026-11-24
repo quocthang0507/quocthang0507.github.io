@@ -15,6 +15,34 @@
                         <i class="fas fa-home"></i> <span data-i18n="nav.home">Trang chủ</span>
                     </a>
                 </li>
+                <!-- Calendar menu group -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle {% if page.url == '/daily-calendar/' or page.url == '/weekly-calendar/' or page.url == '/monthly-calendar/' or page.url == '/yearly-calendar/' %}active{% endif %}" href="#" id="calendarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-calendar-alt"></i> <span data-i18n="nav.calendar_group">Lịch</span>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="calendarDropdown">
+                        <li>
+                            <a class="dropdown-item {% if page.url == '/daily-calendar/' %}active{% endif %}" href="{{ '/daily-calendar/' | relative_url }}">
+                                <i class="fas fa-calendar-day me-2 text-danger"></i><span data-i18n="nav.daily_calendar">Lịch ngày</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item {% if page.url == '/weekly-calendar/' %}active{% endif %}" href="{{ '/weekly-calendar/' | relative_url }}">
+                                <i class="fas fa-calendar-week me-2 text-primary"></i><span data-i18n="nav.weekly_calendar">Lịch tuần</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item {% if page.url == '/monthly-calendar/' %}active{% endif %}" href="{{ '/monthly-calendar/' | relative_url }}">
+                                <i class="fas fa-calendar-alt me-2 text-success"></i><span data-i18n="nav.monthly_calendar">Lịch tháng</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item {% if page.url == '/yearly-calendar/' %}active{% endif %}" href="{{ '/yearly-calendar/' | relative_url }}">
+                                <i class="fas fa-calendar me-2 text-info"></i><span data-i18n="nav.yearly_calendar">Lịch năm</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
                 <!-- Tools grouped dropdown -->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="toolsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -34,6 +62,21 @@
                         </li>
                         <li><hr class="dropdown-divider"></li>
                         <li><h6 class="dropdown-header" data-i18n="nav.cat.time">Time</h6></li>
+                        <li>
+                            <a class="dropdown-item {% if page.url == '/stopwatch/' %}active{% endif %}" href="{{ '/stopwatch/' | relative_url }}">
+                                <span data-i18n="nav.stopwatch">Stopwatch</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item {% if page.url == '/countdown-timer/' %}active{% endif %}" href="{{ '/countdown-timer/' | relative_url }}">
+                                <span data-i18n="nav.countdown_timer">Hẹn giờ</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item {% if page.url == '/alarm-clock/' %}active{% endif %}" href="{{ '/alarm-clock/' | relative_url }}">
+                                <span data-i18n="nav.alarm_clock">Báo thức</span>
+                            </a>
+                        </li>
                         <li>
                             <a class="dropdown-item {% if page.url == '/world-clocks/' %}active{% endif %}" href="{{ '/world-clocks/' | relative_url }}">
                                 <span data-i18n="nav.world_clocks">World clocks</span>

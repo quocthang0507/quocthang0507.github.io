@@ -1,0 +1,53 @@
+---
+layout: default
+title: "Lịch ngày (Lịch Bloc)"
+description: "Xem lịch ngày kiểu lịch bloc Việt Nam hiện đại: số dương lịch lớn, ảnh cảnh đẹp Việt Nam từ Wikimedia Commons, biểu tượng 12 con giáp, ngày âm lịch, Can Chi và giờ Hoàng Đạo."
+keywords: "lịch ngày, lịch bloc, lịch vạn niên hôm nay, giờ hoàng đạo hôm nay, ngày âm lịch hôm nay, lịch bloc việt nam"
+custom_js: ['lunar-calendar.js', 'vietnam-holidays.js', 'calendar-core.js', 'calendar-views.js']
+permalink: /daily-calendar/
+sitemap:
+  priority: 0.9
+  changefreq: daily
+  lastmod: 2026-11-24
+---
+
+<div id="alert-container"></div>
+
+<div data-calendar-view="day">
+    {% include calendar-view-tabs.html active="day" %}
+
+    <!-- Toolbar -->
+    <div class="card mb-4">
+        <div class="card-body py-2 px-3 d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <div class="btn-group btn-group-sm" role="group">
+                <button type="button" id="daily-prev-btn" class="btn btn-outline-primary">
+                    <i class="fas fa-chevron-left me-1"></i><span data-i18n="cal.prev_day">Hôm qua</span>
+                </button>
+                <button type="button" id="daily-today-btn" class="btn btn-primary">
+                    <i class="fas fa-calendar-day me-1"></i><span data-i18n="calendar.today">Về hôm nay</span>
+                </button>
+                <button type="button" id="daily-next-btn" class="btn btn-outline-primary">
+                    <span data-i18n="cal.next_day">Ngày mai</span><i class="fas fa-chevron-right ms-1"></i>
+                </button>
+            </div>
+
+            <div class="d-flex flex-wrap align-items-center gap-2">
+                <input type="date" id="daily-date-picker" class="form-control form-control-sm" style="width: auto;" aria-label="Pick date">
+                <button type="button" id="daily-shuffle-photo-btn" class="btn btn-sm btn-outline-secondary" title="Đổi ảnh cảnh đẹp Việt Nam">
+                    <i class="fas fa-image me-1"></i><span data-i18n="cal.change_photo">Đổi ảnh</span>
+                </button>
+                <button type="button" id="daily-details-btn" class="btn btn-sm btn-outline-info">
+                    <i class="fas fa-info-circle me-1"></i><span data-i18n="cal.full_details">Chi tiết</span>
+                </button>
+                <button type="button" id="daily-copy-btn" class="btn btn-sm btn-outline-success">
+                    <i class="fas fa-copy me-1"></i><span data-i18n="lunar.copy">Sao chép</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vietnamese Lịch Bloc Centerpiece -->
+    <div id="daily-bloc-sheet" class="bloc-stage-wrapper mb-4"></div>
+</div>
+
+{% include tool-tips-card.html tool="daily_cal" info="Lịch ngày thiết kế theo phong cách Lịch Bloc truyền thống Việt Nam kết hợp ảnh cảnh đẹp Việt Nam chọn lọc từ Wikimedia Commons, biểu tượng con giáp, Can Chi ngày/tháng/năm và đầy đủ 6 khung giờ Hoàng Đạo." tip1="Dùng phím mũi tên Trái / Phải trên bàn phím hoặc nút Hôm qua / Ngày mai để lật từng tờ lịch nhanh chóng." tip2="Nhấn trực tiếp vào dải 7 ngày ở chân tờ lịch để nhảy sang bất kỳ ngày nào trong tuần." tip3="Bấm 'Đổi ảnh' để thưởng thức bộ sưu tập ảnh cảnh đẹp Việt Nam (Featured Pictures of Vietnam trên Wikimedia Commons)." tip4="Nhấn 'Chi tiết' để xem đầy đủ cảnh báo ngày kỵ (Tam Nương, Nguyệt Kỵ, Sát Chủ) và thông tin lễ Tết." %}

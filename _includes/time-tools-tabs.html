@@ -1,0 +1,16 @@
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <div class="btn-group" role="group" aria-label="Time Tools">
+        <a href="{{ '/stopwatch/' | relative_url }}" class="btn btn-sm {% if include.active == 'stopwatch' %}btn-primary{% else %}btn-outline-primary{% endif %}">
+            <i class="fas fa-stopwatch me-1" aria-hidden="true"></i><span data-i18n="nav.stopwatch">Đồng hồ bấm giờ</span>
+        </a>
+        <a href="{{ '/countdown-timer/' | relative_url }}" class="btn btn-sm {% if include.active == 'timer' %}btn-primary{% else %}btn-outline-primary{% endif %}">
+            <i class="fas fa-hourglass-half me-1" aria-hidden="true"></i><span data-i18n="nav.countdown_timer">Hẹn giờ</span>
+        </a>
+        <a href="{{ '/alarm-clock/' | relative_url }}" class="btn btn-sm {% if include.active == 'alarm' %}btn-primary{% else %}btn-outline-primary{% endif %}">
+            <i class="fas fa-bell me-1" aria-hidden="true"></i><span data-i18n="nav.alarm_clock">Báo thức</span>
+        </a>
+        <a href="{{ '/world-clocks/' | relative_url }}" class="btn btn-sm {% if include.active == 'world' %}btn-primary{% else %}btn-outline-primary{% endif %}">
+            <i class="fas fa-globe me-1" aria-hidden="true"></i><span data-i18n="nav.world_clocks">Giờ thế giới</span>
+        </a>
+    </div>
+</div>
