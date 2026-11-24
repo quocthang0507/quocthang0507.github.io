@@ -34,42 +34,6 @@ async function fetchGoldData() {
     throw lastError || new Error('All fetch sources failed');
 }
 
-function generateMockHistory(baseRates) {
-    console.log('Initializing gold-history.json with 365 days of random walk simulation...');
-    const history = [];
-    let currentDate = new Date();
-    
-    // Create a deep copy of current rates
-    const currentRates = JSON.parse(JSON.stringify(baseRates));
-    
-    for (let i = 0; i < 365; i++) {
-        const dateKey = currentDate.toISOString().split('T')[0];
-        
-        const dayRates = {};
-        for (const [code, rateInfo] of Object.entries(currentRates)) {
-            dayRates[code] = {
-                buy: rateInfo.buy,
-                sell: rateInfo.sell,
-                label: rateInfo.label
-            };
-            
-            // Random walk factor: daily deviation of up to 0.3% (factor between 0.997 and 1.003)
-            const factor = 1 + (Math.random() - 0.5) * 0.006;
-            if (currentRates[code].buy) currentRates[code].buy = Math.round(currentRates[code].buy * factor);
-            if (currentRates[code].sell) currentRates[code].sell = Math.round(currentRates[code].sell * factor);
-        }
-        
-        history.push({
-            date: dateKey,
-            rates: dayRates
-        });
-        
-        currentDate.setDate(currentDate.getDate() - 1);
-    }
-    
-    return history.reverse(); // Chronological order
-}
-
 async function main() {
     try {
         const currentGold = await fetchGoldData();
@@ -97,10 +61,7 @@ async function main() {
             }
         }
         
-        if (history.length === 0) {
-            // Initialize with 1 year mock random walk history
-            history = generateMockHistory(currentGold);
-        }
+        // Never synthesize past data: an empty history simply starts from today.
         
         // Today's date YYYY-MM-DD
         const todayDate = new Date().toISOString().split('T')[0];

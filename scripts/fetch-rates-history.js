@@ -96,43 +96,6 @@ function parseRatesXML(xmlString) {
     return rates;
 }
 
-function generateMockHistory(baseRates) {
-    console.log('Initializing rates-history.json with 365 days of random walk simulation...');
-    const history = [];
-    let currentDate = new Date();
-    
-    // Create a deep copy of current rates to walk backwards
-    const currentRates = JSON.parse(JSON.stringify(baseRates));
-    
-    for (let i = 0; i < 365; i++) {
-        const dateKey = currentDate.toISOString().split('T')[0];
-        
-        const dayRates = {};
-        for (const [code, rateInfo] of Object.entries(currentRates)) {
-            dayRates[code] = {
-                buyCash: rateInfo.buyCash,
-                buyTransfer: rateInfo.buyTransfer,
-                sell: rateInfo.sell
-            };
-            
-            // Random walk factor: daily deviation of up to 0.15% (factor between 0.997 and 1.003)
-            const factor = 1 + (Math.random() - 0.5) * 0.003;
-            if (currentRates[code].buyCash) currentRates[code].buyCash = Math.round(currentRates[code].buyCash * factor * 100) / 100;
-            if (currentRates[code].buyTransfer) currentRates[code].buyTransfer = Math.round(currentRates[code].buyTransfer * factor * 100) / 100;
-            if (currentRates[code].sell) currentRates[code].sell = Math.round(currentRates[code].sell * factor * 100) / 100;
-        }
-        
-        history.push({
-            date: dateKey,
-            rates: dayRates
-        });
-        
-        currentDate.setDate(currentDate.getDate() - 1);
-    }
-    
-    return history.reverse(); // Chronological order
-}
-
 async function main() {
     try {
         const currentRates = await fetchCurrentRates();
@@ -160,10 +123,8 @@ async function main() {
             }
         }
         
-        if (history.length === 0) {
-            // Initialize with 1 year mock random walk history
-            history = generateMockHistory(currentRates);
-        }
+        // Never synthesize past data: an empty history simply starts from today.
+        // Use scripts/backfill-rates-history.js to fetch real rates for past dates.
         
         // Today's date YYYY-MM-DD
         const todayDate = new Date().toISOString().split('T')[0];
@@ -199,4 +160,8 @@ async function main() {
     }
 }
 
-main();
+if (require.main === module) {
+    main();
+}
+
+module.exports = { parseVal, HISTORY_FILE_PATH, VCB_JSON_URL };
