@@ -1,0 +1,14 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "inter",
+        "createdAt": "2026-11-08T08:25:10.987Z",
+        "reason": "Claude: Inter is the incumbent font stack; user chose a refinement that keeps the existing identity, and Operate surfaces permit familiar sans faces"
+      }
+    ]
+  }
+}
