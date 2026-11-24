@@ -477,3 +477,52 @@
   max-width: 62ch;
 }
 
+
+// ─── Analytics consent banner ───
+.consent-banner {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  left: 1rem;
+  z-index: 1080;
+  max-width: 28rem;
+  margin-left: auto;
+  padding: 1.25rem;
+  border-radius: var(--nm-radius-md);
+  background: var(--nm-bg);
+  box-shadow: var(--nm-shadow-flat-lg);
+  color: var(--bs-body-color);
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+.consent-banner-title {
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.consent-banner-text {
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  color: var(--bs-secondary-text);
+}
+
+.consent-banner-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .consent-banner:not([hidden]) {
+    animation: consent-in 250ms cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  @keyframes consent-in {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: none; }
+  }
+}

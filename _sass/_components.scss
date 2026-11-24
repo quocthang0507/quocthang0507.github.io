@@ -111,6 +111,11 @@ textarea.form-control {
 select.form-control,
 .form-select {
   @include nm.nm-input;
+  display: block;
+  width: 100%;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--bs-body-color);
   border-radius: var(--nm-radius-sm);
   padding: 0.5rem 2rem 0.5rem 0.75rem;
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23625B71' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");

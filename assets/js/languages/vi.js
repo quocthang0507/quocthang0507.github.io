@@ -1,5 +1,6 @@
 // Vietnamese Language File
 const vietnameseTranslations = {
+    "qr.empty_state": "Nhập nội dung rồi nhấn “Tạo mã QR” để xem trước tại đây.",
     "timer.countdown": "Hẹn giờ",
     "home.all_tools": "Tất cả công cụ",
     "date_calc.days": "ngày",

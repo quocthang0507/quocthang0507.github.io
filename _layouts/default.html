@@ -125,10 +125,29 @@ layout: compress
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="X-XSS-Protection" content="1; mode=block">
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com https://cdn.jsdelivr.net; connect-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://www.vietcombank.com.vn https://portal.vietcombank.com.vn https://api.allorigins.win https://corsproxy.io https://api.codetabs.com https://raw.githubusercontent.com;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com https://cdn.jsdelivr.net; connect-src 'self' https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://www.vietcombank.com.vn https://portal.vietcombank.com.vn https://api.allorigins.win https://corsproxy.io https://api.codetabs.com https://raw.githubusercontent.com;">
     <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()">
     
-    <!-- Google Analytics will be loaded conditionally by cookie consent -->
+    <!-- Google Tag Manager with Consent Mode v2: analytics/ads storage stays denied until the
+         visitor accepts in the consent banner (assets/js/consent.js) -->
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('consent', 'default', {
+            analytics_storage: 'denied',
+            ad_storage: 'denied',
+            ad_user_data: 'denied',
+            ad_personalization: 'denied',
+            wait_for_update: 500
+        });
+        try { if (localStorage.getItem('analytics_consent') === 'granted') gtag('consent', 'update', { analytics_storage: 'granted' }); } catch (e) {}
+    </script>
+    <script async src="https://www.googletagmanager.com/gtm.js?id=GTM-N49ZGWDF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    </script>
     
     <!-- Font Awesome Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -156,10 +175,12 @@ layout: compress
     <!-- Custom JS -->
     {% if jekyll.environment == "production" %}
     <script src="{{ '/assets/js/security.min.js' | relative_url }}?v={{ asset_v }}"></script>
+    <script src="{{ '/assets/js/consent.min.js' | relative_url }}?v={{ asset_v }}"></script>
     <script src="{{ '/assets/js/main.min.js' | relative_url }}?v={{ asset_v }}"></script>
     <script id="i18n-script" src="{{ '/assets/js/i18n.min.js' | relative_url }}?v={{ asset_v }}"></script>
     {% else %}
     <script src="{{ '/assets/js/security.js' | relative_url }}?v={{ asset_v }}"></script>
+    <script src="{{ '/assets/js/consent.js' | relative_url }}?v={{ asset_v }}"></script>
     <script src="{{ '/assets/js/main.js' | relative_url }}?v={{ asset_v }}"></script>
     <script id="i18n-script" src="{{ '/assets/js/i18n.js' | relative_url }}?v={{ asset_v }}"></script>
     {% endif %}

@@ -1,5 +1,6 @@
 // Chinese Language File (Simplified)
 const chineseTranslations = {
+    "qr.empty_state": "输入内容并点击“生成二维码”即可在此预览。",
     "timer.countdown": "倒计时",
     "home.all_tools": "全部工具",
     "date_calc.days": "天",

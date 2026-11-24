@@ -1,5 +1,6 @@
 // Japanese Language File
 const japaneseTranslations = {
+    "qr.empty_state": "内容を入力して「QRコード生成」を押すと、ここにプレビューが表示されます。",
     "timer.countdown": "タイマー",
     "home.all_tools": "すべてのツール",
     "date_calc.days": "日",

@@ -1,5 +1,6 @@
 // Korean Language File
 const koreanTranslations = {
+    "qr.empty_state": "내용을 입력하고 “QR 코드 생성”을 누르면 여기에서 미리 볼 수 있습니다.",
     "timer.countdown": "타이머",
     "home.all_tools": "모든 도구",
     "date_calc.days": "일",

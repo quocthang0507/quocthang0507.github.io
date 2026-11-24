@@ -242,12 +242,13 @@
 
 .dropdown-header {
   display: block;
-  padding: 0.5rem 0.85rem 0.25rem;
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--bs-secondary-text);
+  // More room above than below so each label groups with the items under it
+  padding: 0.85rem 0.85rem 0.35rem;
+  font-size: 0.8125rem;
+  font-weight: 800;
+  color: var(--bs-primary-text);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   pointer-events: none;
 
   &:hover {
@@ -260,7 +261,12 @@
   height: 0;
   margin: 0.35rem 0;
   overflow: hidden;
-  border-top: 1px solid rgba(163, 177, 198, 0.25);
+  border-top: 1px solid rgba(163, 177, 198, 0.5);
+}
+
+// The first group label needs no extra space above it
+.dropdown-menu > li:first-child > .dropdown-header {
+  padding-top: 0.5rem;
 }
 
 // ─── Language dropdown spacing ───

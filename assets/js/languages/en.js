@@ -1,5 +1,6 @@
 // English Language File
 const englishTranslations = {
+    "qr.empty_state": "Enter your content and press “Generate QR” to preview it here.",
     "timer.countdown": "Countdown",
     "home.all_tools": "All tools",
     "date_calc.days": "days",
